@@ -1,0 +1,14 @@
+#!/usr/bin/ruby
+ 
+  require 'rubygems'        
+  require 'daemons'
+  
+  options = {
+  :app_name   => "ragios",
+  :log_output => true,
+  :monitor    => true
+}
+
+Daemons.run('ragios.rb', options)
+
+
