@@ -1,7 +1,7 @@
 require 'lib/monitors/test_http'
 require 'lib/ragios'
 
-class TestMySite < TestHttp   
+class TestMySite < TestURL   
    def initialize
       @time_interval = '1h'
       @contact = "obi@mail.com"	
@@ -11,7 +11,7 @@ class TestMySite < TestHttp
    end
 end
 
-class TestMyBlog < TestHttp 
+class TestMyBlog < TestURL 
 #tests my blog, to check if the blog is loading
 
    def initialize
@@ -23,7 +23,7 @@ class TestMyBlog < TestHttp
    end
 end
 
-class TestFakeSite < TestHttp   
+class TestFakeSite < TestURL   
 #tests a website that doesn't exist this test will always fail
    def initialize
       @time_interval = '1h'

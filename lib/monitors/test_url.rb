@@ -1,10 +1,9 @@
 require 'net/http'
 require 'lib/monitors/service_monitor'
 
-# To be rewritten to make TCP connections via http to a domain and passes the test when it connects successfully
-#monitors a TCP c to check if the site is loading
+#monitors a webpage to check if the site is loading
 #PASSED if it gets a HTTP 200,301 or 302 Response status code from the http request
-class TestHTTP < ServiceMonitor
+class TestURL < ServiceMonitor
   
    attr_reader :test_url 
   
