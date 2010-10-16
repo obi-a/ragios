@@ -1,7 +1,7 @@
 require 'lib/monitors/test_url'
 require 'lib/ragios'
 
-class TestMySite < TestURL   
+class TestMySite < TestURL    
    def initialize
       @time_interval = '1h'
       @contact = "obi@mail.com"	
