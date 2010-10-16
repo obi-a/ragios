@@ -9,6 +9,6 @@
   :monitor    => true
 }
 
-Daemons.run('ragios.rb', options)
+Daemons.run('main.rb', options)
 
 
