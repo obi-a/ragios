@@ -1,4 +1,4 @@
-require 'lib/monitors/test_http'
+require 'lib/monitors/test_url'
 require 'lib/ragios'
 
 class TestMySite < TestURL   
