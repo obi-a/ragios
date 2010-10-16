@@ -2,7 +2,7 @@ require 'net/http'
 require 'lib/monitors/service_monitor'
 
 #monitors a webpage to check if the site is loading
-#PASSED if it gets a HTTP 200 Response status code from the website
+#PASSED if it gets a HTTP 200,301 or 302 Response status code from the website
 class TestHttp < ServiceMonitor
   
    attr_reader :test_url 
