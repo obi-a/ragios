@@ -41,7 +41,7 @@ class SystemMonitor
    #- May send email, SMS or tweet to the system admin
    #- May also take action to fix the issue like restart a process/service 
    def failed
-       tweet_alert 
+       #tweet_alert 
        #email_alert
    end
    

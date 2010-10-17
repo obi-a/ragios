@@ -1,3 +1,4 @@
+require 'lib/monitors/test_http'
 require 'lib/monitors/test_url'
 require 'lib/ragios'
 
@@ -7,18 +8,6 @@ class TestMySite < TestURL
       @contact = "obi@mail.com"	
       @test_description  = "My Website Test"
       @test_url = "http://www.whisperservers.com"  
-      super
-   end
-end
-
-class TestMyBlog < TestURL 
-#tests my blog, to check if the blog is loading
-
-   def initialize
-      @time_interval = '1h'
-      @contact = "obi@mail.com"
-      @test_description  = "My Blog Test"
-      @test_url = "http://obi-akubue.homeunix.org/"
       super
    end
 end
@@ -34,6 +23,16 @@ class TestFakeSite < TestURL
    end
 end
   
+class TestMyBlog < TestHTTP
+   def initialize
+      @time_interval = '15s'
+      @contact = "obi@mail.com"
+      @test_description = "Http connection to my blog"
+      @test_domain = "obi-akubue.homeunix.org"
+      super
+   end
+end
+
 
 tests = [ TestMySite.new, TestMyBlog.new, TestFakeSite.new]
 

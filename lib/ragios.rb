@@ -24,16 +24,17 @@ class Ragios
 	begin 
  	  if job.test_command
            puts  "  [PASSED]" + " Created on: "+ Time.now.to_s 
-           puts job.describe_test_result + " = " + job.test_result 
+           puts job.describe_test_result + " = " + job.test_result
   	  else
            puts "  [FAILED]" + " Created on: "+ Time.now.to_s 
-           puts job.describe_test_result + " = " + job.test_result 
+           puts job.describe_test_result + " = " + job.test_result
            job.failed
       
   	  end
    	   puts "\n"
 	rescue Exception
    	   puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s 
+            raise
            job.error_handler
         end
        count = count + 1
