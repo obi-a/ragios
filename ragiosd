@@ -2,12 +2,17 @@
  
   require 'rubygems'        
   require 'daemons'
-  
+  require 'lib/monitors/test_http'
+  require 'lib/monitors/test_url'
+  require 'lib/ragios'
+
   options = {
   :app_name   => "ragios",
+  :dir_mode   => :script,
+  :dir        => 'log', 
   :log_output => true,
   :monitor    => true
-}
+  }
 
 Daemons.run('main.rb', options)
 
