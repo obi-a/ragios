@@ -1,3 +1,6 @@
+require 'rubygems'
+require "bundler/setup"
+
 require 'lib/monitors/test_http'
 require 'lib/monitors/test_url'
 require 'lib/ragios'

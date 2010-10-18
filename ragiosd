@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
  
-  require 'rubygems'        
+  require 'rubygems'
+  require "bundler/setup"        
   require 'daemons'
   require 'lib/monitors/test_http'
   require 'lib/monitors/test_url'
