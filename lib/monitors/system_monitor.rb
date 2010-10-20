@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'pony'
-require 'lib/tweet'
-require 'lib/emailer'
+require 'lib/notifiers/tweet_notifier'
+require 'lib/notifiers/email_notifier'
 
 #base class that defines the behavior of all system monitors
 class SystemMonitor
@@ -50,7 +50,7 @@ class SystemMonitor
      
      message = @test_description + " FAILED!  " + @describe_test_result + " = " + @test_result + " Created on: "+ Time.now.to_s
 
-     Tweet.new.tweet message
+     TweetNotifier.new.tweet message
   end
 
 
@@ -61,7 +61,7 @@ class SystemMonitor
                   :subject =>@test_description + " FAILED", 
                   :body => @test_description + " FAILED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s}
 
-       Emailer.new.email message
+       EmailerNotifier.new.send message
       
        
       
@@ -77,7 +77,7 @@ class SystemMonitor
    #informs a system admin via twitter when a test_command() or failed() method encounters an excepion
    def tweet_error
         message = @test_description + " ERROR: " + $!  + " Created on: "+ Time.now.to_s 
-        Tweet.new.tweet message
+        TweetNotifier.new.tweet message
    end
    
    #informs a system admin via email when a test_command() or failed() method encounters an excepion

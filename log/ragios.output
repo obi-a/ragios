@@ -1,0 +1,25 @@
+ragios: process with pid 5697 started.
+Welcome to Ragios
+Initializing
+3 jobs detected
+
+Job 1. My Website Test
+Scheduled to run every 1h
+Running First Test...
+  [PASSED] Created on: Wed Oct 20 16:08:22 -0400 2010
+HTTP Request to http://www.whisperservers.com = 200
+
+Job 2. Http connection to my blog
+Scheduled to run every 15s
+Running First Test...
+  [PASSED] Created on: Wed Oct 20 16:08:22 -0400 2010
+HTTP Connection to obi-akubue.homeunix.org = PASSED
+
+Job 3. Fake website
+Scheduled to run every 1h
+Running First Test...
+  [FAILED] Created on: Wed Oct 20 16:08:22 -0400 2010
+HTTP Request to http://wenosee.org/ = getaddrinfo: Name or service not known
+
+PRESS CTRL-C to QUIT
+Http connection to my blog   [PASSED] Created on: Wed Oct 20 16:08:37 -0400 2010
