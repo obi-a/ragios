@@ -5,7 +5,7 @@
   require 'daemons'
   require 'lib/monitors/test_http'
   require 'lib/monitors/test_url'
-  require 'lib/ragios'
+  require 'lib/schedulers/ragios'
 
   options = {
   :app_name   => "ragios",

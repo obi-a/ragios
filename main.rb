@@ -3,7 +3,7 @@ require "bundler/setup"
 
 require 'lib/monitors/test_http'
 require 'lib/monitors/test_url'
-require 'lib/ragios'
+require 'lib/schedulers/ragios'
 
 class TestMySite < TestURL    
    def initialize
@@ -42,10 +42,3 @@ tests = [ TestMySite.new, TestMyBlog.new, TestFakeSite.new]
 ragios = Ragios.new tests 
 ragios.init
 ragios.start
-
-#trap Ctrl-C to exit gracefully
-puts "PRESS CTRL-C to QUIT"
-  loop do
-  trap("INT") { puts "\nExiting"; exit; }
-    sleep(3)
-  end
