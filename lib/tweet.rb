@@ -12,16 +12,9 @@ class Tweet
        @client = Twitter::Base.new(oauth) 
   end
 
-  def init(consumer,access)  
-      oauth = Twitter::OAuth.new(consumer["consumer_key"], consumer["consumer_secret"])
-      oauth.authorize_from_access(access["access_token"], access["access_secret"])     
-
-      @client = Twitter::Base.new(oauth)  
-  end
- 
   def tweet message
       
-      @client.update(message)    
+      @client.update message.slice!(0..139) #140 character limit on twitter  
   end
 
 end

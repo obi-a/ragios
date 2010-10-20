@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'pony'
 require 'lib/tweet'
+require 'lib/emailer'
 
 #base class that defines the behavior of all system monitors
 class SystemMonitor
@@ -49,16 +50,19 @@ class SystemMonitor
      
      message = @test_description + " FAILED!  " + @describe_test_result + " = " + @test_result + " Created on: "+ Time.now.to_s
 
-     Tweet.new.tweet message.slice!(0..139) #maintaining the twitter 140 character limit with slice!
+     Tweet.new.tweet message
   end
 
 
    def email_alert
    
        puts 'sending mail alert...'
-       Pony.mail :to => @contact, 
-                 :subject => @test_description + " FAILED", 
-                 :body => @test_description + " FAILED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s
+       message = {:to => @contact,
+                  :subject =>@test_description + " FAILED", 
+                  :body => @test_description + " FAILED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s}
+
+       Emailer.new.email message
+      
        
       
    end
@@ -73,7 +77,7 @@ class SystemMonitor
    #informs a system admin via twitter when a test_command() or failed() method encounters an excepion
    def tweet_error
         message = @test_description + " ERROR: " + $!  + " Created on: "+ Time.now.to_s 
-        Tweet.new.tweet message.slice!(0..139) #140 character limit on twitter
+        Tweet.new.tweet message
    end
    
    #informs a system admin via email when a test_command() or failed() method encounters an excepion
@@ -82,3 +86,5 @@ class SystemMonitor
    end
      
 end
+
+
