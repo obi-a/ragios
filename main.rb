@@ -7,7 +7,7 @@ require 'lib/schedulers/ragios'
 
 class TestMySite < TestURL    
    def initialize
-      @time_interval = '1h'
+      @time_interval = '20m'
       @notification_interval = '6h'
       @contact = "obi@mail.com"	
       @test_description  = "My Website Test"
