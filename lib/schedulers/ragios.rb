@@ -72,7 +72,7 @@ class Ragios
                    #if failed job has not been marked as failed, then mark it as failed
                    job.has_failed = TRUE
                    #setup notification scheduler
-                   #this scheduler will schedule the notifcations to be sent out at the specified time interval
+                   #this scheduler will schedule the notifcations to be sent out at the specified notification interval
                    NotificationScheduler.new.start(job) 
                end 
        end

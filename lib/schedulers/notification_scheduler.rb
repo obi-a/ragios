@@ -14,7 +14,7 @@ class NotificationScheduler
      begin 
       if @job.test_command
         #test passed, the condition is no longer true
-        #unschedule this scheduler
+        #unschedule this job
         this_job.unschedule 
       else 
          @job.notify
