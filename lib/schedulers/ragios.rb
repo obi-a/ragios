@@ -48,7 +48,7 @@ class Ragios
        trap("INT") { puts "\nExiting"; exit; }
      sleep(3)
     end
- end  
+ end 
 
  def start
     
@@ -58,10 +58,23 @@ class Ragios
     scheduler.every job.time_interval do
      begin  
        if job.test_command
+           #set to nil since the job passed
+           job.has_failed = nil #false 
            puts job.test_description + "   [PASSED]" + " Created on: "+ Time.now.to_s
        else
            puts job.test_description +   "   [FAILED]" + " Created on: "+ Time.now.to_s
            job.failed
+               #if the failed job has been marked as failed
+               #this prevents the system from scheduling a new notification scheduler when one is already scheduled
+               if job.has_failed
+                   #do nothing
+               else 
+                   #if failed job has not been marked as failed, then mark it as failed
+                   job.has_failed = TRUE
+                   #setup notification scheduler
+                   #this scheduler will schedule the notifcations to be sent out at the specified time interval
+                   NotificationScheduler.new.start(job) 
+               end 
        end
        #catch all exceptions
       rescue Exception

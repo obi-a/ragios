@@ -30,6 +30,12 @@ class SystemMonitor
     #example 3m = 3 minutes, 10s = 10 seconds, 5h = 5 hours, 4h30m = 4 hours 30 minutes
     # @time_interval = 3m means that the SystemMonitor runs the test every 3minutes
     attr_reader :time_interval
+
+    attr_reader :notification_interval
+
+    #attribute set to TRUE when a test fails and nil otherwise
+    attr_accessor :has_failed
+    
   
    def initialize 
    end
@@ -42,11 +48,21 @@ class SystemMonitor
    #- May send email, SMS or tweet to the system admin
    #- May also take action to fix the issue like restart a process/service 
    def failed
-       #tweet_alert 
-       #email_alert
+       
+   end
+
+   def notify
+      #email_nofiy
+      #tweet_notify
+   end
+
+   #this method is invoked when a test_command() or failed() method encounters an exception
+   #The aim is to inform the system Admin about the exception while the system keeps on running
+   def error_handler
+      
    end
    
-  def tweet_alert
+  def tweet_notify
      
      message = @test_description + " FAILED!  " + @describe_test_result + " = " + @test_result + " Created on: "+ Time.now.to_s
 
@@ -54,7 +70,7 @@ class SystemMonitor
   end
 
 
-   def email_alert
+   def email_notify
    
        puts 'sending mail alert...'
        message = {:to => @contact,
@@ -66,14 +82,7 @@ class SystemMonitor
        
       
    end
-   
-   #this method is invoked when a test_command() or failed() method encounters an exception
-   #The aim is to inform the system Admin about the exception while the system keeps on running
-   def error_handler
-       #tweet_error
-      #email_error
-   end
-   
+     
    #informs a system admin via twitter when a test_command() or failed() method encounters an excepion
    def tweet_error
         message = @test_description + " ERROR: " + $!  + " Created on: "+ Time.now.to_s 
