@@ -3,9 +3,8 @@
   require 'rubygems'
   require "bundler/setup"        
   require 'daemons'
-  require 'lib/monitors/test_http'
-  require 'lib/monitors/test_url'
-  require 'lib/schedulers/ragios'
+
+  require 'lib/ragios'
 
   options = {
   :app_name   => "ragios",

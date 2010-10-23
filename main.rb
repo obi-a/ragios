@@ -1,11 +1,10 @@
 require 'rubygems'
 require "bundler/setup"
 
-require 'lib/monitors/test_http'
-require 'lib/monitors/test_url'
-require 'lib/schedulers/ragios'
+require 'lib/ragios'
 
-class TestMySite < TestURL    
+
+class TestMySite < Ragios::Monitors::TestURL    
    def initialize
       @time_interval = '20m'
       @notification_interval = '6h'
@@ -16,10 +15,10 @@ class TestMySite < TestURL
    end
 end
 
-class TestFakeSite < TestURL   
+class TestFakeSite < Ragios::Monitors::TestURL   
 #tests a website that doesn't exist this test will always fail
    def initialize
-      @time_interval = '1h'
+      @time_interval = '15s'
       @notification_interval = '6h'
       @contact = "obi@mail.com"
       @test_description  = "Fake website"
@@ -28,7 +27,7 @@ class TestFakeSite < TestURL
    end
 end
   
-class TestMyBlog < TestHTTP
+class TestMyBlog < Ragios::Monitors::TestHTTP
    def initialize
       @time_interval = '15s'
       @notification_interval = '6h'
@@ -42,6 +41,6 @@ end
 
 tests = [ TestMySite.new, TestMyBlog.new, TestFakeSite.new]
 
-ragios = Ragios.new tests 
+ragios = Ragios::Schedulers::RagiosScheduler.new tests 
 ragios.init
 ragios.start
