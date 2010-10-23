@@ -5,7 +5,7 @@ module Ragios
 # Tests a domain to check if its online  
 # It establishes a HTTP connection to the domain
 # PASSED if it establishes the HTTP connection successfully and FAILED if it throws an exception
-class TestHTTP < ServiceMonitor
+class TestHTTP < Ragios::Monitors::ServiceMonitor
   
    attr_reader :test_domain 
   

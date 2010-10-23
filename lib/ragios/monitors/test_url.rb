@@ -4,7 +4,7 @@ module Ragios
 
 #monitors a webpage to check if the site is loading
 #PASSED if it gets a HTTP 200,301 or 302 Response status code from the http request
-class TestURL < ServiceMonitor
+class TestURL < Ragios::Monitors::ServiceMonitor
   
    attr_reader :test_url 
   
