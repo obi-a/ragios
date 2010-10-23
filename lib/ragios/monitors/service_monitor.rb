@@ -4,7 +4,7 @@ module Ragios
  module Monitors
 
 #defines how services will be monitored
-class ServiceMonitor < SystemMonitor
+class ServiceMonitor < Ragios::Monitors::SystemMonitor
     def initialize
      super
     end
