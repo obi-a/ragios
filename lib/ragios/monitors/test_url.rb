@@ -9,6 +9,8 @@ class TestURL < Ragios::Monitors::ServiceMonitor
    attr_reader :test_url 
   
    def initialize
+        
+        raise "@test_url must be assigned a value" if @test_url.nil?    
         @describe_test_result = "HTTP Request to " + @test_url
         super
    end 

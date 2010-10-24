@@ -39,6 +39,13 @@ class SystemMonitor
     
   
    def initialize 
+      #raise ERROR when the following attributes are not assigned values in a test
+      #the attributes must be assigned values by the tests that extend this class
+      raise "@test_description must be assigned a value" if @test_description.nil?
+      raise "@describe_test_result must be assigned a value" if @describe_test_result.nil?
+      raise "@contact must be assigned a value" if @contact.nil?
+      raise "@time_interval must be assigned a value" if @time_interval.nil?
+      raise "@notification_interval must be assigned a value" if @notification_interval.nil?
    end
   
    #defines the tests to run on a system

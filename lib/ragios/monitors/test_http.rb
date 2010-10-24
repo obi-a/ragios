@@ -10,6 +10,7 @@ class TestHTTP < Ragios::Monitors::ServiceMonitor
    attr_reader :test_domain 
   
    def initialize
+        raise "@test_domain must be assigned a value" if @test_domain.nil?
         @describe_test_result = "HTTP Connection to " + @test_domain
         super
    end 
