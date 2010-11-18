@@ -14,16 +14,16 @@ Ragios could be used to monitor any type of system including servers, workstatio
 I assume you are using a linux/unix system (Most likely debian/Ubuntu)
 
 Download Ragios using the link below:
-https://github.com/obi-a/Ragios/tarball/release
+<b>https://github.com/obi-a/Ragios/tarball/release</b>
 
 Enter the URL on a browser address bar, it will download a zip file named something like this
-obi-a-Ragios-b231813.tar.gz
+<b>obi-a-Ragios-b231813.tar.gz </b>
 
-#From terminal, Unzip the file
-#$ tar xvfz obi-a-Ragios-b231813.tar.gz
+From terminal, Unzip the file
+<b>$ tar xvfz obi-a-Ragios-b231813.tar.gz</b>
 
 Rename the unzipped folder to ragios 
-$ mv obi-a-Ragios-b231813 ragios
+<b>$ mv obi-a-Ragios-b231813 ragios</b>
 
 Change directory to the ragios 
 $ cd ragios
