@@ -3,32 +3,9 @@ require "bundler/setup"
 
 require 'lib/ragios'
 
-class TestMySite  <  Ragios::Monitors::TestURL   
+class TestMySite < Ragios::Monitors::TestHTTP
    def initialize
-      @time_interval = '20m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"	
-      @test_description  = "My Website Test"
-      @test_url = "http://www.whisperservers.com" 
-      super
-   end
-end
-
-class TestFakeSite < Ragios::Monitors::TestURL   
-#tests a website that doesn't exist this test will always fail
-   def initialize
-      @time_interval = '1h'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description  = "Fake website"
-      @test_url = "http://wenosee.org/"
-      super
-   end
-end
-  
-class TestMyBlog < Ragios::Monitors::TestHTTP
-   def initialize
-      @time_interval = '20m'
+      @time_interval = '10m'
       @notification_interval = '6h'
       @contact = "obi@mail.com"
       @test_description = "Http connection to my blog"
@@ -37,7 +14,18 @@ class TestMyBlog < Ragios::Monitors::TestHTTP
    end
 end
 
-tests = [TestMySite.new, TestMyBlog.new, TestFakeSite.new]
+class TestBlogURL <  Ragios::Monitors::TestURL   
+   def initialize
+      @time_interval = '20m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"	
+      @test_description  = "My Website Test"
+      @test_url = "http://www.whisperservers.com/blog/" 
+      super
+   end
+end
+
+tests = [TestMySite.new, TestBlogURL.new]
 
 ragios = Ragios::Schedulers::RagiosScheduler.new tests 
 ragios.init

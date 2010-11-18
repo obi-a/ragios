@@ -11,7 +11,7 @@ Ragios could be used to monitor any type of system including servers, workstatio
 
 
 ==Installation
-I assume you are using a linux/unix system (Most likely debian/Ubuntu)
+I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can runs on any platform that supports ruby including BSD, OS X, any linux distro, Windows etc..
 
 *  Download Ragios using the link below :
 
@@ -43,10 +43,189 @@ Ragios uses bundler to manage dependencies. Bundler will install the right versi
 
    bundle install
 
-Installation is complete! Ragios is ready to use. (I would have written an installation script but github had to switch to https and wget has some issues it)
+Installation is complete! Ragios is ready to use. 
 
 ==Usage
 
+Ragios is used by web master or systems admin to monitor a site or system. The sys admin configures Ragios to run tests on the system at specified time intervals. The system admin may write his own tests or use tests written by other developers. The tests are written in Ruby so they can do anything that ruby can do. A test may either PASS or FAIL when a test FAILS the system admin is notified. 
+
+===Monitoring a system
+To monitor a system we need to configure Ragios. 
+
+====Using the built-in tests
+These are some tests I wrote, I will write more soon. 
+
+=====To monitor a website to ensure that its online we use TestHttp
+This test tries to establish a Http connection with the website at the specified time interval and notifies the system admin when its unable to establish a connection. 
+
+To use TestHttp, we need to write a custom test that extends TestHttp. This custom test is written in the /ragios/main.rb file.
+ 
+This is a sample custom test to alert me when my blog goes offline
+
+class TestMySite < Ragios::Monitors::TestHTTP
+   def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "Http connection to my blog"
+      @test_domain = "obi-akubue.org"
+      super
+   end
+end
+
+Ragios::Monitors::TestHTTP is the built-in test we use to monitor a website. 
+
+@test_domain is the domain of the website we want to monitor
+
+@test_description is a summary of what we are testing, this helps Ragios system send out notification alerts with specific details on what went wrong in the system.
+
+@contact is the email address of the system admin. When a test fails Ragios will send an Email notification with details of the failure to the System admin. 
+
+@time_interval is the time interval in which Ragios performs the test on the system. In the example above, 
+
+ @time_interval = '10m' 
+
+ means Ragios will run TestHTTP every 10minutes to monitor my blog.
+
+	@time_interval could be in seconds, minutes, hours or combined.
+
+	Example
+
+	@time_interval = '3m'  #means the test will be performed every 3 minutes
+	@time_interval = '4h'  #every 4 hours
+	@time_interval = '30s' #every 30 seconds
+	@time_interval = '6h30m' #every 6 hours 30minutes
+
+@notification_interval is the time interval between sending notifications to system admin when a test is still in a failed state. In the above example,
+ 
+  @notification_interval = '6h'
+
+  When the website goes offline, Ragios will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online.
+ 
+  @notification_intervals could also be seconds, minutes, hours or combined.
+
+=====To monitor a URL in your web app to ensure its loading properly
+We use a built-in test for this called TestURL. This test sends a Http requests to the URL at specified time interval. It passes the test when it gets a 200, 301 or 302 response code from the server and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  
+
+Below is a custom test that uses TestURL to monitor a URL on my website 
+
+class TestBlogURL <  Ragios::Monitors::TestURL   
+   def initialize
+      @time_interval = '20m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"	
+      @test_description  = "My Website Test"
+      @test_url = "http://www.whisperservers.com/blog/" 
+      super
+   end
+end
+
+Ragios::Monitors::TestURL is the built-in test. We have to extend it for our custom test. 
+
+
+====Adding Custom tests to the Ragios system
+To add the custom tests we created above to the Ragios System we need add the following lines to /ragios/main.rb file
+
+tests = [TestMySite.new, TestBlogURL.new] #initializes our custom tests and adds them to the list of tests
+
+ragios = Ragios::Schedulers::RagiosScheduler.new tests #create a ragios object and give it the list of tests to run
+ragios.init     # run all the tests sequencially to ensure the system is configured properlly
+ragios.start    # starts the ragios scheduler which will run each test at its own specified time interval, and notifies the admin when a test fails
+
+====main.rb
+With the custom tests we have written so far our /ragios/main.rb file will look like this:
+
+#ragios/main.rb
+require 'rubygems'
+require "bundler/setup"
+
+require 'lib/ragios'
+
+class TestMySite < Ragios::Monitors::TestHTTP
+   def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "Http connection to my blog"
+      @test_domain = "obi-akubue.org"
+      super
+   end
+end
+
+class TestBlogURL <  Ragios::Monitors::TestURL   
+   def initialize
+      @time_interval = '20m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"	
+      @test_description  = "My Website Test"
+      @test_url = "http://www.whisperservers.com/blog/" 
+      super
+   end
+end
+
+tests = [TestMySite.new, TestBlogURL.new]
+
+ragios = Ragios::Schedulers::RagiosScheduler.new tests 
+ragios.init
+ragios.start
+
+The basic configuration is now complete. We now run the Ragios system.
+
+Since main.rb is pure ruby code we can run it directly, from the /ragios directory 
+
+ruby main.rb
+
+This will run the ragios system on our terminal as a top program. This can be useful for debugging purposes to test our configuration script for errors.
+
+Output from running the above main.rb script will look like this :
+
+	Welcome to Ragios
+	Initializing
+	2 tests detected
+
+	test 1. Http connection to my blog
+	Scheduled to run every 10m
+	Running First Test...
+  	  [PASSED] Created on: Thu Nov 18 14:14:49 -0500 2010
+	HTTP Connection to obi-akubue.org = PASSED
+
+	test 2. My Website Test
+	Scheduled to run every 20m
+	Running First Test...
+  	  [PASSED] Created on: Thu Nov 18 14:15:02 -0500 2010
+	HTTP Request to http://www.whisperservers.com/blog/ = 200
+
+	PRESS CTRL-C to QUIT
+
+We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
+
+====Starting the Ragios System
+Ragios runs a daemon in the system. 
+
+	To Start Ragios as a daemon from terminal :
+
+	ruby ragiosd start
+
+	Stop the daemon :
+
+	ruby ragiosd stop
+
+	Restart the daemon :
+
+	ruby ragiosd restart
+
+	Check Status of the daemon :
+
+	ruby ragiosd status
+
+	Test the daemon :
+
+	ruby ragiosd run
+
+The ragiosd simply demonizes our ragios/main.rb script and runs it as a daemon. The logs and output of the daemon will be saved in the /ragios/log directory as ragios.log and ragios.output files respectively.
+
+====Notifications
+Ragios sends out a notification to the system admin when a test fails. It continues notifying the admin at the specified notification interval until the issue is resolved. Ragios will also notify the admin when a perviously bad issue is resolved. The notification could be sent via SMS, email or twitter. The notification system is written in Ruby so any type messaging protocol that can be implemented in ruby can be used for Ragios. 
 
 
 
