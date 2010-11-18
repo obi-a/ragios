@@ -13,35 +13,35 @@ Ragios could be used to monitor any type of system including servers, workstatio
 ==Installation
 I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can runs on any platform that supports ruby including BSD, OS X, any linux distro, Windows etc..
 
-  Download Ragios using the link below :
+Download Ragios using the link below :
 
    https://github.com/obi-a/Ragios/tarball/release
 
-   Enter the URL on a browser address bar, it will download a zip file named something like this :
+Enter the URL on a browser address bar, it will download a zip file named something like this :
 
    obi-a-Ragios-b231813.tar.gz 
 
-   From terminal, Unzip the file :
+From terminal, Unzip the file :
 
-   tar xvfz obi-a-Ragios-b231813.tar.gz
+   $tar xvfz obi-a-Ragios-b231813.tar.gz
 
-   Rename the unzipped folder to ragios : 
+Rename the unzipped folder to ragios : 
 
-   mv obi-a-Ragios-b231813 ragios
+   $mv obi-a-Ragios-b231813 ragios
 
-   Change directory to the ragios :
+Change directory to the ragios :
 
-   cd ragios
+   $cd ragios
 
-   Install the bundler rubygem :
+Install the bundler rubygem :
 
-   sudo gem install bundler
+   $sudo gem install bundler
 
 Ragios uses bundler to manage dependencies. Bundler will install the right version of all the gems required for Ragios to run on your system.
 
-   Now while inside the ragios directory, run Bundler to install all the required gems and dependencies :
-
-   bundle install
+Now while inside the ragios directory, run Bundler to install all the required gems and dependencies :
+   
+   $bundle install
 
 Installation is complete! Ragios is ready to use. 
 
@@ -62,16 +62,16 @@ To use TestHttp, we need to write a custom test that extends TestHttp. This cust
  
 This is a sample custom test to alert me when my blog goes offline
 
-class TestMySite < Ragios::Monitors::TestHTTP
-   def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "Http connection to my blog"
-      @test_domain = "obi-akubue.org"
-      super
-   end
-end
+	class TestMySite < Ragios::Monitors::TestHTTP
+   	 def initialize
+     	    @time_interval = '10m'
+            @notification_interval = '6h'
+            @contact = "obi@mail.com"
+            @test_description = "Http connection to my blog"
+            @test_domain = "obi-akubue.org"
+            super
+         end
+        end
 
 Ragios::Monitors::TestHTTP is the built-in test we use to monitor a website. 
 
@@ -105,16 +105,16 @@ We use a built-in test for this called TestURL. This test sends a Http requests 
 Below is a custom test that uses TestURL to monitor a URL on my website 
 
 
-	class TestBlogURL <  Ragios::Monitors::TestURL   
-	   def initialize
-      	   	@time_interval = '20m'
-          	@notification_interval = '6h'
-           	@contact = "obi@mail.com"	
-           	@test_description  = "My Website Test"
-          	@test_url = "http://www.whisperservers.com/blog/" 
-           	super
-   	   end
-	end
+     class TestBlogURL <  Ragios::Monitors::TestURL   
+        def initialize
+      	  @time_interval = '20m'
+          @notification_interval = '6h'
+          @contact = "obi@mail.com"	
+          @test_description  = "My Website Test"
+          @test_url = "http://www.whisperservers.com/blog/" 
+          super
+   	end
+     end
 
 
 Ragios::Monitors::TestURL is the built-in test. We have to extend it for our custom test. 
@@ -132,39 +132,39 @@ ragios.start    # starts the ragios scheduler which will run each test at its ow
 ===main.rb
 With the custom tests we have written so far our /ragios/main.rb file will look like this:
 
-	#ragios/main.rb
-	require 'rubygems'
-	require "bundler/setup"
+  #ragios/main.rb
+  require 'rubygems'
+  require "bundler/setup"
 
-	require 'lib/ragios'
+  require 'lib/ragios'
 
-	class TestMySite < Ragios::Monitors::TestHTTP
-   	 def initialize
-      		@time_interval = '10m'
-      		@notification_interval = '6h'
-     	 	@contact = "obi@mail.com"
-      		@test_description = "Http connection to my blog"
-      		@test_domain = "obi-akubue.org"
-      		super
-   	end
-       end
+  class TestMySite < Ragios::Monitors::TestHTTP
+    def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "Http connection to my blog"
+      @test_domain = "obi-akubue.org"
+      super
+    end
+  end
 
-	class TestBlogURL <  Ragios::Monitors::TestURL   
-   	 def initialize
-      		@time_interval = '20m'
-      		@notification_interval = '6h'
-      		@contact = "obi@mail.com"	
-      		@test_description  = "My Website Test"
-      		@test_url = "http://www.whisperservers.com/blog/" 
-      		super
-   	 end
-        end
+  class TestBlogURL <  Ragios::Monitors::TestURL   
+    def initialize
+      @time_interval = '20m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"	
+      @test_description  = "My Website Test"
+      @test_url = "http://www.whisperservers.com/blog/" 
+      super
+     end
+   end
 
-	tests = [TestMySite.new, TestBlogURL.new]
+  tests = [TestMySite.new, TestBlogURL.new]
 
-	ragios = Ragios::Schedulers::RagiosScheduler.new tests 
-	ragios.init
-	ragios.start
+  ragios = Ragios::Schedulers::RagiosScheduler.new tests 
+  ragios.init
+  ragios.start
 
 The basic configuration is now complete. We now run the Ragios system.
 
@@ -199,23 +199,23 @@ We can also run Ragios as a daemon by running the ragiosd ruby script also in th
 ===Starting the Ragios System
 Ragios runs a daemon in the system. 
 
-	To Start Ragios as a daemon from terminal :
+To Start Ragios as a daemon from terminal :
 
 	$ruby ragiosd start
 
-	Stop the daemon :
+Stop the daemon :
 
 	$ruby ragiosd stop
 
-	Restart the daemon :
+Restart the daemon :
 
 	$ruby ragiosd restart
 
-	Check Status of the daemon :
+Check Status of the daemon :
 
 	$ruby ragiosd status
 
-	Test the daemon :
+Test the daemon :
 
 	$ruby ragiosd run
 
