@@ -41,7 +41,7 @@ Ragios uses bundler to manage dependencies. Bundler will install the right versi
 
 *  Now while inside the ragios directory, run Bundler to install all the required gems and dependencies :
 
-   $ bundle install
+   bundle install
 
 Installation is complete! Ragios is ready to use. (I would have written an installation script but github had to switch to https and wget has some issues it)
 
