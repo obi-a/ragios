@@ -53,10 +53,10 @@ Ragios is used by web master or systems admin to monitor a site or system. The s
 To monitor a system we need to configure Ragios. 
 
 ===Using the built-in tests
-These are some tests I wrote, I will write more soon. 
+These are some tests I wrote, I will write more built-in tests soon. 
 
 ===To monitor a website to ensure that its online we use TestHttp
-This test tries to establish a Http connection with the website at the specified time interval and notifies the system admin when its unable to establish a connection. 
+This test tries to establish a Http connection with the website at the specified time interval. It notifies the system admin when its unable to establish a connection. 
 
 To use TestHttp, we need to write a custom test that extends TestHttp. This custom test is written in the /ragios/main.rb file.
  
@@ -94,7 +94,7 @@ Example
 
 @notification_interval = '6h'
 
-When the website goes offline, Ragios will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online. 
+When the website goes offline, Ragios will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online. When a test recovers from a failed state Ragios will also inform the system admin.
 
 @notification_intervals could also be in seconds, minutes, hours or combined.
 
@@ -117,17 +117,17 @@ Below is a custom test that uses TestURL to monitor a URL on my website
      end
 
 
-Ragios::Monitors::TestURL is the built-in test. We have to extend it for our custom test. 
+Ragios::Monitors::TestURL is the built-in test. We had to extend it for our custom test. 
 
 
 ===Adding Custom tests to the Ragios system
 To add the custom tests we created above to the Ragios System we need add the following lines to /ragios/main.rb file
 
-tests = [TestMySite.new, TestBlogURL.new] #initializes our custom tests and adds them to the list of tests
+ tests = [TestMySite.new, TestBlogURL.new] #initializes our custom tests and adds them to the list of tests
 
-ragios = Ragios::Schedulers::RagiosScheduler.new tests #create a ragios object and give it the list of tests to run
-ragios.init     # run all the tests sequencially to ensure the system is configured properlly
-ragios.start    # starts the ragios scheduler which will run each test at its own specified time interval, and notifies the admin when a test fails
+ ragios = Ragios::Schedulers::RagiosScheduler.new tests #create a ragios object and give it the list of tests to run
+ ragios.init     # run all the tests sequencially to ensure the system is configured properlly
+ ragios.start    # starts the ragios scheduler which will run each test at its own specified time interval, and notifies the admin when a test fails
 
 ===main.rb
 With the custom tests we have written so far our /ragios/main.rb file will look like this:
