@@ -90,19 +90,19 @@ Example
 	@time_interval = '30s' #every 30 seconds
 	@time_interval = '6h30m' #every 6 hours 30minutes
 
-@notification_interval is the time interval between sending notifications to system admin when a test is still in a failed state. In the above example, we have  
+@notification_interval is the time interval between sending notifications to the system admin when a test is still in a failed state. In the above example, we have  
 
 @notification_interval = '6h'
 
 When the website goes offline, Ragios will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online. When a test recovers from a failed state Ragios will also inform the system admin.
 
-@notification_intervals could also be in seconds, minutes, hours or combined.
+@notification_intervals could be in seconds, minutes, hours or combined.
 
 
 ===To monitor a URL in your web app to ensure its loading properly
-We use a built-in test for this called TestURL. This test sends a Http requests to the URL at specified time interval. It passes the test when it gets a 200, 301 or 302 response code from the server and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  
+We use a built-in test for this called TestURL. This test sends a Http request to the URL at the specified time interval. It passes the test when it gets a 200, 301 or 302 response code from the server and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  
 
-Below is a custom test that uses TestURL to monitor a URL on my website 
+Below is a custom test that uses TestURL to monitor a URL on my website whisperservers.com 
 
 
      class TestBlogURL <  Ragios::Monitors::TestURL   
@@ -127,7 +127,8 @@ To add the custom tests we created above to the Ragios System we need add the fo
 
  ragios = Ragios::Schedulers::RagiosScheduler.new tests #create a ragios object and give it the list of tests to run
  ragios.init     # run all the tests sequencially to ensure the system is configured properlly
- ragios.start    # starts the ragios scheduler which will run each test at its own specified time interval, and notifies the admin when a test fails
+ ragios.start    # starts the ragios scheduler which will run each test at its own specified time interval
+                 # and notifies the admin when a test fails
 
 ===main.rb
 With the custom tests we have written so far our /ragios/main.rb file will look like this:
@@ -166,13 +167,13 @@ With the custom tests we have written so far our /ragios/main.rb file will look 
   ragios.init
   ragios.start
 
-The basic configuration is now complete. We now run the Ragios system.
+The basic configuration is now complete. We can now run the Ragios system.
 
-Since main.rb is pure ruby code we can run it directly, from the /ragios directory 
+Since main.rb is pure ruby code we can run it directly, from the /ragios directory : 
 
  $ruby main.rb
 
-This will run the ragios system on our terminal as a top program. This can be useful for debugging purposes to test our configuration script for errors.
+This will run the ragios system on our terminal as a top program. This can be useful for debugging purposes, to test our configuration script for errors.
 
 Output from running the above main.rb script will look like this :
 
@@ -197,9 +198,9 @@ Output from running the above main.rb script will look like this :
 We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
 
 ===Starting the Ragios System
-Ragios runs a daemon in the system. 
+Ragios runs as a daemon in the system. 
 
-To Start Ragios as a daemon from terminal :
+To Start Ragios as a daemon from the terminal :
 
 	$ruby ragiosd start
 
@@ -215,15 +216,14 @@ Check Status of the daemon :
 
 	$ruby ragiosd status
 
-Test the daemon :
+To run Ragios as a top program, useful for testing purposes :
 
 	$ruby ragiosd run
 
-The ragiosd simply demonizes our ragios/main.rb script and runs it as a daemon. The logs and output of the daemon will be saved in the /ragios/log directory as ragios.log and ragios.output files respectively.
+The ragiosd script simply demonizes our ragios/main.rb script and runs it as a daemon. The logs and output of the daemon will be saved in the /ragios/log directory as ragios.log and ragios.output respectively.
 
 ===Notifications
 Ragios sends out a notification to the system admin when a test fails. It continues notifying the admin at the specified notification interval until the issue is resolved. Ragios will also notify the admin when a perviously bad issue is resolved. The notification could be sent via SMS, email or twitter. The notification system is written in Ruby so any type messaging protocol that can be implemented in ruby can be used for Ragios. 
-
 
 
 
