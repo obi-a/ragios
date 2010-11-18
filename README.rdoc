@@ -77,11 +77,24 @@ Ragios::Monitors::TestHTTP is the built-in test we use to monitor a website.
 
 @test_domain is the domain of the website we want to monitor
 
-@test_description is a summary of what we are testing, this helps Ragios system send out notification alerts with specific details on what went wrong in the system.
+   @test_domain = "obi-akubue.org"
 
-@contact is the email address of the system admin. When a test fails Ragios will send an Email notification with details of the failure to the System admin. 
+@test_description is a summary of what we are testing, this helps the Ragios system send out notification alerts with specific details on what went wrong in the system.
 
-@time_interval is the time interval in which Ragios performs the test on the system. In the example above, @time_interval = '10m' means Ragios will run TestHTTP every 10minutes to monitor my blog. @time_interval could be in seconds, minutes, hours or combined.
+   @test_description = "Http connection to my blog"
+
+@contact is the email address of the system admin. When a test fails Ragios will send an email notification with details of the failure to the System admin. 
+ 
+   @contact = "obi@mail.com" 
+
+This could be omitted when we use other forms of notification like SMS, IM or Twitter.
+
+@time_interval is the time interval in which Ragios performs the test on the system. In the example above, 
+
+  @time_interval = '10m' 
+
+means Ragios will run TestHTTP every 10minutes to monitor my blog. @time_interval could be in seconds, minutes, hours or combined.
+
 
 Example
 
@@ -92,7 +105,7 @@ Example
 
 @notification_interval is the time interval between sending notifications to the system admin when a test is still in a failed state. In the above example, we have  
 
-@notification_interval = '6h'
+   @notification_interval = '6h'
 
 When the website goes offline, Ragios will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online. When a test recovers from a failed state Ragios will also inform the system admin.
 
@@ -198,7 +211,7 @@ Output from running the above main.rb script will look like this :
 We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
 
 ===Starting the Ragios System
-Ragios runs as a daemon in the system. 
+Ragios runs as a daemon in the unix/linux system. 
 
 To Start Ragios as a daemon from the terminal :
 
@@ -220,7 +233,7 @@ To run Ragios as a top program, useful for testing purposes :
 
 	$ruby ragiosd run
 
-The ragiosd script simply demonizes our ragios/main.rb script and runs it as a daemon. The logs and output of the daemon will be saved in the /ragios/log directory as ragios.log and ragios.output respectively.
+The ragiosd script simply demonizes the /ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the /ragios/log directory as ragios.log and ragios.output respectively.
 
 ===Notifications
 Ragios sends out a notification to the system admin when a test fails. It continues notifying the admin at the specified notification interval until the issue is resolved. Ragios will also notify the admin when a perviously bad issue is resolved. The notification could be sent via SMS, email or twitter. The notification system is written in Ruby so any type messaging protocol that can be implemented in ruby can be used for Ragios. 
