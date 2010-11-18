@@ -29,7 +29,7 @@ Rename the unzipped folder to ragios :
 
    $mv obi-a-Ragios-b231813 ragios
 
-Change directory to the ragios :
+Change directory to the ragios directory :
 
    $cd ragios
 
@@ -47,7 +47,7 @@ Installation is complete! Ragios is ready to use.
 
 ==Usage
 
-Ragios is used by web master or systems admin to monitor a site or system. The sys admin configures Ragios to run tests on the system at specified time intervals. The system admin may write his own tests or use tests written by other developers. The tests are written in Ruby so they can do anything that ruby can do. A test may either PASS or FAIL when a test FAILS the system admin is notified. 
+Ragios is used by webmasters or systems admins to monitor websites or systems. The sys admin configures Ragios to run tests on the system at the specified time interval. The system admin may write his own tests or use the built-in tests that comes with the system. The tests are written in Ruby so they can do anything that ruby can do. A test may either PASS or FAIL when a test FAILS the system admin is notified. 
 
 ===Monitoring a system
 To monitor a system we need to configure Ragios. 
