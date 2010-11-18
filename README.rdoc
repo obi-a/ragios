@@ -238,7 +238,7 @@ The ragiosd script simply demonizes the /ragios/main.rb script and runs it as a 
 ===Notifications
 Ragios sends out a notification to the system admin when a test fails. It continues notifying the admin at the specified notification interval until the issue is resolved. Ragios will also notify the admin when a perviously bad issue is resolved. The notification could be sent via SMS, email or twitter. The notification system is written in Ruby so any type messaging protocol that can be implemented in ruby can be used for Ragios. 
 
-
+...
 
 ==How It Works
 
