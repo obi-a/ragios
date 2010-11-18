@@ -15,7 +15,7 @@ I assume you are using a linux/unix system (Most likely debian/Ubuntu). However,
 
 Download Ragios using the link below :
 
-   https://github.com/obi-a/Ragios/tarball/release
+https://github.com/obi-a/Ragios/tarball/release
 
 Enter the URL on a browser address bar, it will download a zip file named something like this :
 
