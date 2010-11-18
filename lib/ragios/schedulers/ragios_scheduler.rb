@@ -4,7 +4,7 @@ module Schedulers
 
 class RagiosScheduler
     
-    attr :jobs
+    attr :jobs 
 
     def initialize(jobs)
          @jobs = jobs  
@@ -15,11 +15,11 @@ class RagiosScheduler
        	puts "Initializing"
 
 	count = 1
-	puts @jobs.length.to_s + " jobs detected"
+	puts @jobs.length.to_s + " tests detected"
 	puts "\n"
 
 	@jobs.each do |job|
- 		puts "Job " + count.to_s + ". "+  job.test_description 
+ 		puts "test " + count.to_s + ". "+  job.test_description 
  		puts "Scheduled to run every " + job.time_interval + "\n"
  		puts "Running First Test..."
 	begin 
