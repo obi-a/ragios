@@ -11,7 +11,7 @@ Ragios could be used to monitor any type of system including servers, workstatio
 
 
 ==Installation
-I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can runs on any platform that supports ruby including BSD, OS X, any linux distro, Windows etc..
+I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can runs on any platform that supports ruby including BSD, OS X, any Linux distro, Windows etc..
 
 Download Ragios using the link below :
 
@@ -19,7 +19,7 @@ https://github.com/obi-a/Ragios/tarball/release
 
 Enter the URL on a browser address bar, it will download a zip file named something like this :
 
-   obi-a-Ragios-b231813.tar.gz 
+obi-a-Ragios-b231813.tar.gz 
 
 From terminal, Unzip the file :
 
@@ -90,7 +90,7 @@ Example
 	@time_interval = '30s' #every 30 seconds
 	@time_interval = '6h30m' #every 6 hours 30minutes
 
-@notification_interval is the time interval between sending notifications to system admin when a test is still in a failed state. In the above example,  
+@notification_interval is the time interval between sending notifications to system admin when a test is still in a failed state. In the above example, we have  
 
 @notification_interval = '6h'
 
@@ -170,7 +170,7 @@ The basic configuration is now complete. We now run the Ragios system.
 
 Since main.rb is pure ruby code we can run it directly, from the /ragios directory 
 
-ruby main.rb
+ $ruby main.rb
 
 This will run the ragios system on our terminal as a top program. This can be useful for debugging purposes to test our configuration script for errors.
 
