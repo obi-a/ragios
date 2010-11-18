@@ -13,33 +13,34 @@ Ragios could be used to monitor any type of system including servers, workstatio
 ==Installation
 I assume you are using a linux/unix system (Most likely debian/Ubuntu)
 
-*  Download Ragios using the link below
+*  Download Ragios using the link below :
 
    https://github.com/obi-a/Ragios/tarball/release
 
-   Enter the URL on a browser address bar, it will download a zip file named something like this
+   Enter the URL on a browser address bar, it will download a zip file named something like this :
 
    obi-a-Ragios-b231813.tar.gz 
 
-*  From terminal, Unzip the file 
+*  From terminal, Unzip the file :
 
    $ tar xvfz obi-a-Ragios-b231813.tar.gz
 
-*  Rename the unzipped folder to ragios 
+*  Rename the unzipped folder to ragios : 
 
    $ mv obi-a-Ragios-b231813 ragios
 
-*  Change directory to the ragios 
+*  Change directory to the ragios :
 
    $ cd ragios
 
-*  Install the bundler rubygem
+*  Install the bundler rubygem :
 
    $ sudo gem install bundler
 
 Ragios uses bundler to manage dependencies. Bundler will install the right version of all the gems required for Ragios to run on your system.
 
-*  Now while inside the ragios directory, run Bundler to install all the required gems and dependencies
+*  Now while inside the ragios directory, run Bundler to install all the required gems and dependencies :
+
    $ bundle install
 
 Installation is complete! Ragios is ready to use. (I would have written an installation script but github had to switch to https and wget has some issues it)
