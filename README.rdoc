@@ -47,7 +47,7 @@ Installation is complete! Ragios is ready to use.
 
 ==Usage
 
-Ragios is used by webmasters or systems admins to monitor websites or systems. The sys admin configures Ragios to run tests on the system at the specified time interval. The system admin may write his own tests or use the built-in tests that comes with the system. The tests are written in Ruby so they can do anything that ruby can do. A test may either PASS or FAIL when a test FAILS the system admin is notified. 
+Ragios is used by developers and system admins to monitor their web apps and systems. The sys admin configures Ragios to run tests on the system at a specified time interval. The system admin may write his own tests or use the built-in tests that comes with the system. The tests are written in Ruby so they can do anything that ruby can do. A test may either PASS or FAIL when a test FAILS the system admin is notified. 
 
 ===Monitoring a system
 To monitor a system we need to configure Ragios. 
