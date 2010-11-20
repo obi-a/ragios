@@ -17,7 +17,7 @@ Download Ragios using the link below :
 
 https://github.com/obi-a/Ragios/tarball/release
 
-Enter the URL on a browser address bar, it will download a zip file named something like this :
+Paste the URL on a browser address bar, it will download a zip file named something like this :
 
 obi-a-Ragios-b231813.tar.gz 
 
@@ -71,7 +71,13 @@ This is a sample custom test to alert me when my blog goes offline
             @test_domain = "obi-akubue.org"
             super
          end
-        end
+
+       def notify   
+        email_notify
+        #tweet_notify
+       end
+
+      end
 
 Ragios::Monitors::TestHTTP is the built-in test we use to monitor a website. 
 
@@ -112,6 +118,32 @@ When the website goes offline, Ragios will send out notifications to the system 
 @notification_intervals could be in seconds, minutes, hours or combined.
 
 
+When a test fails Ragios will notify the system admin by calling the notify() method. The system has built-in notifiers for sending email and tweet notifications. To make Ragios send email notifications simply call email_notify() method inside notify(). For tweet notifications call tweet_notify(). See the notify() method below;
+
+  def notify   
+    email_notify
+    #tweet_notify
+  end
+ 
+In the above example, the system will notify the admin via email since email_notify is uncommented while tweet_notify() is commented out. email_notify() assumes you have sendmail installed on your system and uses it to send email. 
+
+An email notification for the test above will look like this:
+
+ Subject: Http connection to my blog FAILED
+ 
+ Http connection to my blog FAILED! HTTP Connection to obi-akubue.org = getaddrinfo: Name or service not known
+ Created on: Wed Sep 22 13:55:21 -0400 2010
+
+A tweet notification will look like this:
+
+ Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
+ Created on: Sat Oct 16 04:48:09 -0400 201
+
+In a custom test's constructor, you should always call the super() method to ensure that the test object is fully initalized with the required properties of all the classes above it in the hierarchy. 
+
+ super
+
+
 ===To monitor a URL in your web app to ensure its loading properly
 We use a built-in test for this called TestURL. This test sends a Http request to the URL at the specified time interval. It passes the test when it gets a 200, 301 or 302 response code from the server and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  
 
@@ -127,7 +159,13 @@ Below is a custom test that uses TestURL to monitor a URL on my website whispers
           @test_url = "http://www.whisperservers.com/blog/" 
           super
    	end
+
+      def notify   
+       email_notify
+       #tweet_notify
      end
+      
+   end
 
 
 Ragios::Monitors::TestURL is the built-in test. We had to extend it for our custom test. 
@@ -161,6 +199,12 @@ With the custom tests we have written so far our /ragios/main.rb file will look 
       @test_domain = "obi-akubue.org"
       super
     end
+  
+    def notify   
+      email_notify
+      #tweet_notify
+    end
+   
   end
 
   class TestBlogURL <  Ragios::Monitors::TestURL   
@@ -171,7 +215,13 @@ With the custom tests we have written so far our /ragios/main.rb file will look 
       @test_description  = "My Website Test"
       @test_url = "http://www.whisperservers.com/blog/" 
       super
-     end
+    end
+
+   def notify   
+     email_notify
+     #tweet_notify
+   end
+
    end
 
   tests = [TestMySite.new, TestBlogURL.new]
@@ -236,8 +286,110 @@ To run Ragios as a top program, useful for testing purposes :
 The ragiosd script simply demonizes the /ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the /ragios/log directory as ragios.log and ragios.output respectively.
 
 ===Notifications
-Ragios sends out a notification to the system admin when a test fails. It continues notifying the admin at the specified notification interval until the issue is resolved. Ragios will also notify the admin when a perviously bad issue is resolved. The notification could be sent via SMS, email or twitter. The notification system is written in Ruby so any type messaging protocol that can be implemented in ruby can be used for Ragios. 
+The built-in notification system simply uses sendmail to send email notifications. using it requires installing sendmail on the unix/linux server running ragios. 
 
+===Sending Notifications via Twitter
+First you need to create and register a twitter app at http://twitter.com/apps/new. This is the app Ragios will use to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use this later.
+
+Next you need to create a new twitter account for the Ragios system. This is the Twitter account that will tweet the notifications. To receive the tweets the system admin should follow this account. Of course this account should be set to private on twitter.
+
+After you create the account, you need to grant your registered twitter app access to it. 
+
+To do this you need to install the oauth rubygem
+
+ sudo gem install oauth
+
+Next you need to run this ruby script
+
+  #twitter_auth.rb
+  #!/usr/bin/ruby
+  require 'rubygems'
+  require 'oauth'
+ 
+  consumer = OAuth::Consumer.new(
+    'consumer key',
+    'consumer secret',
+    {:site => 'http://twitter.com'}
+  )
+ 
+  request_token = consumer.get_request_token
+ 
+  puts "Twitter App Authorize URL \n" + request_token.authorize_url
+  puts "Enter PIN:"
+  pin = STDIN.readline.chomp
+ 
+  access_token = request_token.get_access_token(:oauth_verifier => pin)
+ 
+  puts "access token: " + access_token.token
+  puts "access secret: " + access_token.secret
+
+
+ ruby twitter_auth.rb
+
+Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your app earlier. The script will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for ragios. Open the authorization URL in a web browser, choose ALLOW to grant access. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. The script will now display your access token and access secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
+
+Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers directory. The tweet_notifier script is shown below:
+
+ module Ragios
+ module Notifiers
+
+ #this class hides the messy details of tweeting from rest of the system
+ class TweetNotifier
+
+  def initialize 
+
+      oauth = Twitter::OAuth.new('Consumer Key', 'Consumer secret')
+      oauth.authorize_from_access('access token', 'access secret')   
+          
+       @client = Twitter::Base.new(oauth) 
+  end
+
+  def tweet message
+      
+      @client.update message.slice!(0..139) #140 character limit on twitter  
+  end
+
+ end
+
+  end
+ end
+
+This is the script that Ragios uses to tweet the notification messages. Add the access_token,access_secret, consumer_key and consumer secret to this script in the initialize method.
+
+      oauth = Twitter::OAuth.new('Consumer Key', 'Consumer secret')
+      oauth.authorize_from_access('access token', 'access secret')   
+          
+Replace the strings 'consumer key', 'consumer secret', 'access token', 'access secret' with the real values for each one. Also put the values in '' quotes because they are strings.
+
+Now we have fully configured Ragios to tweet notifications. To make a custom test send out notifications as tweets, we just call tweet_notify() from the notify() method. See example below:
+
+ class TestMySite < Ragios::Monitors::TestHTTP
+    def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "Http connection to my blog"
+      @test_domain = "obi-akubue.org"
+      super
+    end
+  
+    def notify   
+     tweet_notify
+    end
+   
+ end
+
+
+Having, 
+
+   def notify   
+     tweet_notify
+   end
+
+ensures that this test object will tweet all notifications.
+
+I will add more built-in notifiers soon. I will also write a guide to easily extending the system by adding your own built-in notifiers and tests. And customizing Ragios to work exactly the way you want. 
+    
 ...
 
 ==How It Works
