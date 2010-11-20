@@ -388,7 +388,7 @@ Having,
 
 ensures that this test object will tweet all notifications.
 
-I will add more built-in notifiers soon. 
+
     
 ...
 
