@@ -354,7 +354,7 @@ Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers di
   end
  end
 
-This is the script that Ragios uses to tweet the notification messages. Add the access_token,access_secret, consumer_key and consumer secret to this script in the initialize method.
+This is the script that Ragios uses to tweet the notification messages. Add the access_token,access_secret, consumer_key and consumer secret to this script in the initialize method of the TweetNotifier class.
 
       oauth = Twitter::OAuth.new('Consumer Key', 'Consumer secret')
       oauth.authorize_from_access('access token', 'access secret')   
@@ -388,7 +388,7 @@ Having,
 
 ensures that this test object will tweet all notifications.
 
-I will add more built-in notifiers soon. I will also write a guide to easily extending the system by adding your own built-in notifiers and tests. And customizing Ragios to work exactly the way you want. 
+I will add more built-in notifiers soon. 
     
 ...
 
