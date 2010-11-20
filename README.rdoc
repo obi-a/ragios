@@ -299,7 +299,7 @@ To do this you need to install the oauth rubygem
 
  sudo gem install oauth
 
-Next you need to run this ruby script
+Next you need to copy and run this ruby script
 
   #twitter_auth.rb
   #!/usr/bin/ruby
@@ -323,8 +323,6 @@ Next you need to run this ruby script
   puts "access token: " + access_token.token
   puts "access secret: " + access_token.secret
 
-
- ruby twitter_auth.rb
 
 Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your app earlier. The script will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for ragios. Open the authorization URL in a web browser, choose ALLOW to grant access. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. The script will now display your access token and access secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
 
