@@ -125,7 +125,7 @@ When a test fails Ragios will notify the system admin by calling the notify() me
     #tweet_notify
   end
  
-In the above example, the system will notify the admin via email since email_notify is uncommented while tweet_notify() is commented out. email_notify() assumes you have sendmail installed on your system and uses it to send email. 
+In the above example, the system will notify the admin via email. email_notify() assumes you have sendmail installed on your system and uses it to send email. 
 
 An email notification for the test above will look like this:
 
@@ -139,7 +139,7 @@ A tweet notification will look like this:
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
  Created on: Sat Oct 16 04:48:09 -0400 201
 
-In a custom test's constructor, you should always call the super() method to ensure that the test object is fully initalized with the required properties of all the classes above it in the hierarchy. 
+In a test object's constructor, you should always call the super() method to ensure that the test object is fully initalized with the required properties of all the classes above it in the hierarchy. 
 
  super
 
@@ -285,21 +285,21 @@ To run Ragios as a top program, useful for testing purposes :
 
 The ragiosd script simply demonizes the /ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the /ragios/log directory as ragios.log and ragios.output respectively.
 
-===Notifications
-The built-in notification system simply uses sendmail to send email notifications. using it requires installing sendmail on the unix/linux server running ragios. 
+===Email Notifications
+The built-in email notification system simply uses sendmail to send email notifications. Using it requires installing sendmail on the unix/linux server running ragios. 
 
 ===Sending Notifications via Twitter
-First you need to create and register a twitter app at http://twitter.com/apps/new. This is the app Ragios will use to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use this later.
+First you need to create and register a twitter app at http://twitter.com/apps/new. This is the app Ragios will use to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use them later.
 
-Next you need to create a new twitter account for the Ragios system. This is the Twitter account that will tweet the notifications. To receive the tweets the system admin should follow this account. Of course this account should be set to private on twitter.
+Next you need to create a new twitter account for the Ragios system. This is the Twitter account that will tweet the notifications. To receive the tweets the system admin should follow this account. The account should be set to private on twitter.
 
-After you create the account, you need to grant your registered twitter app access to it. 
+After you create the account, you need to grant your registered twitter app access to it.
 
 To do this you need to install the oauth rubygem
 
  sudo gem install oauth
 
-Next you need to copy and run this ruby script
+ The ruby script below will do the trick, copy and run the script on your system: 
 
   #twitter_auth.rb
   #!/usr/bin/ruby
@@ -324,42 +324,23 @@ Next you need to copy and run this ruby script
   puts "access secret: " + access_token.secret
 
 
-Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your app earlier. The script will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for ragios. Open the authorization URL in a web browser, choose ALLOW to grant access. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. The script will now display your access token and access secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
+Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your app earlier. Add it to these lines in the script: 
 
-Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers directory. The tweet_notifier script is shown below, you only need to care about its initialize method:
+	consumer = OAuth::Consumer.new(
+    	    'consumer key',
+    	    'consumer secret',
+        {:site => 'http://twitter.com'}
+       )
 
- module Ragios
- module Notifiers
+When you run the script it will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for ragios. Open the authorization URL in a web browser, choose ALLOW to grant access to your twitter app. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. The script will now display your access_token and access_secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
 
- #this class hides the messy details of tweeting from rest of the system
- class TweetNotifier
-
-  def initialize 
-
-      oauth = Twitter::OAuth.new('Consumer Key', 'Consumer secret')
-      oauth.authorize_from_access('access token', 'access secret')   
-          
-       @client = Twitter::Base.new(oauth) 
-  end
-
-  def tweet message
-      
-      @client.update message.slice!(0..139) #140 character limit on twitter  
-  end
-
- end
-
-  end
- end
-
-This is the script that Ragios uses to tweet the notification messages. Add the access_token,access_secret, consumer_key and consumer secret to this script in the initialize method of the TweetNotifier class.
+Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers directory. This is the script that Ragios uses to tweet the notification messages. Replace the lines below from the script with the real values for the access_token, access_secret, consumer key and consumer secret. 
 
       oauth = Twitter::OAuth.new('Consumer Key', 'Consumer secret')
       oauth.authorize_from_access('access token', 'access secret')   
           
-Replace the strings 'consumer key', 'consumer secret', 'access token', 'access secret' with the real values for each one. Also put the values in '' quotes because they are strings.
 
-Now we have fully configured Ragios to tweet notifications. To make a custom test send out notifications as tweets, we just call tweet_notify() from the notify() method. See example below:
+Now to write a test that sends out tweet notifications, we just call tweet_notify() from the notify() method. See example below:
 
  class TestMySite < Ragios::Monitors::TestHTTP
     def initialize
@@ -387,9 +368,10 @@ Having,
 ensures that this test object will tweet all notifications.
 
 
-    
-...
+Thanks for reading. I will write more soon.    
 
-==How It Works
+
+
+
 
 

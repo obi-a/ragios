@@ -1,5 +1,4 @@
-require 'rubygems'
-require 'twitter'
+
 
 module Ragios
 module Notifiers
