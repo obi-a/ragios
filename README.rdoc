@@ -11,7 +11,7 @@ Ragios could be used to monitor any type of system including servers, workstatio
 
 
 ==Installation
-I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can runs on any platform that supports ruby including BSD, OS X, any Linux distro, Windows etc..
+I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can on any platform that supports ruby including BSD, OS X, any Linux distro, Windows etc..
 
 Download Ragios using the link below :
 
@@ -55,7 +55,7 @@ To monitor a system we need to configure Ragios.
 ===Using the built-in tests
 These are some tests I wrote, I will write more built-in tests soon. 
 
-===To monitor a website to ensure that its online we use TestHttp
+===To monitor a website we use TestHttp
 This test tries to establish a Http connection with the website at the specified time interval. It notifies the system admin when its unable to establish a connection. 
 
 To use TestHttp, we need to write a custom test that extends TestHttp. This custom test is written in the /ragios/main.rb file.
@@ -144,7 +144,7 @@ In a test object's constructor, you should always call the super() method to ens
  super
 
 
-===To monitor a URL in your web app to ensure its loading properly
+===To monitor a URL in your web app
 We use a built-in test for this called TestURL. This test sends a Http request to the URL at the specified time interval. It passes the test when it gets a 200, 301 or 302 response code from the server and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  
 
 Below is a custom test that uses TestURL to monitor a URL on my website whisperservers.com 
