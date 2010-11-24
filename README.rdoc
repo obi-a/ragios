@@ -58,9 +58,9 @@ These are some tests I wrote, I will write more built-in tests soon.
 ===To monitor a website we use TestHttp
 This test tries to establish a Http connection with the website at the specified time interval. It notifies the system admin when its unable to establish a connection. 
 
-To use TestHttp, we need to write a custom test that extends TestHttp. This custom test is written in the /ragios/main.rb file.
+To use TestHttp, we need to write a custom test that extends the TestHttp Object. This custom test is added to the /ragios/main.rb script.
  
-This is a sample custom test to alert me when my blog goes offline
+Below is a custom test to alert me when my blog goes offline
 
 	class TestMySite < Ragios::Monitors::TestHTTP
    	 def initialize
@@ -172,7 +172,7 @@ Ragios::Monitors::TestURL is the built-in test. We had to extend it for our cust
 
 
 ===Adding Custom tests to the Ragios system
-To add the custom tests we created above to the Ragios System we need add the following lines to /ragios/main.rb file
+To add the custom tests we created above to the Ragios System we need add the following lines to /ragios/main.rb script.
 
  tests = [TestMySite.new, TestBlogURL.new] #initializes our custom tests and adds them to the list of tests
 
@@ -182,7 +182,7 @@ To add the custom tests we created above to the Ragios System we need add the fo
                  # and notifies the admin when a test fails
 
 ===main.rb
-With the custom tests we have written so far our /ragios/main.rb file will look like this:
+With the custom tests we have written so far our /ragios/main.rb script will look like this:
 
   #ragios/main.rb
   require 'rubygems'
