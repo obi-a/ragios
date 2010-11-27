@@ -355,7 +355,7 @@ This
    gmail_notify
  end
 
-Ensures that the notifications will be sent via the Gmail account we added to the system.
+ensures that the notifications will be sent via the Gmail account you added to the system. The system admin will receive email notification sent from that gmail account.
 
 ===Sending Notifications via Twitter
 First you need to create and register a twitter app at http://twitter.com/apps/new. This is the app Ragios will use to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use them later.
