@@ -12,8 +12,6 @@ class GMailNotifier
        @username = 'gmail_username'  #replace with gmail username
        @password =  'gmail_password' #replace with gmail password
        
-       @username = 'whisper.monitor'  #replace with gmail username
-       @password =  'msbaby1978' #replace with gmail password  
   end
 
   def send message

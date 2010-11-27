@@ -74,6 +74,7 @@ Below is a custom test to alert me when my blog goes offline
 
        def notify   
         email_notify
+        #gmail_notify
         #tweet_notify
        end
 
@@ -122,10 +123,11 @@ When a test fails Ragios will notify the system admin by calling the notify() me
 
   def notify   
     email_notify
+    #gmail_notify
     #tweet_notify
   end
  
-In the above example, the system will notify the admin via email. email_notify() assumes you have sendmail installed on your system and uses it to send email. 
+In the above example, the system will notify the admin via email. email_notify() assumes you have sendmail installed on your system and uses it to send email. You can also use Gmail to send notifications by calling the gmail_notify() method instead. 
 
 An email notification for the test above will look like this:
 
@@ -133,6 +135,7 @@ An email notification for the test above will look like this:
  
  Http connection to my blog FAILED! HTTP Connection to obi-akubue.org = getaddrinfo: Name or service not known
  Created on: Wed Sep 22 13:55:21 -0400 2010
+
 
 A tweet notification will look like this:
 
@@ -162,6 +165,7 @@ Below is a custom test that uses TestURL to monitor a URL on my website whispers
 
       def notify   
        email_notify
+       #gmail_notify
        #tweet_notify
      end
       
@@ -202,6 +206,7 @@ With the custom tests we have written so far our /ragios/main.rb script will loo
   
     def notify   
       email_notify
+      #gmail_notify
       #tweet_notify
     end
    
@@ -219,6 +224,7 @@ With the custom tests we have written so far our /ragios/main.rb script will loo
 
    def notify   
      email_notify
+     #gmail_notify
      #tweet_notify
    end
 
@@ -285,8 +291,71 @@ To run Ragios as a top program, useful for testing purposes :
 
 The ragiosd script simply demonizes the /ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the /ragios/log directory as ragios.log and ragios.output respectively.
 
-===Email Notifications
-The built-in email notification system simply uses sendmail to send email notifications. Using it requires installing sendmail on the unix/linux server running ragios. 
+===Notifications
+When a test fails Ragios sends out notifications by calling the notify method of the test object that failed. 
+
+===Sending Notifications via Sendmail
+If you have sendmail installed on your unix/linux system you can use it to send out notifications by simply calling email_notify() from the notify() method of your test object. Example;
+
+
+  class TestMySite < Ragios::Monitors::TestHTTP
+    def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "Http connection to my blog"
+      @test_domain = "obi-akubue.org"
+      super
+    end
+  
+    def notify   
+      email_notify
+    end
+   
+  end
+
+The method below 
+
+    def notify   
+      email_notify
+    end
+
+ensures that the notification will be sent out via sendmail.
+
+
+===Sending Notifications via Gmail
+First create a Gmail account for the Ragios system. Ragios will send out email notifications using this Gmail account.
+
+Edit the script /ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line below with the username & password of the Gmail account you created.
+
+  @username = 'gmail_username'  #replace with gmail username
+  @password =  'gmail_password' #replace with gmail password
+
+To make our custom test use Gmail, we just need to call gmail_notify() from the notify() method of the test object. See below;
+
+  class TestMySite < Ragios::Monitors::TestHTTP
+    def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "Http connection to my blog"
+      @test_domain = "obi-akubue.org"
+      super
+    end
+  
+    def notify   
+      gmail_notify
+    end
+   
+  end
+
+This 
+
+ def notify   
+   gmail_notify
+ end
+
+Ensures that the notifications will be sent via the Gmail account we added to the system.
 
 ===Sending Notifications via Twitter
 First you need to create and register a twitter app at http://twitter.com/apps/new. This is the app Ragios will use to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use them later.
