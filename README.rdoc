@@ -41,7 +41,7 @@ Ragios uses bundler to manage dependencies. Bundler will install the right versi
 
 Now while inside the ragios directory, run Bundler to install all the required gems and dependencies :
    
-   $bundle install
+   $sudo bundle install
 
 Installation is complete! Ragios is ready to use. 
 
@@ -438,6 +438,15 @@ ensures that this test object will tweet all notifications.
 
 
 Thanks for reading. I will write more soon.    
+
+Great Gems that made this possible;
+Pony, twitter, oauth, rufus-scheduler, gmail.
+
+===License
+MIT License.
+Copyright (c) 2010 Obi Akubue, obi-akubue.org
+
+
 
 
 
