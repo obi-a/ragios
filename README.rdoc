@@ -440,6 +440,7 @@ ensures that this test object will tweet all notifications.
 Thanks for reading. I will write more soon.    
 
 ===Great Gems that made this possible;
+Bundler,
 Pony, 
 Twitter, 
 Oauth, 
