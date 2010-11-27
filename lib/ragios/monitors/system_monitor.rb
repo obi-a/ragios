@@ -61,6 +61,7 @@ class SystemMonitor
    #this method is invoked after a test fails
    #it sends a notification to the system admin about a failed test via email,twitter or any other specified notifier
    def notify   
+      gmail_notify
       #email_notify
       #tweet_notify
    end
@@ -76,6 +77,17 @@ class SystemMonitor
    def error_handler
       
    end
+
+  def gmail_notify
+      
+     puts 'sending gmail alert...'
+       message = {:to => @contact,
+                  :subject =>@test_description + " FAILED", 
+                  :body => @test_description + " FAILED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s}
+
+      Ragios::Notifiers::GMailNotifier.new.send message
+
+  end
    
   def tweet_notify
      

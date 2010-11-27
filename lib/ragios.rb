@@ -2,10 +2,12 @@ require 'pony'
 require 'rufus/scheduler'
 require 'twitter'
 require 'net/http'
+require 'gmail'
 
 #notifiers
 require 'lib/ragios/notifiers/tweet_notifier'
 require 'lib/ragios/notifiers/email_notifier'
+require 'lib/ragios/notifiers/gmail_notifier'
 
 #monitors
 require 'lib/ragios/monitors/system_monitor'
