@@ -1,4 +1,3 @@
-=Changelog Ragios (Saint Ruby)
 
 ==Ragios v0.4.1
 
