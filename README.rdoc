@@ -47,60 +47,62 @@ Installation is complete! Ragios is ready to use.
 
 ==Usage
 
-Ragios is used by developers and system admins to monitor their web apps and systems. The sys admin configures Ragios to run tests on the system at a specified time interval. The system admin may write his own tests or use the built-in tests that comes with the system. The tests are written in Ruby so they can do anything that ruby can do. A test may either PASS or FAIL when a test FAILS the system admin is notified. 
+Ragios is an object-oriented system used by system admin and developers to monitor web apps and system services. The system admin configures the Ragios's built-in objects to run tests on the system at a specified time interval. A system test may either PASS or FAIL when a test FAILS the system admin is notified. Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. UIn Ragios everything is a Ruby object, so Ragios is capable of everything possible with the Ruby. Ragios benfits from Ruby's rich open source ecosystem with tons of libraries and gems.
 
 ===Monitoring a system
 To monitor a system we need to configure Ragios. 
 
-===Using the built-in tests
-These are some tests I wrote, I will write more built-in tests soon. 
+===Using the built-in Objects
+These are some objects I wrote for different forms of system monitoring, I will write more soon. These objects simply runs well defined tests on the system at specified time intervals and notifies the admin when a test fails.
 
-===To monitor a website we use TestHttp
-This test tries to establish a Http connection with the website at the specified time interval. It notifies the system admin when its unable to establish a connection. 
+===To monitor a website 
+For this we use the HTTP object. This object tries to establish a Http connection with a website at the specified time interval. It notifies the system admin when its unable to establish the connection. 
 
-To use TestHttp, we need to write a custom test that extends the TestHttp Object. This custom test is added to the /ragios/main.rb script.
+To use the HTTP object, we need to create an object that exends it with the details of the website we wish to monitor.
+This object should be defined in the /ragios/main.rb script.
  
-Below is a custom test to alert me when my blog goes offline
+Below is a sample object that uses the HTTP object to monitor my blog for availability, it sends me an email notification if my blog is offline. 
+	
+  class MonitorMyBlog < Ragios::Monitors::HTTP
+    def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "Http connection to my blog"
+      @domain = "obi-akubue.org"
+      super
+    end
 
-	class TestMySite < Ragios::Monitors::TestHTTP
-   	 def initialize
-     	    @time_interval = '10m'
-            @notification_interval = '6h'
-            @contact = "obi@mail.com"
-            @test_description = "Http connection to my blog"
-            @test_domain = "obi-akubue.org"
-            super
-         end
+    def notify
+      email_notify
+      #gmail_notify
+      #tweet_notify
+    end
+  end
 
-       def notify   
-        email_notify
-        #gmail_notify
-        #tweet_notify
-       end
+Ragios::Monitors::HTTP is the built-in generic object we use to monitor websites for availability. 
 
-      end
+The object MonitorMyBlog will try to establish a http connection to my blog every 10minutes. It will send me an email notification when it fails to establish a http connection. 
 
-Ragios::Monitors::TestHTTP is the built-in test we use to monitor a website. 
+@domain is the domain of the website we wish to monitor
 
-@test_domain is the domain of the website we want to monitor
+   @domain = "obi-akubue.org"
 
-   @test_domain = "obi-akubue.org"
-
-@test_description is a summary of what we are testing, this helps the Ragios system send out notification alerts with specific details on what went wrong in the system.
+@test_description is a summary of what we are testing with this object, this helps the Ragios system send out notification alerts with specific details on what went wrong in the system, when a test fails. Our object tests HTTP connections to my blog so its useful to note that in the descritpion. 
 
    @test_description = "Http connection to my blog"
 
-@contact is the email address of the system admin. When a test fails Ragios will send an email notification with details of the failure to the System admin. 
+@contact is the email address of the system admin. When a test fails our monitoring object will send an email notification with details of the failure to the System admin. 
  
    @contact = "obi@mail.com" 
 
 This could be omitted when we use other forms of notification like SMS, IM or Twitter.
 
-@time_interval is the time interval in which Ragios performs the test on the system. In the example above, 
+@time_interval is the time interval in which our HTTP monitoring object tries to establish a Http connection with the specified website. In the example above, 
 
   @time_interval = '10m' 
 
-means Ragios will run TestHTTP every 10minutes to monitor my blog. @time_interval could be in seconds, minutes, hours or combined.
+means our object will try to establish a HTTP connection to my blog every 10minutes. @time_interval can be in seconds, minutes, hours or combined.
 
 
 Example
@@ -114,12 +116,12 @@ Example
 
    @notification_interval = '6h'
 
-When the website goes offline, Ragios will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online. When a test recovers from a failed state Ragios will also inform the system admin.
+When the website goes offline, our monitoring object will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online. It will also inform the system admin when when the issue has been corrected.
 
-@notification_intervals could be in seconds, minutes, hours or combined.
+@notification_intervals can be in seconds, minutes, hours or combined.
 
 
-When a test fails Ragios will notify the system admin by calling the notify() method. The system has built-in notifiers for sending email and tweet notifications. To make Ragios send email notifications simply call email_notify() method inside notify(). For tweet notifications call tweet_notify(). See the notify() method below;
+When a test fails the monitoring object will notify the system admin by calling the notify() method. The object has some built-in notifiers for sending email and tweet notifications. To make the monitoring object send email notifications simply call email_notify() method inside notify(). For tweet notifications call tweet_notify(). See the notify() method below;
 
   def notify   
     email_notify
@@ -129,7 +131,7 @@ When a test fails Ragios will notify the system admin by calling the notify() me
  
 In the above example, the system will notify the admin via email. email_notify() assumes you have sendmail installed on your system and uses it to send email. You can also use Gmail to send notifications by calling the gmail_notify() method instead. 
 
-An email notification for the test above will look like this:
+An email notification from the monitoring object above will look like this:
 
  Subject: Http connection to my blog FAILED
  
@@ -142,51 +144,50 @@ A tweet notification will look like this:
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
  Created on: Sat Oct 16 04:48:09 -0400 201
 
-In a test object's constructor, you should always call the super() method to ensure that the test object is fully initalized with the required properties of all the classes above it in the hierarchy. 
+In the monitoring object's initialize method, you should always call the super() method to ensure that the object is fully initalized with the required properties of all the classes above it in the hierarchy. 
 
  super
 
 
-===To monitor a URL in your web app
-We use a built-in test for this called TestURL. This test sends a Http request to the URL at the specified time interval. It passes the test when it gets a 200, 301 or 302 response code from the server and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  
+===To monitor a URL in your web app 
+We use the built-in URL Object. This object sends a Http request to the URL at the specified time interval. The URL passes the test when the object it gets a 200, 301 or 302 response code from the server and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  We use the URL object by extending it with details of the URL we wish to monitor. 
 
-Below is a custom test that uses TestURL to monitor a URL on my website whisperservers.com 
+Below is a sample object to monitor a URL on my website www.whisperservers.com 
 
 
-     class TestBlogURL <  Ragios::Monitors::TestURL   
-        def initialize
-      	  @time_interval = '20m'
-          @notification_interval = '6h'
-          @contact = "obi@mail.com"	
-          @test_description  = "My Website Test"
-          @test_url = "http://www.whisperservers.com/blog/" 
-          super
-   	end
+   class MonitorBlogURL <  Ragios::Monitors::URL
+    def initialize
+      @time_interval = '20m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description  = "My Website Test"
+      @test_url = "http://www.whisperservers.com/blog/"
+      super
+    end
 
-      def notify   
-       email_notify
-       #gmail_notify
-       #tweet_notify
-     end
-      
+   def notify
+     email_notify
+     #gmail_notify
+     #tweet_notify
    end
 
+  end
 
-Ragios::Monitors::TestURL is the built-in test. We had to extend it for our custom test. 
 
 
-===Adding Custom tests to the Ragios system
-To add the custom tests we created above to the Ragios System we need add the following lines to /ragios/main.rb script.
+Ragios::Monitors::URL is the generic test we use to monitor URLs. We can use this monitor availability of APIs, data feeds, web pages etc.
 
- tests = [TestMySite.new, TestBlogURL.new] #initializes our custom tests and adds them to the list of tests
 
- ragios = Ragios::Schedulers::RagiosScheduler.new tests #create a ragios object and give it the list of tests to run
- ragios.init     # run all the tests sequencially to ensure the system is configured properlly
- ragios.start    # starts the ragios scheduler which will run each test at its own specified time interval
-                 # and notifies the admin when a test fails
+===Adding Monitoring Objects to the Ragios system
+To add our monitoring objects to the Ragios System we just need add to the following lines to the bottom of the /ragios/main.rb script.
+
+  monitoring = [MonitorMySite.new, MonitorBlogURL.new] #initializes our objects and adds them to the list of monitoring objects
+  ragios = Ragios::System.new  #create a Ragios system object that will manage and administer our monitoring objects 
+  ragios.start monitoring   #starts the monitoring process with all our monitoring objects running tests at their 
+                            #specified time interval. Ragios is also multi-threaded so each object runs on its own thread. 
 
 ===main.rb
-With the custom tests we have written so far our /ragios/main.rb script will look like this:
+All the monitoring objects should be defined in the /ragios/main.rb script. With the monitoring objects we have written above our /ragios/main.rb script will look like this:
 
   #ragios/main.rb
   require 'rubygems'
@@ -194,47 +195,46 @@ With the custom tests we have written so far our /ragios/main.rb script will loo
 
   require 'lib/ragios'
 
-  class TestMySite < Ragios::Monitors::TestHTTP
+  class MonitorMySite < Ragios::Monitors::HTTP
     def initialize
       @time_interval = '10m'
       @notification_interval = '6h'
       @contact = "obi@mail.com"
       @test_description = "Http connection to my blog"
-      @test_domain = "obi-akubue.org"
+      @domain = "obi-akubue.org"
       super
     end
-  
-    def notify   
+
+    def notify
       email_notify
       #gmail_notify
       #tweet_notify
     end
-   
+
   end
 
-  class TestBlogURL <  Ragios::Monitors::TestURL   
+  class MonitorBlogURL <  Ragios::Monitors::URL
     def initialize
       @time_interval = '20m'
       @notification_interval = '6h'
-      @contact = "obi@mail.com"	
+      @contact = "obi@mail.com"
       @test_description  = "My Website Test"
-      @test_url = "http://www.whisperservers.com/blog/" 
+      @test_url = "http://www.whisperservers.com/blog/"
       super
     end
 
-   def notify   
+   def notify
      email_notify
      #gmail_notify
      #tweet_notify
    end
 
-   end
+  end
 
-  tests = [TestMySite.new, TestBlogURL.new]
-
-  ragios = Ragios::Schedulers::RagiosScheduler.new tests 
-  ragios.init
-  ragios.start
+  monitoring = [MonitorMySite.new, MonitorBlogURL.new]
+  
+  ragios = Ragios::System.new 
+  ragios.start monitoring
 
 The basic configuration is now complete. We can now run the Ragios system.
 
@@ -248,7 +248,7 @@ Output from running the above main.rb script will look like this :
 
 	Welcome to Ragios
 	Initializing
-	2 tests detected
+	2 System Monitoring Objects detected
 
 	test 1. Http connection to my blog
 	Scheduled to run every 10m
@@ -292,26 +292,25 @@ To run Ragios as a top program, useful for testing purposes :
 The ragiosd script simply demonizes the /ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the /ragios/log directory as ragios.log and ragios.output respectively.
 
 ===Notifications
-When a test fails Ragios sends out notifications by calling the notify method of the test object that failed. 
+When a test fails the Monitoring Object sends out notifications by calling its notify method. 
 
 ===Sending Notifications via Sendmail
-If you have sendmail installed on your unix/linux system you can use it to send out notifications by simply calling email_notify() from the notify() method of your test object. Example;
+If you have sendmail installed on your unix/linux system you can use it to send out notifications by simply calling email_notify() from the notify() method of your monitoring Object. Example;
 
 
-  class TestMySite < Ragios::Monitors::TestHTTP
+  class MonitorMySite < Ragios::Monitors::HTTP
     def initialize
       @time_interval = '10m'
       @notification_interval = '6h'
       @contact = "obi@mail.com"
       @test_description = "Http connection to my blog"
-      @test_domain = "obi-akubue.org"
+      @domain = "obi-akubue.org"
       super
     end
-  
-    def notify   
+
+    def notify
       email_notify
     end
-   
   end
 
 The method below 
@@ -324,29 +323,28 @@ ensures that the notification will be sent out via sendmail.
 
 
 ===Sending Notifications via Gmail
-First create a Gmail account for the Ragios system. Ragios will send out email notifications using this Gmail account.
+To send out notifications via gmail, first create a Gmail account for the Ragios system. The email notifications will be sent out from this Gmail account.
 
 Edit the script /ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line below with the username & password of the Gmail account you created.
 
   @username = 'gmail_username'  #replace with gmail username
   @password =  'gmail_password' #replace with gmail password
 
-To make our custom test use Gmail, we just need to call gmail_notify() from the notify() method of the test object. See below;
+To make your monitoring object use Gmail, just call gmail_notify() from its notify() method. See below;
 
-  class TestMySite < Ragios::Monitors::TestHTTP
+ class MonitorMySite < Ragios::Monitors::HTTP
     def initialize
       @time_interval = '10m'
       @notification_interval = '6h'
       @contact = "obi@mail.com"
       @test_description = "Http connection to my blog"
-      @test_domain = "obi-akubue.org"
+      @domain = "obi-akubue.org"
       super
     end
-  
-    def notify   
+
+    def notify
       gmail_notify
     end
-   
   end
 
 This 
@@ -358,17 +356,17 @@ This
 ensures that the notifications will be sent via the Gmail account you added to the system. The system admin will receive email notification sent from that gmail account.
 
 ===Sending Notifications via Twitter
-First you need to create and register a twitter app at http://twitter.com/apps/new. This is the app Ragios will use to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use them later.
+First you need to create and register a twitter app at http://twitter.com/apps/new. Ragios will use this app to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use them later.
 
 Next you need to create a new twitter account for the Ragios system. This is the Twitter account that will tweet the notifications. To receive the tweets the system admin should follow this account. The account should be set to private on twitter.
 
 After you create the account, you need to grant your registered twitter app access to it.
 
-To do this you need to install the oauth rubygem
+To do this you need the oauth rubygem
 
  sudo gem install oauth
 
- The ruby script below will do the trick, copy and run the script on your system: 
+ This ruby script below will do the trick, copy and run the script in your system: 
 
   #twitter_auth.rb
   #!/usr/bin/ruby
@@ -401,7 +399,7 @@ Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your 
         {:site => 'http://twitter.com'}
        )
 
-When you run the script it will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for ragios. Open the authorization URL in a web browser, choose ALLOW to grant access to your twitter app. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. The script will now display your access_token and access_secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
+When you run the script it will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for Ragios. Open the authorization URL in a web browser, choose ALLOW to grant access to your twitter app. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. The script will now display your access_token and access_secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
 
 Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers directory. This is the script that Ragios uses to tweet the notification messages. Replace the lines below from the script with the real values for the access_token, access_secret, consumer key and consumer secret. 
 
@@ -409,24 +407,23 @@ Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers di
       oauth.authorize_from_access('access token', 'access secret')   
           
 
-Now to write a test that sends out tweet notifications, we just call tweet_notify() from the notify() method. See example below:
+Now to write a monitoring object that sends out tweet notifications, we just call tweet_notify() from the notify() method. See example below:
 
- class TestMySite < Ragios::Monitors::TestHTTP
+  class MonitorMySite < Ragios::Monitors::HTTP
     def initialize
       @time_interval = '10m'
       @notification_interval = '6h'
       @contact = "obi@mail.com"
       @test_description = "Http connection to my blog"
-      @test_domain = "obi-akubue.org"
+      @domain = "obi-akubue.org"
       super
     end
-  
-    def notify   
-     tweet_notify
-    end
-   
- end
 
+    def notify
+      tweet_notify
+    end
+
+  end
 
 Having, 
 
@@ -434,7 +431,7 @@ Having,
      tweet_notify
    end
 
-ensures that this test object will tweet all notifications.
+ensures that this object will tweet all its notifications.
 
 
 Thanks for reading. I will write more soon.    

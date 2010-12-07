@@ -3,7 +3,7 @@ module Ragios
  module Monitors
 
 #defines how computers,servers,network devices will be monitored
-class HostMonitor < Ragios::Monitors::SystemMonitor
+class Host < Ragios::Monitors::System
     def initialize
      super
     end
