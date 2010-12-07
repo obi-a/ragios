@@ -88,11 +88,11 @@ The object MonitorMyBlog will try to establish a http connection to my blog ever
 
    @domain = "obi-akubue.org"
 
-@test_description is a summary of what we are testing with this object, this helps the Ragios system send out notification alerts with specific details on what went wrong in the system, when a test fails. Our object tests HTTP connections to my blog so its useful to note that in the descritpion. 
+@test_description is a summary of what we are testing with this object, this helps the Ragios system send out notification alerts with specific details on what went wrong in the system. Our object tests HTTP connections to my blog so its useful to note that in the descritpion. 
 
    @test_description = "Http connection to my blog"
 
-@contact is the email address of the system admin. When a test fails our monitoring object will send an email notification with details of the failure to the System admin. 
+@contact is the email address of the system admin. The monitoring object will send email notifications to this address to alert the system admin of failures in the system.
  
    @contact = "obi@mail.com" 
 
@@ -103,7 +103,6 @@ This could be omitted when we use other forms of notification like SMS, IM or Tw
   @time_interval = '10m' 
 
 means our object will try to establish a HTTP connection to my blog every 10minutes. @time_interval can be in seconds, minutes, hours or combined.
-
 
 Example
 
@@ -150,7 +149,7 @@ In the monitoring object's initialize method, you should always call the super()
 
 
 ===To monitor a URL in your web app 
-We use the built-in URL Object. This object sends a Http request to the URL at the specified time interval. The URL passes the test when the object it gets a 200, 301 or 302 response code from the server and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  We use the URL object by extending it with details of the URL we wish to monitor. 
+We use the built-in URL Object. This object sends a Http request to the URL at the specified time interval. The URL passes the test when it returns a 200, 301 or 302 response code and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  We use the URL object by extending it with details of the URL we wish to monitor. 
 
 Below is a sample object to monitor a URL on my website www.whisperservers.com 
 
@@ -173,9 +172,9 @@ Below is a sample object to monitor a URL on my website www.whisperservers.com
 
   end
 
+The monitoring object defined above will send a http request to @url (http://www.whisperservers.com/blog) every @time_interval (20 minutes), if it gets a http error response code, request timeout or any other exception it will send an email notification to @contact (obi@mail.com) via email_notify() with details of what went wrong. It will continue sending notications every @notification_interval (6 hours) until the issue has been fixed.
 
-
-Ragios::Monitors::URL is the generic test we use to monitor URLs. We can use this monitor availability of APIs, data feeds, web pages etc.
+Ragios::Monitors::URL is the generic object we use to monitor URLs. We can use this to monitor availability of APIs, data feeds, web pages etc.
 
 
 ===Adding Monitoring Objects to the Ragios system
