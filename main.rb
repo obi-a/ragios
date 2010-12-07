@@ -28,7 +28,7 @@
       @notification_interval = '6h'
       @contact = "obi@mail.com"
       @test_description  = "My Website Test"
-      @test_url = "http://www.whisperservers.com/blog/"
+      @url = "http://www.whisperservers.com/blog/"
       super
     end
 

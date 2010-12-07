@@ -6,19 +6,19 @@ module Ragios
 #PASSED if it gets a HTTP 200,301 or 302 Response status code from the http request
 class URL < Ragios::Monitors::Service
   
-   attr_reader :test_url 
+   attr_reader :url 
   
    def initialize
         
-        raise "@test_url must be assigned a value" if @test_url.nil?    
-        @describe_test_result = "HTTP Request to " + @test_url
+        raise "@url must be assigned a value" if @url.nil?    
+        @describe_test_result = "HTTP Request to " + @url
         super
    end 
 
-   #returns true when http request to test_url returns a 200 OK Response
+   #returns true when http request to url returns a 200 OK Response
    def test_command
      begin 
-           response = Net::HTTP.get_response(URI.parse(test_url))
+           response = Net::HTTP.get_response(URI.parse(url))
            @test_result = response.code
      
           if (response.code == "200") || (response.code == "301") || (response.code == "302")

@@ -161,7 +161,7 @@ Below is a sample object to monitor a URL on my website www.whisperservers.com
       @notification_interval = '6h'
       @contact = "obi@mail.com"
       @test_description  = "My Website Test"
-      @test_url = "http://www.whisperservers.com/blog/"
+      @url = "http://www.whisperservers.com/blog/"
       super
     end
 
@@ -219,7 +219,7 @@ All the monitoring objects should be defined in the /ragios/main.rb script. With
       @notification_interval = '6h'
       @contact = "obi@mail.com"
       @test_description  = "My Website Test"
-      @test_url = "http://www.whisperservers.com/blog/"
+      @url = "http://www.whisperservers.com/blog/"
       super
     end
 
