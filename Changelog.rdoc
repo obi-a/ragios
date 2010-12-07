@@ -1,4 +1,3 @@
-
 ==Ragios v0.4.1
 
 Rolling release 12-6-2010. The following changes were made:
@@ -6,8 +5,8 @@ Rolling release 12-6-2010. The following changes were made:
  
 * Simplified the interface to the system by introducing the Ragios::System object which means the system can now be started with 
  
-  monitoring = [MonitoringObject1.new, MonitoringObject2.new]
-  ragios = Ragios::System.new 
-  ragios.start monitoring
+ monitoring = [MonitoringObject1.new, MonitoringObject2.new]
+ ragios = Ragios::System.new 
+ ragios.start monitoring
  
 
