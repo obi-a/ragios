@@ -78,18 +78,6 @@ Below is a sample object that uses the HTTP object to monitor my blog for availa
       #gmail_notify
       #tweet_notify
     end
-
-   #optional methods   
-
-   def failed
-     #this method is invoked when a test fails
-     #put any damage repair code here
-     #any code you want to run when a test fails should go here 
-   end
- 
-   def fixed
-    #this method is invoked when a test goes from FAILED state to PASSED
-   end
   
   end
 
@@ -181,16 +169,6 @@ Below is a sample object to monitor a URL on my website www.whisperservers.com
      email_notify
      #gmail_notify
      #tweet_notify
-   end
-
-   def failed
-   #this method is invoked when a test fails
-   #optional: put any code you want to run when a test fails here
-   end
-
-   def fixed
-   #this method is invoked when a test goes from FAILED to PASSED
-   #optional: put any code you want to run when a test goes from FAILED state to PASSED
    end
 
   end
