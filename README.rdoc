@@ -47,13 +47,13 @@ Installation is complete! Ragios is ready to use.
 
 ==Usage
 
-Ragios is an object-oriented system used by system admin and developers to monitor web apps and system services. The system admin configures the Ragios's built-in objects to run tests on the system at a specified time interval. A system test may either PASS or FAIL when a test FAILS the system admin is notified. Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. UIn Ragios everything is a Ruby object, so Ragios is capable of everything possible with the Ruby. Ragios benfits from Ruby's rich open source ecosystem with tons of libraries and gems.
+Ragios is an object-oriented system used by system admin and developers to monitor web apps and system services. The system admin configures the Ragios's built-in objects to run tests on the system at a specified time interval. A system test may either PASS or FAIL when a test FAILS the system admin is notified. Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. In Ragios everything is a Ruby object, so Ragios is capable of everything Ruby can do. Ragios benfits from Ruby's rich open source ecosystem with tons of libraries, gems and APIs.
 
 ===Monitoring a system
 To monitor a system we need to configure Ragios. 
 
 ===Using the built-in Objects
-Built-in objects are available for different forms of system monitoring. These objects run tests on the system at specified time intervals and notifies the admin when a test fails.
+Built-in objects are available for different forms of system monitoring. 
 
 ===To monitor a website 
 We use the HTTP object. This object tries to establish a Http connection with a website at the specified time interval. It notifies the system admin when its unable to establish the connection. 
