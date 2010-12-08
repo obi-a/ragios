@@ -9,29 +9,22 @@ This is all just for fun and educational purposes.
 
 Ragios could be used to monitor any type of system including servers, workstations, switches, routers, system services and applications, locally or over a network. The system admin can define the tests he wants to run on the system or re-use tests written by other developers. The tests run periodically on the system. When a test fails the admin receives an email or SMS alert from Ragios. Everything is written in ruby, the configuration settings are all in ruby syntax. The Ragios system itself is written in ruby.
 
-
 ==Installation
-I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can on any platform that supports ruby including BSD, OS X, any Linux distro, Windows etc..
+I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can on any platform that supports Ruby including BSD, OS X, any Linux distro, Windows etc..
 
-Download Ragios using the link below :
+==Using Git
 
-https://github.com/obi-a/Ragios/tarball/release
+Download Ragios 
 
-Paste the URL on a browser address bar, it will download a zip file named something like this :
+ git clone git://github.com/obi-a/Ragios.git
 
-obi-a-Ragios-b231813.tar.gz 
+Change to the Ragios directory :
 
-From terminal, Unzip the file :
+   $cd Ragios
 
-   $tar xvfz obi-a-Ragios-b231813.tar.gz
+Switch to the Ragios release branch
 
-Rename the unzipped folder to ragios : 
-
-   $mv obi-a-Ragios-b231813 ragios
-
-Change directory to the ragios directory :
-
-   $cd ragios
+   git checkout release
 
 Install the bundler rubygem :
 
@@ -44,6 +37,7 @@ Now while inside the ragios directory, run Bundler to install all the required g
    $sudo bundle install
 
 Installation is complete! Ragios is ready to use. 
+
 
 ==Usage
 
