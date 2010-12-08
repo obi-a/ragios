@@ -1,0 +1,16 @@
+==Ragios v0.4.1
+
+
+Rolling release 12-8-2010. The following changes were made:
+*Deployment of Ragios is now done by cloning the github repo and switching to the Release branch. No need to download the tarball anymore.
+
+Rolling release 12-6-2010. The following changes were made:
+* Removed the concept of Test objects - replaced them with System Monitoring Objects that run tests periodically on the system to monitor it. This makes the system easier to understand and provides a more uniform design structure.
+ 
+* Simplified the interface to the system by introducing the Ragios::System object, which means the monitoring system can be activated using the easier to understand code below:
+ 
+ monitoring = [MonitoringObject1.new, MonitoringObject2.new]
+ ragios = Ragios::System.new 
+ ragios.start monitoring
+ 
+

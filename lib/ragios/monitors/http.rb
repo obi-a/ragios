@@ -2,25 +2,25 @@
 module Ragios
  module Monitors
 
-# Tests a domain to check if its online  
+# Monitors a domain to check if its online  
 # It establishes a HTTP connection to the domain
 # PASSED if it establishes the HTTP connection successfully and FAILED if it throws an exception
-class TestHTTP < Ragios::Monitors::ServiceMonitor
+class HTTP < Ragios::Monitors::Service
   
-   attr_reader :test_domain 
+   attr_reader :domain 
   
    def initialize
-        raise "@test_domain must be assigned a value" if @test_domain.nil?
-        @describe_test_result = "HTTP Connection to " + @test_domain
+        raise "@domain must be assigned a value" if @domain.nil?
+        @describe_test_result = "HTTP Connection to " + @domain
         super
    end 
 
-   #connects to the test_domain via HTTP
-   #PASSED when it establishes a successful HTTP connection with the test_domain
+   #connects to the domain via HTTP
+   #PASSED when it establishes a successful HTTP connection with the domain
    def test_command
      begin 
            
-          Net::HTTP.start(@test_domain) 
+          Net::HTTP.start(@domain) 
           @test_result = 'PASSED'
           return TRUE 
 

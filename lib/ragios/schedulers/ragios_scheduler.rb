@@ -15,7 +15,7 @@ class RagiosScheduler
        	puts "Initializing"
 
 	count = 1
-	puts @jobs.length.to_s + " tests detected"
+	puts @jobs.length.to_s + " System Monitoring Objects detected"
 	puts "\n"
 
 	@jobs.each do |job|

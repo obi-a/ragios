@@ -5,7 +5,7 @@ module Ragios
  
 module Monitors
 
-class SystemMonitor
+class System
 
     # a short description of the test performed by this system monitor
    attr_reader :test_description  
