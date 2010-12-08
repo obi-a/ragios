@@ -433,8 +433,10 @@ Having,
 
 ensures that this object will tweet all its notifications.
 
-===Recovery From FAILURE
-When a monitoring object runs a test on the system you can add damage repair code to fix the issue when a test fails. Lets say we have a web app that depends on an external XML data feed. The object below tests the XML data feed for availability every 10 minutes, when the data feed goes offline it switches our webapp to a new feed, and when the issue is fixed, it switches back to the original feed. 
+=== Recovery From FAILURE
+When a monitoring object runs a test on the system, you can add damage repair code to fix the issue when a test fails. 
+
+Lets say we have a web app that depends on an external XML data feed. The object below tests the XML data feed for availability every 10 minutes, when the data feed goes offline it switches our webapp to a new feed, and when the issue is fixed, it switches back to the original feed. 
 
  class MonitorDataFeed <  Ragios::Monitors::URL
     def initialize
