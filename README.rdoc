@@ -12,7 +12,7 @@ Ragios could be used to monitor any type of system including servers, workstatio
 ==Installation
 I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can on any platform that supports Ruby including BSD, OS X, any Linux distro, Windows etc..
 
-==Using Git
+Using Git:
 
 Download Ragios 
 
