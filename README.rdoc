@@ -468,7 +468,7 @@ Every monitoring object can overide the failed() and fixed() methods. When a tes
 
 Now when a test goes from FAILED to PASSED again, the system will invoke the fixed() method. The system admin can add any clean up or roll-back code there.
 
-In the MonitorDatafeed object above, when the data feed goes offline the failed() method will be executed which will switch our webapp to a new data feed. The Ragios system will continue monitoring the old data feed for recovery, when the old data feed recovers Ragios will invoke the fixed() method. This will switch our webapp back to the original data feed.
+In the MonitorDatafeed object above, when the data feed goes offline the failed() method will be invoked which will switch our webapp to a new data feed. The Ragios system will continue monitoring the old data feed for recovery, when the old data feed recovers Ragios will invoke the fixed() method. This will switch our webapp back to the original data feed.
 
 
 
