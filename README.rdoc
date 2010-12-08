@@ -464,7 +464,7 @@ Lets say we have a web app that depends on an external XML data feed. The object
    end
   end
 
-Every monitoring object can overide the failed() and fixed() methods. When a test fails the Ragios system will invoke the fixed(). The system admin can add any failure recovery code in the failed() method to get executed when a test fails. 
+Every monitoring object can overide the failed() and fixed() methods. When a test fails the Ragios system will invoke the failed(). The system admin can add any failure recovery code in the failed() method to get executed when a test fails. 
 
 Now when a test goes from FAILED to PASSED again, the system will invoke the fixed() method. The system admin can add any clean up or roll-back code there.
 
