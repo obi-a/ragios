@@ -433,6 +433,43 @@ Having,
 
 ensures that this object will tweet all its notifications.
 
+===Recovery From FAILURE
+When a monitoring object runs a test on the system you can add damage repair code to fix the issue when a test fails. Lets say we have a web app that depends on an external XML data feed. The object below tests the XML data feed for availability every 10 minutes, when the data feed goes offline it switches our webapp to a new feed, and when the issue is fixed, it switches back to the original feed. 
+
+ class MonitorDataFeed <  Ragios::Monitors::URL
+    def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description  = "Top videos Data Feed"
+      @url = "http://www.website.com/89843/videos.xml"
+      super
+    end
+
+   def notify
+     gmail_notify
+   end
+
+   def failed 
+   #this method is invoked when a test fails
+   #we put code here to switch our webapp to a new data feed
+   end
+
+   def fixed  
+   #this method is invoked when a test goes from FAILED to PASSED
+   #we put code here to switch our webapp back to the original data feed, 
+   #since the issue has been fixed
+   end
+  end
+
+Every monitoring object can overide the failed() and fixed() methods. When a test fails the Ragios system will invoke the fixed(). The system admin can add any failure recovery code in the failed() method to get executed when a test fails. 
+
+Now when a test goes from FAILED to PASSED again, the system will invoke the fixed() method. The system admin can add any clean up or roll-back code there.
+
+In the MonitorDatafeed object above, when the data feed goes offline the failed() method will be executed which will switch our webapp to a new data feed. The Ragios system will continue monitoring the old data feed for recovery, when the old data feed recovers Ragios will invoke the fixed() method. This will switch our webapp back to the original data feed.
+
+The failed() and fixed() methods is saparate from the notification system, notification code should only be added to the notify() method.
+
 
 Thanks for reading. I will write more soon.    
 
