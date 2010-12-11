@@ -41,7 +41,7 @@ Installation is complete! Ragios is ready to use.
 
 ==Usage
 
-Ragios is an object-oriented system used by system admin and developers to monitor web apps and system services. The system admin configures the Ragios's built-in objects to run tests on the system at a specified time interval. A system test may either PASS or FAIL when a test FAILS the system admin is notified. Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. In Ragios everything is a Ruby object, so Ragios is capable of everything Ruby can do. Ragios benfits from Ruby's rich open source ecosystem with tons of libraries, gems and APIs.
+Ragios is an object-oriented system used by system admin and developers to monitor web apps and system services. The system admin configures the Ragios's built-in objects to run tests on the system at a specified time interval. A system test may either PASS or FAIL, when a test FAILS the system admin is notified. Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. In Ragios everything is a Ruby object, so Ragios is capable of everything Ruby can do. Ragios benfits from Ruby's rich open source ecosystem with tons of libraries, gems and APIs.
 
 ===Monitoring a system
 To monitor a system we need to configure Ragios. 
@@ -347,7 +347,7 @@ This
    gmail_notify
  end
 
-ensures that the notifications will be sent via the Gmail account you added to the system. The system admin will receive email notifications sent from that gmail account.
+ensures that the notifications will be sent via the Gmail account you added to the system. 
 
 ===Sending Notifications via Twitter
 First you need to create and register a twitter app at http://twitter.com/apps/new. Ragios will use this app to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use them later.
@@ -460,7 +460,7 @@ Lets say we have a web app that depends on an external XML data feed. The object
 
 Every monitoring object can overide the failed() and fixed() methods. When a test fails the Ragios system will invoke the failed(). The system admin can add any failure recovery code in the failed() method to get executed when a test fails. 
 
-Now when a test goes from FAILED to PASSED again, the system will invoke the fixed() method. The system admin can add any clean up or roll-back code there.
+Now when a test goes from FAILED to PASSED again, the system will invoke the fixed() method. The system admin can add any clean up or roll-back code to the fixed() method.
 
 In the MonitorDatafeed object above, when the data feed goes offline the failed() method will be invoked which will switch our webapp to a new data feed. The Ragios system will continue monitoring the old data feed for recovery, when the old data feed recovers Ragios will invoke the fixed() method. This will switch our webapp back to the original data feed.
 
