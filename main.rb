@@ -1,4 +1,4 @@
- #ragios/main.rb
+  #ragios/main.rb
   require 'rubygems'
   require "bundler/setup"
 
@@ -41,10 +41,8 @@
   end
 
   monitoring = [MonitorMySite.new, MonitorBlogURL.new]
-  
-  ragios = Ragios::System.new 
+
+  ragios = Ragios::System.new
   ragios.start monitoring
-
-
 
 
