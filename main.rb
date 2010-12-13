@@ -40,7 +40,42 @@
 
   end
 
-  monitoring = [MonitorMySite.new, MonitorBlogURL.new]
+module config
+   @time_interval = '1m'
+   @notification_interval = '6h'
+   @contact = "obi@mail.com"
+   @test_description  = "Test if Apache is running"  
+end 
+
+module notifier
+ def notify
+     email_notify
+     #gmail_notify
+     #tweet_notify
+  end
+end
+
+
+class MonitorApache <  Ragios::Monitors::URL
+    def initialize
+       
+      include config
+      
+      @process_name = 'apache2'
+      @start_command = 'sudo /etc/init.d/apache2 start'
+      @restart_command = 'sudo /etc/init.d/apache2 restart'
+      @stop_command = 'sudo /etc/init.d/apache2 stop'
+      @pid_file = '/var/run/apache2.pid'
+      
+      super
+    end
+
+   include notifier
+
+end
+
+
+  monitoring = [MonitorApache.new]
   
   ragios = Ragios::System.new 
   ragios.start monitoring

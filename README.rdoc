@@ -464,6 +464,12 @@ Now when a test goes from FAILED to PASSED again, the system will invoke the fix
 
 In the MonitorDatafeed object above, when the data feed goes offline the failed() method will be invoked which will switch our webapp to a new data feed. The Ragios system will continue monitoring the old data feed for recovery, when the old data feed recovers Ragios will invoke the fixed() method. This will switch our webapp back to the original data feed.
 
+===Using Ruby Mixins to configure Ragios
+You can simplify the /ragios/main.rb script by grouping similar attributes of your monitoring object together in Modules.
+
+A sample will look like this:
+
+
 
 
 Thanks for reading. I will write more soon.    
