@@ -46,7 +46,7 @@ class Process < Ragios::Monitors::Service
    def failed
        
       #delete pid files
-       
+      puts "starting service again" 
 
    end
 

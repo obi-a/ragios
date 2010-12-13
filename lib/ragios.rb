@@ -24,4 +24,5 @@ require 'lib/ragios/schedulers/notification_scheduler'
 
 #system
 require 'lib/ragios/system'
+require 'lib/ragios/monitor'
 
