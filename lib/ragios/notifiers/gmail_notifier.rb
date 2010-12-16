@@ -9,8 +9,11 @@ class GMailNotifier
 
   def initialize 
 
-       @username = 'gmail_username'  #replace with gmail username
-       @password =  'gmail_password' #replace with gmail password
+       #@username = 'gmail_username'  #replace with gmail username
+       #@password =  'gmail_password' #replace with gmail password 
+
+       @username = 'whisper.monitor'  #replace with gmail username
+       @password =  'nimo9681346' #replace with gmail password  
        
   end
 

@@ -72,6 +72,34 @@ class System
       
    end
 
+   #inform the system admin that the issue has been resolved via gmail
+   def gmail_resolved
+        puts 'sending gmail issue resolved message...'
+       message = {:to => @contact,
+                  :subject =>"ISSUE RESOLVED " + @test_description + " PASSED", 
+                  :body => @test_description + " PASSED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s}
+
+      Ragios::Notifiers::GMailNotifier.new.send message
+   end 
+
+   #inform the system admin that the issue has been resolved via sendmail
+   def email_resolved
+       puts 'sending issue resolved message...'
+       message = {:to => @contact,
+                  :subject =>"ISSUE RESOLVED " + @test_description + " PASSED", 
+                  :body => @test_description + " PASSED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s}
+
+      Ragios::Notifiers::EmailNotifier.new.send message 
+   end
+
+   #inform the system admin that the issue has been resolved via twitter
+   def tweet_resolved
+      message = "ISSUE RESOLVED " + @test_description + " PASSED!  " + @describe_test_result + " = " + @test_result + " Created on: "+ Time.now.to_s
+
+      Ragios::Notifiers::TweetNotifier.new.tweet message
+
+   end
+
    #this method is invoked when a test_command() or failed() method encounters an exception
    #The aim is to inform the system Admin about the exception while the system keeps on running
    def error_handler

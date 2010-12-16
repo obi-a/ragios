@@ -15,6 +15,7 @@ require 'lib/ragios/monitors/host'
 require 'lib/ragios/monitors/service'
 require 'lib/ragios/monitors/http'
 require 'lib/ragios/monitors/url'
+require 'lib/ragios/monitors/process'
 
 #schedulers
 
