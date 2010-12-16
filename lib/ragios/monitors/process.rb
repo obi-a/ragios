@@ -1,6 +1,7 @@
 module Ragios
  module Monitors
-
+#monitors processes on Linux/Unix systems, restarts the process if it fails
+#Note: this code serves as proof of concept to show easy it is to extend the Ragios system to monitor any kind of system
 class Process < Ragios::Monitors::Service
 
   attr_reader :process_name
@@ -9,16 +10,18 @@ class Process < Ragios::Monitors::Service
   attr_reader :stop_command
   attr_reader :pid_file
   attr_reader :hostname
+  attr_reader :server_alias
 
    def initialize
         
-        raise "@process_name" if @process_name.nil?  
-        raise "@start_command" if @start_command.nil? 
-        raise "@restart_command" if @restart_command.nil? 
-        raise "@stop_command" if @stop_command.nil? 
-        raise "@pid_file" if @pid_file.nil?   
-        raise "@hostname" if @hostname.nil? 
-        @describe_test_result =  "The Service " + @process_name + " on host " 
+        raise "@process_name must be assigned a value" if @process_name.nil?  
+        raise "@start_command must be assigned a value" if @start_command.nil? 
+        raise "@restart_command must be assigned a value" if @restart_command.nil? 
+        raise "@stop_command must be assigned a value" if @stop_command.nil? 
+        raise "@pid_file must be assigned a value" if @pid_file.nil?   
+        raise "@hostname must be assigned a value" if @hostname.nil? 
+        raise "@server_alias must be assigned a value" if @server_alias.nil? 
+        @describe_test_result =  "The process " + @process_name + " on host: " + @hostname 
         super
     end 
 
@@ -45,9 +48,13 @@ class Process < Ragios::Monitors::Service
    
    def failed
        
-      #delete pid files
-      puts "starting service again" 
+      
+      puts "starting service again"
 
+      #delete pid files if they exist
+      rm = system "rm " + @pid_file 
+      s = system  @restart_command
+      
    end
 
 end

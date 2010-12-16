@@ -24,24 +24,6 @@
 
   end
 
-MonitorMySite = {:monitoring =>'http'
-                 :every => '10m',
-                 :test => 'Http connection to my blog',
-                 :domain => 'obi-akubue.org',
-                 :contact => 'obi@mail.com',
-                 :via => 'email',  
-                 :notify_interval => '6h'
-                  } 
-
-MonitorBlogURL = { :monitoring => 'url'
-                   :every => '20m',
-                   :test => 'My Website Test',
-                   :url => 'http://www.whisperservers.com/blog/',
-                   :contact => 'obi@mail.com',
-                   :via => 'email',  
-                   :notify_interval => '6h'
-                  
-                  }
 
   class MonitorBlogURL <  Ragios::Monitors::URL
     def initialize
@@ -61,40 +43,34 @@ MonitorBlogURL = { :monitoring => 'url'
 
   end
  
-
-MonitorApache = {  :monitoring => 'process'
-                   :every => '20m',
-                   :test => 'Test if Apache is running',
-                   :process_name => 'apache2',
-                   :start_command => 'sudo /etc/init.d/apache2 start',
-                   :stop_command => 'sudo /etc/init.d/apache2 stop',
-                   :restart_command => 'sudo /etc/init.d/apache2 restart',
-                   :pid_file => '/var/run/apache2.pid',
-                   :contact => 'obi@mail.com',
-                   :via => 'email',  
-                   :notify_interval => '6h'
-                  }
-
 class MonitorApache <  Ragios::Monitors::Process
     def initialize
        
       @time_interval = '1m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description  = "Test if Apache is running" 
+      @notification_interval = '2m'
+      @contact = "obi.akubue@gmail.com"
+      @test_description  = "Apache Test" 
       
       @process_name = 'apache2'
       @start_command = 'sudo /etc/init.d/apache2 start'
       @restart_command = 'sudo /etc/init.d/apache2 restart'
       @stop_command = 'sudo /etc/init.d/apache2 stop'
       @pid_file = '/var/run/apache2.pid'
+     
+      @server_alias = 'my home server'
+      @hostname = '192.168.2.2'
+ 
       super
     end
 
    def notify
-     email_notify
-     #gmail_notify
+     #email_notify
+     gmail_notify
      #tweet_notify
+  end
+
+  def fixed 
+     gmail_resolved
   end
 
 end
