@@ -1,9 +1,10 @@
+#working on a Domain specific language for Ragios
 #ragios/main.rb
   require 'rubygems'
   require "bundler/setup"
 
   require 'lib/ragios'
-  
+    
 
      monitoring = {:monitoring =>'http',
                    :every => '10m',
@@ -18,7 +19,7 @@
                    :test => 'My Website Test',
                    :url => 'http://www.whisperservers.com/blog/',
                    :contact => 'obi@mail.com',
-                   :via => 'email',  
+                   :via => 'gmail',  
                    :notify_interval => '6h'
                   
                   },
@@ -30,8 +31,9 @@
                    :stop_command => 'sudo /etc/init.d/apache2 stop',
                    :restart_command => 'sudo /etc/init.d/apache2 restart',
                    :pid_file => '/var/run/apache2.pid',
+                   :server_alias => 'my home server'
                    :contact => 'obi@mail.com',
-                   :via => 'email',  
+                   :via => 'twitter',  
                    :notify_interval => '6h'
                   }
 
