@@ -4,8 +4,6 @@
 
   require 'lib/ragios'
 
-
-
   class MonitorMySite < Ragios::Monitors::HTTP
     def initialize
       @time_interval = '10m'
@@ -76,7 +74,7 @@ class MonitorApache <  Ragios::Monitors::Process
 end
 
 
-  monitoring = [MonitorApache.new]
+  monitoring = [MonitorApache.new, MonitorMySite.new ]
   
   ragios = Ragios::System.new 
   ragios.start monitoring
