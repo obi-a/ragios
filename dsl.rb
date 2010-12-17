@@ -6,7 +6,7 @@
   require 'lib/ragios'
     
 
-     monitoring = {:monitoring =>'http',
+     monitoring = [{:monitoring =>'http',
                    :every => '2m',
                    :test => 'Http connection to my blog',
                    :domain => 'obi-akubue.org',
@@ -36,7 +36,7 @@
                    :contact => 'obi.akubue@mail.com',
                    :via => 'gmail',  
                    :notify_interval => '2m'
-                  }
+                  }]
 
   ragios = Ragios::Monitor.new 
   ragios.start monitoring

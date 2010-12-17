@@ -52,7 +52,8 @@ class Process < Ragios::Monitors::Service
       puts "starting service again"
 
       #delete pid files if they exist
-      rm = system "rm " + @pid_file 
+      FileUtils::rm(@pid_file,:force => true) 
+      #rm = system "rm " + @pid_file 
       s = system  @restart_command
       
    end
