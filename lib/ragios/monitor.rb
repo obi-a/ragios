@@ -1,6 +1,6 @@
 module Ragios 
 
-#Translates the Ragios Domain Specific Language to the object oriented system(monitoring objects)
+#Translates the Ragios Domain Specific Language to the object oriented system
 
  class Monitor
    

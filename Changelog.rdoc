@@ -1,16 +1,20 @@
 ==Ragios v0.4.1
 
-This is a Rolling release:
+This is a Rolling release.
+The following changes were made:
 
-12-15-2010. The following changes were made:
+12-16-2010:
+* Added a Domain Specific language for Ragios and translator for it, the Ragios::Monitor object.
+
+12-15-2010:
 * Added a process monitoring object to the system that monitors processes on unix/linux systems and restarts a process when it stops running. The process monitoring object is Ragios::Monitors::Process.
 
 * Added new methods to the Ragios::Monitors::System that informs the System Admin that an issue has been fixed via email,gmail or twitter. The new methods are gmail_notify_resolved(),email_notify_resolved() and twitter_notify_resolved().
 
-12-8-2010. The following changes were made:
+12-8-2010:
 * Deployment of Ragios is now done by cloning the github repo and switching to the Release branch. No need to download the tarball anymore.
 
-12-6-2010. The following changes were made:
+12-6-2010:
 * Removed the concept of Test objects - replaced them with Monitoring Objects that run tests periodically on the system. This makes the system easier to understand and provides a more uniform design structure.
  
 * Simplified the interface to the system by introducing the Ragios::System object, which means the monitoring system can be activated using the easier to understand code below:
