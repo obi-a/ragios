@@ -58,8 +58,7 @@ To monitor a website for availability; enter the following in the ragios/main.rb
                    :notify_interval => '6h'
                   }]
 
-  ragios = Ragios::Monitor.new 
-  ragios.start monitoring
+  Ragios::Monitor.start monitoring
 
 This will try to establish a http connection with the :domain => 'www.mysite.com' every '5m' (5 minutes), when it fails to establish a connection it will send a notification to the system admin specified by :contact => 'admin@mysite.com' via 'gmail'. if the website is still offline it will notify the admin again after 6 hours specified by :notify_interval => '6h'. :test is a description of the test being performed. It helps Ragios notify the system admin with accurate details of what went wrong on the system.
 
@@ -93,8 +92,7 @@ To send notifications via twitter use :via => 'twitter' and to send notification
                    :notify_interval => '6h'
                   }
 
-  ragios = Ragios::Monitor.new 
-  ragios.start monitoring
+  Ragios::Monitor.start monitoring
   
 The time interval between tests could be in seconds, minutes, hours or combined,
   :every => '5m', #every 5 minutes
@@ -119,8 +117,7 @@ To monitor a URL,
                   
                   }]
 
-   ragios = Ragios::Monitor.new 
-   ragios.start monitoring
+    Ragios::Monitor.start monitoring
 
 You can monitor a combination of websites and URLs,
 
@@ -151,8 +148,7 @@ You can monitor a combination of websites and URLs,
                   
                   }
                 
-   ragios = Ragios::Monitor.new 
-   ragios.start monitoring
+   Ragios::Monitor.start monitoring
 
 ===Monitoring  a process
 To monitor a process; using apache2 process as an example
@@ -171,8 +167,8 @@ To monitor a process; using apache2 process as an example
                    :via => 'gmail',  
                    :notify_interval => '1h'
                   }]
-    ragios = Ragios::Monitor.new 
-    ragios.start monitoring
+     Ragios::Monitor.start monitoring
+
 To monitor a process you must provide the exact name of process as used by the OS. Example if the OS refers to the process as 'apache2' then using 'Apache2' or 'apache' will lead to the wrong results.
     
 Ragios also notifies the system admin when an issue is resolved example when a website comes back online.
@@ -188,7 +184,7 @@ The Ragios configuration settings should in the /ragios/main.rb script. A sample
   require 'lib/ragios'
     
 
-     monitoring = [{:monitoring =>'http',
+     monitoring = {:monitoring =>'http',
                    :every => '2m',
                    :test => 'Http connection to my blog',
                    :domain => 'obi-akubue.org',
@@ -218,10 +214,9 @@ The Ragios configuration settings should in the /ragios/main.rb script. A sample
                    :contact => 'obi.akubue@mail.com',
                    :via => 'gmail',  
                    :notify_interval => '2m'
-                  }]
+                  }
 
-  ragios = Ragios::Monitor.new 
-  ragios.start monitoring
+     Ragios::Monitor.start monitoring
 
 Since main.rb is pure ruby code we can run it directly, from the /ragios directory : 
 
@@ -583,9 +578,8 @@ The fixed() method is optional, its invoked when test goes from FAILED to PASSED
 To add our monitoring objects to the Ragios System we just need add to the following lines to the bottom of the /ragios/main.rb script.
 
   monitoring = [MonitorMySite.new, MonitorBlogURL.new, MonitorApache.new] #initializes our objects and adds them to the list of monitoring objects
-  ragios = Ragios::System.new  #create a Ragios system object that will manage and administer our monitoring objects 
-  ragios.start monitoring   #starts the monitoring process with all our monitoring objects running tests at their 
-                            #specified time interval. Ragios is also multi-threaded so each object runs on its own thread. 
+  Ragios::System.start monitoring #starts the monitoring process with all our monitoring objects running tests at their 
+                                  #specified time interval. Ragios is also multi-threaded so each object runs on its own thread. 
 
 ===main.rb
 All the monitoring objects should be defined in the /ragios/main.rb script. With the monitoring objects we have written above our /ragios/main.rb script will look like this:
@@ -666,8 +660,7 @@ All the monitoring objects should be defined in the /ragios/main.rb script. With
 
   monitoring = [MonitorMySite.new, MonitorBlogURL.new, MonitorApache.new]
   
-  ragios = Ragios::System.new 
-  ragios.start monitoring
+  Ragios::System.start monitoring
 
 The basic configuration is now complete. We can now run the Ragios system.
 

@@ -20,7 +20,6 @@ The following changes were made:
 * Simplified the interface to the system by introducing the Ragios::System object, which means the monitoring system can be activated using the easier to understand code below:
  
  monitoring = [MonitoringObject1.new, MonitoringObject2.new]
- ragios = Ragios::System.new 
- ragios.start monitoring
+ Ragios::System.start monitoring
  
 

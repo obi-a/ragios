@@ -1,12 +1,12 @@
 #Using a DSL for Ragios
-#ragios/main.rb
+  #ragios/main.rb
   require 'rubygems'
   require "bundler/setup"
 
   require 'lib/ragios'
     
 
-     monitoring = [{:monitoring =>'http',
+     monitoring = {:monitoring =>'http',
                    :every => '2m',
                    :test => 'Http connection to my blog',
                    :domain => 'obi-akubue.org',
@@ -36,11 +36,9 @@
                    :contact => 'obi.akubue@mail.com',
                    :via => 'gmail',  
                    :notify_interval => '2m'
-                  }]
-
-  ragios = Ragios::Monitor.new 
-  ragios.start monitoring
-
+                  }
+ 
+  Ragios::Monitor.start monitoring
 
 
 

@@ -8,7 +8,7 @@ module Ragios
 
     end
 
-    def start monitoring
+    def self.start monitoring
         
      ragios = Ragios::Schedulers::RagiosScheduler.new monitoring
      ragios.init
