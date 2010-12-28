@@ -375,7 +375,7 @@ Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers di
       oauth.authorize_from_access('access token', 'access secret')   
           
 
-Now on the main.rb script use :via => 'gmail' example
+Now on the main.rb script use :via => 'twitter' example
 
 
   monitoring	=  [{ :monitoring => 'url',
