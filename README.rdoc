@@ -335,7 +335,7 @@ To do this you need the oauth rubygem
 
  sudo gem install oauth
 
- This ruby script below will do the trick, copy and run the script in your system: 
+This ruby script below will do the trick, copy and run the script in your system: 
 
   #twitter_auth.rb
   #!/usr/bin/ruby
