@@ -5,26 +5,28 @@ require 'net/http'
 require 'net/https'
 require 'gmail'
 
+dir = Pathname(__FILE__).dirname.expand_path
+
 #notifiers
-require 'lib/ragios/notifiers/tweet_notifier'
-require 'lib/ragios/notifiers/email_notifier'
-require 'lib/ragios/notifiers/gmail_notifier'
+require dir + 'ragios/notifiers/tweet_notifier'
+require dir + 'ragios/notifiers/email_notifier'
+require dir + 'ragios/notifiers/gmail_notifier'
 
 #monitors
-require 'lib/ragios/monitors/system'
-require 'lib/ragios/monitors/host'
-require 'lib/ragios/monitors/service'
-require 'lib/ragios/monitors/http'
-require 'lib/ragios/monitors/url'
-require 'lib/ragios/monitors/process'
+require dir + 'ragios/monitors/system'
+require dir + 'ragios/monitors/host'
+require dir + 'ragios/monitors/service'
+require dir + 'ragios/monitors/http'
+require dir + 'ragios/monitors/url'
+require dir + 'ragios/monitors/process'
 
 #schedulers
 
-require 'lib/ragios/schedulers/ragios_scheduler'
-require 'lib/ragios/schedulers/notification_scheduler'
+require dir + 'ragios/schedulers/ragios_scheduler'
+require dir + 'ragios/schedulers/notification_scheduler'
 
 
 #system
-require 'lib/ragios/system'
-require 'lib/ragios/monitor'
+require dir + 'ragios/system'
+require dir + 'ragios/monitor'
 

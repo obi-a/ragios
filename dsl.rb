@@ -1,9 +1,10 @@
-#Using a DSL for Ragios
+  #Using a DSL for Ragios
   #ragios/main.rb
   require 'rubygems'
   require "bundler/setup"
-
-  require 'lib/ragios'
+  
+  dir = Pathname(__FILE__).dirname.expand_path
+  require dir + 'lib/ragios'
     
 
      monitoring = {:monitoring =>'http',
