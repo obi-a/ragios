@@ -181,7 +181,8 @@ The Ragios configuration settings should in the /ragios/main.rb script. A sample
   require 'rubygems'
   require "bundler/setup"
 
-  require 'lib/ragios'
+  dir = Pathname(__FILE__).dirname.expand_path
+  require dir + 'lib/ragios'
     
 
      monitoring = {:monitoring =>'http',
@@ -588,7 +589,8 @@ All the monitoring objects should be defined in the /ragios/main.rb script. With
   require 'rubygems'
   require "bundler/setup"
 
-  require 'lib/ragios'
+  dir = Pathname(__FILE__).dirname.expand_path
+  require dir + 'lib/ragios'
 
   class MonitorMySite < Ragios::Monitors::HTTP
     def initialize
