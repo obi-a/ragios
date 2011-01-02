@@ -12,14 +12,14 @@ module Ragios
          monitoring_objects = []
          count = 0
     monitoring.each do|m|
-       if m[:monitoring] == 'http' 
+       if m[:monitor] == 'http' 
           monitoring_objects[count] = MonitoringHTTP.new m
-       elsif m[:monitoring] == 'url'
+       elsif m[:monitor] == 'url'
          monitoring_objects[count] = MonitoringURL.new m
-       elsif m[:monitoring] == 'process'
+       elsif m[:monitor] == 'process'
          monitoring_objects[count] = MonitoringProcess.new m
        else
-         raise '[:monitoring] must be assigned a value'
+         raise '[:monitor] must be assigned a value'
        end
        count = count + 1
      end #end of each...do loop
@@ -64,7 +64,7 @@ end
 
    def initialize m  
           #translate values of the DSL to a Ragios::Monitors::HTTP object
-          raise "[:monitoring] != 'http'" if m[:monitoring] != 'http'
+          raise "[:monitor] != 'http'" if m[:monitor] != 'http'
           @time_interval = m[:every]
           @notification_interval = m[:notify_interval]
           @contact = m[:contact]
@@ -83,7 +83,7 @@ end
    
    def initialize m
       #translate values of the DSL to a Ragios::Monitors::HTTP object
-          raise "[:monitoring] != 'url'" if m[:monitoring] != 'url'
+          raise "[:monitor] != 'url'" if m[:monitor] != 'url'
           @time_interval = m[:every]
           @notification_interval = m[:notify_interval]
           @contact = m[:contact]
@@ -101,7 +101,7 @@ end
    
    def initialize m
       #translate values of the DSL to a Ragios::Monitors::Process object
-      raise "[:monitoring] != 'process'" if m[:monitoring] != 'process'
+      raise "[:monitor] != 'process'" if m[:monitor] != 'process'
       @time_interval = m[:every]
       @notification_interval = m[:notify_interval]
       @contact = m[:contact]

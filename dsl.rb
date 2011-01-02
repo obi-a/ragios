@@ -7,7 +7,7 @@
   require dir + 'lib/ragios'
     
 
-     monitoring = {:monitoring =>'http',
+     monitoring = {:monitor =>'http',
                    :every => '2m',
                    :test => 'Http connection to my blog',
                    :domain => 'obi-akubue.org',
@@ -15,7 +15,7 @@
                    :via => 'gmail',  
                    :notify_interval => '6h'
                   } ,
-                  { :monitoring => 'url',
+                  { :monitor => 'url',
                    :every => '2m',
                    :test => 'My Website Test',
                    :url => 'http://www.whisperservers.com/blog/',
@@ -24,7 +24,7 @@
                    :notify_interval => '6h'
                   
                   },
-                  {  :monitoring => 'process',
+                  {  :monitor => 'process',
                    :every => '1m',
                    :test => 'Apache Test',
                    :process_name => 'apache2',

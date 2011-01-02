@@ -10,7 +10,7 @@ This is all just for fun and educational purposes.
 Ragios could be used to monitor any type of system including servers, workstations, switches, routers, system services and applications, locally or over a network. The system admin can define the tests he wants to run on the system or re-use tests written by other developers. The tests run periodically on the system. When a test fails the admin receives an email or SMS alert from Ragios. Everything is written in ruby, the configuration settings are all in ruby syntax. The Ragios system itself is written in ruby.
 
 ==Installation
-I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can on any platform that supports Ruby including BSD, OS X, any Linux distro, Windows etc..
+I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can run on any platform that supports Ruby including BSD, OS X, any Linux distro, Windows etc..
 
 Using Git:
 
@@ -49,7 +49,7 @@ Installation is complete! Ragios is ready to use.
 To monitor a website for availability; enter the following in the ragios/main.rb script
 
 
-   monitoring	= [{:monitoring =>'http', 
+   monitoring	= [{:monitor =>'http', 
                    :every => '5m',
                    :test => 'Http connection to my site',
                    :domain => 'www.mysite.com',
@@ -67,7 +67,7 @@ To send notifications via twitter use :via => 'twitter' and to send notification
 
 ==To monitor multiple sites
    
-   monitoring	= {:monitoring =>'http', 
+   monitoring	= {:monitor =>'http', 
                    :every => '5m',
                    :test => 'Http connection to my site',
                    :domain => 'www.mysite.com',
@@ -75,7 +75,7 @@ To send notifications via twitter use :via => 'twitter' and to send notification
                    :via => 'gmail',  
                    :notify_interval => '6h'
                   },
-                   {:monitoring =>'http', 
+                   {:monitor =>'http', 
                    :every => '30s',
                    :test => 'Http connection to client A's website',
                    :domain => 'www.clientA.com',
@@ -83,7 +83,7 @@ To send notifications via twitter use :via => 'twitter' and to send notification
                    :via => 'twitter',  
                    :notify_interval => '6h'
                   },
-                  {:monitoring =>'http', 
+                  {:monitor =>'http', 
                    :every => '3h',
                    :test => 'Http connection to client B's website',
                    :domain => 'www.clientB.com',
@@ -107,7 +107,7 @@ An email notification to the System Admin will look like this
 ===Monitoring URLs
 To monitor a URL,
      
-     monitoring	=  [{ :monitoring => 'url',
+     monitoring	=  [{ :monitor => 'url',
                    :every => '5m',
                    :test => 'video datafeed test',
                    :url => 'http://www.datafeed.com/resources/videos/1',
@@ -121,7 +121,7 @@ To monitor a URL,
 
 You can monitor a combination of websites and URLs,
 
-    monitoring	=  { :monitoring => 'url',
+    monitoring	=  { :monitor => 'url',
                    :every => '5m',
                    :test => 'video datafeed test',
                    :url => 'http://www.datafeed.com/resources/videos/1',
@@ -130,7 +130,7 @@ You can monitor a combination of websites and URLs,
                    :notify_interval => '6h'
                   
                   },
-                  {:monitoring =>'http', 
+                  {:monitor =>'http', 
                    :every => '30s',
                    :test => 'Http connection to client A's website',
                    :domain => 'www.clientA.com',
@@ -138,7 +138,7 @@ You can monitor a combination of websites and URLs,
                    :via => 'twitter',  
                    :notify_interval => '6h'
                   },
-                  { :monitoring => 'url',
+                  { :monitor => 'url',
                    :every => '5m',
                    :test => 'My blog URL test',
                    :url => 'http://www.myblog.com',
@@ -153,7 +153,7 @@ You can monitor a combination of websites and URLs,
 ===Monitoring  a process
 To monitor a process; using apache2 process as an example
  
-      monitoring = [{  :monitoring => 'process',
+      monitoring = [{  :monitor => 'process',
                    :every => '10m',
                    :test => 'Apache Test',
                    :process_name => 'apache2',
@@ -185,7 +185,7 @@ The Ragios configuration settings should in the /ragios/main.rb script. A sample
   require dir + 'lib/ragios'
     
 
-     monitoring = {:monitoring =>'http',
+     monitoring = {:monitor =>'http',
                    :every => '2m',
                    :test => 'Http connection to my blog',
                    :domain => 'obi-akubue.org',
@@ -193,7 +193,7 @@ The Ragios configuration settings should in the /ragios/main.rb script. A sample
                    :via => 'gmail',  
                    :notify_interval => '6h'
                   } ,
-                  { :monitoring => 'url',
+                  { :monitor => 'url',
                    :every => '2m',
                    :test => 'My Website Test',
                    :url => 'http://www.whisperservers.com/blog/',
@@ -202,7 +202,7 @@ The Ragios configuration settings should in the /ragios/main.rb script. A sample
                    :notify_interval => '6h'
                   
                   },
-                  {  :monitoring => 'process',
+                  {  :monitor => 'process',
                    :every => '1m',
                    :test => 'Apache Test',
                    :process_name => 'apache2',
@@ -290,7 +290,7 @@ When a test fails the system sends out a notification to the system admin about 
 ===Sending Notifications via Sendmail
 To send out notifications via sendmail use :via => 'email', example
 
-    monitoring	=  [{ :monitoring => 'url',
+    monitoring	=  [{ :monitor => 'url',
                    :every => '5m',
                    :test => 'video datafeed test',
                    :url => 'http://www.datafeed.com/resources/videos/1',
@@ -314,7 +314,7 @@ Edit the script /ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line
 Now on the main.rb script use :via => 'gmail' example
 
 
-  monitoring	=  [{ :monitoring => 'url',
+  monitoring	=  [{ :monitor => 'url',
                    :every => '5m',
                    :test => 'video datafeed test',
                    :url => 'http://www.datafeed.com/resources/videos/1',
@@ -379,7 +379,7 @@ Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers di
 Now on the main.rb script use :via => 'twitter' example
 
 
-  monitoring	=  [{ :monitoring => 'url',
+  monitoring	=  [{ :monitor => 'url',
                    :every => '5m',
                    :test => 'video datafeed test',
                    :url => 'http://www.datafeed.com/resources/videos/1',
