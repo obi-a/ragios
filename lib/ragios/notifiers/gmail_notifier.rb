@@ -10,8 +10,7 @@ class GMailNotifier
   def initialize 
 
        @username = 'gmail_username'  #replace with gmail username
-       @password =  'gmail_password' #replace with gmail password
-       
+       @password =  'gmail_password' #replace with gmail password 
   end
 
   def send message

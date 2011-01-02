@@ -60,7 +60,7 @@ class RagiosScheduler
      begin  
        if job.test_command
            #set to nil since the job passed
-           job.has_failed = nil #false 
+           job.has_failed = nil #FALSE
            puts job.test_description + "   [PASSED]" + " Created on: "+ Time.now.to_s
        else
            puts job.test_description +   "   [FAILED]" + " Created on: "+ Time.now.to_s
