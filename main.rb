@@ -5,10 +5,6 @@
   dir = Pathname(__FILE__).dirname.expand_path
   require dir + 'lib/ragios'
 
-
-
- 
-=======
   class MonitorMySite < Ragios::Monitors::HTTP
     def initialize
       @time_interval = '10m'
@@ -76,9 +72,7 @@ class MonitorApache <  Ragios::Monitors::Process
      gmail_resolved
   end
 
-
 end
-
 
 
   monitoring = [MonitorApache.new, MonitorMySite.new ]
