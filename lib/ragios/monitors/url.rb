@@ -1,7 +1,7 @@
 module Ragios
  module Monitors
 
-#monitors a webpage to check if the site is loading
+#monitors a URL by sending a http request to it
 #PASSED if it gets a HTTP 200,301 or 302 Response status code from the http request
 class URL < Ragios::Monitors::Service
   
@@ -9,7 +9,7 @@ class URL < Ragios::Monitors::Service
   
    def initialize
         
-        raise "@url must be assigned a value" if @url.nil?    
+        raise "A url to test must be specified, @url must be assigned a value" if @url.nil?    
         @describe_test_result = "HTTP Request to " + @url
         super
    end 
