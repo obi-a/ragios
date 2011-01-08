@@ -4,7 +4,8 @@
   require "bundler/setup"        
   require 'daemons'
 
-  require 'lib/ragios'
+  dir = Pathname(__FILE__).dirname.expand_path
+  require dir + 'lib/ragios'
 
   options = {
   :app_name   => "ragios",
