@@ -3,6 +3,12 @@
 This is a Rolling release.
 The following changes were made:
 
+1-10-2010:
+Changes to Ragios URL monitor:
+* Now sets a HTTP-User-Agent as Ragios(Saint-Ruby)
+* Added support to monitor https URLs
+* Added a timeout period if the http connection takes too long to establish.
+
 12-16-2010:
 * Added a Domain Specific language for Ragios and translator for it.
 

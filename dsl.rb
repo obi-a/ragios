@@ -7,23 +7,15 @@
   require dir + 'lib/ragios'
     
 
-     monitoring = {:monitor =>'http',
-                   :every => '2m',
-                   :test => 'Http connection to my blog',
-                   :domain => 'https://github.com/obi-a/Ragios',
+     monitoring =  { :monitor => 'url',
+                   :every => '30s',
+                   :test => 'my personal blog',
+                   :url => 'http://obi-akubue.org',
                    :contact => 'obi.akubue@mail.com',
                    :via => 'gmail',  
                    :notify_interval => '6h'
-                  } ,
-
-		   {:monitor =>'http',
-                   :every => '2m',
-                   :test => 'Http connection to my blog',
-                   :domain => 'obi-akubue.org',
-                   :contact => 'obi.akubue@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
-                  } ,
+                  
+                  },
                   { :monitor => 'url',
                    :every => '2m',
                    :test => 'My Website Test',
