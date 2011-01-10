@@ -38,6 +38,9 @@ Now while inside the ragios directory, run Bundler to install all the required g
 
 Installation is complete! Ragios is ready to use. 
 
+To update to the latest version of Ragios anytime, from the root of the Ragios directory:
+  $git pull
+
 
 ==Usage
 
