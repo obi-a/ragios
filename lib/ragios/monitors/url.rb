@@ -14,11 +14,24 @@ class URL < Ragios::Monitors::Service
         super
    end 
 
-   #returns true when http request to url returns a 200 OK Response
+   #returns true when http/https request to url returns a 200 OK Response
    def test_command
      begin 
-           response = Net::HTTP.get_response(URI.parse(url))
-           @test_result = response.code
+           
+           uri = URI.parse(url)
+	   http = Net::HTTP.new(uri.host, uri.port)
+           http.use_ssl = true if uri.scheme == 'https'
+
+          http.open_timeout = 20 # in seconds
+          http.read_timeout = 20 # in seconds
+
+          request = Net::HTTP::Get.new(uri.request_uri)
+          request["User-Agent"] = "Ragios (Saint-Ruby)"
+          request["Accept"] = "*/*"
+          
+          response = http.request(request)
+           
+          @test_result = response.code
      
           if (response.code == "200") || (response.code == "301") || (response.code == "302")
                return TRUE
