@@ -10,6 +10,15 @@
      monitoring = {:monitor =>'http',
                    :every => '2m',
                    :test => 'Http connection to my blog',
+                   :domain => 'https://github.com/obi-a/Ragios',
+                   :contact => 'obi.akubue@mail.com',
+                   :via => 'gmail',  
+                   :notify_interval => '6h'
+                  } ,
+
+		   {:monitor =>'http',
+                   :every => '2m',
+                   :test => 'Http connection to my blog',
                    :domain => 'obi-akubue.org',
                    :contact => 'obi.akubue@mail.com',
                    :via => 'gmail',  
