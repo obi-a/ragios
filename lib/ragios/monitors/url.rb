@@ -1,6 +1,18 @@
 module Ragios
  module Monitors
 
+#code gets rid of SSL warning
+#warning: peer certificate won't be verified in this SSL session
+class Net::HTTP
+  alias_method :old_initialize, :initialize
+  def initialize(*args)
+    old_initialize(*args)
+    @ssl_context = OpenSSL::SSL::SSLContext.new
+    @ssl_context.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  end
+end
+
+
 #monitors a URL by sending a http request to it
 #PASSED if it gets a HTTP 200,301 or 302 Response status code from the http request
 class URL < Ragios::Monitors::Service
