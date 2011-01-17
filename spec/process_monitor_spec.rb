@@ -5,7 +5,7 @@ require 'spec_base.rb'
 
       @time_interval = '1m'
       @notification_interval = '2m'
-      @contact = "obi.akubue@gmail.com"
+      @contact = "admin@mail.com"
       @test_description  = "Apache Test"
 
       @process_name = 'apache2'
@@ -27,7 +27,7 @@ require 'spec_base.rb'
 
       @time_interval = '1m'
       @notification_interval = '2m'
-      @contact = "obi.akubue@gmail.com"
+      @contact = "admin@mail.com"
       @test_description  = "Apache Unknown Test: this test always fails"
 
       @process_name = 'apache90'

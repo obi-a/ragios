@@ -35,8 +35,8 @@ class RagiosScheduler
    	   puts "\n"
 	rescue Exception
    	   puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s 
-            raise
            job.error_handler
+           raise
         end
        count = count + 1
        end  
@@ -51,10 +51,10 @@ class RagiosScheduler
     end
  end 
 
- def start
+ def start(hold_exit = TRUE)
     
    #schedule all the jobs to execute test_command() at every time_interval
-   scheduler = Rufus::Scheduler.start_new
+   scheduler = Rufus::Scheduler.start_new 
    @jobs.each do |job|
     scheduler.every job.time_interval do
      begin  
@@ -89,7 +89,9 @@ class RagiosScheduler
       end
      end #end of scheduler
     end 
-    trap_exit      
+    if hold_exit
+      trap_exit  
+    end   
   end
 
 end

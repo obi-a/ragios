@@ -8,7 +8,7 @@ module Ragios
 
     end
 
-    def self.start monitoring
+    def self.start (monitoring, trap_exit = TRUE)
          monitoring_objects = []
          count = 0
     monitoring.each do|m|
@@ -24,7 +24,7 @@ module Ragios
        count = count + 1
      end #end of each...do loop
          
-    Ragios::System.start monitoring_objects  
+    Ragios::System.start monitoring_objects,trap_exit  
     end
  end
 
