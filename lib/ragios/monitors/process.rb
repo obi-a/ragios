@@ -1,7 +1,7 @@
 module Ragios
  module Monitors
-#monitors processes on Linux/Unix systems, restarts the process if it fails
-#Note: this code serves as proof of concept to show easy it is to extend the Ragios system to monitor any kind of system
+#monitors processes on GNU/Linux systems, restarts the process if it fails
+#Note: this code serves only as proof of concept to show easy it is to extend the Ragios system to monitor any kind of system
 class Process < Ragios::Monitors::Service
 
   attr_reader :process_name

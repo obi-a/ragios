@@ -8,23 +8,23 @@ module Ragios
 
     end
 
-    def self.start (monitoring, trap_exit = TRUE)
-         monitoring_objects = []
+    def self.start monitoring
+         monitor = []
          count = 0
     monitoring.each do|m|
        if m[:monitor] == 'http' 
-          monitoring_objects[count] = MonitoringHTTP.new m
+          monitor[count] = MonitoringHTTP.new m
        elsif m[:monitor] == 'url'
-         monitoring_objects[count] = MonitoringURL.new m
+         monitor[count] = MonitoringURL.new m
        elsif m[:monitor] == 'process'
-         monitoring_objects[count] = MonitoringProcess.new m
+         monitor[count] = MonitoringProcess.new m
        else
          raise '[:monitor] must be assigned a value'
        end
        count = count + 1
      end #end of each...do loop
          
-    Ragios::System.start monitoring_objects,trap_exit  
+    Ragios::System.start monitor
     end
  end
 
@@ -57,7 +57,7 @@ module Notifiers
 end
 
 
-#Generic monitoring objects 
+#Generic monitors
  class MonitoringHTTP < Ragios::Monitors::HTTP
          
    attr_reader :notifier 

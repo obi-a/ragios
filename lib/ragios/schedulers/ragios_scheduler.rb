@@ -15,7 +15,7 @@ class RagiosScheduler
        	puts "Initializing"
 
 	count = 1
-	puts @jobs.length.to_s + " System Monitoring Objects detected"
+	puts @jobs.length.to_s + " Monitors detected"
 	puts "\n"
 
 	@jobs.each do |job|
@@ -41,17 +41,8 @@ class RagiosScheduler
        count = count + 1
        end  
    end 
-    
- def trap_exit   
-    #trap Ctrl-C to exit gracefully
-    puts "PRESS CTRL-C to QUIT"
-     loop do
-       trap("INT") { puts "\nExiting"; exit; }
-     sleep(3)
-    end
- end 
-
- def start(hold_exit = TRUE)
+   
+ def start
     
    #schedule all the jobs to execute test_command() at every time_interval
    scheduler = Rufus::Scheduler.start_new 
@@ -88,10 +79,7 @@ class RagiosScheduler
           job.error_handler
       end
      end #end of scheduler
-    end 
-    if hold_exit
-      trap_exit  
-    end   
+    end  
   end
 
 end

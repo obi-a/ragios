@@ -8,11 +8,11 @@ module Ragios
 
     end
 
-    def self.start (monitoring, trap_exit = TRUE)
+    def self.start monitoring
         
      ragios = Ragios::Schedulers::RagiosScheduler.new monitoring
      ragios.init
-     ragios.start trap_exit
+     ragios.start 
 
     end
  end

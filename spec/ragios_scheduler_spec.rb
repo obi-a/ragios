@@ -166,7 +166,7 @@ describe Ragios::Schedulers::RagiosScheduler do
     
 
     it "should initalize all monitoring objects and run their test command" do 
-      # @ragios.init
+      @ragios.init
     end
 
 
@@ -176,14 +176,8 @@ describe Ragios::Schedulers::RagiosScheduler do
        #badlycoded.start      
     end
     
-    it "should schedule all all monitoring objects to run their tests at their specified time interval" do 
-      # @ragios.start trap_exit = FALSE
-    end
-
-    it "should send a notification when Apache2 is not running and a fixed message when apache is back on"  do 
-        #this case also tests the NotificationScheduler
-        ar = Ragios::Schedulers::RagiosScheduler.new [MonitorApache.new]
-        #ar.start
+    it "should schedule all monitoring objects to run their tests at their specified time interval" do 
+       @ragios.start
     end
     
 end

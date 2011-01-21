@@ -10,15 +10,6 @@ require 'spec_base.rb'
                    :notify_interval => '6h'
                   
                   },
-                     { :monitor => 'url',
-                   :every => '30s',
-                   :test => 'localhost',
-                   :url => 'http://localhost:3000/fail/',
-                   :contact => 'obi.akubue@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
-                  
-                  },
 
 		   {:monitor =>'http',
                    :every => '2m',
@@ -54,8 +45,8 @@ require 'spec_base.rb'
 
  describe Ragios::Monitor do 
 
-   it "should schedule all monitoring objects to run the definded tests at their specified intervals" do 
-        Ragios::Monitor.start monitoring 
+   it "should schedule all monitors to run the definded tests at their specified intervals" do 
+        Ragios::Monitor.start monitoring
    end
   
  end

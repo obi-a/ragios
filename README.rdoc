@@ -232,7 +232,7 @@ Output from running the above main.rb script will look like this :
 
 	Welcome to Ragios
 	Initializing
-	3 System Monitoring Objects detected
+	3 Monitors detected
 
 	test 1. Http connection to my blog
 	Scheduled to run every 2m
@@ -410,7 +410,7 @@ A tweet notification will look like this:
 == Part 2.Advanced System Monitoring: Using Objects To Monitor systems
 Using Ruby Objects to monitor systems gives you the flexibility to add your own code to easily extend the functionality of Ragios making it run tests exactly the way you want.
 
-Ragios is an object-oriented system used by system admin and developers to monitor web apps and system services. The system admin can use the Ragios's built-in objects to run tests on the system at a specified time interval. A system test may either PASS or FAIL, when a test FAILS the system admin is notified. Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. Everything is a Ruby object, so Ragios is capable of everything Ruby can do. Ragios benfits from Ruby's rich open source ecosystem with tons of libraries, gems and APIs.
+Ragios is also an object-oriented system. The system admin can use Ruby objects to run tests on the system at a specified time interval. Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. Everything is a Ruby object, so Ragios is capable of everything Ruby can do. Ragios benfits from Ruby's rich open source ecosystem with tons of libraries, gems and APIs.
 
 
 ===Using the built-in Objects
@@ -454,13 +454,13 @@ The object MonitorMyBlog will try to establish a http connection to my blog ever
 
    @test_description = "Http connection to my blog"
 
-@contact is the email address of the system admin. The monitoring object will send email notifications to this address to alert the system admin of failures in the system.
+@contact is the email address of the system admin. The monitor will send email notifications to this address to alert the system admin of failures in the system.
  
    @contact = "obi@mail.com" 
 
 This could be omitted when we use other forms of notification like SMS, IM or Twitter.
 
-@time_interval is the time interval in which our HTTP monitoring object tries to establish a Http connection with the specified website. In the example above, 
+@time_interval is the time interval in which our HTTP monitor tries to establish a Http connection with the specified website. In the example above, 
 
   @time_interval = '10m' 
 
@@ -477,12 +477,12 @@ Example
 
    @notification_interval = '6h'
 
-When the website goes offline, our monitoring object will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online. It will also inform the system admin when when the issue has been corrected.
+When the website goes offline, our monitor will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online. It will also inform the system admin when when the issue has been corrected.
 
 @notification_intervals can be in seconds, minutes, hours or combined.
 
 
-When a test fails the monitoring object will notify the system admin by calling the notify() method. The object has some built-in notifiers for sending email and tweet notifications. To make the monitoring object send email notifications simply call email_notify() method inside notify(). For tweet notifications call tweet_notify(). See the notify() method below;
+When a test fails the monitor will notify the system admin by calling the notify() method. The object has some built-in notifiers for sending email and tweet notifications. To make the monitor send email notifications simply call email_notify() method inside notify(). For tweet notifications call tweet_notify(). See the notify() method below;
 
   def notify   
     email_notify
@@ -492,7 +492,7 @@ When a test fails the monitoring object will notify the system admin by calling 
  
 In the above example, the system will notify the admin via email. email_notify() assumes you have sendmail installed on your system and uses it to send email. You can also use Gmail to send notifications by calling the gmail_notify() method instead. 
 
-An email notification from the monitoring object above will look like this:
+An email notification from the monitor above will look like this:
 
  Subject: Http connection to my blog FAILED
  
@@ -505,7 +505,7 @@ A tweet notification will look like this:
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
  Created on: Sat Oct 16 04:48:09 -0400 201
 
-In the monitoring object's initialize method, you should always call the super() method to ensure that the object is fully initalized with the required properties of all the classes above it in the hierarchy. 
+In the monitor's initialize method, you should always call the super() method to ensure that the object is fully initalized with the required properties of all the classes above it in the hierarchy. 
 
  super
 
@@ -534,7 +534,7 @@ Below is a sample object to monitor a URL on my website www.whisperservers.com
 
   end
 
-The monitoring object defined above will send a http request to @url (http://www.whisperservers.com/blog) every @time_interval (20 minutes), if it gets a http error response code, request timeout or any other exception it will send an email notification to @contact (obi@mail.com) via email_notify() with details of what went wrong. It will continue sending notications every @notification_interval (6 hours) until the issue has been fixed.
+The monitor defined above will send a http request to @url (http://www.whisperservers.com/blog) every @time_interval (20 minutes), if it gets a http error response code, request timeout or any other exception it will send an email notification to @contact (obi@mail.com) via email_notify() with details of what went wrong. It will continue sending notications every @notification_interval (6 hours) until the issue has been fixed.
 
 Ragios::Monitors::URL is the generic object we use to monitor URLs. We can use this to monitor availability of APIs, data feeds, web pages etc.
 
@@ -578,15 +578,15 @@ The fixed() method is optional, its invoked when test goes from FAILED to PASSED
 
 @process_name should be the exact name of the process because Ragios uses the name of the process to check if its running. Example 'apache2' for the Apache webserver daemon on Ubuntu. Using 'apache' or 'Apache2' will make Ragios unable to find the process.
 
-===Adding Monitoring Objects to the Ragios system
-To add our monitoring objects to the Ragios System we just need add to the following lines to the bottom of the /ragios/main.rb script.
+===Adding monitors to the Ragios system
+To add our monitors to the Ragios System we just need add to the following lines to the bottom of the /ragios/main.rb script.
 
-  monitoring = [MonitorMySite.new, MonitorBlogURL.new, MonitorApache.new] #initializes our objects and adds them to the list of monitoring objects
-  Ragios::System.start monitoring #starts the monitoring process with all our monitoring objects running tests at their 
-                                  #specified time interval. Ragios is also multi-threaded so each object runs on its own thread. 
+  monitoring = [MonitorMySite.new, MonitorBlogURL.new, MonitorApache.new] #initializes our objects and adds them to the list of monitors
+  Ragios::System.start monitoring #starts the monitoring process with all our monitors running tests at their 
+                                  #specified time interval. Ragios is multi-threaded so each object runs on its own thread. 
 
 ===main.rb
-All the monitoring objects should be defined in the /ragios/main.rb script. With the monitoring objects we have written above our /ragios/main.rb script will look like this:
+All the monitors should be defined in the /ragios/main.rb script. With the monitors we have written above, our /ragios/main.rb script will look like this:
 
   #ragios/main.rb
   require 'rubygems'
@@ -679,7 +679,7 @@ Output from running the above main.rb script will look like this :
 
 	Welcome to Ragios
 	Initializing
-	3 System Monitoring Objects detected
+	3 Monitors detected
 
 	test 1. Http connection to my blog
 	Scheduled to run every 10m
@@ -729,7 +729,7 @@ To run Ragios as a top program, useful for testing purposes :
 
 The ragiosd script simply demonizes the /ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the /ragios/log directory as ragios.log and ragios.output respectively.
 
-Run Ragios as 'sudo' when you need it to restart processes, example if you have a process monitoring object that needs to restart a web server;
+Run Ragios as 'sudo' when you need it to restart processes, example if you have a process monitor that needs to restart a web server;
  
   sudo ruby ragiosd start
 
@@ -737,10 +737,10 @@ or
   sudo ruby main.rb
 
 ===Notifications
-When a test fails the Monitoring Object sends out notifications by calling its notify method. 
+When a test fails the monitor sends out notifications by calling its notify method. 
 
 ===Sending Notifications via Sendmail
-If you have sendmail installed on your unix/linux system you can use it to send out notifications by simply calling email_notify() from the notify() method of your monitoring Object. Example;
+If you have sendmail installed on your unix/linux system you can use it to send out notifications by simply calling email_notify() from the notify() method of your monitor. Example;
 
 
   class MonitorMySite < Ragios::Monitors::HTTP
@@ -775,7 +775,7 @@ Edit the script /ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line
   @username = 'gmail_username'  #replace with gmail username
   @password =  'gmail_password' #replace with gmail password
 
-To make your monitoring object use Gmail, just call gmail_notify() from its notify() method. See below;
+To make your monitor use Gmail, just call gmail_notify() from its notify() method. See below;
 
  class MonitorMySite < Ragios::Monitors::HTTP
     def initialize
@@ -852,7 +852,7 @@ Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers di
       oauth.authorize_from_access('access token', 'access secret')   
           
 
-Now to write a monitoring object that sends out tweet notifications, we just call tweet_notify() from the notify() method. See example below:
+Now to write a monitor that sends out tweet notifications, we just call tweet_notify() from the notify() method. See example below:
 
   class MonitorMySite < Ragios::Monitors::HTTP
     def initialize
@@ -879,7 +879,7 @@ Having,
 ensures that this object will tweet all its notifications.
 
 === Recovery From FAILURE
-When a monitoring object runs a test on the system, you can add damage repair code to fix the issue when a test fails. Damage repair code could do things like restart a monitored process when it stops running, switch a web app to a backup server when a monitored server goes down.
+When a monitor runs a test on the system, you can add damage repair code to fix the issue when a test fails. Damage repair code could do things like restart a monitored process when it stops running, switch a web app to a backup server when a monitored server goes down.
 
 Lets say we have a web app that depends on an external XML data feed. The object below tests the XML data feed for availability every 10 minutes, when the data feed goes offline it switches our webapp to a new feed, and when the issue is fixed, it switches back to the original feed. 
 
@@ -909,7 +909,7 @@ Lets say we have a web app that depends on an external XML data feed. The object
    end
   end
 
-Every monitoring object can overide the failed() and fixed() methods. When a test fails the Ragios system will invoke the failed(). The system admin can add any failure recovery code in the failed() method to get executed when a test fails. 
+Every monitor can overide the failed() and fixed() methods. When a test fails the Ragios system will invoke the failed(). The system admin can add any failure recovery code in the failed() method to get executed when a test fails. 
 
 Now when a test goes from FAILED to PASSED again, the system will invoke the fixed() method. The system admin can add any clean up or roll-back code to the fixed() method.
 

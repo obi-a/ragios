@@ -133,37 +133,6 @@ class MonitorApache <  Ragios::Monitors::Process
  end
 
 
-  class MonitorApacheUnknown <  Ragios::Monitors::Process
-    def initialize
-
-      @time_interval = '1m'
-      @notification_interval = '2m'
-      @contact = "admin@mail.com"
-      @test_description  = "Apache Unknown Test: this test always fails"
-
-      @process_name = 'apache90'
-      @start_command = 'sudo /etc/init.d/apache90 start'
-      @restart_command = 'sudo /etc/init.d/apache90 restart'
-      @stop_command = 'sudo /etc/init.d/apache20 stop'
-      @pid_file = '/var/run/apache90.pid'
-
-      @server_alias = 'my home server'
-      @hostname = '192.168.2.2'
-
-      super
-    end
-
-     def notify
-     gmail_notify
-  end
-
-  def fixed
-     gmail_resolved
-  end    
-
- end
-
-
 class BadCodeMonitor < Ragios::Monitors::URL
    #a monitoring object with bad code that throws a runtime error
    def initialize
@@ -185,8 +154,7 @@ describe Ragios::System do
 
    before(:each) do
    
-     @monitoring = [
-     URLMonitor.new, FailedURLMonitor.new,HttpsMonitor.new,HTTPMonitor.new,FailedHTTPMonitor.new, MonitorApache.new,MonitorApacheUnknown.new]
+     @monitoring = [URLMonitor.new, FailedURLMonitor.new,HttpsMonitor.new,HTTPMonitor.new,FailedHTTPMonitor.new, MonitorApache.new]
   end 
 
  it "should initialize all monitoring objects and run the defined tests at their specified interval" do 
@@ -195,7 +163,7 @@ describe Ragios::System do
 
  it "should throw an exception since one of the monitoring objects contains bad code" do 
       monitoring_bad_monitor = [BadCodeMonitor.new]
-      #Ragios::System.start monitoring_bad_monitor   
+      #Ragios::System.start monitoring_bad_monitor  
  end
   
 end

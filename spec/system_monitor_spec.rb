@@ -22,33 +22,33 @@ describe Ragios::Monitors::System do
 context "notifications" do
 
  it "should send gmail resolved message" do
-   @sm.gmail_resolved
+   #@sm.gmail_resolved
  end
    
    
  it "should send email resolved message" do
-   @sm.email_resolved
+   #@sm.email_resolved
  end
 
 
  it "should send tweet resolved message" do 
-  @sm.tweet_resolved
+  #@sm.tweet_resolved
  end
 
  it "should send gmail notify message" do 
-   @sm.gmail_notify
+   #@sm.gmail_notify
  end
  
  it "should send tweet notify message" do
-   @sm.tweet_notify
+   #@sm.tweet_notify
  end
 
  it "should send email notify message" do
-   @sm.email_notify
+   #@sm.email_notify
  end
 
  it "should send tweet error message" do
-  @sm.tweet_error
+  ##@sm.tweet_error
  end
  
 end

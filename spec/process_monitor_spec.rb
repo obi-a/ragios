@@ -19,45 +19,18 @@ require 'spec_base.rb'
 
       super
     end
-  end
-
-
-  class MonitorApacheUnknown <  Ragios::Monitors::Process
-    def initialize
-
-      @time_interval = '1m'
-      @notification_interval = '2m'
-      @contact = "admin@mail.com"
-      @test_description  = "Apache Unknown Test: this test always fails"
-
-      @process_name = 'apache90'
-      @start_command = 'sudo /etc/init.d/apache90 start'
-      @restart_command = 'sudo /etc/init.d/apache90 restart'
-      @stop_command = 'sudo /etc/init.d/apache20 stop'
-      @pid_file = '/var/run/apache90.pid'
-
-      @server_alias = 'my home server'
-      @hostname = '192.168.2.2'
-
-      super
-    end
-  end
+  end 
 
 describe Ragios::Monitors::Process do 
 
   before(:each) do
    @ma = MonitorApache.new
-   @mau = MonitorApacheUnknown.new
   end
 
 
  it "should PASS the test when apache is running" do 
      @ma.test_command.should == TRUE
  end 
-
- it "should FAIL  because the process doesnt exist" do
-     @mau.test_command.should == FALSE
- end
 
 end
 

@@ -1,5 +1,5 @@
 
-#base class that defines the behavior of all monitoring objects
+#base class that defines the behavior of all monitors
 
 module Ragios
  
@@ -7,7 +7,7 @@ module Monitors
 
 class System
 
-    # a short description of the test performed by this monitoring object
+    # a short description of the test performed by this monitor
    attr_reader :test_description  
    
    #hostname of the system being monitored
