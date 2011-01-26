@@ -157,11 +157,11 @@ describe Ragios::System do
      @monitoring = [URLMonitor.new, FailedURLMonitor.new,HttpsMonitor.new,HTTPMonitor.new,FailedHTTPMonitor.new, MonitorApache.new]
   end 
 
- it "should initialize all monitoring objects and run the defined tests at their specified interval" do 
+ it "should initialize all monitors and run the defined tests at their specified interval" do 
     Ragios::System.start @monitoring
  end
 
- it "should throw an exception since one of the monitoring objects contains bad code" do 
+ it "should throw an exception since one of the monitors contains bad code" do 
       monitoring_bad_monitor = [BadCodeMonitor.new]
       #Ragios::System.start monitoring_bad_monitor  
  end

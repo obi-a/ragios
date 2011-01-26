@@ -165,18 +165,18 @@ describe Ragios::Schedulers::RagiosScheduler do
   end 
     
 
-    it "should initalize all monitoring objects and run their test command" do 
+    it "should initalize all monitors and run their test command" do 
       @ragios.init
     end
 
 
    
-    it "should recover when a monitoring object throws an exception" do 
+    it "should recover when a monitor throws an exception" do 
        badlycoded = Ragios::Schedulers::RagiosScheduler.new [ BadCodeMonitor.new] 
        #badlycoded.start      
     end
     
-    it "should schedule all monitoring objects to run their tests at their specified time interval" do 
+    it "should schedule all monitors to run their tests at their specified time interval" do 
        @ragios.start
     end
     
