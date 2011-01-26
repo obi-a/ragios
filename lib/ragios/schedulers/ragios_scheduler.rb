@@ -9,6 +9,10 @@ class RagiosScheduler
     def initialize(jobs)
          @jobs = jobs  
     end
+    
+   def get_monitors
+        return @jobs
+   end
 
    def init
        	puts "Welcome to Ragios"
