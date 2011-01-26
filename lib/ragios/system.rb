@@ -12,7 +12,7 @@ module Ragios
         
      ragios = Ragios::Schedulers::RagiosScheduler.new monitoring
      ragios.init
-     ragios.start
+     ragios.start 
 
     end
  end
