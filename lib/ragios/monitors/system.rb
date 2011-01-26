@@ -36,6 +36,23 @@ class System
 
     #attribute set to TRUE when a test fails and nil otherwise
     attr_accessor :has_failed
+     
+    #Real Time Statistics on this monitor
+    #total number of times this monitor has been tested since it was created
+    attr_accessor :total_num_tests
+ 
+    #total number of tests this monitor has passed since its creation
+    attr_accessor :num_tests_passed
+    
+    #total number of tests this monitor has failed since its creation
+    attr_accessor :num_tests_failed
+
+    #time/date this monitor was  created
+    attr_accessor :creation_date
+    
+    #time/date of the last test was executed by the scheduler
+    attr_accessor :last_scheduled_test_date
+    
     
   
    def initialize 
