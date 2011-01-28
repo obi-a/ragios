@@ -10,6 +10,7 @@ class RagiosScheduler
          @jobs = jobs  
     end
     
+  #returns a list of all active monitors managed by this scheduler
    def get_monitors
         return @jobs
    end
@@ -47,17 +48,19 @@ class RagiosScheduler
    end 
    
  def start
-    
    #schedule all the jobs to execute test_command() at every time_interval
    scheduler = Rufus::Scheduler.start_new 
    @jobs.each do |job|
     scheduler.every job.time_interval do
-     begin  
-       if job.test_command
+     begin 
+       job.time_of_last_test = Time.now 
+       if job.test_command 
+           job.num_tests_passed = job.num_tests_passed + 1
            #set to nil since the job passed
            job.has_failed = nil #FALSE
            puts job.test_description + "   [PASSED]" + " Created on: "+ Time.now.to_s
        else
+           job.num_tests_failed = job.num_tests_failed + 1
            puts job.test_description +   "   [FAILED]" + " Created on: "+ Time.now.to_s
            job.failed
                #if the failed job has been marked as failed
@@ -82,6 +85,8 @@ class RagiosScheduler
           puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s 
           job.error_handler
       end
+       #count this test
+       job.total_num_tests = job.total_num_tests + 1 
      end #end of scheduler
     end  
   end

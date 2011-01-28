@@ -50,12 +50,14 @@ class System
     #time/date this monitor was  created
     attr_accessor :creation_date
     
-    #time/date of the last test was executed by the scheduler
-    attr_accessor :last_scheduled_test_date
+    #time/date this monitor was last tested by the scheduler
+    attr_accessor :time_of_last_test
     
     
   
    def initialize 
+      @creation_date = Time.now
+      @total_num_tests, @num_tests_passed,@num_tests_failed = 0,0,0
       #raise ERROR when the following attributes are not assigned values in a test
       #the attributes must be assigned values by the tests that extend this class
       raise "A description of the test must be specified, @test_description must be assigned a value" if @test_description.nil?
