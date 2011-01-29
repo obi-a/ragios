@@ -3,7 +3,20 @@
 This is a Rolling release.
 The following changes were made:
 
-1-10-2010:
+1-29-2011:
+* Ragios System now returns a list of all active monitors with their real time stats
+Example:
+   monitors = Ragios::Monitor.start monitoring
+   monitors.each do |monitor|  
+         puts "monitor: " + monitor.test_description 
+         puts "Number of tests failed: " + monitor.num_tests_failed.to_s
+         puts "Number of tests passed: " + monitor.num_tests_passed.to_s
+         puts "Total number of tests: " + monitor.total_num_tests.to_s
+         puts "Creation date: " + monitor.creation_date.to_s
+         puts "Last test was performed on " + monitor.time_of_last_test.to_s
+     end  
+
+1-10-2011:
 Changes to Ragios URL monitor:
 * Now sets a HTTP-User-Agent as Ragios(Saint-Ruby)
 * Added support to monitor https URLs
