@@ -23,7 +23,8 @@ module Ragios
        end
        count = count + 1
      end #end of each...do loop
-         
+    
+    #also returns a list of active monitors     
     Ragios::System.start monitor
     end
  end

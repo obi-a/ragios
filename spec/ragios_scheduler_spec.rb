@@ -178,6 +178,18 @@ describe Ragios::Schedulers::RagiosScheduler do
     
     it "should schedule all monitors to run their tests at their specified time interval" do 
        @ragios.start
+       monitors = @ragios.get_monitors   
+       
+      monitors.each do |monitor|  
+         monitor.num_tests_failed.should == 0
+         monitor.num_tests_passed.should == 0
+         monitor.total_num_tests.should == 0
+         puts monitor.test_description 
+         puts monitor.creation_date
+         puts monitor.time_of_last_test
+     end
+      
+       
     end
     
 end
