@@ -4,7 +4,7 @@ This is a Rolling release.
 The following changes were made:
 
 1-29-2011:
-* Ragios System now returns a list of all active monitors with their real time stats
+* Ragios::Monitor & Ragios::System now returns a list of all active monitors with their real time stats
 Example:
    monitors = Ragios::Monitor.start monitoring
    monitors.each do |monitor|  
