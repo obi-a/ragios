@@ -411,7 +411,6 @@ A tweet notification will look like this:
 
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
  Created on: Sat Oct 16 04:48:09 -0400 201
-
  
   
 == Part 2.Advanced System Monitoring: Using Objects To Monitor systems
@@ -891,6 +890,15 @@ Having,
    end
 
 ensures that this object will tweet all its notifications.
+
+===Editing the Notification Messages
+All notifcation messages are stored in ERB template files in the /lib/ragios/messages folder. You can edit any of the ERB template files to change the format of messages sent by the system. The ERB templates have access to all attributes of the monitor, so you can easily edit the template to add or remove attributes you would like to see on messages.
+
+Below is a list of ERB templates used by the system:
+ /lib/ragios/messages/email_notify.erb    -- template for all email notification messages (used for sendmail and gmail notifications)
+ /lib/ragios/messages/tweet_notify.erb    -- template for all notifications sent by a tweet
+ /lib/ragios/messages/email_resolved.erb  -- template for all issue resolved email messages sent to the admin
+ /lib/ragios/messages/tweet_resolved.erb  -- template for all issue resolved messages sent via twitter
 
 === Recovery From FAILURE
 When a monitor runs a test on the system, you can add damage repair code to fix the issue when a test fails. Damage repair code could do things like restart a monitored process when it stops running, switch a web app to a backup server when a monitored server goes down.

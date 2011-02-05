@@ -3,6 +3,9 @@
 This is a Rolling release.
 The following changes were made:
 
+2-5-2011:
+* Moved all notification and issue resolved messages to ERB templates in the /lib/ragios/messages folder. The ERB templates can be edited by the system admin to change the format of email messages sent by the Ragios system. The template has access to all the attributes of the Monitor base class (Ragios::Monitors::System class), so it can be edited to include or exclude attributes that should appear on messages.
+
 1-29-2011:
 * Ragios::Monitor & Ragios::System now returns a list of all active monitors with their real time stats
 Example:
