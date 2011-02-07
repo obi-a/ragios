@@ -244,24 +244,23 @@ Output from running the above main.rb script will look like this :
 	test 1. Http connection to my blog
 	Scheduled to run every 2m
 	Running First Test...
-	  [PASSED] Created on: Sun Dec 26 17:52:21 -0500 2010
+	  [PASSED] Created on: February 06, 2011 20:18
 	HTTP Connection to obi-akubue.org = PASSED
 
 	test 2. My Website Test
 	Scheduled to run every 2m
 	Running First Test...
-	  [PASSED] Created on: Sun Dec 26 17:52:45 -0500 2010
+	  [PASSED] Created on: February 06, 2011 20:18
 	HTTP Request to http://www.whisperservers.com/blog/ = 200
 
 	test 3. Apache Test
 	Scheduled to run every 1m
 	Running First Test...
-	16298 16297 16296 16295 16294 1919
-	  [PASSED] Created on: Sun Dec 26 17:52:45 -0500 2010
+	23063 18154 18153 18152 18151 18150 1995
+	  [PASSED] Created on: February 06, 2011 20:18
 	The process apache2 on host: 192.168.2.9 = PASSED
 
 	PRESS CTRL-C to QUIT
-
 
 We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
 
@@ -697,23 +696,24 @@ Output from running the above main.rb script will look like this :
 	test 1. Http connection to my blog
 	Scheduled to run every 10m
 	Running First Test...
-  	  [PASSED] Created on: Thu Nov 18 14:14:49 -0500 2010
+	  [PASSED] Created on: February 06, 2011 20:32
 	HTTP Connection to obi-akubue.org = PASSED
 
 	test 2. My Website Test
 	Scheduled to run every 20m
 	Running First Test...
-  	  [PASSED] Created on: Thu Nov 18 14:15:02 -0500 2010
+	  [PASSED] Created on: February 06, 2011 20:32
 	HTTP Request to http://www.whisperservers.com/blog/ = 200
 
 	test 3. Apache Test
 	Scheduled to run every 1m
 	Running First Test...
-	16298 16297 16296 16295 16294 1919
-	  [PASSED] Created on: Sun Dec 26 17:52:45 -0500 2010
-	The process apache2 on host: 192.168.2.9 = PASSED
+	23063 18154 18153 18152 18151 18150 1995
+	  [PASSED] Created on: February 06, 2011 20:32
+	The process apache2 on host: 192.168.2.2 = PASSED
 
 	PRESS CTRL-C to QUIT
+
 
 We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
 
