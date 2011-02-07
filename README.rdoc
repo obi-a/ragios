@@ -410,9 +410,10 @@ A tweet notification will look like this:
 
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
  Created on: October 16, 04:48
+
  
 ===Status Report
-Ragios can be configured to regularly send you a Status Repoart on all the active monitors running in the system.
+Ragios can be configured to regularly send you a Status Report on all the active monitors running in the system.
 This Status Report includes:
 * The number of monitors running on the system
 * How long the monitors have been running 
@@ -472,13 +473,12 @@ Example with 2 monitors:
 This above example will send a Status Report to the email 'admin@mail.com' every 5 days via gmail. 
 
 ===Editing the Status Report
-The Status report is stored in the ERB Template file /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes of your monitors you want to see in the report. You can also format the layout and text of the report from there.
+The Status report is generated from the ERB Template file /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes of the monitors you want to see in the report. You can also format the layout or text of the report from this template.
   
 == Part 2.Advanced System Monitoring: Using Objects To Monitor systems
 Using Ruby Objects to monitor systems gives you the flexibility to add your own code to easily extend the functionality of Ragios making it run tests exactly the way you want.
 
-Ragios is also an object-oriented system. The system admin can use Ruby objects to run tests on the system at a specified time interval. Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. Everything is a Ruby object, so Ragios is capable of everything Ruby can do. Ragios benfits from Ruby's rich open source ecosystem with tons of libraries, gems and APIs.
-
+Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. 
 
 ===Using the built-in Objects
 Built-in objects are available for different forms of system monitoring. 
@@ -954,7 +954,7 @@ Having,
 ensures that this object will tweet all its notifications.
 
 ===Editing the Notification Messages
-All notifcation messages are stored in ERB template files in the /lib/ragios/messages folder. You can edit any of the ERB template files to change the format of messages sent by the system. The ERB templates have access to all attributes of the monitor, so you can easily edit the template to add or remove attributes you would like to see on messages.
+All notifcation messages are generated from ERB template files in the /lib/ragios/messages folder. You can edit any of the ERB template files to change the format of messages sent by the system. The ERB templates have access to all attributes of the monitor, so you can easily edit the template to add or remove attributes you would like to see on messages.
 
 Below is a list of ERB templates used by the system:
  /lib/ragios/messages/email_notify.erb    -- template for all email notification messages 
@@ -990,7 +990,7 @@ Below is a list of ERB templates used by the system:
 			:via => 'gmail'}) 
 
 In the above example, Ragios will send out a Status Report to the email 'admin@mail.com' via gmail every 2 days. 
-Like all other messages sent by the system, the Status Report is completely customizable. It is stored in the ERB template /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes you want to see in the reports. You can also format the layout and text of the Report. See more about Status Reports in the Part 1. of this document. 
+Like all other messages sent by the system, the Status Report is completely customizable. It is stored in the ERB template /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes you want to see in the reports. You can also format the layout or text of the Report. See more about Status Reports in the Part 1. of this document. 
  
 === Recovery From FAILURE
 When a monitor runs a test on the system, you can add damage repair code to fix the issue when a test fails. Damage repair code could do things like restart a monitored process when it stops running, switch a web app to a backup server when a monitored server goes down.
