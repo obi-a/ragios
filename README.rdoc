@@ -472,7 +472,7 @@ Example with 2 monitors:
 This above example will send a Status Report to the email 'admin@mail.com' every 5 days via gmail. 
 
 ===Editing the Status Report
-The Status report is stored in the ERB Template file /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes of your monitors you want to see in the report. You can also format the layout and text of the report from there.
+The Status report is stored in the ERB Template file /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes of the monitors you want to see in the report. You can also format the layout or text of the report from there.
   
 == Part 2.Advanced System Monitoring: Using Objects To Monitor systems
 Using Ruby Objects to monitor systems gives you the flexibility to add your own code to easily extend the functionality of Ragios making it run tests exactly the way you want.
@@ -990,7 +990,7 @@ Below is a list of ERB templates used by the system:
 			:via => 'gmail'}) 
 
 In the above example, Ragios will send out a Status Report to the email 'admin@mail.com' via gmail every 2 days. 
-Like all other messages sent by the system, the Status Report is completely customizable. It is stored in the ERB template /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes you want to see in the reports. You can also format the layout and text of the Report. See more about Status Reports in the Part 1. of this document. 
+Like all other messages sent by the system, the Status Report is completely customizable. It is stored in the ERB template /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes you want to see in the reports. You can also format the layout or text of the Report. See more about Status Reports in the Part 1. of this document. 
  
 === Recovery From FAILURE
 When a monitor runs a test on the system, you can add damage repair code to fix the issue when a test fails. Damage repair code could do things like restart a monitored process when it stops running, switch a web app to a backup server when a monitored server goes down.
