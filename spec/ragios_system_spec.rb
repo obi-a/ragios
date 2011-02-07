@@ -168,6 +168,11 @@ describe Ragios::System do
          puts monitor.creation_date
          puts monitor.time_of_last_test
      end
+
+    Ragios::System.update_status({:every => '40s',
+			:contact => 'obi.akubue@mail.com',
+			:via => 'gmail'})  
+
  end
 
  it "should throw an exception since one of the monitors contains bad code" do 

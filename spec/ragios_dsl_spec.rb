@@ -56,6 +56,10 @@ require 'spec_base.rb'
          puts monitor.creation_date
          puts monitor.time_of_last_test
      end
+     
+    Ragios::Monitor.update_status({:every => '40s',
+			:contact => 'obi.akubue@mail.com',
+			:via => 'gmail'})  
         
    end
   

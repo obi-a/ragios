@@ -9,6 +9,10 @@ module Ragios
     def initialize
 
     end
+
+   def self.update_status config
+       @ragios.update_status config
+   end
     
     #returns a list of active monitors
     def self.get_monitors

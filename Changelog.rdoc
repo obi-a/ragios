@@ -3,6 +3,28 @@
 This is a Rolling release.
 The following changes were made:
 
+2-7-2011:
+* The system admin can now configure Ragios to regularly send him a Status Repoart on all the active monitors running on the system.
+This Status Report includes:
+   * The number of monitors running on the system
+   * How long the monitors have been running 
+Also includes a summary of each active monitor  
+   * how many times the monitor has been tested
+   * how many tests passed it passed
+   * how many tests failed
+   * results of the last test
+   * date/time the last test was performed etc.
+
+To configure Ragios to send Status Reports
+  Ragios::Monitor.start monitoring
+  Ragios::Monitor.update_status({:every => '1d',
+			:contact => 'admin@mail.com',
+			:via => 'gmail'}) 
+
+The above sample means that Ragios will send a Status Report every day '1d' to the email address 'admin@mail.com' via gmail.
+* The Status Report is stored in an ERB template file, this makes it completely customizable by system admin.
+ 
+
 2-5-2011:
 * Moved all notification and issue resolved messages to ERB templates in the /lib/ragios/messages folder. The ERB templates can be edited by the system admin to change the format of email messages sent by the Ragios system. The template has access to all the attributes of the Monitor base class (Ragios::Monitors::System class), so it can be edited to include or exclude attributes that should appear on messages.
 

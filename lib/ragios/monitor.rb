@@ -8,6 +8,10 @@ module Ragios
 
     end
 
+   def self.update_status config
+      Ragios::System.update_status config 
+   end
+
     def self.start monitoring
          monitor = []
          count = 0

@@ -169,8 +169,6 @@ describe Ragios::Schedulers::RagiosScheduler do
       @ragios.init
     end
 
-
-   
     it "should recover when a monitor throws an exception" do 
        badlycoded = Ragios::Schedulers::RagiosScheduler.new [ BadCodeMonitor.new] 
        #badlycoded.start      

@@ -1,0 +1,25 @@
+<% @subject = "subject: Ragios Status Report" %> 
+
+Ragios Status Report
+
+From <%= @time_since_last_status_report.to_s(:short) %> to <%= Time.now.to_s(:short) %>
+ <%=@jobs.length.to_s %> monitors running on the system
+    <% count = 0 %>
+<% @jobs.each do |monitor|  %>
+    <% count = count + 1 %>
+    <%= count %>. <%= monitor.test_description %>
+ 
+    Running since: <%= monitor.creation_date.to_s(:short) %>
+       
+    Last test was performed on: <%= monitor.time_of_last_test.to_s(:short) %>
+    Last Test Result:
+                 <%= monitor.describe_test_result %> = <%= monitor.test_result %>
+
+    Total number of tests performed: <%= monitor.total_num_tests.to_s %>
+
+                   PASSED <%= monitor.num_tests_passed.to_s %> tests
+                   FAILED <%= monitor.num_tests_failed.to_s %> tests
+
+    Tests are performed every: <%= monitor.time_interval %>
+    Notification Interval for failed tests: <%= monitor.notification_interval %> 
+<% end  %>

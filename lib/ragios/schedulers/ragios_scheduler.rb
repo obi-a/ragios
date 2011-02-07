@@ -5,15 +5,51 @@ module Schedulers
 class RagiosScheduler
     
     attr :jobs 
+    attr :time_since_last_status_report
 
     def initialize(jobs)
-         @jobs = jobs  
+         @jobs = jobs
+         #time since the first status report -- will be from the time Ragios started running -- see status_report.erb
+         @time_since_last_status_report  =  Time.now
     end
     
   #returns a list of all active monitors managed by this scheduler
    def get_monitors
         return @jobs
    end
+
+   def status_report
+       message_template = ERB.new File.new($path_to_messages + "/status_report.erb" ).read
+       message_template.result(binding)
+   end
+
+  #send a report  with stats and status information on all active monitors to the system admin via email
+  def update_status config
+
+      #format of config {}
+      #config  = {   :every => '1d',
+         #          :contact => 'admin@mail.com',
+          #         :via => 'gmail'
+           #       }
+
+    scheduler = Rufus::Scheduler.start_new
+    scheduler.every config[:every] do 
+
+        @body = status_report  
+        message = {:to => config[:contact],
+                  :subject => @subject, 
+                  :body => @body}
+
+      if config[:via] == 'gmail'
+           Ragios::Notifiers::GMailNotifier.new.send message   
+        elsif config[:via] == 'email'
+           Ragios::Notifiers::EmailNotifier.new.send message
+        else
+           raise 'Wrong hash parameter for update_status()'
+     end
+       @time_since_last_status_report = Time.now
+    end
+ end
 
    def init
        	puts "Welcome to Ragios"
@@ -28,18 +64,19 @@ class RagiosScheduler
  		puts "Scheduled to run every " + job.time_interval + "\n"
  		puts "Running First Test..."
 	begin 
+          job.time_of_last_test = Time.now 
  	  if job.test_command
-           puts  "  [PASSED]" + " Created on: "+ Time.now.to_s 
+           puts  "  [PASSED]" + " Created on: "+ Time.now.to_s(:long) 
            puts job.describe_test_result + " = " + job.test_result
   	  else
-           puts "  [FAILED]" + " Created on: "+ Time.now.to_s 
+           puts "  [FAILED]" + " Created on: "+ Time.now.to_s(:long) 
            puts job.describe_test_result + " = " + job.test_result
            job.failed
       
   	  end
    	   puts "\n"
 	rescue Exception
-   	   puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s 
+   	   puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s(:long) 
            job.error_handler
            raise
         end
@@ -58,10 +95,10 @@ class RagiosScheduler
            job.num_tests_passed = job.num_tests_passed + 1
            #set to nil since the job passed
            job.has_failed = nil #FALSE
-           puts job.test_description + "   [PASSED]" + " Created on: "+ Time.now.to_s
+           puts job.test_description + "   [PASSED]" + " Created on: "+ Time.now.to_s(:long)
        else
            job.num_tests_failed = job.num_tests_failed + 1
-           puts job.test_description +   "   [FAILED]" + " Created on: "+ Time.now.to_s
+           puts job.test_description +   "   [FAILED]" + " Created on: "+ Time.now.to_s(:long)
            job.failed
                #if the failed job has been marked as failed
                #this prevents the system from scheduling a new notification scheduler when one is already scheduled
@@ -82,7 +119,7 @@ class RagiosScheduler
        end
        #catch all exceptions
       rescue Exception
-          puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s 
+          puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s(:long) 
           job.error_handler
       end
        #count this test
