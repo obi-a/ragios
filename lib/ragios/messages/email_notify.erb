@@ -1,0 +1,8 @@
+<% @subject = @test_description + " FAILED" %>
+
+<%= @test_description %> FAILED
+
+<%= @describe_test_result %> = <%= @test_result %>
+
+This message was created at <%= Time.now.to_s(:long) %>
+

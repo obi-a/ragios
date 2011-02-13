@@ -3,7 +3,45 @@
 This is a Rolling release.
 The following changes were made:
 
-1-10-2010:
+2-7-2011:
+* The system admin can now configure Ragios to regularly send him a Status Repoart on all the active monitors running on the system.
+This Status Report includes:
+   * The number of monitors running on the system
+   * How long the monitors have been running 
+Also includes a summary of each active monitor  
+   * how many times the monitor has been tested
+   * how many tests passed it passed
+   * how many tests failed
+   * results of the last test
+   * date/time the last test was performed etc.
+
+To configure Ragios to send Status Reports
+  Ragios::Monitor.start monitoring
+  Ragios::Monitor.update_status({:every => '1d',
+			:contact => 'admin@mail.com',
+			:via => 'gmail'}) 
+
+The above sample means that Ragios will send a Status Report every day '1d' to the email address 'admin@mail.com' via gmail.
+* The Status Report is stored in an ERB template file, this makes it completely customizable by system admin.
+ 
+
+2-5-2011:
+* Moved all notification and issue resolved messages to ERB templates in the /lib/ragios/messages folder. The ERB templates can be edited by the system admin to change the format of email messages sent by the Ragios system. The template has access to all the attributes of the Monitor base class (Ragios::Monitors::System class), so it can be edited to include or exclude attributes that should appear on messages.
+
+1-29-2011:
+* Ragios::Monitor & Ragios::System now returns a list of all active monitors with their real time stats
+Example:
+   monitors = Ragios::Monitor.start monitoring
+   monitors.each do |monitor|  
+         puts "monitor: " + monitor.test_description 
+         puts "Number of tests failed: " + monitor.num_tests_failed.to_s
+         puts "Number of tests passed: " + monitor.num_tests_passed.to_s
+         puts "Total number of tests: " + monitor.total_num_tests.to_s
+         puts "Creation date: " + monitor.creation_date.to_s
+         puts "Last test was performed on " + monitor.time_of_last_test.to_s
+     end  
+
+1-10-2011:
 Changes to Ragios URL monitor:
 * Now sets a HTTP-User-Agent as Ragios(Saint-Ruby)
 * Added support to monitor https URLs

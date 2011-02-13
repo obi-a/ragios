@@ -17,7 +17,6 @@ class EmailNotifier
       #           :subject =>"subj", 
       #           :body => "stuff"}
      Pony.mail message
-     
   end   
 
 end

@@ -23,6 +23,8 @@ context "notifications" do
 
  it "should send gmail resolved message" do
    #@sm.gmail_resolved
+   #@sm.email_notify
+   #@sm.tweet_resolved
  end
    
    
@@ -48,7 +50,7 @@ context "notifications" do
  end
 
  it "should send tweet error message" do
-  ##@sm.tweet_error
+  #@sm.tweet_error
  end
  
 end

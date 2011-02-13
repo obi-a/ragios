@@ -19,7 +19,6 @@ class GMailNotifier
       #message = {:to => "admin@example.com",
       #           :subject =>"subj", 
       #           :body => "stuff"}
-
      gmail = Gmail.connect(@username, @password)
      # play with your gmail...
 

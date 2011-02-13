@@ -34,8 +34,8 @@ class URL < Ragios::Monitors::Service
 	   http = Net::HTTP.new(uri.host, uri.port)
            http.use_ssl = true if uri.scheme == 'https'
 
-          http.open_timeout = 20 # in seconds
-          http.read_timeout = 20 # in seconds
+          http.open_timeout = 45 # in seconds
+          http.read_timeout = 45 # in seconds
 
           request = Net::HTTP::Get.new(uri.request_uri)
           request["User-Agent"] = "Ragios (Saint-Ruby)"

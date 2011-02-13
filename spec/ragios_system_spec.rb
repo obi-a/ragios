@@ -158,7 +158,21 @@ describe Ragios::System do
   end 
 
  it "should initialize all monitors and run the defined tests at their specified interval" do 
-    Ragios::System.start @monitoring
+     monitors = Ragios::System.start @monitoring
+    
+     monitors.each do |monitor|  
+         monitor.num_tests_failed.should == 0
+         monitor.num_tests_passed.should == 0
+         monitor.total_num_tests.should == 0
+         puts monitor.test_description 
+         puts monitor.creation_date
+         puts monitor.time_of_last_test
+     end
+
+    Ragios::System.update_status({:every => '40s',
+			:contact => 'obi.akubue@mail.com',
+			:via => 'gmail'})  
+
  end
 
  it "should throw an exception since one of the monitors contains bad code" do 

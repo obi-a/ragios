@@ -46,7 +46,21 @@ require 'spec_base.rb'
  describe Ragios::Monitor do 
 
    it "should schedule all monitors to run the definded tests at their specified intervals" do 
-        Ragios::Monitor.start monitoring
+        monitors = Ragios::Monitor.start monitoring
+
+     monitors.each do |monitor|  
+         monitor.num_tests_failed.should == 0
+         monitor.num_tests_passed.should == 0
+         monitor.total_num_tests.should == 0
+         puts monitor.test_description 
+         puts monitor.creation_date
+         puts monitor.time_of_last_test
+     end
+     
+    Ragios::Monitor.update_status({:every => '40s',
+			:contact => 'obi.akubue@mail.com',
+			:via => 'gmail'})  
+        
    end
   
  end

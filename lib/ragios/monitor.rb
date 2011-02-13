@@ -8,6 +8,10 @@ module Ragios
 
     end
 
+   def self.update_status config
+      Ragios::System.update_status config 
+   end
+
     def self.start monitoring
          monitor = []
          count = 0
@@ -23,7 +27,8 @@ module Ragios
        end
        count = count + 1
      end #end of each...do loop
-         
+    
+    #also returns a list of active monitors     
     Ragios::System.start monitor
     end
  end

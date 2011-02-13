@@ -1,6 +1,7 @@
 
-#base class that defines the behavior of all monitors
 
+
+#base class that defines the behavior of all monitors
 module Ragios
  
 module Monitors
@@ -36,9 +37,28 @@ class System
 
     #attribute set to TRUE when a test fails and nil otherwise
     attr_accessor :has_failed
+     
+    #Real Time Statistics on this monitor
+    #total number of times this monitor has been tested since it was created
+    attr_accessor :total_num_tests
+ 
+    #total number of tests this monitor has passed since its creation
+    attr_accessor :num_tests_passed
+    
+    #total number of tests this monitor has failed since its creation
+    attr_accessor :num_tests_failed
+
+    #time/date this monitor was  created
+    attr_accessor :creation_date
+    
+    #time/date this monitor was last tested by the scheduler
+    attr_accessor :time_of_last_test
+    
     
   
    def initialize 
+      @creation_date = Time.now
+      @total_num_tests, @num_tests_passed,@num_tests_failed = 0,0,0
       #raise ERROR when the following attributes are not assigned values in a test
       #the attributes must be assigned values by the tests that extend this class
       raise "A description of the test must be specified, @test_description must be assigned a value" if @test_description.nil?
@@ -72,31 +92,39 @@ class System
       
    end
 
-   #inform the system admin that the issue has been resolved via gmail
+   
+   #returns email message from the specified erb template
+   def message template
+        message_template = ERB.new File.new($path_to_messages + "/"+ template ).read
+        @body = message_template.result(binding)
+        message = {:to => @contact,
+                  :subject => @subject, 
+                  :body => @body}
+   end
+
+   #returns tweet message from the specified erb template
+   def tweet_message template
+        message_template = ERB.new File.new($path_to_messages + "/"+ template ).read
+        message_template.result(binding)
+   end
+
+  #inform the system admin that the issue has been resolved via gmail
    def gmail_resolved
         puts 'sending gmail issue resolved message...'
-       message = {:to => @contact,
-                  :subject =>"ISSUE RESOLVED " + @test_description + " PASSED", 
-                  :body => @test_description + " PASSED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s}
-
-      Ragios::Notifiers::GMailNotifier.new.send message
+       Ragios::Notifiers::GMailNotifier.new.send(message("email_resolved.erb"))
    end 
+
 
    #inform the system admin that the issue has been resolved via sendmail
    def email_resolved
        puts 'sending issue resolved message...'
-       message = {:to => @contact,
-                  :subject =>"ISSUE RESOLVED " + @test_description + " PASSED", 
-                  :body => @test_description + " PASSED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s}
-
-      Ragios::Notifiers::EmailNotifier.new.send message 
+        Ragios::Notifiers::EmailNotifier.new.send(message("email_resolved.erb")) 
    end
 
    #inform the system admin that the issue has been resolved via twitter
    def tweet_resolved
-      message = "ISSUE RESOLVED " + @test_description + " PASSED!  " + @describe_test_result + " = " + @test_result + " Created on: "+ Time.now.to_s
-
-      Ragios::Notifiers::TweetNotifier.new.tweet message
+      
+     Ragios::Notifiers::TweetNotifier.new.tweet(tweet_message("tweet_resolved.erb"))
 
    end
 
@@ -108,40 +136,24 @@ class System
 
   #sends notifcations via gmail to the system admin when a test fails
   def gmail_notify
-      
-     puts 'sending gmail alert...'
-       message = {:to => @contact,
-                  :subject =>@test_description + " FAILED", 
-                  :body => @test_description + " FAILED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s}
-
-      Ragios::Notifiers::GMailNotifier.new.send message
-
+       puts 'sending gmail alert...'
+       Ragios::Notifiers::GMailNotifier.new.send(message("email_notify.erb"))
   end
    
   #sends notifcations via twitter to the system admin when a test fails
   def tweet_notify
-     
-     message = @test_description + " FAILED!  " + @describe_test_result + " = " + @test_result + " Created on: "+ Time.now.to_s
-
-      Ragios::Notifiers::TweetNotifier.new.tweet message
+     Ragios::Notifiers::TweetNotifier.new.tweet(tweet_message("tweet_notify.erb"))
   end
 
    #sends notifcations via email to the system admin when a test fails
    def email_notify
-   
-       puts 'sending mail alert...'
-       message = {:to => @contact,
-                  :subject =>@test_description + " FAILED", 
-                  :body => @test_description + " FAILED \n\n" + @describe_test_result + " = " + @test_result +  "\n\n Created on: " + Time.now.to_s}
-
-      Ragios::Notifiers::EmailNotifier.new.send message
-       
+      puts 'sending mail alert...' 
+      Ragios::Notifiers::EmailNotifier.new.send(message("email_notify.erb"))     
    end
      
    #informs a system admin via twitter when a test_command() or failed() method encounters an excepion
    def tweet_error
-        message = @test_description + " ERROR: " + $!  + " Created on: "+ Time.now.to_s 
-         Ragios::Notifiers::TweetNotifier.new.tweet message
+        Ragios::Notifiers::TweetNotifier.new.tweet(tweet_message("tweet_error.erb"))
    end
    
    #informs a system admin via email when a test_command() or failed() method encounters an excepion

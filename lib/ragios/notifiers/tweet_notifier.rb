@@ -15,7 +15,6 @@ class TweetNotifier
   end
 
   def tweet message
-      
       @client.update message.slice!(0..139) #140 character limit on twitter  
   end
 

@@ -222,6 +222,13 @@ The Ragios configuration settings should in the /ragios/main.rb script. A sample
 
      Ragios::Monitor.start monitoring
 
+     #trap Ctrl-C to exit gracefully
+     puts "PRESS CTRL-C to QUIT"
+      loop do
+       trap("INT") { puts "\nExiting"; exit; }
+      sleep(3)
+     end
+
 Since main.rb is pure ruby code we can run it directly, from the /ragios directory : 
 
  $ruby main.rb
@@ -237,24 +244,23 @@ Output from running the above main.rb script will look like this :
 	test 1. Http connection to my blog
 	Scheduled to run every 2m
 	Running First Test...
-	  [PASSED] Created on: Sun Dec 26 17:52:21 -0500 2010
+	  [PASSED] Created on: February 06, 2011 20:18
 	HTTP Connection to obi-akubue.org = PASSED
 
 	test 2. My Website Test
 	Scheduled to run every 2m
 	Running First Test...
-	  [PASSED] Created on: Sun Dec 26 17:52:45 -0500 2010
+	  [PASSED] Created on: February 06, 2011 20:18
 	HTTP Request to http://www.whisperservers.com/blog/ = 200
 
 	test 3. Apache Test
 	Scheduled to run every 1m
 	Running First Test...
-	16298 16297 16296 16295 16294 1919
-	  [PASSED] Created on: Sun Dec 26 17:52:45 -0500 2010
+	23063 18154 18153 18152 18151 18150 1995
+	  [PASSED] Created on: February 06, 2011 20:18
 	The process apache2 on host: 192.168.2.9 = PASSED
 
 	PRESS CTRL-C to QUIT
-
 
 We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
 
@@ -397,21 +403,82 @@ Example of an email notification will look like this:
  Subject: Http connection to my blog FAILED
  
  Http connection to my blog FAILED! HTTP Connection to obi-akubue.org = getaddrinfo: Name or service not known
- Created on: Wed Sep 22 13:55:21 -0400 2010
+ Created on: September 22, 2010 13:55
 
 
 A tweet notification will look like this:
 
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
- Created on: Sat Oct 16 04:48:09 -0400 201
+ Created on: October 16, 04:48
 
  
+===Status Report
+Ragios can be configured to regularly send you a Status Report on all the active monitors running in the system.
+This Status Report includes:
+* The number of monitors running on the system
+* How long the monitors have been running 
+Also includes a summary of each active monitor  
+* how many times the monitor has been tested
+* how many tests passed it passed
+* how many tests failed
+* results of the last test
+* date/time the last test was performed etc.
+
+To configure Ragios to send Status Reports
+  Ragios::Monitor.update_status({:every => '1d',
+			:contact => 'admin@mail.com',
+			:via => 'gmail'}) 
+
+The above sample means that Ragios will send a Status Report every day '1d' to the email address 'admin@mail.com' via gmail. 
+Ragios can send Status Reports every (n) minutes, hours, days, weeks or combined. 
+
+Example
+  :every => '40m' #every 40 minutes
+  :every => '2d'  #every 2 days
+  :every => '6h'  #every 6 hours
+  :every => '1w'  #every week
+  :every => '4w'  #every 4 weeks
+  :every => '1w2d' #every week and 2 days i.e every 9 days
+
+
+The Status Report can be sent via gmail or sendmail, 
+  :via => gmail # sends the report via gmail
+  :via => email # sends the report via sendmail installed on the system
+
+Example with 2 monitors:
+          monitoring =  { :monitor => 'url',
+                   :every => '5m',
+                   :test => 'video datafeed test',
+                   :url => 'http://www.datafeed.com/resources/videos/1',
+                   :contact => 'admin@mail.com',
+                   :via => 'gmail',  
+                   :notify_interval => '6h'
+                  
+                  },
+                  {:monitor =>'http', 
+                   :every => '30s',
+                   :test => 'Http connection to client A's website',
+                   :domain => 'www.clientA.com',
+                   :contact => 'admin@mysite.com',
+                   :via => 'twitter',  
+                   :notify_interval => '6h'
+                  }
+                
+  Ragios::Monitor.start monitoring  
+  
+  Ragios::Monitor.update_status({:every => '5d',
+			:contact => 'admin@mail.com',
+			:via => 'gmail'}) 
+
+This above example will send a Status Report to the email 'admin@mail.com' every 5 days via gmail. 
+
+===Editing the Status Report
+The Status report is generated from the ERB Template file /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes of the monitors you want to see in the report. You can also format the layout or text of the report from this template.
   
 == Part 2.Advanced System Monitoring: Using Objects To Monitor systems
 Using Ruby Objects to monitor systems gives you the flexibility to add your own code to easily extend the functionality of Ragios making it run tests exactly the way you want.
 
-Ragios is also an object-oriented system. The system admin can use Ruby objects to run tests on the system at a specified time interval. Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. Everything is a Ruby object, so Ragios is capable of everything Ruby can do. Ragios benfits from Ruby's rich open source ecosystem with tons of libraries, gems and APIs.
-
+Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. 
 
 ===Using the built-in Objects
 Built-in objects are available for different forms of system monitoring. 
@@ -497,13 +564,13 @@ An email notification from the monitor above will look like this:
  Subject: Http connection to my blog FAILED
  
  Http connection to my blog FAILED! HTTP Connection to obi-akubue.org = getaddrinfo: Name or service not known
- Created on: Wed Sep 22 13:55:21 -0400 2010
+ Created on: September 22, 13:55
 
 
 A tweet notification will look like this:
 
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
- Created on: Sat Oct 16 04:48:09 -0400 201
+ Created on: October 16, 04:48
 
 In the monitor's initialize method, you should always call the super() method to ensure that the object is fully initalized with the required properties of all the classes above it in the hierarchy. 
 
@@ -667,6 +734,13 @@ All the monitors should be defined in the /ragios/main.rb script. With the monit
   
   Ragios::System.start monitoring
 
+  #trap Ctrl-C to exit gracefully
+    puts "PRESS CTRL-C to QUIT"
+     loop do
+       trap("INT") { puts "\nExiting"; exit; }
+     sleep(3)
+    end
+
 The basic configuration is now complete. We can now run the Ragios system.
 
 Since main.rb is pure ruby code we can run it directly, from the /ragios directory : 
@@ -684,23 +758,24 @@ Output from running the above main.rb script will look like this :
 	test 1. Http connection to my blog
 	Scheduled to run every 10m
 	Running First Test...
-  	  [PASSED] Created on: Thu Nov 18 14:14:49 -0500 2010
+	  [PASSED] Created on: February 06, 2011 20:32
 	HTTP Connection to obi-akubue.org = PASSED
 
 	test 2. My Website Test
 	Scheduled to run every 20m
 	Running First Test...
-  	  [PASSED] Created on: Thu Nov 18 14:15:02 -0500 2010
+	  [PASSED] Created on: February 06, 2011 20:32
 	HTTP Request to http://www.whisperservers.com/blog/ = 200
 
 	test 3. Apache Test
 	Scheduled to run every 1m
 	Running First Test...
-	16298 16297 16296 16295 16294 1919
-	  [PASSED] Created on: Sun Dec 26 17:52:45 -0500 2010
-	The process apache2 on host: 192.168.2.9 = PASSED
+	23063 18154 18153 18152 18151 18150 1995
+	  [PASSED] Created on: February 06, 2011 20:32
+	The process apache2 on host: 192.168.2.2 = PASSED
 
 	PRESS CTRL-C to QUIT
+
 
 We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
 
@@ -878,6 +953,45 @@ Having,
 
 ensures that this object will tweet all its notifications.
 
+===Editing the Notification Messages
+All notifcation messages are generated from ERB template files in the /lib/ragios/messages folder. You can edit any of the ERB template files to change the format of messages sent by the system. The ERB templates have access to all attributes of the monitor, so you can easily edit the template to add or remove attributes you would like to see on messages.
+
+Below is a list of ERB templates used by the system:
+ /lib/ragios/messages/email_notify.erb    -- template for all email notification messages 
+ /lib/ragios/messages/tweet_notify.erb    -- template for all notifications sent by a tweet
+ /lib/ragios/messages/email_resolved.erb  -- template for all issue resolved email messages sent to the admin
+ /lib/ragios/messages/tweet_resolved.erb  -- template for all issue resolved messages sent via twitter
+ /lib/ragios/messages/status_report.erb   -- template for the Status Reports sent out to the admin by the system
+
+===Status Reports and objects
+
+  class MonitorMySite < Ragios::Monitors::HTTP
+    def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "Http connection to my blog"
+      @domain = "obi-akubue.org"
+      super
+    end
+
+    def notify
+      gmail_notify
+    end
+
+  end
+
+  monitoring = [MonitorMySite.new]
+
+  Ragios::System.start monitoring
+
+  Ragios::System.update_status({:every => '2d',
+			:contact => 'admin@mail.com',
+			:via => 'gmail'}) 
+
+In the above example, Ragios will send out a Status Report to the email 'admin@mail.com' via gmail every 2 days. 
+Like all other messages sent by the system, the Status Report is completely customizable. It is stored in the ERB template /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes you want to see in the reports. You can also format the layout or text of the Report. See more about Status Reports in the Part 1. of this document. 
+ 
 === Recovery From FAILURE
 When a monitor runs a test on the system, you can add damage repair code to fix the issue when a test fails. Damage repair code could do things like restart a monitored process when it stops running, switch a web app to a backup server when a monitored server goes down.
 
