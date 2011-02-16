@@ -105,7 +105,6 @@ The time interval between tests could be in seconds, minutes, hours or combined,
 
 Same thing applies to the values of the :notify_interval, they can be in seconds, minutes, hours or combined. 
 
-An email notification to the System Admin will look like this
 
 ===Monitoring URLs
 To monitor a URL,
@@ -160,9 +159,9 @@ To monitor a process; using apache2 process as an example
                    :every => '10m',
                    :test => 'Apache Test',
                    :process_name => 'apache2',
-                   :start_command => 'sudo /etc/init.d/apache2 start',
-                   :stop_command => 'sudo /etc/init.d/apache2 stop',
-                   :restart_command => 'sudo /etc/init.d/apache2 restart',
+                   :start_command => '/etc/init.d/apache2 start',
+                   :stop_command => '/etc/init.d/apache2 stop',
+                   :restart_command => '/etc/init.d/apache2 restart',
                    :pid_file => '/var/run/apache2.pid',
                    :server_alias => 'my home server',
                    :hostname => '192.168.2.9',
@@ -174,7 +173,7 @@ To monitor a process; using apache2 process as an example
 
 To monitor a process you must provide the exact name of process as used by the OS. Example if the OS refers to the process as 'apache2' then using 'Apache2' or 'apache' will lead to the wrong results.
     
-Ragios also notifies the system admin when an issue is resolved example when a website comes back online.
+Ragios also notifies the system admin when an issue is resolved example when a website comes back online or when a process is running again.
 
 ===main.rb 
 
@@ -209,9 +208,9 @@ The Ragios configuration settings should in the /ragios/main.rb script. A sample
                    :every => '1m',
                    :test => 'Apache Test',
                    :process_name => 'apache2',
-                   :start_command => 'sudo /etc/init.d/apache2 start',
-                   :stop_command => 'sudo /etc/init.d/apache2 stop',
-                   :restart_command => 'sudo /etc/init.d/apache2 restart',
+                   :start_command => '/etc/init.d/apache2 start',
+                   :stop_command => '/etc/init.d/apache2 stop',
+                   :restart_command => '/etc/init.d/apache2 restart',
                    :pid_file => '/var/run/apache2.pid',
                    :server_alias => 'my home server',
                    :hostname => '192.168.2.9',
@@ -265,7 +264,7 @@ Output from running the above main.rb script will look like this :
 We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
 
 ===Starting the Ragios System
-Ragios runs as a daemon in the unix/linux system. 
+Ragios runs as a daemon in unix/linux systems. 
 
 To Start Ragios as a daemon from the terminal :
 
@@ -309,7 +308,7 @@ To send out notifications via sendmail use :via => 'email', example
                   
                   }]
 
-You just need to have sendmail installed on your system, Ragios will use to send the notification.
+You just need to have sendmail installed in your system, Ragios will use it to send the notification.
 
 
 ===Sending Notifications via Gmail
@@ -336,7 +335,7 @@ Now on the main.rb script use :via => 'gmail' example
 ===Sending Notifications via Twitter
 First you need to create and register a twitter app at http://twitter.com/apps/new. Ragios will use this app to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use them later.
 
-Next you need to create a new twitter account for the Ragios system. This is the Twitter account that will tweet the notifications. To receive the tweets the system admin should follow this account. The account should be set to private on twitter.
+Next you need to create a new twitter account for the Ragios system. This is the Twitter account that will tweet the notifications. To receive the tweets the system admin should follow this account on twitter. The account should be set to private on twitter.
 
 After you create the account, you need to grant your registered twitter app access to it.
 
@@ -377,7 +376,8 @@ Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your 
         {:site => 'http://twitter.com'}
        )
 
-When you run the script it will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for Ragios. Open the authorization URL in a web browser, choose ALLOW to grant access to your twitter app. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. The script will now display your access_token and access_secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
+When you run the script it will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for Ragios. Open the authorization URL in a web browser, choose ALLOW to grant access to your twitter app. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. 
+After this, the script will display your access_token and access_secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
 
 Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers directory. This is the script that Ragios uses to tweet the notification messages. Replace the lines below from the script with the real values for the access_token, access_secret, consumer key and consumer secret. 
 
@@ -411,6 +411,7 @@ A tweet notification will look like this:
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
  Created on: October 16, 04:48
 
+The notifications messages are generated from ERB templates stored in the /lib/ragios/messages folder. You can edit the templates to change the format or layout of the notification messages. 
  
 ===Status Report
 Ragios can be configured to regularly send you a Status Report on all the active monitors running in the system.
@@ -419,7 +420,7 @@ This Status Report includes:
 * How long the monitors have been running 
 Also includes a summary of each active monitor  
 * how many times the monitor has been tested
-* how many tests passed it passed
+* how many tests it passed
 * how many tests failed
 * results of the last test
 * date/time the last test was performed etc.
