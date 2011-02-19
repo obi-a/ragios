@@ -3,6 +3,11 @@
 This is a Rolling release.
 The following changes were made:
 
+2-18-2011:
+* Yeti is born. Yeti is a Web UI for Ragios. It's a Rails app that runs Ragios as a Rails plugin. More on Yeti here: https://github.com/obi-a/yeti. 
+
+* In addition to running Ragios as a Unix/Linux top program, Ragios can now run as a Plugin for Ruby on Rails applications. This gives developers the ability to build web UIs for it, and visualize their active monitors from Rails Applications.  
+
 2-7-2011:
 * The system admin can now configure Ragios to regularly send out a Status Report on all the active monitors running on the system.
 This Status Report includes:
