@@ -1030,6 +1030,39 @@ Now when a test goes from FAILED to PASSED again, the system will invoke the fix
 
 In the MonitorDatafeed object above, when the data feed goes offline the failed() method will be invoked which will switch our webapp to a new data feed. The Ragios system will continue monitoring the old data feed for recovery, when the old data feed recovers Ragios will invoke the fixed() method. This will switch our webapp back to the original data feed.
 
+===Running Ragios as a Rails Plugin
+Ragios can also run as a Rails Plugin. This gives you web access to your active monitors. Yeti is a sample rails app using Ragios as a Rails Plugin, still under development. Yeti will provide a Web UI for Ragios. See more on Yeti here: https://github.com/obi-a/yeti
+
+To install Ragios as a Plugin for a Rails app:
+
+ $cd railsapp
+ $rails plugin install git://github.com/obi-a/Ragios.git 
+
+Add the list of gems on the Ragios Gemfile to your Rails app's Gemfile. This will allow Bundler to install Gem Dependencies required for Ragios to run on your Rails environment. The Ragios Gemfile can be found here: railsapp/vendor/plugins/Ragios/Gemfile. You only need to add the Gems that are not already on your Rails Gemfile.
+
+Run diff to see the difference.  
+ $diff Gemfile vendor/plugins/Ragios/Gemfile
+
+If you just created the Rails app, the difference will be something like this. 
+
+ source "http://gemcutter.org"
+ gem "pony"
+ gem "twitter"
+ gem "rufus-scheduler", :require => "rufus/scheduler"
+ gem "daemons"
+ gem "i18n"
+ gem "gmail"
+
+Copy it to your Rails app Gemfile under the line:
+ source 'http://rubygems.org'
+
+Run Bundler to make Ragios's Gem dependencies available to your Rails App.
+ bundle install
+
+Now your Rails app is ready to Run Ragios and visualize your monitors on the web. This section is provided for documentation purposes only. You don't have to do any of this, you should use Yeti. Yeti is already configured, ready to run right out of the box. (Yeti = Rails + Ragios + Web UI) **Yeti is still under development, it's not yet ready to use but you get the idea.
+
+
+
 Thanks for reading. I will write more soon.    
 
 ===Great Gems that made this possible;
