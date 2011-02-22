@@ -19,6 +19,8 @@ From <%= @time_since_last_status_report.to_s(:short) %> to <%= Time.now.to_s(:sh
 
                    PASSED <%= monitor.num_tests_passed.to_s %> tests
                    FAILED <%= monitor.num_tests_failed.to_s %> tests
+                   <% uptime = (monitor.num_tests_passed / monitor.total_num_tests) * 100 %>
+                   UPTIME <%= uptime.to_s(:short) %>%
 
     Tests are performed every: <%= monitor.time_interval %>
     Notification Interval for failed tests: <%= monitor.notification_interval %> 
