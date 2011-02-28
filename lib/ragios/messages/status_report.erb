@@ -4,7 +4,17 @@ Ragios Status Report
 
 From <%= @time_since_last_status_report.to_s(:short) %> to <%= Time.now.to_s(:short) %>
  <%=@jobs.length.to_s %> monitors running on the system
-    <% count = 0 %>
+
+Uptime Report:
+<% count = 0 %>
+<% @jobs.each do |monitor|  %>
+<% count = count + 1 %>
+<% @uptime = (monitor.num_tests_passed.to_f / monitor.total_num_tests.to_f) * 100 %>
+<%= count %>. <%= monitor.test_description %>  Uptime: <%= @uptime.to_i.to_s %> 
+<% end %>
+
+Detailed Report:
+<% count = 0 %>
 <% @jobs.each do |monitor|  %>
     <% count = count + 1 %>
     <%= count %>. <%= monitor.test_description %>
