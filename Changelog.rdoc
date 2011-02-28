@@ -3,6 +3,11 @@
 This is a Rolling release.
 The following changes were made:
 
+2-27-2011
+*Status Reports now displays the percentage of uptime for all active monitors. This is called the Uptime value for each monitor. 
+For each monitor the uptime value is 
+ @uptime =  (monitor.num_tests_passed.to_f / monitor.total_num_tests.to_f) * 100 
+
 2-18-2011:
 * Yeti is born. Yeti is a Web UI for Ragios. It's a Rails app that runs Ragios as a Rails plugin. More on Yeti here: https://github.com/obi-a/yeti. 
 
