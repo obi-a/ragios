@@ -66,13 +66,14 @@ class RagiosScheduler
 	begin 
           job.time_of_last_test = Time.now 
  	  if job.test_command
+           job.num_tests_passed = job.num_tests_passed + 1
            puts  "  [PASSED]" + " Created on: "+ Time.now.to_s(:long) 
            puts job.describe_test_result + " = " + job.test_result
   	  else
+           job.num_tests_failed = job.num_tests_failed + 1
            puts "  [FAILED]" + " Created on: "+ Time.now.to_s(:long) 
            puts job.describe_test_result + " = " + job.test_result
            job.failed
-      
   	  end
    	   puts "\n"
 	rescue Exception
@@ -81,6 +82,7 @@ class RagiosScheduler
            raise
         end
        count = count + 1
+       job.total_num_tests = job.total_num_tests + 1 
        end  
    end 
    
