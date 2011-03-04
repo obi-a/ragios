@@ -177,16 +177,16 @@ Ragios also notifies the system admin when an issue is resolved example when a w
 
 ===main.rb 
 
-The Ragios configuration settings should in the /ragios/main.rb script. A sample copy of the script looks like this:
+The Ragios configuration settings should in the Ragios/main.rb script. A sample copy of the script looks like this:
 
-  #ragios/main.rb
+  #Ragios/main.rb
   require 'rubygems'
   require "bundler/setup"
 
   dir = Pathname(__FILE__).dirname.expand_path
   require dir + 'lib/ragios'
     
-
+  #Add your code here
      monitoring = {:monitor =>'http',
                    :every => '2m',
                    :test => 'Http connection to my blog',
@@ -228,7 +228,7 @@ The Ragios configuration settings should in the /ragios/main.rb script. A sample
       sleep(3)
      end
 
-Since main.rb is pure ruby code we can run it directly, from the /ragios directory : 
+Since main.rb is pure ruby code we can run it directly, from the Ragios/ directory : 
 
  $ruby main.rb
 
@@ -261,7 +261,7 @@ Output from running the above main.rb script will look like this :
 
 	PRESS CTRL-C to QUIT
 
-We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
+We can also run Ragios as a daemon by running the ragiosd ruby script also in the Ragios/ directory. 
 
 ===Starting the Ragios System
 Ragios runs as a daemon in unix/linux systems. 
@@ -286,7 +286,7 @@ To run Ragios as a top program, useful for testing purposes :
 
 	$ruby ragiosd run
 
-The ragiosd script simply demonizes the /ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the /ragios/log directory as ragios.log and ragios.output respectively.
+The ragiosd script simply demonizes the Ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the Ragios/log directory as ragios.log and ragios.output respectively.
 
 Run Ragios as 'sudo' when you need it to restart processes i.e.
  
@@ -314,7 +314,7 @@ You just need to have sendmail installed in your system, Ragios will use it to s
 ===Sending Notifications via Gmail
 To send out notifications via gmail, first create a Gmail account for the Ragios system. The email notifications will be sent out from this Gmail account.
 
-Edit the script /ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line below with the username & password of the Gmail account you created.
+Edit the script Ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line below with the username & password of the Gmail account you created.
 
   @username = 'gmail_username'  #replace with gmail username
   @password =  'gmail_password' #replace with gmail password
@@ -379,7 +379,7 @@ Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your 
 When you run the script it will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for Ragios. Open the authorization URL in a web browser, choose ALLOW to grant access to your twitter app. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. 
 After this, the script will display your access_token and access_secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
 
-Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers directory. This is the script that Ragios uses to tweet the notification messages. Replace the lines below from the script with the real values for the access_token, access_secret, consumer key and consumer secret. 
+Now open the tweet_notifier.rb script located in Ragios/lib/ragios/notifiers directory. This is the script that Ragios uses to tweet the notification messages. Replace the lines below from the script with the real values for the access_token, access_secret, consumer key and consumer secret. 
 
       oauth = Twitter::OAuth.new('Consumer Key', 'Consumer secret')
       oauth.authorize_from_access('access token', 'access secret')   
@@ -411,7 +411,7 @@ A tweet notification will look like this:
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
  Created on: October 16, 04:48
 
-The notifications messages are generated from ERB templates stored in the /lib/ragios/messages folder. You can edit the templates to change the format or layout of the notification messages. 
+The notifications messages are generated from ERB templates stored in the Ragios/lib/ragios/messages folder. You can edit the templates to change the format or layout of the notification messages. 
  
 ===Status Report
 Ragios can be configured to regularly send you a Status Report on all the active monitors running in the system.
@@ -474,7 +474,7 @@ Example with 2 monitors:
 This above example will send a Status Report to the email 'admin@mail.com' every 5 days via gmail. 
 
 ===Editing the Status Report
-The Status report is generated from the ERB Template file /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes of the monitors you want to see in the report. You can also format the layout or text of the report from this template.
+The Status report is generated from the ERB Template file Ragios/lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes of the monitors you want to see in the report. You can also format the layout or text of the report from this template.
   
 == Part 2.Advanced System Monitoring: Using Objects To Monitor systems
 Using Ruby Objects to monitor systems gives you the flexibility to add your own code to easily extend the functionality of Ragios making it run tests exactly the way you want.
@@ -488,7 +488,7 @@ Built-in objects are available for different forms of system monitoring.
 We use the HTTP object. This object tries to establish a Http connection with a website at the specified time interval. It notifies the system admin when its unable to establish the connection. 
 
 To use the HTTP object, we need to create an object that exends it with the details of the website we wish to monitor.
-This object should be defined in the /ragios/main.rb script.
+This object should be defined in the Ragios/main.rb script.
  
 Below is a sample object that uses the HTTP object to monitor my blog for availability, it sends me an email notification if my blog is offline. 
 	
@@ -647,14 +647,14 @@ The fixed() method is optional, its invoked when test goes from FAILED to PASSED
 @process_name should be the exact name of the process because Ragios uses the name of the process to check if its running. Example 'apache2' for the Apache webserver daemon on Ubuntu. Using 'apache' or 'Apache2' will make Ragios unable to find the process.
 
 ===Adding monitors to the Ragios system
-To add our monitors to the Ragios System we just need add to the following lines to the bottom of the /ragios/main.rb script.
+To add our monitors to the Ragios System we just need add to the following lines to the bottom of the Ragios/main.rb script.
 
   monitoring = [MonitorMySite.new, MonitorBlogURL.new, MonitorApache.new] #initializes our objects and adds them to the list of monitors
   Ragios::System.start monitoring #starts the monitoring process with all our monitors running tests at their 
                                   #specified time interval. Ragios is multi-threaded so each object runs on its own thread. 
 
 ===main.rb
-All the monitors should be defined in the /ragios/main.rb script. With the monitors we have written above, our /ragios/main.rb script will look like this:
+All the monitors should be defined in the Ragios/main.rb script. With the monitors we have written above, our Ragios/main.rb script will look like this:
 
   #ragios/main.rb
   require 'rubygems'
@@ -744,7 +744,7 @@ All the monitors should be defined in the /ragios/main.rb script. With the monit
 
 The basic configuration is now complete. We can now run the Ragios system.
 
-Since main.rb is pure ruby code we can run it directly, from the /ragios directory : 
+Since main.rb is pure ruby code we can run it directly, from the Ragios/ directory : 
 
  $ruby main.rb
 
@@ -778,7 +778,7 @@ Output from running the above main.rb script will look like this :
 	PRESS CTRL-C to QUIT
 
 
-We can also run Ragios as a daemon by running the ragiosd ruby script also in the /ragios directory. 
+We can also run Ragios as a daemon by running the ragiosd ruby script also in the Ragios/ directory. 
 
 ===Starting the Ragios System
 Ragios runs as a daemon in the unix/linux system. 
@@ -803,7 +803,7 @@ To run Ragios as a top program, useful for testing purposes :
 
 	$ruby ragiosd run
 
-The ragiosd script simply demonizes the /ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the /ragios/log directory as ragios.log and ragios.output respectively.
+The ragiosd script simply demonizes the Ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the Ragios/log directory as ragios.log and ragios.output respectively.
 
 Run Ragios as 'sudo' when you need it to restart processes, example if you have a process monitor that needs to restart a web server;
  
@@ -846,7 +846,7 @@ ensures that the notification will be sent out via sendmail.
 ===Sending Notifications via Gmail
 To send out notifications via gmail, first create a Gmail account for the Ragios system. The email notifications will be sent out from this Gmail account.
 
-Edit the script /ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line below with the username & password of the Gmail account you created.
+Edit the script Ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line below with the username & password of the Gmail account you created.
 
   @username = 'gmail_username'  #replace with gmail username
   @password =  'gmail_password' #replace with gmail password
@@ -922,7 +922,7 @@ Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your 
 
 When you run the script it will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for Ragios. Open the authorization URL in a web browser, choose ALLOW to grant access to your twitter app. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. The script will now display your access_token and access_secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
 
-Now open the tweet_notifier.rb script located in /ragios/lib/ragios/notifiers directory. This is the script that Ragios uses to tweet the notification messages. Replace the lines below from the script with the real values for the access_token, access_secret, consumer key and consumer secret. 
+Now open the tweet_notifier.rb script located in Ragios/lib/ragios/notifiers directory. This is the script that Ragios uses to tweet the notification messages. Replace the lines below from the script with the real values for the access_token, access_secret, consumer key and consumer secret. 
 
       oauth = Twitter::OAuth.new('Consumer Key', 'Consumer secret')
       oauth.authorize_from_access('access token', 'access secret')   
@@ -955,14 +955,14 @@ Having,
 ensures that this object will tweet all its notifications.
 
 ===Editing the Notification Messages
-All notifcation messages are generated from ERB template files in the /lib/ragios/messages folder. You can edit any of the ERB template files to change the format of messages sent by the system. The ERB templates have access to all attributes of the monitor, so you can easily edit the template to add or remove attributes you would like to see on messages.
+All notifcation messages are generated from ERB template files in the Ragios/lib/ragios/messages folder. You can edit any of the ERB template files to change the format of messages sent by the system. The ERB templates have access to all attributes of the monitor, so you can easily edit the template to add or remove attributes you would like to see on messages.
 
 Below is a list of ERB templates used by the system:
- /lib/ragios/messages/email_notify.erb    -- template for all email notification messages 
- /lib/ragios/messages/tweet_notify.erb    -- template for all notifications sent by a tweet
- /lib/ragios/messages/email_resolved.erb  -- template for all issue resolved email messages sent to the admin
- /lib/ragios/messages/tweet_resolved.erb  -- template for all issue resolved messages sent via twitter
- /lib/ragios/messages/status_report.erb   -- template for the Status Reports sent out to the admin by the system
+ lib/ragios/messages/email_notify.erb    -- template for all email notification messages 
+ lib/ragios/messages/tweet_notify.erb    -- template for all notifications sent by a tweet
+ lib/ragios/messages/email_resolved.erb  -- template for all issue resolved email messages sent to the admin
+ lib/ragios/messages/tweet_resolved.erb  -- template for all issue resolved messages sent via twitter
+ lib/ragios/messages/status_report.erb   -- template for the Status Reports sent out to the admin by the system
 
 ===Status Reports and objects
 
@@ -991,7 +991,7 @@ Below is a list of ERB templates used by the system:
 			:via => 'gmail'}) 
 
 In the above example, Ragios will send out a Status Report to the email 'admin@mail.com' via gmail every 2 days. 
-Like all other messages sent by the system, the Status Report is completely customizable. It is stored in the ERB template /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes you want to see in the reports. You can also format the layout or text of the Report. See more about Status Reports in the Part 1. of this document. 
+Like all other messages sent by the system, the Status Report is completely customizable. It is stored in the ERB template lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes you want to see in the reports. You can also format the layout or text of the Report. See more about Status Reports in the Part 1. of this document. 
  
 === Recovery From FAILURE
 When a monitor runs a test on the system, you can add damage repair code to fix the issue when a test fails. Damage repair code could do things like restart a monitored process when it stops running, switch a web app to a backup server when a monitored server goes down.
