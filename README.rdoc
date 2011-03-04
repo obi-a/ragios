@@ -1031,9 +1031,9 @@ Now when a test goes from FAILED to PASSED again, the system will invoke the fix
 In the MonitorDatafeed object above, when the data feed goes offline the failed() method will be invoked which will switch our webapp to a new data feed. The Ragios system will continue monitoring the old data feed for recovery, when the old data feed recovers Ragios will invoke the fixed() method. This will switch our webapp back to the original data feed.
 
 ===Running Ragios as a Rails Plugin
-Ragios can also run as a Rails Plugin. This gives you web access to your active monitors. Yeti is a sample rails app using Ragios as a Rails Plugin, still under development. Yeti will provide a Web UI for Ragios. See more on Yeti here: https://github.com/obi-a/yeti
+Ragios can also run as a Rails Plugin. This gives you access to your active monitors over the web. Yeti is a sample rails app using Ragios as a Rails Plugin, still under development. Yeti will provide a Web UI for Ragios. See more on Yeti here: https://github.com/obi-a/yeti
 
-To install Ragios as a Plugin for a Rails app:
+To install Ragios as a Rails Plugin:
 
  $cd railsapp
  $rails plugin install git://github.com/obi-a/Ragios.git 
