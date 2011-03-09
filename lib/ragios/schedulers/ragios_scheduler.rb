@@ -35,6 +35,8 @@ class RagiosScheduler
     scheduler = Rufus::Scheduler.start_new
     scheduler.every config[:every] do 
 
+        puts 'sending Status Report...' 
+
         @body = status_report  
         message = {:to => config[:contact],
                   :subject => @subject, 
