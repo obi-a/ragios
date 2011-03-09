@@ -50,8 +50,8 @@ require 'spec_base.rb'
 
      monitors.each do |monitor|  
          monitor.num_tests_failed.should == 0
-         monitor.num_tests_passed.should == 0
-         monitor.total_num_tests.should == 0
+         monitor.num_tests_passed.should == 1
+         monitor.total_num_tests.should == 1
          puts monitor.test_description 
          puts monitor.creation_date
          puts monitor.time_of_last_test
