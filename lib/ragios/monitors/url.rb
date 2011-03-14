@@ -36,6 +36,9 @@ class URL < Ragios::Monitors::Service
 
           http.open_timeout = 45 # in seconds
           http.read_timeout = 45 # in seconds
+                   
+          #we choose to skip cert verification since we are simply checking if the URL is up or down
+          #http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
           request = Net::HTTP::Get.new(uri.request_uri)
           request["User-Agent"] = "Ragios (Saint-Ruby)"
