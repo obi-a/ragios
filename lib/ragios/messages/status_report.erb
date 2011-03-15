@@ -8,8 +8,10 @@ From <%= monitor.creation_date.to_s(:short) %> to <%= Time.now.to_s(:short) %>
 Uptime Report:
 <% @jobs.each do |monitor|  %>
 <% count = count + 1 %>
+
 <% @uptime = (monitor.num_tests_passed.to_f / monitor.total_num_tests.to_f) * 100 %>
-<%= count %>. <%= monitor.test_description %>  Uptime: <%= @uptime.to_i.to_s %>% 
+<% @downtime =(monitor.num_tests_failed.to_f / monitor.total_num_tests.to_f) * 100 %>
+<%= count %>. <%= monitor.test_description %>  Uptime: <%= @uptime.to_i.to_s %>%  Downtime: <%= @downtime.to_i.to_s %>%
 <% end %>
 
 <% count = 0 %>
