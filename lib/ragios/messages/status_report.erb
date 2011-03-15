@@ -2,7 +2,7 @@
 
 Ragios Status Report
 
-From <%= @time_since_last_status_report.to_s(:short) %> to <%= Time.now.to_s(:short) %>
+From <%= monitor.creation_date.to_s(:short) %> to <%= Time.now.to_s(:short) %>
  <%=@jobs.length.to_s %> monitors running on the system
 <% count = 0 %>
 Uptime Report:
@@ -29,7 +29,9 @@ Detailed Report:
                    PASSED <%= monitor.num_tests_passed.to_s %> tests
                    FAILED <%= monitor.num_tests_failed.to_s %> tests
                    <% @uptime = (monitor.num_tests_passed.to_f / monitor.total_num_tests.to_f) * 100 %>
+                   <% @downtime =(monitor.num_tests_failed.to_f / monitor.total_num_tests.to_f) * 100 %>
                    UPTIME <%= @uptime.to_i.to_s %>%
+                   DOWNTIME <%= @downtime.to_i.to_s %>%
 
     Tests are performed every: <%= monitor.time_interval %>
     Notification Interval for failed tests: <%= monitor.notification_interval %> 
