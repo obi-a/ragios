@@ -5,12 +5,12 @@ module Schedulers
 class RagiosScheduler
     
     attr :jobs 
-    attr :time_since_last_status_report
+    attr :start_time
 
     def initialize(jobs)
          @jobs = jobs
          #time since the first status report -- will be from the time Ragios started running -- see status_report.erb
-         @time_since_last_status_report  =  Time.now
+         @start_time  =  Time.now
     end
     
   #returns a list of all active monitors managed by this scheduler
@@ -49,7 +49,6 @@ class RagiosScheduler
         else
            raise 'Wrong hash parameter for update_status()'
      end
-       @time_since_last_status_report = Time.now
     end
  end
 

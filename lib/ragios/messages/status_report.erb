@@ -2,7 +2,7 @@
 
 Ragios Status Report
 
-From <%= monitor.creation_date.to_s(:short) %> to <%= Time.now.to_s(:short) %>
+From <%= @start_time.to_s(:short) %> to <%= Time.now.to_s(:short) %>
  <%=@jobs.length.to_s %> monitors running on the system
 <% count = 0 %>
 Uptime Report:
