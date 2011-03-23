@@ -9,7 +9,7 @@ Uptime Report:
 <% @jobs.each do |monitor|  %>
 <% count = count + 1 %>
 
-<% if job.has_failed == TRUE %>
+<% if monitor.has_failed == TRUE %>
  <% @status = "DOWN" %>
 <% else %>
  <% @status = "UP" %>
