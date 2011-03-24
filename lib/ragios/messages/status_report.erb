@@ -28,7 +28,7 @@ Detailed Report:
        
     Last test was performed on: <%= monitor.time_of_last_test.to_s(:short) %>
     Last Test Result:
-                 <%= monitor.describe_test_result %> = <%= monitor.test_result %>
+                 <%= monitor.describe_test_result %> = <%= monitor.test_result.to_s %>
 
     Total number of tests performed: <%= monitor.total_num_tests.to_s %>
 
