@@ -70,12 +70,12 @@ class RagiosScheduler
            job.num_tests_passed = job.num_tests_passed + 1
            job.has_failed = nil #FALSE
            puts  "  [PASSED]" + " Created on: "+ Time.now.to_s(:long) 
-           puts job.describe_test_result + " = " + job.test_result
+           puts job.describe_test_result + " = " + job.test_result.to_s
   	  else
            job.num_tests_failed = job.num_tests_failed + 1
            job.has_failed = TRUE
            puts "  [FAILED]" + " Created on: "+ Time.now.to_s(:long) 
-           puts job.describe_test_result + " = " + job.test_result
+           puts job.describe_test_result + " = " + job.test_result.to_s
            job.failed
   	  end
    	   puts "\n"
