@@ -93,6 +93,10 @@ class RagiosScheduler
    #schedule all the jobs to execute test_command() at every time_interval
    scheduler = Rufus::Scheduler.start_new 
    @jobs.each do |job|
+ 
+     #reset this value to ensure that a monitor that failed the init() test will still be tracked properly
+     job.has_failed = nil #FALSE
+
     scheduler.every job.time_interval do
      begin 
        job.time_of_last_test = Time.now 
