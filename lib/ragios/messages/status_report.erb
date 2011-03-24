@@ -13,6 +13,9 @@ Uptime Report:
         <% else %>
             <% @status = "UP" %>
         <% end %>
+         <% if monitor.total_num_tests == 1 %>
+            <%   @status = "pending..." %>
+        <% end %>
 <% @uptime = (monitor.num_tests_passed.to_f / monitor.total_num_tests.to_f) * 100 %>
 <% @downtime =(monitor.num_tests_failed.to_f / monitor.total_num_tests.to_f) * 100 %>
 <%= count %>. <%= monitor.test_description %>  Uptime: <%= @uptime.to_i.to_s %>%  Downtime: <%= @downtime.to_i.to_s %>% Current Status: <%= @status %>  
