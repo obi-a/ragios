@@ -171,7 +171,7 @@ To monitor a process; using apache2 process as an example
                   }]
      Ragios::Monitor.start monitoring
 
-To monitor a process you must provide the exact name of process as used by the OS. Example if the OS refers to the process as 'apache2' then using 'Apache2' or 'apache' will lead to the wrong results.
+To monitor a process you must provide the exact name of process as used by the OS. Example if the OS refers to the process as 'apache2' then using 'Apache2' or 'apache' will lead to the wrong results. Process monitoring with Ragios, only works on GNU Linux systems currently, it is only a proof of concept right now. I will later add a Process monitor that works on all unix systems including BSD and OS X.
     
 Ragios also notifies the system admin when an issue is resolved example when a website comes back online or when a process is running again.
 
