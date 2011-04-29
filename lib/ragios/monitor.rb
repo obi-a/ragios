@@ -1,134 +1,113 @@
 module Ragios 
-
 #Translates the Ragios Domain Specific Language to the object oriented system
 
- class Monitor
-   
-    def initialize
-
-    end
-
-   def self.update_status config
-      Ragios::System.update_status config 
-   end
-
-    def self.start monitoring
-         monitor = []
-         count = 0
-    monitoring.each do|m|
-       if m[:monitor] == 'http' 
-          monitor[count] = MonitoringHTTP.new m
-       elsif m[:monitor] == 'url'
-         monitor[count] = MonitoringURL.new m
-       elsif m[:monitor] == 'process'
-         monitor[count] = MonitoringProcess.new m
-       else
-         raise '[:monitor] must be assigned a value'
-       end
-       count = count + 1
-     end #end of each...do loop
-    
-    #also returns a list of active monitors     
-    Ragios::System.start monitor
-    end
- end
-
 module Notifiers
-  
-   def notify
-       if @notifier == 'email'
-            email_notify
-       elsif @notifier == 'gmail'
-            gmail_notify
-       elsif @notifier == 'twitter'
-           tweet_notify
-      else 
-          raise 'Notifier is not set'
-      end
-   end
-
-   def fixed 
+ def notify
      if @notifier == 'email'
-            email_resolved
-       elsif @notifier == 'gmail'
-            gmail_resolved
-       elsif @notifier == 'twitter'
-            tweet_resolved
-      else 
-          raise 'Notifier is not set'
-      end
+        email_notify
+     elsif @notifier == 'gmail'
+        gmail_notify
+     elsif @notifier == 'twitter'
+       tweet_notify
+     else 
+       raise 'Notifier: Not Found'
+     end    
    end
-
+                
+ def fixed
+  if @notifier == 'email'
+    email_resolved
+  elsif @notifier == 'gmail'
+    gmail_resolved
+  elsif @notifier == 'twitter'
+    tweet_resolved
+  else 
+     raise 'Notifier: Not Found'
+  end
+ end    
 end
 
+module InitValues
+ def ragios_init_values(options)
+  #translate values of the DSL to a Ragios::Monitors::System object
+  @time_interval = options[:every]
+  @notification_interval = options[:notify_interval]
+  @contact = options[:contact]
+  @test_description = options[:test]
+  @notifier = options[:via]
+ end 
+end
 
-#Generic monitors
- class MonitoringHTTP < Ragios::Monitors::HTTP
-         
-   attr_reader :notifier 
+class Monitor
 
-   def initialize m  
-          #translate values of the DSL to a Ragios::Monitors::HTTP object
-          raise "[:monitor] != 'http'" if m[:monitor] != 'http'
-          @time_interval = m[:every]
-          @notification_interval = m[:notify_interval]
-          @contact = m[:contact]
-          @test_description = m[:test]
-          @domain = m[:domain]
-          @notifier = m[:via]
-          super()
-   end
+    def self.update_status config
+     Ragios::System.update_status config 
+    end
 
-  include Notifiers
-
+    def self.start(monitoring)
+        monitor = []
+        count = 0
+        monitoring.each do|m|
+        #create the right type of monitor instance for each monitor and send it to the scheduler    
+         options = m
+         module_name = "Monitors"  
+         plugin_name = m[:monitor] 
+         plugin_class = Module.const_get(module_name).const_get(plugin_name.capitalize)
+         #add method to plugin class that will translate options to real values
+         plugin_class.class_eval do |options|
+               include InitValues 
+         end     
+         plugin = plugin_class.new
+         plugin.init(options)
+         #add method to GenericMonitor class that will translate options to real values
+         GenericMonitor.class_eval do |options|
+              include InitValues
+         end
+         ragios_monitor = GenericMonitor.new(plugin,options) 
+         monitor[count] = ragios_monitor
+         count = count + 1
+        end #end of each...do loop
+        Ragios::System.start monitor 
+    end   
  end
 
-  
- class MonitoringURL < Ragios::Monitors::URL
-   
-   def initialize m
-      #translate values of the DSL to a Ragios::Monitors::HTTP object
-          raise "[:monitor] != 'url'" if m[:monitor] != 'url'
-          @time_interval = m[:every]
-          @notification_interval = m[:notify_interval]
-          @contact = m[:contact]
-          @test_description = m[:test]
-          @url = m[:url]
-          @notifier = m[:via]
-          super()  
-   end 
-   
- include Notifiers
-  
- end
+class GenericMonitor < Ragios::Monitors::System
 
- class MonitoringProcess < Ragios::Monitors::Process
-   
-   def initialize m
-      #translate values of the DSL to a Ragios::Monitors::Process object
-      raise "[:monitor] != 'process'" if m[:monitor] != 'process'
-      @time_interval = m[:every]
-      @notification_interval = m[:notify_interval]
-      @contact = m[:contact]
-      @test_description = m[:test]
+      attr_reader :plugin
       
-      @process_name = m[:process_name]
-      @start_command = m[:start_command]
-      @restart_command = m[:restart_command]
-      @stop_command = m[:stop_command]
-      @pid_file = m[:pid_file]
-     
-      @server_alias = m[:server_alias]
-      @hostname = m[:hostname]
-      
-      @notifier = m[:via]
-      super()
+      #create the right type of monitor instance
+    def initialize(plugin,options)
+        
+        @plugin = plugin
+        @plugin.ragios_init_values(options)
+        ragios_init_values(options)
+        @describe_test_result = ''
+         if defined?(@plugin.describe_test_result) 
+            @describe_test_result = @plugin.describe_test_result 
+          else
+            raise '@describe_test_result must be defined in ' + @plugin.to_s
+          end       
+
+        super()
+    end
     
-   end
-   
-  include Notifiers
-  
+    def test_command
+        if @plugin.respond_to?('test_command')
+           @plugin.test_command
+        end
+    end
+
+    def failed
+       if @plugin.respond_to?('failed')
+          @plugin.failed
+       end
+    end
+
+    include Notifiers
  end
 
 end
+
+
+
 
