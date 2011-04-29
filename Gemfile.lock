@@ -5,6 +5,7 @@ GEM
     activesupport (3.0.1)
     crack (0.1.8)
     daemons (1.1.0)
+    diff-lcs (1.1.2)
     gmail (0.3.4)
       mail (>= 2.2.1)
       mime (>= 0.1)
@@ -23,6 +24,14 @@ GEM
     polyglot (0.3.1)
     pony (1.0.1)
       mail (> 2.0)
+    rspec (2.5.0)
+      rspec-core (~> 2.5.0)
+      rspec-expectations (~> 2.5.0)
+      rspec-mocks (~> 2.5.0)
+    rspec-core (2.5.1)
+    rspec-expectations (2.5.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.5.0)
     rufus-scheduler (2.0.6)
     treetop (1.4.8)
       polyglot (>= 0.3.1)
@@ -40,5 +49,6 @@ DEPENDENCIES
   gmail
   i18n
   pony
+  rspec
   rufus-scheduler
   twitter

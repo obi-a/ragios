@@ -5,12 +5,12 @@ module Schedulers
 class RagiosScheduler
     
     attr :jobs 
-    attr :time_since_last_status_report
+    attr :start_time
 
     def initialize(jobs)
          @jobs = jobs
          #time since the first status report -- will be from the time Ragios started running -- see status_report.erb
-         @time_since_last_status_report  =  Time.now
+         @start_time  =  Time.now
     end
     
   #returns a list of all active monitors managed by this scheduler
@@ -35,6 +35,8 @@ class RagiosScheduler
     scheduler = Rufus::Scheduler.start_new
     scheduler.every config[:every] do 
 
+        puts 'sending Status Report...' 
+
         @body = status_report  
         message = {:to => config[:contact],
                   :subject => @subject, 
@@ -47,7 +49,6 @@ class RagiosScheduler
         else
            raise 'Wrong hash parameter for update_status()'
      end
-       @time_since_last_status_report = Time.now
     end
  end
 
@@ -66,13 +67,16 @@ class RagiosScheduler
 	begin 
           job.time_of_last_test = Time.now 
  	  if job.test_command
+           job.num_tests_passed = job.num_tests_passed + 1
+           job.has_failed = nil #FALSE
            puts  "  [PASSED]" + " Created on: "+ Time.now.to_s(:long) 
-           puts job.describe_test_result + " = " + job.test_result
+           puts job.describe_test_result + " = " + job.test_result.to_s
   	  else
+           job.num_tests_failed = job.num_tests_failed + 1
+           job.has_failed = TRUE
            puts "  [FAILED]" + " Created on: "+ Time.now.to_s(:long) 
-           puts job.describe_test_result + " = " + job.test_result
+           puts job.describe_test_result + " = " + job.test_result.to_s
            job.failed
-      
   	  end
    	   puts "\n"
 	rescue Exception
@@ -81,6 +85,7 @@ class RagiosScheduler
            raise
         end
        count = count + 1
+       job.total_num_tests = job.total_num_tests + 1 
        end  
    end 
    
@@ -88,6 +93,10 @@ class RagiosScheduler
    #schedule all the jobs to execute test_command() at every time_interval
    scheduler = Rufus::Scheduler.start_new 
    @jobs.each do |job|
+ 
+     #reset this value to ensure that a monitor that failed the init() test will still be tracked properly
+     job.has_failed = nil #FALSE
+
     scheduler.every job.time_interval do
      begin 
        job.time_of_last_test = Time.now 
@@ -120,6 +129,7 @@ class RagiosScheduler
        #catch all exceptions
       rescue Exception
           puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s(:long) 
+          job.has_failed = TRUE
           job.error_handler
       end
        #count this test

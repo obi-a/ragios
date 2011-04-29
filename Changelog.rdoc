@@ -3,8 +3,21 @@
 This is a Rolling release.
 The following changes were made:
 
+4-7-2011
+* rolling release is complete for v0.4.1. work begins on v0.5.0
+
+2-27-2011
+* Status Reports now displays the percentage of uptime for all active monitors. This is called the Uptime value for each monitor. 
+For each monitor the uptime value is 
+ @uptime =  (monitor.num_tests_passed.to_f / monitor.total_num_tests.to_f) * 100
+
+2-18-2011:
+* Yeti is born. Yeti is a Web UI for Ragios. It's a Rails app that runs Ragios as a Rails plugin. More on Yeti here: https://github.com/obi-a/yeti. 
+
+* In addition to running Ragios as a Unix/Linux top program, Ragios can now run as a Plugin for Ruby on Rails applications. This gives developers the ability to build web UIs for it, and visualize their active monitors from Rails Applications.  
+
 2-7-2011:
-* The system admin can now configure Ragios to regularly send him a Status Repoart on all the active monitors running on the system.
+* The system admin can now configure Ragios to regularly send out a Status Report on all the active monitors running on the system.
 This Status Report includes:
    * The number of monitors running on the system
    * How long the monitors have been running 
@@ -22,11 +35,11 @@ To configure Ragios to send Status Reports
 			:via => 'gmail'}) 
 
 The above sample means that Ragios will send a Status Report every day '1d' to the email address 'admin@mail.com' via gmail.
-* The Status Report is stored in an ERB template file, this makes it completely customizable by system admin.
+* The Status Report is stored in an ERB template file, this makes it completely customizable by system admins and developers.
  
 
 2-5-2011:
-* Moved all notification and issue resolved messages to ERB templates in the /lib/ragios/messages folder. The ERB templates can be edited by the system admin to change the format of email messages sent by the Ragios system. The template has access to all the attributes of the Monitor base class (Ragios::Monitors::System class), so it can be edited to include or exclude attributes that should appear on messages.
+* Moved all notification and issue resolved messages to ERB templates in the /lib/ragios/messages folder. The ERB templates can be edited by the system admin to change the format of email messages sent by the Ragios system. The template has access to all the attributes of the Monitor base class (Ragios::Monitors::System class), so it can be edited to include or exclude attributes that appear on messages.
 
 1-29-2011:
 * Ragios::Monitor & Ragios::System now returns a list of all active monitors with their real time stats

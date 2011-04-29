@@ -2,23 +2,45 @@
 
 Ragios Status Report
 
-From <%= @time_since_last_status_report.to_s(:short) %> to <%= Time.now.to_s(:short) %>
+From <%= @start_time.to_s(:short) %> to <%= Time.now.to_s(:short) %>
  <%=@jobs.length.to_s %> monitors running on the system
-    <% count = 0 %>
+<% count = 0 %>
+Uptime Report:
+<% @jobs.each do |monitor|  %>
+<% count = count + 1 %>
+	<% if monitor.has_failed == TRUE %>
+            <% @status = "DOWN" %>
+        <% else %>
+            <% @status = "UP" %>
+        <% end %>
+         <% if monitor.total_num_tests == 1 %>
+            <%   @status = "pending..." %>
+        <% end %>
+<% @uptime = (monitor.num_tests_passed.to_f / monitor.total_num_tests.to_f) * 100 %>
+<% @downtime =(monitor.num_tests_failed.to_f / monitor.total_num_tests.to_f) * 100 %>
+<%= count %>. <%= monitor.test_description %>  Uptime: <%= @uptime.to_i.to_s %>%  Downtime: <%= @downtime.to_i.to_s %>% Current Status: <%= @status %>  
+<% end %>
+
+<% count = 0 %>
+Detailed Report:
 <% @jobs.each do |monitor|  %>
     <% count = count + 1 %>
     <%= count %>. <%= monitor.test_description %>
- 
+
     Running since: <%= monitor.creation_date.to_s(:short) %>
        
     Last test was performed on: <%= monitor.time_of_last_test.to_s(:short) %>
     Last Test Result:
-                 <%= monitor.describe_test_result %> = <%= monitor.test_result %>
+                 <%= monitor.describe_test_result %> = <%= monitor.test_result.to_s %>
 
     Total number of tests performed: <%= monitor.total_num_tests.to_s %>
 
                    PASSED <%= monitor.num_tests_passed.to_s %> tests
                    FAILED <%= monitor.num_tests_failed.to_s %> tests
+                   <% @uptime = (monitor.num_tests_passed.to_f / monitor.total_num_tests.to_f) * 100 %>
+                   <% @downtime =(monitor.num_tests_failed.to_f / monitor.total_num_tests.to_f) * 100 %>
+                   UPTIME <%= @uptime.to_i.to_s %>%
+                   DOWNTIME <%= @downtime.to_i.to_s %>%
 
     Tests are performed every: <%= monitor.time_interval %>
     Notification Interval for failed tests: <%= monitor.notification_interval %> 
