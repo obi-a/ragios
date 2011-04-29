@@ -1,18 +1,17 @@
-
 module Ragios
  module Monitors
 
-# Monitors a domain to check if its online  
+# Plugin: Monitors a domain to check if its online  
 # It establishes a HTTP connection to the domain
 # PASSED if it establishes the HTTP connection successfully and FAILED if it throws an exception
-class HTTP < Ragios::Monitors::Service
-  
+class HTTP 
    attr_reader :domain 
+   attr_accessor :describe_test_result 
   
-   def initialize
+   def init(options)
+        @domain = options[:domain] 
         raise "@domain must be assigned a value" if @domain.nil?
-        @describe_test_result = "HTTP Connection to " + @domain
-        super
+        @describe_test_result = "HTTP Connection to " + @domain     
    end 
 
    #connects to the domain via HTTP
@@ -27,10 +26,8 @@ class HTTP < Ragios::Monitors::Service
      rescue Exception
             @test_result =  $! # $! global variable reference to the Exception object
             return FALSE  
-     end  
-      
-  end
-   
+     end      
+   end   
 end
 
  end
