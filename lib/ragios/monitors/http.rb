@@ -1,10 +1,9 @@
-module Ragios
- module Monitors
+module Monitors
 
 # Plugin: Monitors a domain to check if its online  
 # It establishes a HTTP connection to the domain
 # PASSED if it establishes the HTTP connection successfully and FAILED if it throws an exception
-class HTTP 
+class Http 
    attr_reader :domain 
    attr_accessor :describe_test_result 
   
@@ -30,5 +29,5 @@ class HTTP
    end   
 end
 
- end
 end
+
