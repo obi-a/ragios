@@ -6,7 +6,8 @@ module Monitors
 class Http 
    attr_reader :domain 
    attr_accessor :describe_test_result 
-  
+   attr_accessor :test_result
+
    def init(options)
         @domain = options[:domain] 
         raise "@domain must be assigned a value" if @domain.nil?
@@ -16,8 +17,7 @@ class Http
    #connects to the domain via HTTP
    #PASSED when it establishes a successful HTTP connection with the domain
    def test_command
-     begin 
-           
+     begin  
           Net::HTTP.start(@domain) 
           @test_result = 'PASSED'
           return TRUE 

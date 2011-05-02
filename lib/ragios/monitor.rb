@@ -87,14 +87,19 @@ class GenericMonitor < Ragios::Monitors::System
           else
             raise '@describe_test_result must be defined in ' + @plugin.to_s
           end       
-
         super()
     end
     
     def test_command
         if @plugin.respond_to?('test_command')
-           @plugin.test_command
+           status =  @plugin.test_command 
+           if defined?(@plugin.test_result)
+             @test_result = @plugin.test_result
+           else
+             raise '@test_result must be defined in ' + @plugin.to_s
+           end
         end
+        return status
     end
 
     def failed
