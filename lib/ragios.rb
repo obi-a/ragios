@@ -7,21 +7,27 @@ require 'gmail'
 
 dir = Pathname(__FILE__).dirname.expand_path
 
+def require_all(path)
+ Dir.glob(File.dirname(__FILE__) + path + '/*') do |file| 
+ require File.dirname(__FILE__)  + path + '/' + File.basename(file, File.extname(file))
+ end
+end
+
+
 #notifiers
 require dir + 'ragios/notifiers/tweet_notifier'
 require dir + 'ragios/notifiers/email_notifier'
 require dir + 'ragios/notifiers/gmail_notifier'
 
-#monitors
+#monitors and plugins 
 require dir + 'ragios/monitors/system'
 require dir + 'ragios/monitors/host'
 require dir + 'ragios/monitors/service'
-require dir + 'ragios/monitors/http'
+require_all '/ragios/monitors/plugins'
 require dir + 'ragios/monitors/url'
 require dir + 'ragios/monitors/process'
 
 #schedulers
-
 require dir + 'ragios/schedulers/ragios_scheduler'
 require dir + 'ragios/schedulers/notification_scheduler'
 
