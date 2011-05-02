@@ -80,7 +80,7 @@ class RagiosScheduler
   	  end
    	   puts "\n"
 	rescue Exception
-   	   puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s(:long) 
+   	   puts "ERROR: " +  $!.to_s  + " Created on: "+ Time.now.to_s(:long) 
            job.error_handler
            raise
         end
@@ -128,7 +128,7 @@ class RagiosScheduler
        end
        #catch all exceptions
       rescue Exception
-          puts "ERROR: " +  $!  + " Created on: "+ Time.now.to_s(:long) 
+          puts "ERROR: " +  $!.to_s  + " Created on: "+ Time.now.to_s(:long) 
           job.has_failed = TRUE
           job.error_handler
       end
