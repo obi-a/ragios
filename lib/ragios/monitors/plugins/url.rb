@@ -11,7 +11,7 @@ class Net::HTTP
   end
 end
 
-#monitors a URL by sending a http request to it
+#Plugin: Monitors a URL by sending a http request to it
 #PASSED if it gets a HTTP 200,301 or 302 Response status code from the http request
 class Url
 
