@@ -22,24 +22,23 @@
                    :contact => 'admin@mail.com',
                    :via => 'gmail',
                    :notify_interval => '6h'
+                  },
+                  {  :monitor => 'process',
+                   :every => '5m',
+                   :test => 'Apache Test',
+                   :process_name => 'apache2',
+                   :start_command => '/etc/init.d/apache2 start',
+                   :stop_command => '/etc/init.d/apache2 stop',
+                   :restart_command => '/etc/init.d/apache2 restart',
+                   :pid_file => '/var/run/apache2.pid',
+                   :server_alias => 'my home server',
+                   :hostname => '192.168.2.9',
+                   :contact => 'obi.akubue@mail.com',
+                   :via => 'gmail',
+                   :notify_interval => '2m'
                   }
-
+                   
   Ragios::Monitor.start monitoring
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
  #trap Ctrl-C to exit gracefully
     puts "PRESS CTRL-C to QUIT"
