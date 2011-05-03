@@ -52,7 +52,7 @@ class Monitor
          options = m
          module_name = "Monitors"  
          plugin_name = m[:monitor] 
-         plugin_class = Module.const_get(module_name).const_get(plugin_name.capitalize)
+         plugin_class = Module.const_get(module_name).const_get(plugin_name.camelize)
          #add method to plugin class that will translate options to real values
          plugin_class.class_eval do |options|
                include InitValues 
