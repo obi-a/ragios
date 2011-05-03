@@ -24,7 +24,6 @@ require dir + 'ragios/monitors/system'
 require dir + 'ragios/monitors/host'
 require dir + 'ragios/monitors/service'
 require_all '/ragios/monitors/plugins'
-require dir + 'ragios/monitors/url'
 require dir + 'ragios/monitors/process'
 
 #schedulers
