@@ -1,3 +1,11 @@
+Ragios v0.5.0
+This is a rolling release.
+The following changes were made:
+5-3-2011
+
+* With code changes in the new system Ragios version 0.5+ now requires Ruby 1.9.2 or above.
+
+
 ==Ragios v0.4.1
 
 This is a Rolling release.
