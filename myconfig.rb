@@ -21,7 +21,7 @@
                    url: 'http://www.google.com',
                    contact: 'admin@mail.com',
                    via: 'gmail',
-                   notify_interval: => '6h'
+                   notify_interval: '6h'
                   }
                    
   Ragios::Monitor.start monitoring

@@ -21,8 +21,6 @@ require dir + 'ragios/notifiers/gmail_notifier'
 
 #monitors and plugins 
 require dir + 'ragios/monitors/system'
-require dir + 'ragios/monitors/host'
-require dir + 'ragios/monitors/service'
 require_all '/ragios/monitors/plugins'
 
 #schedulers
