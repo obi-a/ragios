@@ -8,13 +8,13 @@ class SystemMonitor < Ragios::Monitors::System
       @test_description = "sample test"
       @describe_test_result = "sample test"
       @test_result = "sample result"
-      super
-   end
+     super
+   end   
 end
 
 
 describe Ragios::Monitors::System do
-  
+
   before(:each) do
     @sm = SystemMonitor.new
   end

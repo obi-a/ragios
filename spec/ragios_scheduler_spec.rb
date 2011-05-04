@@ -155,6 +155,23 @@ class BadCodeMonitor < Ragios::Monitors::URL
 
 end
 
+class BadCodeMonitor < Ragios::Monitors::System
+   def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "sample test 3"
+      @describe_test_result = "sample test 3"
+      @test_result = "sample result"
+     super
+   end 
+
+   def test_command
+      raise "something is wrong"
+   end
+end
+
+
 
 describe Ragios::Schedulers::RagiosScheduler do
 
@@ -173,6 +190,12 @@ describe Ragios::Schedulers::RagiosScheduler do
        badlycoded = Ragios::Schedulers::RagiosScheduler.new [ BadCodeMonitor.new] 
        #badlycoded.start      
     end
+  
+   it "should throw an exception since one of the monitors contains bad code" do 
+      monitoring_bad_monitor = [BadCodeMonitor.new]
+      Ragios::System.start monitoring_bad_monitor  
+   end
+
     
     it "should schedule all monitors to run their tests at their specified time interval" do 
        @ragios.start
