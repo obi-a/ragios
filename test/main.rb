@@ -2,8 +2,7 @@
   require 'rubygems'
   require "bundler/setup"
   
-  dir = Pathname(__FILE__).dirname.expand_path
-  require dir + 'lib/ragios'
+  require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios')) 
 
   #Add your code here
 
