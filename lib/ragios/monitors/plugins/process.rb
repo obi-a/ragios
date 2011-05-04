@@ -39,7 +39,6 @@ module Monitors
    def test_command
     begin 
      s = system "pidof " + @process_name
-      puts 'just tested if process is running'
      if  s 
        @test_result = 'PASSED'
        return TRUE 
