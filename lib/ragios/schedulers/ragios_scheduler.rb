@@ -20,7 +20,12 @@ class RagiosScheduler
 
    def status_report
        message_template = ERB.new File.new($path_to_messages + "/status_report.erb" ).read
+       begin 
        message_template.result(binding)
+       rescue FloatDomainError
+           #KNOWN ISSUE: to be fixed later
+           raise 'Error Generating Status Report: At least one Monitor has total_number_of_tests_performed  = 0' 
+       end
    end
 
   #send a report  with stats and status information on all active monitors to the system admin via email
