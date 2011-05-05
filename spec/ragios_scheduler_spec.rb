@@ -104,25 +104,12 @@ describe Ragios::Schedulers::RagiosScheduler do
     it "should initalize all monitors and run their test command" do 
       @ragios.init
     end
-
-    it "should throw an exception during init() when  a monitor's test_command() generates an error" do 
-       badlycoded = Ragios::Schedulers::RagiosScheduler.new [ BadCodeMonitor.new]
-       #scheduler catches exceptions generated the monitor's test_command() during init() 
-       #and raises the exception again after passing it to a handler if one is implemented  
-       lambda {badlycoded.init}.should raise_error(RuntimeError,"something is wrong")     
-    end
-  
-   it "should throw an exception: will not start monitoring because a monitor's test_command() generates an error" do 
-      monitoring_bad_monitor = [BadCodeMonitor.new]
-      lambda {Ragios::System.start monitoring_bad_monitor}.should raise_error(RuntimeError,"something is wrong")  
-   end
-
     
     it "should schedule all monitors to run their tests at their specified time interval" do 
        @ragios.start
     end
 
-    it "should display stats on active each monitor" do
+    it "should display stats on each active monitor" do
       monitors = @ragios.get_monitors   
        
       monitors.each do |monitor|  
@@ -142,4 +129,17 @@ describe Ragios::Schedulers::RagiosScheduler do
      lambda {@ragios.status_report}.should raise_error(RuntimeError, "Error Generating Status Report: At least one Monitor has total_number_of_tests_performed  = 0")
      
    end
+  
+    it "should throw an exception during init() when  a monitor's test_command() generates an error" do 
+       badlycoded = Ragios::Schedulers::RagiosScheduler.new [ BadCodeMonitor.new]
+       #scheduler catches exceptions generated the monitor's test_command() during init() 
+       #and raises the exception again after passing it to a handler if one is implemented  
+       lambda {badlycoded.init}.should raise_error(RuntimeError,"something is wrong")     
+    end
+  
+   it "should throw an exception: will not start monitoring because a monitor's test_command() generates an error" do 
+      monitoring_bad_monitor = [BadCodeMonitor.new]
+      lambda {Ragios::System.start monitoring_bad_monitor}.should raise_error(RuntimeError,"something is wrong")  
+   end
+
 end
