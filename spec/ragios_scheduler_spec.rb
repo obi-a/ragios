@@ -1,13 +1,18 @@
 require 'spec_base.rb'
 
-class URLMonitor < Ragios::Monitors::URL
+class Monitor1 < Ragios::Monitors::System
    def initialize
-       @time_interval = '20m'
+      @time_interval = '10m'
       @notification_interval = '6h'
       @contact = "obi@mail.com"
-      @test_description  = "sample URL test to http://google.com "
-      @url = "http://google.com"
-      super
+      @test_description = "sample test 1"
+      @describe_test_result = "sample test 1"
+      @test_result = "sample result"
+     super
+   end 
+
+   def test_command
+      TRUE 
    end
   
    def notify
@@ -16,143 +21,56 @@ class URLMonitor < Ragios::Monitors::URL
 
   def fixed
      gmail_resolved
-  end
+  end  
 end
 
-class HttpsMonitor < Ragios::Monitors::URL
+
+class Monitor2 < Ragios::Monitors::System
    def initialize
-       @time_interval = '20m'
+      @time_interval = '10m'
       @notification_interval = '6h'
       @contact = "obi@mail.com"
-      @test_description  = "sample https test"
-      @url = "https://github.com/obi-a/Ragios"
-      super
-   end
+      @test_description = "sample test 2"
+      @describe_test_result = "sample test 2"
+      @test_result = "sample result"
+     super
+   end 
 
+   def test_command
+      TRUE 
+   end
+  
    def notify
-     puts 'gmail_notify'
+     gmail_notify
   end
 
   def fixed
      gmail_resolved
-  end
-
+  end  
 end
 
-
-class FailedURLMonitor < Ragios::Monitors::URL
-   def initialize
-       @time_interval = '20m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description  = "sample Website that always fails"
-      @url = "http://www.google.com/fail"
-      super
-   end
-
-    def notify
-     puts 'gmail_notify'
-  end
-
-  def fixed
-     puts 'gmail_resolved'
-  end
-
-end
-
-class HTTPMonitor < Ragios::Monitors::HTTP
+class Monitor3 < Ragios::Monitors::System
    def initialize
       @time_interval = '10m'
       @notification_interval = '6h'
       @contact = "obi@mail.com"
-      @test_description = "sample test"
-      @describe_test_result = "sample test http to google.com"
-      @domain = "google.com"
-      super
+      @test_description = "sample test 3"
+      @describe_test_result = "sample test 3"
+      @test_result = "sample result"
+     super
+   end 
+
+   def test_command
+      FALSE 
    end
-   
-    def notify
-     puts 'gmail_notify'
+  
+   def notify
+     gmail_notify
   end
 
   def fixed
-     puts 'gmail_resolved'
-  end
-
-end
-
-class FailedHTTPMonitor < Ragios::Monitors::HTTP
-   def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "sample test"
-      @describe_test_result = "failed domain"
-      @domain = "obiora-akubue.com"
-      super
-   end
-
-    def notify
-     puts 'gmail_notify'
-  end
-
-  def fixed
-     puts 'gmail_resolved'
-  end
-
-end
-
-class MonitorApache <  Ragios::Monitors::Process
-    def initialize
-
-      @time_interval = '1m'
-      @notification_interval = '2m'
-      @contact = "admin@mail.com"
-      @test_description  = "Apache Test"
-
-      @process_name = 'apache2'
-      @start_command = 'sudo /etc/init.d/apache2 start'
-      @restart_command = 'sudo /etc/init.d/apache2 restart'
-      @stop_command = 'sudo /etc/init.d/apache2 stop'
-      @pid_file = '/var/run/apache2.pid'
-
-      @server_alias = 'my home server'
-      @hostname = '192.168.2.2'
-
-      super
-    end
-
-    def notify
-     puts 'gmail_notify: Apache FAILED on host ' + @hostname
-  end
-
-  def fixed
-    puts 'gmail_resolved: Apache is now WORKING again on host ' + @hostname 
-  end
-
- end
-
-
-
-class BadCodeMonitor < Ragios::Monitors::URL
-   #a monitoring object with bad code that throws a runtime error
-   def initialize
-       @time_interval = '1m'
-      @notification_interval = '2m'
-      @contact = "obi@mail.com"
-      @test_description  = "sample Website that always fails"
-      @url = "http://www.google.com/fail"
-      super
-   end
-
-    def test_command
-     raise "bad code"
-    end
-
-   def error_handler
-     puts 'bad code ALERT: error' 
-   end
-
+     gmail_resolved
+  end  
 end
 
 class BadCodeMonitor < Ragios::Monitors::System
@@ -166,6 +84,10 @@ class BadCodeMonitor < Ragios::Monitors::System
      super
    end 
 
+   def error_handler
+       puts 'handled the error situation'
+   end
+
    def test_command
       raise "something is wrong"
    end
@@ -176,38 +98,48 @@ end
 describe Ragios::Schedulers::RagiosScheduler do
 
     before(:each) do
-   
-     @ragios = Ragios::Schedulers::RagiosScheduler.new [
-         URLMonitor.new, FailedURLMonitor.new,HttpsMonitor.new,HTTPMonitor.new,FailedHTTPMonitor.new, MonitorApache.new]
-  end 
-    
+     @ragios = Ragios::Schedulers::RagiosScheduler.new [Monitor1.new, Monitor2.new,Monitor3.new]
+    end 
 
     it "should initalize all monitors and run their test command" do 
       @ragios.init
     end
 
-    it "should recover when a monitor throws an exception" do 
-       badlycoded = Ragios::Schedulers::RagiosScheduler.new [ BadCodeMonitor.new] 
-       #badlycoded.start      
+    it "should throw an exception during init() when  a monitor's test_command() generates an error" do 
+       badlycoded = Ragios::Schedulers::RagiosScheduler.new [ BadCodeMonitor.new]
+       #scheduler catches exceptions generated the monitor's test_command() during init() 
+       #and raises the exception again after passing it to a handler if one is implemented  
+       lambda {badlycoded.init}.should raise_error(RuntimeError,"something is wrong")     
     end
   
-   it "should throw an exception since one of the monitors contains bad code" do 
+   it "should throw an exception: will not start monitoring because a monitor's test_command() generates an error" do 
       monitoring_bad_monitor = [BadCodeMonitor.new]
-      Ragios::System.start monitoring_bad_monitor  
+      lambda {Ragios::System.start monitoring_bad_monitor}.should raise_error(RuntimeError,"something is wrong")  
    end
 
     
     it "should schedule all monitors to run their tests at their specified time interval" do 
        @ragios.start
-       monitors = @ragios.get_monitors   
+    end
+
+    it "should display stats on active each monitor" do
+      monitors = @ragios.get_monitors   
        
       monitors.each do |monitor|  
          puts monitor.test_description 
          puts monitor.creation_date
          puts monitor.time_of_last_test
-     end
-      
-       
+      end
+    end
+   
+    it "should scheduler a status report to be sent out at the specified interval" do
+       @ragios.update_status({:every => '60m',
+			:contact => 'admin@mail.com',
+			:via => 'gmail'}) 
     end
     
+   it "should display the status report" do
+     lambda {@ragios.status_report}.should raise_error(RuntimeError, "Error Generating Status Report: At least one Monitor has total_number_of_tests_performed  = 0")
+     
+   end
 end
