@@ -111,7 +111,7 @@ class System
   #inform the system admin that the issue has been resolved via gmail
    def gmail_resolved
         puts 'sending gmail issue resolved message...'
-       Ragios::Notifiers::GMailNotifier.new.send(message("email_resolved.erb"))
+       Ragios::GmailNotifier.new.send(message("email_resolved.erb"))
    end 
 
 
@@ -124,7 +124,7 @@ class System
    #inform the system admin that the issue has been resolved via twitter
    def tweet_resolved
       
-     Ragios::Notifiers::TweetNotifier.new.tweet(tweet_message("tweet_resolved.erb"))
+     Ragios::TwitterNotifier.new.tweet(tweet_message("tweet_resolved.erb"))
 
    end
 
@@ -137,12 +137,12 @@ class System
   #sends notifcations via gmail to the system admin when a test fails
   def gmail_notify
        puts 'sending gmail alert...'
-       Ragios::Notifiers::GMailNotifier.new.send(message("email_notify.erb"))
+       Ragios::GmailNotifier.new.send(message("email_notify.erb"))
   end
    
   #sends notifcations via twitter to the system admin when a test fails
   def tweet_notify
-     Ragios::Notifiers::TweetNotifier.new.tweet(tweet_message("tweet_notify.erb"))
+     Ragios::TwitterNotifier.new.tweet(tweet_message("tweet_notify.erb"))
   end
 
    #sends notifcations via email to the system admin when a test fails
@@ -153,7 +153,7 @@ class System
      
    #informs a system admin via twitter when a test_command() or failed() method encounters an excepion
    def tweet_error
-        Ragios::Notifiers::TweetNotifier.new.tweet(tweet_message("tweet_error.erb"))
+        Ragios::TwitterNotifier.new.tweet(tweet_message("tweet_error.erb"))
    end
    
    #informs a system admin via email when a test_command() or failed() method encounters an excepion
