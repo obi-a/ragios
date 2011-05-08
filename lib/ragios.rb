@@ -15,7 +15,7 @@ end
 
 
 #notifiers
-require dir + 'ragios/notifiers/tweet_notifier'
+require dir + 'ragios/notifiers/twitter_notifier'
 require dir + 'ragios/notifiers/email_notifier'
 require dir + 'ragios/notifiers/gmail_notifier'
 
