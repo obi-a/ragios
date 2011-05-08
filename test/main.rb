@@ -1,8 +1,8 @@
   #ragios/main.rb
   require 'rubygems'
   require "bundler/setup"
-  
-  require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios')) 
+  require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios'))
+  require  Pathname(__FILE__).dirname.expand_path + 'config' 
 
   #Add your code here
 
@@ -14,11 +14,19 @@
                    via: 'gmail',
                    notify_interval: '6h'
                   },
-                 { monitor: 'url',
-                   every: '5m',
+                  { monitor: 'url',
+                   every: '1m',
                    test: 'video datafeed test',
-                   url: 'http://www.google.com',
+                   url: 'http://www.google.com/fail',
                    contact: 'admin@mail.com',
+                   via: 'twitter',
+                   notify_interval: '6h'
+                  },
+                 { monitor: 'url',
+                   every: '1m',
+                   test: 'another datafeed test',
+                   url: 'http://www.google.com/fail',
+                   contact: 'obi.akubue@gmail.com',
                    via: 'gmail',
                    notify_interval: '6h'
                   }
