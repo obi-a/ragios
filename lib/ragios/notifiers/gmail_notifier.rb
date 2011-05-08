@@ -1,16 +1,11 @@
-
-
 module Ragios
-module Notifiers
-
 #this class hides the messy details of sending notifications via gmail 
 #from the rest of the system
-class GMailNotifier
+class GmailNotifier
 
-  def initialize 
-
-       @username = 'gmail_username'  #replace with gmail username
-       @password =  'gmail_password' #replace with gmail password 
+  def self.config(gmail_account)
+     @@username = gmail_account[:username]
+     @@password = gmail_account[:password]  
   end
 
   def send message
@@ -19,7 +14,7 @@ class GMailNotifier
       #message = {:to => "admin@example.com",
       #           :subject =>"subj", 
       #           :body => "stuff"}
-     gmail = Gmail.connect(@username, @password)
+     gmail = Gmail.connect(@@username, @@password)
      # play with your gmail...
 
      gmail.deliver do
@@ -35,6 +30,4 @@ class GMailNotifier
   end
 
 end
-
- end
 end
