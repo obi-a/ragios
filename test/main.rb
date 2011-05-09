@@ -4,8 +4,7 @@
   require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios'))
   require  Pathname(__FILE__).dirname.expand_path + 'config' 
 
-  #Add your code here
-
+ #Add your code here
  monitoring   = { monitor: 'http',
                   every: '5m',
                   test: 'Http connection to my site',
@@ -30,7 +29,8 @@
                    via: 'gmail',
                    notify_interval: '6h'
                   }
-                   
+
+  
   Ragios::Monitor.start monitoring
 
  #trap Ctrl-C to exit gracefully
