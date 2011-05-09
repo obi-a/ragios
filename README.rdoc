@@ -52,70 +52,70 @@ To update to the latest version of Ragios anytime, from the root of the Ragios d
 To monitor a website for availability; enter the following in the ragios/main.rb script
 
 
-   monitoring	= [{:monitor =>'http', 
-                   :every => '5m',
-                   :test => 'Http connection to my site',
-                   :domain => 'www.mysite.com',
-                   :contact => 'admin@mysite.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
+   monitoring	= [{monitor:'http', 
+                   every:'5m',
+                   test:'Http connection to my site',
+                   domain:'www.mysite.com',
+                   contact:'admin@mysite.com',
+                   via:'gmail',  
+                   notify_interval: '6h'
                   }]
 
   Ragios::Monitor.start monitoring
 
-This will try to establish a http connection with the :domain => 'www.mysite.com' every '5m' (5 minutes), when it fails to establish a connection it will send a notification to the system admin specified by :contact => 'admin@mysite.com' via 'gmail'. if the website is still offline it will notify the admin again after 6 hours specified by :notify_interval => '6h'. :test is a description of the test being performed. It helps Ragios notify the system admin with accurate details of what went wrong on the system.
+This will try to establish a http connection with the domain:'www.mysite.com' every '5m' (5 minutes), when it fails to establish a connection it will send a notification to the system admin specified by contact:'admin@mysite.com' via 'gmail'. if the website is still offline it will notify the admin again after 6 hours specified by notify_interval:'6h'. test: is a description of the test being performed. It helps Ragios notify the system admin with accurate details of what went wrong on the system.
 
-To send notifications via twitter use :via => 'twitter' and to send notifications via sendmail installed on the system use :via => 'email', using :via => 'gmail' means the notifications will be sent via gmail.
+To send notifications via twitter use via: 'twitter' and to send notifications via sendmail installed on the system use via: 'email', using via: 'gmail' means the notifications will be sent via gmail.
  
 
 ==To monitor multiple sites
    
-   monitoring	= {:monitor =>'http', 
-                   :every => '5m',
-                   :test => 'Http connection to my site',
-                   :domain => 'www.mysite.com',
-                   :contact => 'admin@mysite.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
+   monitoring	= {monitor: 'http', 
+                   every: '5m',
+                   test: 'Http connection to my site',
+                   domain: 'www.mysite.com',
+                   contact: 'admin@mysite.com',
+                   via: 'gmail',  
+                   notify_interval: '6h'
                   },
-                   {:monitor =>'http', 
-                   :every => '30s',
-                   :test => 'Http connection to client A's website',
-                   :domain => 'www.clientA.com',
-                   :contact => 'admin@mysite.com',
-                   :via => 'twitter',  
-                   :notify_interval => '6h'
+                   {monitor:'http', 
+                    every:'30s',
+                    test:'Http connection to client A website',
+                    domain:'www.clientA.com',
+                    contact:'admin@mysite.com',
+                    via:'twitter',  
+                    notify_interval:'6h'
                   },
-                  {:monitor =>'http', 
-                   :every => '3h',
-                   :test => 'Http connection to client B's website',
-                   :domain => 'www.clientB.com',
-                   :contact => 'admin@mysite.com',
-                   :via => 'twitter',  
-                   :notify_interval => '6h'
+                  {monitor: 'http', 
+                   every: '3h',
+                   test: 'Http connection to client B website',
+                   domain: 'www.clientB.com',
+                   contact: 'admin@mysite.com',
+                   via: 'twitter',  
+                   notify_interval: '6h'
                   }
 
   Ragios::Monitor.start monitoring
   
 The time interval between tests could be in seconds, minutes, hours or combined,
-  :every => '5m', #every 5 minutes
-  :every => '30s', #every 30 seconds
-  :every => '4h', #every 5 hours
-  :every => '6h30m', #every 5 minutes
+  every: '5m', #every 5 minutes
+  every: '30s', #every 30 seconds
+  every: '4h', #every 5 hours
+  every: '6h30m', #every 5 minutes
 
-Same thing applies to the values of the :notify_interval, they can be in seconds, minutes, hours or combined. 
+Same thing applies to the values of the notify_interval, they can be in seconds, minutes, hours or combined. 
 
 
 ===Monitoring URLs
 To monitor a URL,
      
-     monitoring	=  [{ :monitor => 'url',
-                   :every => '5m',
-                   :test => 'video datafeed test',
-                   :url => 'http://www.datafeed.com/resources/videos/1',
-                   :contact => 'admin@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
+     monitoring	=  [{ monitor: 'url',
+                    every: '5m',
+                    test: 'video datafeed test',
+                    url: 'http://www.datafeed.com/resources/videos/1',
+                    contact: 'admin@mail.com',
+                    via: 'gmail',  
+                    notify_interval: '6h'
                   
                   }]
 
@@ -123,100 +123,64 @@ To monitor a URL,
 
 You can monitor a combination of websites and URLs,
 
-    monitoring	=  { :monitor => 'url',
-                   :every => '5m',
-                   :test => 'video datafeed test',
-                   :url => 'http://www.datafeed.com/resources/videos/1',
-                   :contact => 'admin@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
-                  
+    monitoring	=  { monitor: 'url',
+                    every: '5m',
+                    test: 'video datafeed test',
+                    url: 'http://www.datafeed.com/resources/videos/1',
+                    contact: 'admin@mail.com',
+                    via: 'gmail',  
+                    notify_interval: '6h'
                   },
-                  {:monitor =>'http', 
-                   :every => '30s',
-                   :test => 'Http connection to client A's website',
-                   :domain => 'www.clientA.com',
-                   :contact => 'admin@mysite.com',
-                   :via => 'twitter',  
-                   :notify_interval => '6h'
+                  {monitor: 'http', 
+                   every: '30s',
+                   test: 'Http connection to client A website',
+                   domain: 'www.clientA.com',
+                   contact: 'admin@mysite.com',
+                   via: 'twitter',  
+                   notify_interval: '6h'
                   },
-                  { :monitor => 'url',
-                   :every => '5m',
-                   :test => 'My blog URL test',
-                   :url => 'http://www.myblog.com',
-                   :contact => 'admin@mail.com',
-                   :via => 'email',  
-                   :notify_interval => '6h'
+                  {monitor: 'url',
+                   every: '5m',
+                   test: 'My blog URL test',
+                   url: 'http://www.myblog.com',
+                   contact: 'admin@mail.com',
+                   via: 'email',  
+                   notify_interval: '6h'
                   
                   }
                 
    Ragios::Monitor.start monitoring
 
-===Monitoring  a process
-To monitor a process; using apache2 process as an example
- 
-      monitoring = [{  :monitor => 'process',
-                   :every => '10m',
-                   :test => 'Apache Test',
-                   :process_name => 'apache2',
-                   :start_command => '/etc/init.d/apache2 start',
-                   :stop_command => '/etc/init.d/apache2 stop',
-                   :restart_command => '/etc/init.d/apache2 restart',
-                   :pid_file => '/var/run/apache2.pid',
-                   :server_alias => 'my home server',
-                   :hostname => '192.168.2.9',
-                   :contact => 'obi.akubue@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '1h'
-                  }]
-     Ragios::Monitor.start monitoring
-
-To monitor a process you must provide the exact name of process as used by the OS. Example if the OS refers to the process as 'apache2' then using 'Apache2' or 'apache' will lead to the wrong results. Process monitoring with Ragios, only works on GNU Linux systems currently, it is only a proof of concept right now. I will later add a Process monitor that works on all unix systems including BSD and OS X.
     
-Ragios also notifies the system admin when an issue is resolved example when a website comes back online or when a process is running again.
+Ragios also notifies the system admin when an issue is resolved example when a website comes back online.
 
 ===main.rb 
 
 The Ragios configuration settings should in the Ragios/main.rb script. A sample copy of the script looks like this:
 
-  #Ragios/main.rb
   require 'rubygems'
   require "bundler/setup"
-
   dir = Pathname(__FILE__).dirname.expand_path
   require dir + 'lib/ragios'
+  require dir + 'config'
     
   #Add your code here
-     monitoring = {:monitor =>'http',
-                   :every => '2m',
-                   :test => 'Http connection to my blog',
-                   :domain => 'obi-akubue.org',
-                   :contact => 'obi.akubue@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
+     monitoring = { monitor:'http',
+                    every: '2m',
+                    test: 'Http connection to my blog',
+                    domain: 'obi-akubue.org',
+                    contact: 'obi.akubue@mail.com',
+                    via: 'gmail',  
+                    notify_interval: '6h'
                   } ,
-                  { :monitor => 'url',
-                   :every => '2m',
-                   :test => 'My Website Test',
-                   :url => 'http://www.whisperservers.com/blog/',
-                   :contact => 'obi.akubue@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
+                  { monitor: 'url',
+                    every: '2m',
+                    test: 'My Website Test',
+                    url: 'http://www.whisperservers.com/blog/',
+                    contact: 'obi.akubue@mail.com',
+                    via: 'gmail',  
+                    notify_interval: '6h'
                   
-                  },
-                  {  :monitor => 'process',
-                   :every => '1m',
-                   :test => 'Apache Test',
-                   :process_name => 'apache2',
-                   :start_command => '/etc/init.d/apache2 start',
-                   :stop_command => '/etc/init.d/apache2 stop',
-                   :restart_command => '/etc/init.d/apache2 restart',
-                   :pid_file => '/var/run/apache2.pid',
-                   :server_alias => 'my home server',
-                   :hostname => '192.168.2.9',
-                   :contact => 'obi.akubue@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '2m'
                   }
 
      Ragios::Monitor.start monitoring
@@ -251,13 +215,6 @@ Output from running the above main.rb script will look like this :
 	Running First Test...
 	  [PASSED] Created on: February 06, 2011 20:18
 	HTTP Request to http://www.whisperservers.com/blog/ = 200
-
-	test 3. Apache Test
-	Scheduled to run every 1m
-	Running First Test...
-	23063 18154 18153 18152 18151 18150 1995
-	  [PASSED] Created on: February 06, 2011 20:18
-	The process apache2 on host: 192.168.2.9 = PASSED
 
 	PRESS CTRL-C to QUIT
 
@@ -298,13 +255,13 @@ When a test fails the system sends out a notification to the system admin about 
 ===Sending Notifications via Sendmail
 To send out notifications via sendmail use :via => 'email', example
 
-    monitoring	=  [{ :monitor => 'url',
-                   :every => '5m',
-                   :test => 'video datafeed test',
-                   :url => 'http://www.datafeed.com/resources/videos/1',
-                   :contact => 'admin@mail.com',
-                   :via => 'email',  
-                   :notify_interval => '6h'
+    monitoring	=  [{ monitor: 'url',
+                      every: '5m',
+                      test: 'video datafeed test',
+                      url: 'http://www.datafeed.com/resources/videos/1',
+                      contact: 'admin@mail.com',
+                      via: 'email',  
+                      notify_interval: '6h'
                   
                   }]
 
@@ -314,23 +271,28 @@ You just need to have sendmail installed in your system, Ragios will use it to s
 ===Sending Notifications via Gmail
 To send out notifications via gmail, first create a Gmail account for the Ragios system. The email notifications will be sent out from this Gmail account.
 
-Edit the script Ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line below with the username & password of the Gmail account you created.
+Edit the script Ragios/config.rb, add the username & password of the Gmail account you created. See below;
 
-  @username = 'gmail_username'  #replace with gmail username
-  @password =  'gmail_password' #replace with gmail password
+  gmail_account = {username: 'Gmail Username', #replace with gmail username
+                   password: 'Gmail Password'}  #replace with gmail password
 
-Now on the main.rb script use :via => 'gmail' example
+Example
+
+  gmail_account = {username: 'Ragios', 
+                   password: 'xyz123'}  
 
 
-  monitoring	=  [{ :monitor => 'url',
-                   :every => '5m',
-                   :test => 'video datafeed test',
-                   :url => 'http://www.datafeed.com/resources/videos/1',
-                   :contact => 'admin@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
-                  
-                  }]
+Now on the main.rb script use via: 'gmail', see example below
+
+
+    monitoring	= [{ monitor: 'url',
+                      every: '5m',
+                      test: 'video datafeed test',
+                      url: 'http://www.datafeed.com/resources/videos/1',
+                      contact: 'admin@mail.com',
+                      via: 'gmail',  
+                      notify_interval: '6h'
+                    }]
 
 ===Sending Notifications via Twitter
 First you need to create and register a twitter app at http://twitter.com/apps/new. Ragios will use this app to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use them later.
@@ -379,26 +341,27 @@ Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your 
 When you run the script it will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for Ragios. Open the authorization URL in a web browser, choose ALLOW to grant access to your twitter app. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. 
 After this, the script will display your access_token and access_secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
 
-Now open the tweet_notifier.rb script located in Ragios/lib/ragios/notifiers directory. This is the script that Ragios uses to tweet the notification messages. Replace the lines below from the script with the real values for the access_token, access_secret, consumer key and consumer secret. 
+Now open the config.rb script located in Ragios/ directory. Add the real values for the access_token, access_secret, consumer key and consumer secret. Replace the string in quotes.
 
-      oauth = Twitter::OAuth.new('Consumer Key', 'Consumer secret')
-      oauth.authorize_from_access('access token', 'access secret')   
+twitter_cred = {consumer_key: 'Consumer Key', 
+               consumer_secret: 'Consumer secret',
+                 access_token: 'Access Token',
+                 access_secret: 'Access Secret'}
           
 
-Now on the main.rb script use :via => 'twitter' example
+Now on the main.rb script use via:'twitter' example
 
 
-  monitoring	=  [{ :monitor => 'url',
-                   :every => '5m',
-                   :test => 'video datafeed test',
-                   :url => 'http://www.datafeed.com/resources/videos/1',
-                   :contact => 'admin@mail.com',
-                   :via => 'twitter',  
-                   :notify_interval => '6h'
-                  
-                  }]
+  monitoring	=  [{monitor: 'url',
+                     every: '5m',
+                     test: 'video datafeed test',
+                     url: 'http://www.datafeed.com/resources/videos/1',
+                     contact: 'admin@mail.com',
+                     via: 'twitter',  
+                     notify_interval: '6h'
+                    }]
 
-Example of an email notification will look like this: 
+Example of an email notification may look like this: 
 
  Subject: Http connection to my blog FAILED
  
@@ -406,7 +369,7 @@ Example of an email notification will look like this:
  Created on: September 22, 2010 13:55
 
 
-A tweet notification will look like this:
+A tweet notification may look like this:
 
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
  Created on: October 16, 04:48
@@ -426,50 +389,49 @@ Also includes a summary of each active monitor
 * date/time the last test was performed etc.
 
 To configure Ragios to send Status Reports
-  Ragios::Monitor.update_status({:every => '1d',
-			:contact => 'admin@mail.com',
-			:via => 'gmail'}) 
+  Ragios::Monitor.update_status({every: '1d',
+			         contact: 'admin@mail.com',
+			         via: 'gmail'}) 
 
 The above sample means that Ragios will send a Status Report every day '1d' to the email address 'admin@mail.com' via gmail. 
 Ragios can send Status Reports every (n) minutes, hours, days, weeks or combined. 
 
 Example
-  :every => '40m' #every 40 minutes
-  :every => '2d'  #every 2 days
-  :every => '6h'  #every 6 hours
-  :every => '1w'  #every week
-  :every => '4w'  #every 4 weeks
-  :every => '1w2d' #every week and 2 days i.e every 9 days
+   every: '40m' #every 40 minutes
+   every: '2d'  #every 2 days
+   every: '6h'  #every 6 hours
+   every: '1w'  #every week
+   every: '4w'  #every 4 weeks
+   every: '1w2d' #every week and 2 days i.e every 9 days
 
 
 The Status Report can be sent via gmail or sendmail, 
-  :via => gmail # sends the report via gmail
-  :via => email # sends the report via sendmail installed on the system
+   via: gmail # sends the report via gmail
+   via: email # sends the report via sendmail installed on the system
 
 Example with 2 monitors:
-          monitoring =  { :monitor => 'url',
-                   :every => '5m',
-                   :test => 'video datafeed test',
-                   :url => 'http://www.datafeed.com/resources/videos/1',
-                   :contact => 'admin@mail.com',
-                   :via => 'gmail',  
-                   :notify_interval => '6h'
-                  
+      monitoring = {monitor:'url',
+                    every:'5m',
+                    test:'video datafeed test',
+                    url:'http://www.datafeed.com/resources/videos/1',
+                    contact:'admin@mail.com',
+                    via:'gmail',  
+                    notify_interval:'6h'
                   },
-                  {:monitor =>'http', 
-                   :every => '30s',
-                   :test => 'Http connection to client A's website',
-                   :domain => 'www.clientA.com',
-                   :contact => 'admin@mysite.com',
-                   :via => 'twitter',  
-                   :notify_interval => '6h'
+                  { monitor:'http', 
+                    every:'30s',
+                    test:'Http connection to client A website',
+                    domain:'www.clientA.com',
+                    contact:'admin@mysite.com',
+                    via:'twitter',  
+                    notify_interval:'6h'
                   }
                 
   Ragios::Monitor.start monitoring  
   
-  Ragios::Monitor.update_status({:every => '5d',
-			:contact => 'admin@mail.com',
-			:via => 'gmail'}) 
+  Ragios::Monitor.update_status({ every: '5d',
+			          contact: 'admin@mail.com',
+			          via: 'gmail'}) 
 
 This above example will send a Status Report to the email 'admin@mail.com' every 5 days via gmail. 
 
@@ -477,483 +439,6 @@ This above example will send a Status Report to the email 'admin@mail.com' every
 
 The Status report is generated from the ERB Template file Ragios/lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes of the monitors you want to see in the report. You can also format the layout or text of the report from this template.
   
-== Part 2.Advanced System Monitoring: Using Objects To Monitor systems
-Using Ruby Objects to monitor systems gives you the flexibility to add your own code to easily extend the functionality of Ragios making it run tests exactly the way you want.
-
-Ragios has built-in objects to monitor web apps, system processes, APIs, websites etc. 
-
-===Using the built-in Objects
-Built-in objects are available for different forms of system monitoring. 
-
-===To monitor a website (using objects)
-We use the HTTP object. This object tries to establish a Http connection with a website at the specified time interval. It notifies the system admin when its unable to establish the connection. 
-
-To use the HTTP object, we need to create an object that exends it with the details of the website we wish to monitor.
-This object should be defined in the Ragios/main.rb script.
- 
-Below is a sample object that uses the HTTP object to monitor my blog for availability, it sends me an email notification if my blog is offline. 
-	
-  class MonitorMyBlog < Ragios::Monitors::HTTP
-    def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "Http connection to my blog"
-      @domain = "obi-akubue.org"
-      super
-    end
-
-    def notify
-      email_notify
-      #gmail_notify
-      #tweet_notify
-    end
-  
-  end
-
-Ragios::Monitors::HTTP is the built-in generic object we use to monitor websites for availability. 
-
-The object MonitorMyBlog will try to establish a http connection to my blog every 10minutes. It will send me an email notification when it fails to establish a http connection. 
-
-@domain is the domain of the website we wish to monitor
-
-   @domain = "obi-akubue.org"
-
-@test_description is a summary of what we are testing with this object, this helps the Ragios system send out notification alerts with specific details on what went wrong in the system. Our object tests HTTP connections to my blog so its useful to note that in the descritpion. 
-
-   @test_description = "Http connection to my blog"
-
-@contact is the email address of the system admin. The monitor will send email notifications to this address to alert the system admin of failures in the system.
- 
-   @contact = "obi@mail.com" 
-
-This could be omitted when we use other forms of notification like SMS, IM or Twitter.
-
-@time_interval is the time interval in which our HTTP monitor tries to establish a Http connection with the specified website. In the example above, 
-
-  @time_interval = '10m' 
-
-means our object will try to establish a HTTP connection to my blog every 10minutes. @time_interval can be in seconds, minutes, hours or combined.
-
-Example
-
-	@time_interval = '3m'  #means the test will be performed every 3 minutes
-	@time_interval = '4h'  #every 4 hours
-	@time_interval = '30s' #every 30 seconds
-	@time_interval = '6h30m' #every 6 hours 30minutes
-
-@notification_interval is the time interval between sending notifications to the system admin when a test is still in a failed state. In the above example, we have  
-
-   @notification_interval = '6h'
-
-When the website goes offline, our monitor will send out notifications to the system admin every 6 hours as long as the website is still offline. It will stop sending notifcations when the website comes back online. It will also inform the system admin when when the issue has been corrected.
-
-@notification_intervals can be in seconds, minutes, hours or combined.
-
-
-When a test fails the monitor will notify the system admin by calling the notify() method. The object has some built-in notifiers for sending email and tweet notifications. To make the monitor send email notifications simply call email_notify() method inside notify(). For tweet notifications call tweet_notify(). See the notify() method below;
-
-  def notify   
-    email_notify
-    #gmail_notify
-    #tweet_notify
-  end
- 
-In the above example, the system will notify the admin via email. email_notify() assumes you have sendmail installed on your system and uses it to send email. You can also use Gmail to send notifications by calling the gmail_notify() method instead. 
-
-An email notification from the monitor above will look like this:
-
- Subject: Http connection to my blog FAILED
- 
- Http connection to my blog FAILED! HTTP Connection to obi-akubue.org = getaddrinfo: Name or service not known
- Created on: September 22, 13:55
-
-
-A tweet notification will look like this:
-
- Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
- Created on: October 16, 04:48
-
-In the monitor's initialize method, you should always call the super() method to ensure that the object is fully initalized with the required properties of all the classes above it in the hierarchy. 
-
- super
-
-
-===To monitor a URL (using objects)
-We use the built-in URL Object. This object sends a Http request to the URL at the specified time interval. The URL passes the test when it returns a 200, 301 or 302 response code and FAILS when it gets any other response code from the server, it also fails when there's a request timeout or an exception.  We use the URL object by extending it with details of the URL we wish to monitor. 
-
-Below is a sample object to monitor a URL on my website www.whisperservers.com 
-
-
-   class MonitorBlogURL <  Ragios::Monitors::URL
-    def initialize
-      @time_interval = '20m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description  = "My Website Test"
-      @url = "http://www.whisperservers.com/blog/"
-      super
-    end
-
-   def notify
-     email_notify
-     #gmail_notify
-     #tweet_notify
-   end
-
-  end
-
-The monitor defined above will send a http request to @url (http://www.whisperservers.com/blog) every @time_interval (20 minutes), if it gets a http error response code, request timeout or any other exception it will send an email notification to @contact (obi@mail.com) via email_notify() with details of what went wrong. It will continue sending notications every @notification_interval (6 hours) until the issue has been fixed.
-
-Ragios::Monitors::URL is the generic object we use to monitor URLs. We can use this to monitor availability of APIs, data feeds, web pages etc.
-
-===To Monitor a process (using objects)
-We use the built-in Process object, it checks if the specified process is running evey time interval and notifies the system admin when the process is not running. We use the Process object by extending it with details of the process we wish to monitor. 
-
-Below is an example of an object monitoring Apache web server on Ubuntu:
-
-  class MonitorApache <  Ragios::Monitors::Process
-    def initialize
-       
-      @time_interval = '1m'
-      @notification_interval = '2m'
-      @contact = "obi.akubue@gmail.com"
-      @test_description  = "Apache Test" 
-      
-      @process_name = 'apache2'
-      @start_command = 'sudo /etc/init.d/apache2 start'
-      @restart_command = 'sudo /etc/init.d/apache2 restart'
-      @stop_command = 'sudo /etc/init.d/apache2 stop'
-      @pid_file = '/var/run/apache2.pid'
-     
-      @server_alias = 'my home server'
-      @hostname = '192.168.2.2'
- 
-      super
-    end
-
-   def notify
-     #email_notify
-     gmail_notify
-     #tweet_notify
-  end
-
-  def fixed 
-     gmail_resolved
-  end
- end
-
-The fixed() method is optional, its invoked when test goes from FAILED to PASSED. In this case when Ragios detects that the process is running again after failure it will invoke the fixed() method. The gmail_resolved() method sends an issue resolved message to the systems admin via gmail. Other methods are available to send an issue resolved massage via twitter and sendmail see the Section on Failure Recovery for more information.
-
-@process_name should be the exact name of the process because Ragios uses the name of the process to check if its running. Example 'apache2' for the Apache webserver daemon on Ubuntu. Using 'apache' or 'Apache2' will make Ragios unable to find the process.
-
-===Adding monitors to the Ragios system
-To add our monitors to the Ragios System we just need add to the following lines to the bottom of the Ragios/main.rb script.
-
-  monitoring = [MonitorMySite.new, MonitorBlogURL.new, MonitorApache.new] #initializes our objects and adds them to the list of monitors
-  Ragios::System.start monitoring #starts the monitoring process with all our monitors running tests at their 
-                                  #specified time interval. Ragios is multi-threaded so each object runs on its own thread. 
-
-===main.rb
-All the monitors should be defined in the Ragios/main.rb script. With the monitors we have written above, our Ragios/main.rb script will look like this:
-
-  #ragios/main.rb
-  require 'rubygems'
-  require "bundler/setup"
-
-  dir = Pathname(__FILE__).dirname.expand_path
-  require dir + 'lib/ragios'
-
-  class MonitorMySite < Ragios::Monitors::HTTP
-    def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "Http connection to my blog"
-      @domain = "obi-akubue.org"
-      super
-    end
-
-    def notify
-      email_notify
-      #gmail_notify
-      #tweet_notify
-    end
-
-  end
-
-  class MonitorBlogURL <  Ragios::Monitors::URL
-    def initialize
-      @time_interval = '20m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description  = "My Website Test"
-      @url = "http://www.whisperservers.com/blog/"
-      super
-    end
-
-   def notify
-     email_notify
-     #gmail_notify
-     #tweet_notify
-   end
-
-  end
-
-  class MonitorApache <  Ragios::Monitors::Process
-    def initialize
-       
-      @time_interval = '1m'
-      @notification_interval = '2m'
-      @contact = "obi.akubue@gmail.com"
-      @test_description  = "Apache Test" 
-      
-      @process_name = 'apache2'
-      @start_command = 'sudo /etc/init.d/apache2 start'
-      @restart_command = 'sudo /etc/init.d/apache2 restart'
-      @stop_command = 'sudo /etc/init.d/apache2 stop'
-      @pid_file = '/var/run/apache2.pid'
-     
-      @server_alias = 'my home server'
-      @hostname = '192.168.2.2'
- 
-      super
-    end
-
-   def notify
-     #email_notify
-     gmail_notify
-     #tweet_notify
-  end
-
-  def fixed 
-     gmail_resolved
-  end
-
-  end
-
-  monitoring = [MonitorMySite.new, MonitorBlogURL.new, MonitorApache.new]
-  
-  Ragios::System.start monitoring
-
-  #trap Ctrl-C to exit gracefully
-    puts "PRESS CTRL-C to QUIT"
-     loop do
-       trap("INT") { puts "\nExiting"; exit; }
-     sleep(3)
-    end
-
-The basic configuration is now complete. We can now run the Ragios system.
-
-Since main.rb is pure ruby code we can run it directly, from the Ragios/ directory : 
-
- $ruby main.rb
-
-This will run the ragios system on our terminal as a top program. This can be useful for debugging purposes, to test our configuration script for errors.
-
-Output from running the above main.rb script will look like this :
-
-	Welcome to Ragios
-	Initializing
-	3 Monitors detected
-
-	test 1. Http connection to my blog
-	Scheduled to run every 10m
-	Running First Test...
-	  [PASSED] Created on: February 06, 2011 20:32
-	HTTP Connection to obi-akubue.org = PASSED
-
-	test 2. My Website Test
-	Scheduled to run every 20m
-	Running First Test...
-	  [PASSED] Created on: February 06, 2011 20:32
-	HTTP Request to http://www.whisperservers.com/blog/ = 200
-
-	test 3. Apache Test
-	Scheduled to run every 1m
-	Running First Test...
-	23063 18154 18153 18152 18151 18150 1995
-	  [PASSED] Created on: February 06, 2011 20:32
-	The process apache2 on host: 192.168.2.2 = PASSED
-
-	PRESS CTRL-C to QUIT
-
-
-We can also run Ragios as a daemon by running the ragiosd ruby script also in the Ragios/ directory. 
-
-===Starting the Ragios System
-Ragios runs as a daemon in the unix/linux system. 
-
-To Start Ragios as a daemon from the terminal :
-
-	$ruby ragiosd start
-
-Stop the daemon :
-
-	$ruby ragiosd stop
-
-Restart the daemon :
-
-	$ruby ragiosd restart
-
-Check Status of the daemon :
-
-	$ruby ragiosd status
-
-To run Ragios as a top program, useful for testing purposes :
-
-	$ruby ragiosd run
-
-The ragiosd script simply demonizes the Ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the Ragios/log directory as ragios.log and ragios.output respectively.
-
-Run Ragios as 'sudo' when you need it to restart processes, example if you have a process monitor that needs to restart a web server;
- 
-  sudo ruby ragiosd start
-
-or 
-  sudo ruby main.rb
-
-===Notifications
-When a test fails the monitor sends out notifications by calling its notify method. 
-
-===Sending Notifications via Sendmail
-If you have sendmail installed on your unix/linux system you can use it to send out notifications by simply calling email_notify() from the notify() method of your monitor. Example;
-
-
-  class MonitorMySite < Ragios::Monitors::HTTP
-    def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "Http connection to my blog"
-      @domain = "obi-akubue.org"
-      super
-    end
-
-    def notify
-      email_notify
-    end
-  end
-
-The method below 
-
-    def notify   
-      email_notify
-    end
-
-ensures that the notification will be sent out via sendmail.
-
-
-===Sending Notifications via Gmail
-To send out notifications via gmail, first create a Gmail account for the Ragios system. The email notifications will be sent out from this Gmail account.
-
-Edit the script Ragios/lib/ragios/notifiers/gmail_notifier.rb, replace the line below with the username & password of the Gmail account you created.
-
-  @username = 'gmail_username'  #replace with gmail username
-  @password =  'gmail_password' #replace with gmail password
-
-To make your monitor use Gmail, just call gmail_notify() from its notify() method. See below;
-
- class MonitorMySite < Ragios::Monitors::HTTP
-    def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "Http connection to my blog"
-      @domain = "obi-akubue.org"
-      super
-    end
-
-    def notify
-      gmail_notify
-    end
-  end
-
-This 
-
- def notify   
-   gmail_notify
- end
-
-ensures that the notifications will be sent via the Gmail account you added to the system. 
-
-===Sending Notifications via Twitter
-First you need to create and register a twitter app at http://twitter.com/apps/new. Ragios will use this app to tweet the notifications. After you register the App, Twitter will give you a consumer_key and a consumer_secret. We will use them later.
-
-Next you need to create a new twitter account for the Ragios system. This is the Twitter account that will tweet the notifications. To receive the tweets the system admin should follow this account. The account should be set to private on twitter.
-
-After you create the account, you need to grant your registered twitter app access to it.
-
-To do this you need the oauth rubygem
-
- sudo gem install oauth
-
-This ruby script below will do the trick, copy and run the script in your system: 
-
-  #twitter_auth.rb
-  #!/usr/bin/ruby
-  require 'rubygems'
-  require 'oauth'
- 
-  consumer = OAuth::Consumer.new(
-    'consumer key',
-    'consumer secret',
-    {:site => 'http://twitter.com'}
-  )
- 
-  request_token = consumer.get_request_token
- 
-  puts "Twitter App Authorize URL \n" + request_token.authorize_url
-  puts "Enter PIN:"
-  pin = STDIN.readline.chomp
- 
-  access_token = request_token.get_access_token(:oauth_verifier => pin)
- 
-  puts "access token: " + access_token.token
-  puts "access secret: " + access_token.secret
-
-
-Use the ‘consumer_key’ and ‘consumer secret’ Twitter generated for your app earlier. Add it to these lines in the script: 
-
-	consumer = OAuth::Consumer.new(
-    	    'consumer key',
-    	    'consumer secret',
-        {:site => 'http://twitter.com'}
-       )
-
-When you run the script it will display an authorization URL, this is the url that you will use to ALLOW or DENY your twitter app access to the Twitter account you created for Ragios. Open the authorization URL in a web browser, choose ALLOW to grant access to your twitter app. Twitter will give you a PIN number, enter that PIN number on the prompt displayed by the ruby script. The script will now display your access_token and access_secret. The access_token and access_secret is all Ragios needs to gain read and write access to the twitter account.
-
-Now open the tweet_notifier.rb script located in Ragios/lib/ragios/notifiers directory. This is the script that Ragios uses to tweet the notification messages. Replace the lines below from the script with the real values for the access_token, access_secret, consumer key and consumer secret. 
-
-      oauth = Twitter::OAuth.new('Consumer Key', 'Consumer secret')
-      oauth.authorize_from_access('access token', 'access secret')   
-          
-
-Now to write a monitor that sends out tweet notifications, we just call tweet_notify() from the notify() method. See example below:
-
-  class MonitorMySite < Ragios::Monitors::HTTP
-    def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "Http connection to my blog"
-      @domain = "obi-akubue.org"
-      super
-    end
-
-    def notify
-      tweet_notify
-    end
-
-  end
-
-Having, 
-
-   def notify   
-     tweet_notify
-   end
-
-ensures that this object will tweet all its notifications.
 
 ===Editing the Notification Messages
 All notifcation messages are generated from ERB template files in the Ragios/lib/ragios/messages folder. You can edit any of the ERB template files to change the format of messages sent by the system. The ERB templates have access to all attributes of the monitor, so you can easily edit the template to add or remove attributes you would like to see on messages.
@@ -965,107 +450,8 @@ Below is a list of ERB templates used by the system:
  lib/ragios/messages/tweet_resolved.erb  -- template for all issue resolved messages sent via twitter
  lib/ragios/messages/status_report.erb   -- template for the Status Reports sent out to the admin by the system
 
-===Status Reports and objects
-
-  class MonitorMySite < Ragios::Monitors::HTTP
-    def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "Http connection to my blog"
-      @domain = "obi-akubue.org"
-      super
-    end
-
-    def notify
-      gmail_notify
-    end
-
-  end
-
-  monitoring = [MonitorMySite.new]
-
-  Ragios::System.start monitoring
-
-  Ragios::System.update_status({:every => '2d',
-			:contact => 'admin@mail.com',
-			:via => 'gmail'}) 
-
-In the above example, Ragios will send out a Status Report to the email 'admin@mail.com' via gmail every 2 days. 
-<<<<<<< HEAD
-Like all other messages sent by the system, the Status Report is completely customizable. It is stored in the ERB template /lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes you want to see in the reports. You can also format the layout or text of the Report. See more about Status Reports in the Part 1. of this document. 
-=======
-Like all other messages sent by the system, the Status Report is completely customizable. It is stored in the ERB template lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes you want to see in the reports. You can also format the layout or text of the Report. See more about Status Reports in the Part 1. of this document. 
->>>>>>> 53a2e1f5e8e8d2cd6c1ddc67f956594cce32b960
- 
-=== Recovery From FAILURE
-When a monitor runs a test on the system, you can add damage repair code to fix the issue when a test fails. Damage repair code could do things like restart a monitored process when it stops running, switch a web app to a backup server when a monitored server goes down.
-
-Lets say we have a web app that depends on an external XML data feed. The object below tests the XML data feed for availability every 10 minutes, when the data feed goes offline it switches our webapp to a new feed, and when the issue is fixed, it switches back to the original feed. 
-
- class MonitorDataFeed <  Ragios::Monitors::URL
-    def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description  = "Top videos Data Feed"
-      @url = "http://www.website.com/89843/videos.xml"
-      super
-    end
-
-   def notify
-     gmail_notify
-   end
-
-   def failed 
-   #this method is invoked when a test fails
-   #we put code here to switch our webapp to a new data feed
-   end
-
-   def fixed  
-   #this method is invoked when a test goes from FAILED to PASSED
-   #we put code here to switch our webapp back to the original data feed, 
-   #since the issue has been fixed
-   end
-  end
-
-Every monitor can overide the failed() and fixed() methods. When a test fails the Ragios system will invoke the failed(). The system admin can add any failure recovery code in the failed() method to get executed when a test fails. 
-
-Now when a test goes from FAILED to PASSED again, the system will invoke the fixed() method. The system admin can add any clean up or roll-back code to the fixed() method.
-
-In the MonitorDatafeed object above, when the data feed goes offline the failed() method will be invoked which will switch our webapp to a new data feed. The Ragios system will continue monitoring the old data feed for recovery, when the old data feed recovers Ragios will invoke the fixed() method. This will switch our webapp back to the original data feed.
-
-===Running Ragios as a Rails Plugin
-Ragios can also run as a Rails Plugin. This gives you access to your active monitors over the web. Yeti is a sample rails app using Ragios as a Rails Plugin, still under development. Yeti will provide a Web UI for Ragios. See more on Yeti here: https://github.com/obi-a/yeti
-
-To install Ragios as a Rails Plugin:
-
- $cd railsapp
- $rails plugin install git://github.com/obi-a/Ragios.git 
-
-Add the list of gems on the Ragios Gemfile to your Rails app's Gemfile. This will allow Bundler to install Gem Dependencies required for Ragios to run on your Rails environment. The Ragios Gemfile can be found here: railsapp/vendor/plugins/Ragios/Gemfile. You only need to add the Gems that are not already on your Rails Gemfile.
-
-Run diff to see the difference.  
- $diff Gemfile vendor/plugins/Ragios/Gemfile
-
-If you just created the Rails app, the difference will be something like this. 
-
- source "http://gemcutter.org"
- gem "pony"
- gem "twitter"
- gem "rufus-scheduler", :require => "rufus/scheduler"
- gem "daemons"
- gem "i18n"
- gem "gmail"
-
-Copy it to your Rails app Gemfile under the line:
- source 'http://rubygems.org'
-
-Run Bundler to make Ragios's Gem dependencies available to your Rails App.
- bundle install
-
-Now your Rails app is ready to Run Ragios and visualize your monitors on the web. This section is provided for documentation purposes only. You don't have to do any of this, you should use Yeti. Yeti is already configured, ready to run right out of the box. (Yeti = Rails + Ragios + Web UI) **Yeti is still under development, it's not yet ready to use but you get the idea.
-
+== Ragios Plugin System 
+...
 
 
 Thanks for reading. I will write more soon.    
