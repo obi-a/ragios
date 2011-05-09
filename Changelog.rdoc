@@ -2,6 +2,15 @@
 This is a rolling release.
 The following changes were made:
 
+5-9-2011
+* Twitter and Gmail notifiers are now configured in the Ragios/config.rb file.
+
+* Added a plugin architecture. Developers can now write plugins to monitor different types of systems. All monitoring done by Ragios is now defined in plugins. 
+Ragios ships with 2 plugins:
+   * http plugin - monitors http
+   * url plugin  - montiors urls
+Developers can easily write and deploy more plugins to meet their needs. 
+
 5-3-2011
 * With code changes in the new system Ragios version 0.5+ now requires Ruby 1.9.2 or above.
 
