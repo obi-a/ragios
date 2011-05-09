@@ -9,8 +9,11 @@ This is all just for fun and educational purposes.
 
 Ragios could be used to monitor any type of system including servers, workstations, switches, routers, system services and applications, locally or over a network. The system admin can define the tests he wants to run on the system or re-use tests written by other developers. The tests run periodically on the system. When a test fails the admin receives an email or SMS alert from Ragios. Everything is written in ruby, the configuration settings are all in ruby syntax. The Ragios system itself is written in ruby.
 
+==Requirements
+Ragios v0.5.0 requires Ruby 1.9.2 or higher. 
+
 ==Installation
-I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby so it can run on any platform that supports Ruby including BSD, OS X, any Linux distro, Windows etc..
+I assume you are using a linux/unix system (Most likely debian/Ubuntu). However, Ragios is written in ruby and runs on any platform that supports Ruby including BSD, OS X, any Linux distro, Windows etc..
 
 Using Git:
 
@@ -41,7 +44,6 @@ Installation is complete! Ragios is ready to use.
 To update to the latest version of Ragios anytime, from the root of the Ragios directory:
   $git pull
 
-
 ==Usage
 
 ==Part 1.Basic Monitoring
@@ -52,31 +54,31 @@ To update to the latest version of Ragios anytime, from the root of the Ragios d
 To monitor a website for availability; enter the following in the ragios/main.rb script
 
 
-   monitoring	= [{monitor:'http', 
+    monitoring = [{monitor:'http', 
                    every:'5m',
                    test:'Http connection to my site',
                    domain:'www.mysite.com',
                    contact:'admin@mysite.com',
                    via:'gmail',  
-                   notify_interval: '6h'
+                   notify_interval:'6h'
                   }]
 
   Ragios::Monitor.start monitoring
 
 This will try to establish a http connection with the domain:'www.mysite.com' every '5m' (5 minutes), when it fails to establish a connection it will send a notification to the system admin specified by contact:'admin@mysite.com' via 'gmail'. if the website is still offline it will notify the admin again after 6 hours specified by notify_interval:'6h'. test: is a description of the test being performed. It helps Ragios notify the system admin with accurate details of what went wrong on the system.
 
-To send notifications via twitter use via: 'twitter' and to send notifications via sendmail installed on the system use via: 'email', using via: 'gmail' means the notifications will be sent via gmail.
+To send notifications via twitter use via:'twitter' and to send notifications via sendmail installed on the system use via:'email', using via:'gmail' means the notifications will be sent via gmail.
  
 
 ==To monitor multiple sites
    
-   monitoring	= {monitor: 'http', 
-                   every: '5m',
-                   test: 'Http connection to my site',
-                   domain: 'www.mysite.com',
-                   contact: 'admin@mysite.com',
-                   via: 'gmail',  
-                   notify_interval: '6h'
+   monitoring	= {monitor:'http', 
+                   every:'5m',
+                   test:'Http connection to my site',
+                   domain:'www.mysite.com',
+                   contact:'admin@mysite.com',
+                   via:'gmail',  
+                   notify_interval:'6h'
                   },
                    {monitor:'http', 
                     every:'30s',
@@ -86,22 +88,22 @@ To send notifications via twitter use via: 'twitter' and to send notifications v
                     via:'twitter',  
                     notify_interval:'6h'
                   },
-                  {monitor: 'http', 
-                   every: '3h',
-                   test: 'Http connection to client B website',
-                   domain: 'www.clientB.com',
-                   contact: 'admin@mysite.com',
-                   via: 'twitter',  
-                   notify_interval: '6h'
+                  {monitor:'http', 
+                   every:'3h',
+                   test:'Http connection to client B website',
+                   domain:'www.clientB.com',
+                   contact:'admin@mysite.com',
+                   via:'twitter',  
+                   notify_interval:'6h'
                   }
 
   Ragios::Monitor.start monitoring
   
 The time interval between tests could be in seconds, minutes, hours or combined,
-  every: '5m', #every 5 minutes
-  every: '30s', #every 30 seconds
-  every: '4h', #every 5 hours
-  every: '6h30m', #every 5 minutes
+  every:'5m', #every 5 minutes
+  every:'30s', #every 30 seconds
+  every:'4h', #every 5 hours
+  every:'6h30m', #every 5 minutes
 
 Same thing applies to the values of the notify_interval, they can be in seconds, minutes, hours or combined. 
 
@@ -109,44 +111,42 @@ Same thing applies to the values of the notify_interval, they can be in seconds,
 ===Monitoring URLs
 To monitor a URL,
      
-     monitoring	=  [{ monitor: 'url',
-                    every: '5m',
-                    test: 'video datafeed test',
-                    url: 'http://www.datafeed.com/resources/videos/1',
-                    contact: 'admin@mail.com',
-                    via: 'gmail',  
-                    notify_interval: '6h'
-                  
-                  }]
+     monitoring	=  [{ monitor:'url',
+                    every:'5m',
+                    test:'video datafeed test',
+                    url:'http://www.datafeed.com/resources/videos/1',
+                    contact:'admin@mail.com',
+                    via:'gmail',  
+                    notify_interval:'6h'
+                    }]
 
     Ragios::Monitor.start monitoring
 
 You can monitor a combination of websites and URLs,
 
-    monitoring	=  { monitor: 'url',
-                    every: '5m',
-                    test: 'video datafeed test',
-                    url: 'http://www.datafeed.com/resources/videos/1',
-                    contact: 'admin@mail.com',
-                    via: 'gmail',  
-                    notify_interval: '6h'
-                  },
-                  {monitor: 'http', 
-                   every: '30s',
-                   test: 'Http connection to client A website',
-                   domain: 'www.clientA.com',
-                   contact: 'admin@mysite.com',
-                   via: 'twitter',  
-                   notify_interval: '6h'
-                  },
-                  {monitor: 'url',
-                   every: '5m',
-                   test: 'My blog URL test',
-                   url: 'http://www.myblog.com',
-                   contact: 'admin@mail.com',
-                   via: 'email',  
-                   notify_interval: '6h'
-                  
+    monitoring	={monitor:'url',
+                    every:'5m',
+                    test:'video datafeed test',
+                    url:'http://www.datafeed.com/resources/videos/1',
+                    contact:'admin@mail.com',
+                    via:'gmail',  
+                    notify_interval:'6h'
+                    },
+                 {monitor:'http', 
+                   every:'30s',
+                   test:'Http connection to client A website',
+                   domain:'www.clientA.com',
+                   contact:'admin@mysite.com',
+                   via:'twitter',  
+                   notify_interval:'6h'
+                   },
+                 {monitor:'url',
+                   every:'5m',
+                   test:'My blog URL test',
+                   url:'http://www.myblog.com',
+                   contact:'admin@mail.com',
+                   via:'email',  
+                   notify_interval:'6h'
                   }
                 
    Ragios::Monitor.start monitoring
@@ -166,21 +166,20 @@ The Ragios configuration settings should in the Ragios/main.rb script. A sample 
     
   #Add your code here
      monitoring = { monitor:'http',
-                    every: '2m',
-                    test: 'Http connection to my blog',
-                    domain: 'obi-akubue.org',
-                    contact: 'obi.akubue@mail.com',
-                    via: 'gmail',  
-                    notify_interval: '6h'
+                    every:'2m',
+                    test:'Http connection to my blog',
+                    domain:'obi-akubue.org',
+                    contact:'obi.akubue@mail.com',
+                    via:'gmail',  
+                    notify_interval:'6h'
                   } ,
-                  { monitor: 'url',
-                    every: '2m',
-                    test: 'My Website Test',
-                    url: 'http://www.whisperservers.com/blog/',
-                    contact: 'obi.akubue@mail.com',
-                    via: 'gmail',  
-                    notify_interval: '6h'
-                  
+                  { monitor:'url',
+                    every:'2m',
+                    test:'My Website Test',
+                    url:'http://www.whisperservers.com/blog/',
+                    contact:'obi.akubue@mail.com',
+                    via:'gmail',  
+                    notify_interval:'6h'
                   }
 
      Ragios::Monitor.start monitoring
@@ -255,14 +254,13 @@ When a test fails the system sends out a notification to the system admin about 
 ===Sending Notifications via Sendmail
 To send out notifications via sendmail use :via => 'email', example
 
-    monitoring	=  [{ monitor: 'url',
-                      every: '5m',
-                      test: 'video datafeed test',
-                      url: 'http://www.datafeed.com/resources/videos/1',
-                      contact: 'admin@mail.com',
-                      via: 'email',  
-                      notify_interval: '6h'
-                  
+    monitoring	=  [{ monitor:'url',
+                      every:'5m',
+                      test:'video datafeed test',
+                      url:'http://www.datafeed.com/resources/videos/1',
+                      contact:'admin@mail.com',
+                      via:'email',  
+                      notify_interval:'6h'
                   }]
 
 You just need to have sendmail installed in your system, Ragios will use it to send the notification.
@@ -273,25 +271,25 @@ To send out notifications via gmail, first create a Gmail account for the Ragios
 
 Edit the script Ragios/config.rb, add the username & password of the Gmail account you created. See below;
 
-  gmail_account = {username: 'Gmail Username', #replace with gmail username
-                   password: 'Gmail Password'}  #replace with gmail password
+  gmail_account = {username:'Gmail Username', #replace with gmail username
+                   password:'Gmail Password'}  #replace with gmail password
 
 Example
 
-  gmail_account = {username: 'Ragios', 
-                   password: 'xyz123'}  
+  gmail_account = {username:'Ragios', 
+                   password:'xyz123'}  
 
 
-Now on the main.rb script use via: 'gmail', see example below
+Now on the main.rb script use via:'gmail', see example below
 
 
-    monitoring	= [{ monitor: 'url',
-                      every: '5m',
-                      test: 'video datafeed test',
-                      url: 'http://www.datafeed.com/resources/videos/1',
-                      contact: 'admin@mail.com',
-                      via: 'gmail',  
-                      notify_interval: '6h'
+    monitoring	= [{ monitor:'url',
+                      every:'5m',
+                      test:'video datafeed test',
+                      url:'http://www.datafeed.com/resources/videos/1',
+                      contact:'admin@mail.com',
+                      via:'gmail',  
+                      notify_interval:'6h'
                     }]
 
 ===Sending Notifications via Twitter
@@ -343,8 +341,8 @@ After this, the script will display your access_token and access_secret. The acc
 
 Now open the config.rb script located in Ragios/ directory. Add the real values for the access_token, access_secret, consumer key and consumer secret. Replace the string in quotes.
 
-twitter_cred = {consumer_key: 'Consumer Key', 
-               consumer_secret: 'Consumer secret',
+  twitter_cred = {consumer_key: 'Consumer Key', 
+                 consumer_secret: 'Consumer secret',
                  access_token: 'Access Token',
                  access_secret: 'Access Secret'}
           
@@ -352,7 +350,7 @@ twitter_cred = {consumer_key: 'Consumer Key',
 Now on the main.rb script use via:'twitter' example
 
 
-  monitoring	=  [{monitor: 'url',
+     monitoring = [{monitor: 'url',
                      every: '5m',
                      test: 'video datafeed test',
                      url: 'http://www.datafeed.com/resources/videos/1',
