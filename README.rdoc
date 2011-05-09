@@ -350,13 +350,13 @@ Now open the config.rb script located in Ragios/ directory. Add the real values 
 Now on the main.rb script use via:'twitter' example
 
 
-     monitoring = [{monitor: 'url',
-                     every: '5m',
-                     test: 'video datafeed test',
-                     url: 'http://www.datafeed.com/resources/videos/1',
-                     contact: 'admin@mail.com',
-                     via: 'twitter',  
-                     notify_interval: '6h'
+     monitoring = [{monitor:'url',
+                     every:'5m',
+                     test:'video datafeed test',
+                     url:'http://www.datafeed.com/resources/videos/1',
+                     contact:'admin@mail.com',
+                     via:'twitter',  
+                     notify_interval:'6h'
                     }]
 
 Example of an email notification may look like this: 
@@ -387,25 +387,25 @@ Also includes a summary of each active monitor
 * date/time the last test was performed etc.
 
 To configure Ragios to send Status Reports
-  Ragios::Monitor.update_status({every: '1d',
-			         contact: 'admin@mail.com',
-			         via: 'gmail'}) 
+  Ragios::Monitor.update_status({every:'1d',
+			         contact:'admin@mail.com',
+			         via:'gmail'}) 
 
 The above sample means that Ragios will send a Status Report every day '1d' to the email address 'admin@mail.com' via gmail. 
 Ragios can send Status Reports every (n) minutes, hours, days, weeks or combined. 
 
 Example
-   every: '40m' #every 40 minutes
-   every: '2d'  #every 2 days
-   every: '6h'  #every 6 hours
-   every: '1w'  #every week
-   every: '4w'  #every 4 weeks
-   every: '1w2d' #every week and 2 days i.e every 9 days
+   every:'40m' #every 40 minutes
+   every:'2d'  #every 2 days
+   every:'6h'  #every 6 hours
+   every:'1w'  #every week
+   every:'4w'  #every 4 weeks
+   every:'1w2d' #every week and 2 days i.e every 9 days
 
 
 The Status Report can be sent via gmail or sendmail, 
-   via: gmail # sends the report via gmail
-   via: email # sends the report via sendmail installed on the system
+   via:gmail # sends the report via gmail
+   via:email # sends the report via sendmail installed on the system
 
 Example with 2 monitors:
       monitoring = {monitor:'url',
@@ -427,9 +427,9 @@ Example with 2 monitors:
                 
   Ragios::Monitor.start monitoring  
   
-  Ragios::Monitor.update_status({ every: '5d',
-			          contact: 'admin@mail.com',
-			          via: 'gmail'}) 
+  Ragios::Monitor.update_status({ every:'5d',
+			          contact:'admin@mail.com',
+			          via:'gmail'}) 
 
 This above example will send a Status Report to the email 'admin@mail.com' every 5 days via gmail. 
 
