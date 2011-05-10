@@ -518,7 +518,7 @@ Our plugin is now ready to run. We use it to monitor a fictional service called 
 The code above means that Ragios will run our plugin every 5 minutes, and contact admin via gmail when the test fails etc. monitor:'service'
 tell Ragios to use the Monitors::Service plugin we created. (If we used monitor:'http' Ragios will use the Monitors::Http plugin). 
 
-The hash value in the DSL is passed to our plugin's init(options) as options{}.
+The hash value in the DSL is passed to our plugin's init() as options.
 
    options =  {monitor:'service',
                    every:'5m',
