@@ -518,7 +518,7 @@ Our plugin is now ready to run. We use it to monitor a fictional service called 
 The code above means that Ragios will run our plugin every 5 minutes, and contact admin via gmail when the test fails etc. monitor:'service'
 tell Ragios to use the Monitors::Service plugin we created. (If we used monitor:'http' Ragios will use the Monitors::Http plugin). 
 
-The hash value in the DSL is passed to our plugin's init() as options.
+The hash value in the DSL is passed to our plugin's init(options) as options.
 
    options =  {monitor:'service',
                    every:'5m',
@@ -528,7 +528,7 @@ The hash value in the DSL is passed to our plugin's init() as options.
                    notify_interval:'6h'
                   }
 
-If our plugin needs its users to provide more information, we would just make it a requirement in the hash of the DSL. Example lets say our plugin needs the hostname and IP address of the system running the service its monitoring. We can make the DSL for our plugin collect that information, see example below;
+If our plugin needs more values, we would make it a requirement that those values are added to the hash of the DSL. Example lets say our plugin needs the hostname and IP address of the system running the service its monitoring. We will make the DSL for our plugin collect that information, see example below;
 
  monitoring = [{monitor:'service',
                    every:'5m',
@@ -542,7 +542,7 @@ If our plugin needs its users to provide more information, we would just make it
 
  Ragios::Monitor.start monitoring
 
-Our plugin can collect the values of IP address and hostname from the options hash. We just re-write out plugin like this.
+Our plugin will collect the values of IP address and hostname from the options hash. We just re-write our plugin like this. See below:
 
  Module Monitors
    class Service
@@ -582,7 +582,7 @@ Below is DSL syntax for the http plugin:
 
   Ragios::Monitor.start monitoring
 
-Source code for the http plugin, notice how the init(options) method uses the domain from the DSL:
+Source code for the http plugin, notice how the init(options) method uses the domain value from the DSL:
  module Monitors
  # Plugin: Monitors a domain to check if its online  
  # It tries to establishe a HTTP connection with a domain
