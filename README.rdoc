@@ -518,7 +518,7 @@ Our plugin is now ready to run. We use it to monitor a fictional service called 
 The code above means that Ragios will run our plugin every 5 minutes, and contact admin via gmail when the test fails etc. monitor:'service'
 tell Ragios to use the Monitors::Service plugin we created. (If we used monitor:'http' Ragios will use the Monitors::Http plugin). 
 
-The hash value in the DSL is passed to our plugin's init() as options.
+The hash value in the DSL is passed to our plugin's init(options) as options{}.
 
    options =  {monitor:'service',
                    every:'5m',
@@ -570,9 +570,7 @@ Our plugin can collect the values of IP address and hostname from the options ha
    end
  end
 
-Below is the http plugin, that checks if a website is online by trying to establish a http connection with the site.
-
-DSL syntax for the http plugin:
+Below is DSL syntax for the http plugin:
     monitoring = [{monitor:'http',
                    every:'5m',
                    test:'Http connection to my site',
@@ -584,7 +582,7 @@ DSL syntax for the http plugin:
 
   Ragios::Monitor.start monitoring
 
-Source code for the plugin, notice how the init(options) method uses the domain from the DSL:
+Source code for the http plugin, notice how the init(options) method uses the domain from the DSL:
  module Monitors
  # Plugin: Monitors a domain to check if its online  
  # It tries to establishe a HTTP connection with a domain
