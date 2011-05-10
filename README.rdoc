@@ -460,7 +460,7 @@ Step 2: The plugin must be in a Module called Monitors
  Module Monitors
  end
 
-Step 3: The plugin is a simple Ruby Class. (Ragios assumes the Ruby convention of class names in CamelCase)
+Step 3: The plugin is a simple Ruby Class. (The class name should be in CamelCase)
 
  Module Monitors
    class Service
