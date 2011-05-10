@@ -10,7 +10,7 @@ class Http
 
    def init(options)
         @domain = options[:domain] 
-        raise "@domain must be assigned a value" if @domain.nil?
+        raise "domain must be assigned a value" if @domain.nil?
         @describe_test_result = "HTTP Connection to " + @domain     
    end 
 
