@@ -22,7 +22,7 @@ class Url
   
   def init(options)
       @url = options[:url] 
-      raise "A url to test must be specified, @url must be assigned a value" if @url.nil?    
+      raise "A url to test must be specified, url must be assigned a value" if @url.nil?    
       @describe_test_result = "HTTP Request to " + @url
   end
   
