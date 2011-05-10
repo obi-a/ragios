@@ -583,36 +583,7 @@ Below is DSL syntax for the http plugin:
   Ragios::Monitor.start monitoring
 
 Source code for the http plugin, notice how the init(options) method uses the domain value from the DSL:
- module Monitors
- # Plugin: Monitors a domain to check if its online  
- # It tries to establishe a HTTP connection with a domain
- #PASSED if it establishes the HTTP connection successfully and FAILED if it throws an exception
- class Http 
-   attr_reader :domain 
-   attr_accessor :describe_test_result 
-   attr_accessor :test_result
-
-   def init(options)
-        @domain = options[:domain] 
-        raise "domain must be assigned a value" if @domain.nil?
-        @describe_test_result = "HTTP Connection to " + @domain     
-   end 
-
-   def test_command
-     begin  
-          Net::HTTP.start(@domain) 
-          @test_result = 'PASSED'
-          return TRUE 
-
-     rescue Exception
-            @test_result =  $! # $! global variable reference to the Exception object
-            return FALSE  
-     end      
-   end   
- end
- end 
-
-
+https://github.com/obi-a/Ragios/blob/master/lib/ragios/monitors/plugins/http.rb
 
 ===Testing your plugin
  ...to be cont.
