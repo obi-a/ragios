@@ -482,7 +482,7 @@ Step 4: The plugin must have 2 methods init(options) and test_command()
 
 test_command() performs a test on the service being monitored. When the test fails, test_command() returns FALSE. When the test passes test_command returns TRUE. (The most common test is checking availability of a service like DNS, http etc. test_command() should return TRUE when the service is available and FALSE when its not available). 
 
-Step 5: The plugin must define 2 variables @describe_test_result and @test_result.
+Step 5: The plugin must define  and assign values to 2 variables @describe_test_result and @test_result.
 
  Module Monitors
    class Service
@@ -528,7 +528,7 @@ The hash value in the DSL is passed to our plugin's init(options) as options.
                    notify_interval:'6h'
                   }
 
-If our plugin needs more values, we would make it a requirement that those values are added to the hash of the DSL. Example lets say our plugin needs the hostname and IP address of the system running the service its monitoring. We will make the DSL for our plugin collect that information, see example below;
+If our plugin needs more values, we would make it a requirement that those values are added to the hash in the DSL. For example, lets say our plugin needs the hostname and IP address of the system running the service its monitoring. We will just make the DSL for our plugin collect that information, see example below;
 
  monitoring = [{monitor:'service',
                    every:'5m',
@@ -542,7 +542,7 @@ If our plugin needs more values, we would make it a requirement that those value
 
  Ragios::Monitor.start monitoring
 
-Our plugin will collect the values of IP address and hostname from the options hash. We just re-write our plugin like this. See below:
+Our plugin will collect the values of the IP address and hostname from the options hash. We just re-write our plugin like this. See below:
 
  Module Monitors
    class Service
@@ -570,7 +570,7 @@ Our plugin will collect the values of IP address and hostname from the options h
    end
  end
 
-Below is DSL syntax for the http plugin:
+Below is the DSL syntax for the http plugin:
     monitoring = [{monitor:'http',
                    every:'5m',
                    test:'Http connection to my site',
@@ -582,8 +582,38 @@ Below is DSL syntax for the http plugin:
 
   Ragios::Monitor.start monitoring
 
-Source code for the http plugin, notice how the init(options) method uses the domain value from the DSL:
-https://github.com/obi-a/Ragios/blob/master/lib/ragios/monitors/plugins/http.rb
+Source code for the http plugin, notice how the init(options) and test_command() methods uses the domain value from the DSL:
+ module Monitors
+
+ # Plugin: Monitors a domain to check if its online  
+ # It establishes a HTTP connection to the domain
+ # PASSED if it establishes the HTTP connection successfully and FAILED if it throws an exception
+ class Http 
+   attr_reader :domain 
+   attr_accessor :describe_test_result 
+   attr_accessor :test_result
+
+   def init(options)
+        @domain = options[:domain] 
+        raise "domain must be assigned a value" if @domain.nil?
+        @describe_test_result = "HTTP Connection to " + @domain     
+   end 
+
+   #connects to the domain via HTTP
+   #PASSED when it establishes a successful HTTP connection with the domain
+   def test_command
+     begin  
+          Net::HTTP.start(@domain) 
+          @test_result = 'PASSED'
+          return TRUE 
+
+     rescue Exception
+            @test_result =  $! # $! global variable reference to the Exception object
+            return FALSE  
+     end      
+   end   
+ end
+ end
 
 ===Testing your plugin
  ...to be cont.
