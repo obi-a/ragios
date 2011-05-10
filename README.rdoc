@@ -448,8 +448,184 @@ Below is a list of ERB templates used by the system:
  lib/ragios/messages/tweet_resolved.erb  -- template for all issue resolved messages sent via twitter
  lib/ragios/messages/status_report.erb   -- template for the Status Reports sent out to the admin by the system
 
-== Ragios Plugin System 
-...
+== Ragios Plugin System
+Ragios uses plugins to monitor various systems and services. A plugin could monitor URLs, http, processes, database servers etc. Plugins define the tests performed by Ragios to determine whether a monitored service is still available or offline. 
+
+===Writing a Ragios plugin in 5 easy steps:
+
+Step 1: The plugin must be saved in the lib/ragios/monitors/plugins directory.
+
+Step 2: The plugin must be in a Module called Monitors
+
+ Module Monitors
+ end
+
+Step 3: The plugin is a simple Ruby Class. (Ragios assumes the Ruby convention of class names in CamelCase)
+
+ Module Monitors
+   class Service
+   end
+ end
+
+Step 4: The plugin must have 2 methods init(options) and test_command()
+
+ Module Monitors
+   class Service
+     def init(options)
+     end
+
+     def test_command
+      return TRUE #or return FALSE if test fails
+     end
+   end
+ end
+
+test_command() performs a test on the service. When the test fails, test_command() returns FALSE. When the test passes test_command returns TRUE. (The most common test is checking availability of a service like DNS, http etc. test_command() should return TRUE when the service is available and FALSE when its not available). 
+
+Step 5: The plugin must define 2 variables @describe_test_result and @test_result.
+
+ Module Monitors
+   class Service
+
+     attr_accessor :describe_test_result 
+     attr_accessor :test_result
+
+     def init(options)
+        @describe_test_result = "Sample test on a service "   
+     end
+
+     def test_command
+       @test_result = 'PASSED'
+       return TRUE #or return FALSE if test fails
+     end
+   end
+ end
+
+@describe_test_result should describe the expected results of the test performed by the plugin. @test_result should contain the result of the test performed by the plugin.
+ 
+Our plugin is now ready to run. We use it to monitor a fictional service called 'service'. To use the plugin from main.rb;
+
+ monitoring = [{monitor:'service',
+                   every:'5m',
+                   test:'sample test',
+                   contact:'admin@mysite.com',
+                   via:'gmail',
+                   notify_interval:'6h'
+                  }]
+
+ Ragios::Monitor.start monitoring
+
+The code above means that Ragios will run our plugin every 5 minutes, and contact admin via gmail when the test fails etc. monitor:'service'
+tell Ragios to use the Monitors::Service plugin we created. (If we used monitor:'http' will tell Ragios to use the Monitors::Http plugin). 
+
+The hash value in the DSL is passed to our plugin's init() as options.
+
+   options =  {monitor:'service',
+                   every:'5m',
+                   test:'sample test',
+                   contact:'admin@mysite.com',
+                   via:'gmail',
+                   notify_interval:'6h'
+                  }
+
+If our plugin needs its users to provide more information, we would just make it a requirement in the hash of the DSL. Example lets say our plugin needs the hostname and IP address of service its monitoring. We can make the DSL for our plugin like this;
+
+ monitoring = [{monitor:'service',
+                   every:'5m',
+                   test:'sample test',
+                   ip:'192.168.2.19'
+                   hostname:'ubuntu-server1'
+                   contact:'admin@mysite.com',
+                   via:'gmail',
+                   notify_interval:'6h'
+                  }]
+
+ Ragios::Monitor.start monitoring
+
+The follow hash will be passed on to our plugin's init() as the options.
+
+ options = {monitor:'service',
+                   every:'5m',
+                   test:'sample test',
+                   ip:'192.168.2.19'
+                   hostname:'ubuntu-server1'
+                   contact:'admin@mysite.com',
+                   via:'gmail',
+                   notify_interval:'6h'
+                  }
+
+Our plugin can collect the values of IP address and hostname from the options hash. We just re-write out plugin like this.
+
+ Module Monitors
+   class Service
+
+     attr_accessor :describe_test_result 
+     attr_accessor :test_result
+
+     attr_accessor :ip_address
+     attr_hostname :hostname
+
+     def init(options)
+        @ip_address = options[:ip] 
+        @hostname = options[:hostname]
+        
+        raise "ip must be assigned a value" if @ip_address.nil?
+        raise "hostname must be assigned a value" if @hostname.nil?
+
+        @describe_test_result = "Sample test on a service"  
+     end
+
+     def test_command
+       @test_result = 'PASSED'
+       return TRUE #or return FALSE if test fails
+     end
+   end
+ end
+
+Below is the http plugin:
+ module Monitors
+ # Plugin: Monitors a domain to check if its online  
+ # It tries to establishe a HTTP connection with a domain
+ #PASSED if it establishes the HTTP connection successfully and FAILED if it throws an exception
+ class Http 
+   attr_reader :domain 
+   attr_accessor :describe_test_result 
+   attr_accessor :test_result
+
+   def init(options)
+        @domain = options[:domain] 
+        raise "domain must be assigned a value" if @domain.nil?
+        @describe_test_result = "HTTP Connection to " + @domain     
+   end 
+
+   def test_command
+     begin  
+          Net::HTTP.start(@domain) 
+          @test_result = 'PASSED'
+          return TRUE 
+
+     rescue Exception
+            @test_result =  $! # $! global variable reference to the Exception object
+            return FALSE  
+     end      
+   end   
+ end
+ end 
+
+DSL syntax for the http plugin is:
+    monitoring = [{monitor:'http',
+                   every:'5m',
+                   test:'Http connection to my site',
+                   domain:'www.mysite.com',
+                   contact:'admin@mysite.com',
+                   via:'gmail',
+                   notify_interval:'6h'
+                  }]
+
+  Ragios::Monitor.start monitoring
+
+===Testing your plugin
+ ...to be cont.
 
 
 Thanks for reading. I will write more soon.    
