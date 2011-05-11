@@ -11,7 +11,7 @@ options1 = { monitor: 'http',
 		   
 options2 =  { monitor: 'http',
               every: '2m',
-              test: 'domain doesnt exist test',
+              test: 'domain doesnt exist',
               domain: 'www.ragios-ruby.com',
               contact: 'admin@mail.com',
               via: 'gmail',  
