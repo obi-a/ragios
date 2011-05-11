@@ -48,7 +48,7 @@ class RagiosScheduler
                   :body => @body}
 
       if config[:via] == 'gmail'
-           Ragios::Notifiers::GMailNotifier.new.send message   
+           Ragios::GmailNotifier.new.send message   
         elsif config[:via] == 'email'
            Ragios::Notifiers::EmailNotifier.new.send message
         else
