@@ -46,8 +46,6 @@ To update to the latest version of Ragios anytime, from the root of the Ragios d
 
 ==Usage
 
-==Part 1.Basic Monitoring
-
 ===To Monitor a Website 
 
 
@@ -252,7 +250,7 @@ Run Ragios as 'sudo' when you need it to restart processes i.e.
 When a test fails the system sends out a notification to the system admin about the problem.
 
 ===Sending Notifications via Sendmail
-To send out notifications via sendmail use :via => 'email', example
+To send out notifications via sendmail use via:'email', example
 
     monitoring	=  [{ monitor:'url',
                       every:'5m',
@@ -542,7 +540,7 @@ If our plugin needs more values, we would make it a requirement that those value
 
  Ragios::Monitor.start monitoring
 
-Our plugin will collect the values of the IP address and hostname from the options hash. We just re-write our plugin like this. See below:
+Our plugin will collect the values of the IP address and hostname from the options hash. We just re-write the plugin like this. See below:
 
  Module Monitors
    class Service
@@ -615,8 +613,54 @@ Source code for the http plugin, notice how the init(options) and test_command()
  end
  end
 
+
 ===Testing your plugin
- ...to be cont.
+Ragios uses RSpec for testing. Save specs for your plugins in the spec/plugins directory. 
+
+Specs for the http plugin above
+ #spec/plugins/http_plugin_spec.rb
+ require 'spec_base.rb'
+
+ options1 = { monitor: 'http',
+             every: '10m',
+             test: 'google site test',
+             domain: 'www.google.com',
+             contact: 'admin@mail.com',
+             via: 'gmail',  
+             notify_interval: '6h'
+             }
+		   
+ options2 =  { monitor: 'http',
+              every: '2m',
+              test: 'domain doesnt exist',
+              domain: 'www.ragios-ruby.com',
+              contact: 'admin@mail.com',
+              via: 'gmail',  
+              notify_interval: '6h'
+             }
+
+ describe Monitors::Http do
+
+  it "should establish a http connection with google.com" do
+    h = Monitors::Http.new
+    h.init(options1) 
+    h.test_command.should == TRUE
+  end
+
+  it "should fail to establish a http connection" do 
+    f = Monitors::Http.new
+    f.init(options2)
+    f.test_command.should ==  FALSE
+  end 
+ end
+
+To run the above specs from the spec/plugins directory
+
+ rspec http_plugin_spec.rb
+
+To run the complete test suite for Ragios (this will ensure that the Ragios system is still working fine).
+From the Ragios root directory
+ rake spec
 
 
 Thanks for reading. I will write more soon.    
