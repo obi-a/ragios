@@ -458,7 +458,7 @@ Step 2: The plugin must be in a Module called Monitors
  Module Monitors
  end
 
-Step 3: The plugin is a simple Ruby Class. (The class name should be in CamelCase)
+Step 3: The plugin is a simple Ruby Class. (The class name should be in CamelCase.)
 
  Module Monitors
    class Service
@@ -617,7 +617,7 @@ Source code for the http plugin, notice how the init(options) and test_command()
 ===Testing your plugin
 Ragios uses RSpec for testing. Save specs for your plugins in the spec/plugins directory. 
 
-Specs for the http plugin above
+Specs for the http plugin
  #spec/plugins/http_plugin_spec.rb
  require 'spec_base.rb'
 
@@ -659,9 +659,8 @@ To run the above specs from the spec/plugins directory
  rspec http_plugin_spec.rb
 
 To run the complete test suite for Ragios (this will ensure that the Ragios system is still working fine).
-From the Ragios root directory
+From the Ragios root directory type
  rake spec
-
 
 Thanks for reading. I will write more soon.    
 
