@@ -2,6 +2,9 @@
 This is a rolling release.
 The following changes were made:
 
+5-11-2011
+* rolling release is complete on v0.5.0. Work begins on v0.5.1
+
 5-9-2011
 * Twitter and Gmail notifiers are now configured in the Ragios/config.rb file.
 
