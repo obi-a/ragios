@@ -662,6 +662,8 @@ To run the complete test suite for Ragios (this will ensure that the Ragios syst
 From the Ragios root directory type
  rake spec
 
+If any questions please leave me a message here or email me: obi.akubue@gmail.com
+
 Thanks for reading. I will write more soon.    
 
 ===Great Gems that made this possible;
