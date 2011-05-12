@@ -120,6 +120,8 @@ To monitor a URL,
 
     Ragios::Monitor.start monitoring
 
+This will send a Http GET request to the specified url 'http://www.datafeed.com/resources/videos/1' every 5 minutes, it will  notify the contact 'admin@mail.com' via gmail if it gets an ERROR response code from the url. Every 6 hours it will re-send a notification message to contact if the issue has not been fixed. When the issue is fixed it will send an issue resolved message to the contact.
+
 You can monitor a combination of websites and URLs,
 
     monitoring	={monitor:'url',
@@ -449,6 +451,8 @@ Below is a list of ERB templates used by the system:
 == Ragios Plugin System
 Ragios uses plugins to monitor various systems and services. A plugin could monitor URLs, http, processes, database servers etc. Plugins define the tests performed by Ragios to determine whether a monitored service is still available or offline. Plugins may also define conditions that may trigger alerts by Ragios. Using plugins Ragios could be extended to monitor any type of system.
 
+Monitoring websites for uptime is handled by the http plugin and monitoring URLs for availability is done with the url plugin. We used both plugins and gave examples in the beginning of this document. Now lets walkthrough the simple process of creating a plugin.
+
 ===Writing a Ragios plugin in 5 easy steps:
 
 Step 1: The plugin must be saved in the lib/ragios/monitors/plugins directory.
@@ -465,7 +469,7 @@ Step 3: The plugin is a simple Ruby Class. (The class name should be in CamelCas
    end
  end
 
-Step 4: The plugin must have 2 methods init(options) and test_command()
+Step 4: The plugin must have 2 methods init(options) and test_command() 
 
  Module Monitors
    class Service
@@ -480,7 +484,7 @@ Step 4: The plugin must have 2 methods init(options) and test_command()
 
 test_command() performs a test on the service being monitored. When the test fails, test_command() returns FALSE. When the test passes test_command returns TRUE. (The most common test is checking availability of a service like DNS, http etc. test_command() should return TRUE when the service is available and FALSE when its not available). 
 
-Step 5: The plugin must define  and assign values to 2 variables @describe_test_result and @test_result.
+Final Step 5: The plugin must define  and assign values to 2 variables @describe_test_result and @test_result.
 
  Module Monitors
    class Service
