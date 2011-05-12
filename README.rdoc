@@ -447,7 +447,7 @@ Below is a list of ERB templates used by the system:
  lib/ragios/messages/status_report.erb   -- template for the Status Reports sent out to the admin by the system
 
 == Ragios Plugin System
-Ragios uses plugins to monitor various systems and services. A plugin could monitor URLs, http, processes, database servers etc. Plugins define the tests performed by Ragios to determine whether a monitored service is still available or offline. 
+Ragios uses plugins to monitor various systems and services. A plugin could monitor URLs, http, processes, database servers etc. Plugins define the tests performed by Ragios to determine whether a monitored service is still available or offline. Plugins may also define conditions that may trigger alerts by Ragios. Using plugins Ragios could be extended to monitor any type of system.
 
 ===Writing a Ragios plugin in 5 easy steps:
 
@@ -514,9 +514,9 @@ Our plugin is now ready to run. We use it to monitor a fictional service called 
  Ragios::Monitor.start monitoring
 
 The code above means that Ragios will run our plugin every 5 minutes, and contact admin via gmail when the test fails etc. monitor:'service'
-tell Ragios to use the Monitors::Service plugin we created. (If we used monitor:'http' Ragios will use the Monitors::Http plugin). 
+tells Ragios to use the Monitors::Service plugin we created. (If we used monitor:'http' Ragios will use the Monitors::Http plugin which ships with the system). 
 
-The hash value in the DSL is passed to our plugin's init(options) as options.
+The hash value in the DSL is passed to our plugin's init(options) method as options.
 
    options =  {monitor:'service',
                    every:'5m',
@@ -531,8 +531,10 @@ If our plugin needs more values, we would make it a requirement that those value
  monitoring = [{monitor:'service',
                    every:'5m',
                    test:'sample test',
+
                    ip:'192.168.2.19'
                    hostname:'ubuntu-server1'
+
                    contact:'admin@mysite.com',
                    via:'gmail',
                    notify_interval:'6h'
