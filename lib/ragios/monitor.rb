@@ -15,6 +15,10 @@ module Notifiers
    end
                 
  def fixed
+  if @plugin.respond_to?('fixed')
+          @plugin.fixed
+  end
+
   if @notifier == 'email'
     email_resolved
   elsif @notifier == 'gmail'
