@@ -6,21 +6,21 @@
 
  #Add your code here
  monitoring   = { monitor: 'http',
-                  every: '5m',
+                  every: '3m',
                   test: 'Http connection to my site',
-                  domain: 'www.google.com',
+                  domain: 'www.google.com/fail',
                   contact: 'admin@mysite.com',
-                   via: 'gmail',
-                   notify_interval: '6h'
-                  },
-                  { monitor: 'url',
-                   every: '1m',
-                   test: 'video datafeed test',
-                   url: 'http://www.google.com/fail',
-                   contact: 'admin@mail.com',
                    via: 'twitter',
                    notify_interval: '6h'
                   },
+                  { monitor: 'http',
+              every: '2m',
+              test: 'domain doesnt exist',
+              domain: 'www.obiora-akubue.com',
+              contact: 'admin@mail.com',
+              via: 'gmail',  
+              notify_interval: '6h'
+             },
                  { monitor: 'url',
                    every: '1m',
                    test: 'another datafeed test',
@@ -30,8 +30,8 @@
                    notify_interval: '6h'
                   }
 
-  
   Ragios::Monitor.start monitoring
+
 
  #trap Ctrl-C to exit gracefully
     puts "PRESS CTRL-C to QUIT"
