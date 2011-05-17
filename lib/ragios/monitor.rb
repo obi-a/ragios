@@ -15,10 +15,13 @@ module Notifiers
    end
                 
  def fixed
-  if @plugin.respond_to?('fixed')
-          @plugin.fixed
+  #execute the code block if provided
+  if @fixed != nil 
+   if @fixed.lambda?
+      @fixed.call
+   end
   end
-
+   puts  'executing fixed'
   if @notifier == 'email'
     email_resolved
   elsif @notifier == 'gmail'
@@ -39,6 +42,13 @@ module InitValues
   @contact = options[:contact]
   @test_description = options[:test]
   @notifier = options[:via]
+  #assumes that options[:fixed] and options[failed] are code lambdas when available
+  if options[:fixed] != nil
+   @fixed =  options[:fixed]
+  end
+  if options[:failed] != nil
+     @failed = options[:failed]
+  end 
  end 
 end
 
@@ -78,10 +88,9 @@ class Monitor
 class GenericMonitor < Ragios::Monitors::System
 
       attr_reader :plugin
-      
+
       #create the right type of monitor instance
     def initialize(plugin,options)
-        
         @plugin = plugin
         @plugin.ragios_init_values(options)
         ragios_init_values(options)
@@ -107,9 +116,11 @@ class GenericMonitor < Ragios::Monitors::System
     end
 
     def failed
-       if @plugin.respond_to?('failed')
-          @plugin.failed
+      if @failed != nil
+       if @failed.lambda?
+          @failed.call
        end
+      end
     end
 
     include Notifiers

@@ -1,5 +1,11 @@
 require 'spec_base.rb'
 
+#add code to excute when a test fails
+run_in_failure = lambda{
+                       puts 'test has failed'
+                       puts 'do some failure recovery here'
+                      }
+
     monitoring = { monitor: 'url',
                    every: '30s',
                    test: 'github repo a http test',
@@ -24,7 +30,17 @@ require 'spec_base.rb'
                    contact: 'obi.akubue@mail.com',
                    via: 'gmail',  
                    notify_interval: '6h'
+                  },
+                  { monitor: 'url',
+                   every: '2m',
+                   test: 'lambda test - the monitors test is expected to fail',
+                   url: 'http://www.google.com/fail/',
+                   contact: 'obi.akubue@mail.com',
+                   via: 'gmail',  
+                   notify_interval: '6h',
+                   failed: run_in_failure 
                   }
+               
 
  describe Ragios::Monitor do 
 

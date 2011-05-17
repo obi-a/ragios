@@ -668,6 +668,45 @@ To run the complete test suite for Ragios (this will ensure that the Ragios syst
 From the Ragios root directory type
  rake spec
 
+== Adding Failure Recovery Code to your monitors
+You can add failure recovery code to your monitors, when a test fails the fails recovery code will be excuted by Ragios. 
+
+You can add 2 types of failure receovery code.
+ * Code to be excuted when a test fails.
+ * Code to be excuted when a test changes from FAILED back to PASSED. 
+
+This could be used to switch to a backup server or system when the main one goes down, and then then switch back to the main server when it recovers. This applies to any type of system being monitored, it could be a database, website, data feed, API etc. 
+
+Lets say you want your web app to switch to a backup datafeed when your main datafeed goes offline.
+
+  run_when_failed = lambda{ 
+                            puts 'if still on old datafeed'
+                            puts 'switch to backup datafeed'
+                            puts 'end'
+                           }
+ 
+  run_on_fixed = lambda{
+                         puts 'switch back to main datafeed'
+                         puts 'do something'
+                       }
+
+  monitoring = [{ monitor: 'url',
+                   every: '2m',
+                   test: 'XYZ data feed',
+                   url: 'http://www.website.com/89843/videos.xml',
+                   contact: 'obi.akubue@mail.com',
+                   via: 'gmail',  
+                   notify_interval: '6h',
+                   failed:run_when_failed, 
+                   fixed:run_on_fixed  
+                    }]
+
+ Ragios::Monitor.start monitoring
+
+failed: points a code block that will be excuted when a test fails while fixed: points to a code block that will be excuted when a test recovers from failure.
+When the above test fails the code block run_when_failed will be excuted and when it recovers from failure the code block run when fixed will be executed.
+Note that the failed:code_block will be excuted every single time a test fails, you can add conditions inside to code block to check the condition best switching. This is a flaw that will soon be fixed.
+
 If any questions please leave me a message here or email me: obi.akubue@gmail.com
 
 Thanks for reading. I will write more soon.    
