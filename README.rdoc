@@ -451,8 +451,8 @@ Below is a list of ERB templates used by the system:
 == Adding Failure Recovery Code to your monitors
 You can add failure recovery code to your monitors, when a monitored system fails the failure recovery code will be excuted by Ragios. 
 
-You can add 2 types of failure recovery code.
-* Code to be excuted when a monitored system fails.
+There are can add 2 types of failure recovery code:
+* Code to be excuted when a monitored system fails, and
 * Code to be excuted when a monitored system recovers from failure. 
 
 When a server is being monitored for availability, failure recovery code could be used to switch to a backup server when the main server goes down, and then switch back to the main server when it recovers. This also applies to any type of system being monitored databases, websites, datafeeds, API etc. 
