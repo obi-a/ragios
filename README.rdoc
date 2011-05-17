@@ -464,7 +464,7 @@ Lets say you want your web app to switch to a backup datafeed when your main dat
                             puts 'do something'
                            }
  
-  run_on_fixed = lambda{
+  run_when_fixed = lambda{
                          puts 'switch to main datafeed'
                          puts 'do something'
                        }
@@ -478,7 +478,7 @@ Lets say you want your web app to switch to a backup datafeed when your main dat
                    notify_interval: '6h',
 
                    failed: run_when_failed, 
-                   fixed: run_on_fixed  
+                   fixed: run_when_fixed  
 
                     }]
 
