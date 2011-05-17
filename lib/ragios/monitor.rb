@@ -21,7 +21,7 @@ module Notifiers
       @fixed.call
    end
   end
-   puts  'executing fixed'
+
   if @notifier == 'email'
     email_resolved
   elsif @notifier == 'gmail'
