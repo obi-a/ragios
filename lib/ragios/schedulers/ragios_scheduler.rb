@@ -113,17 +113,20 @@ class RagiosScheduler
        else
            job.num_tests_failed = job.num_tests_failed + 1
            puts job.test_description +   "   [FAILED]" + " Created on: "+ Time.now.to_s(:long)
-           job.failed
+           
                #if the failed job has been marked as failed
                #this prevents the system from scheduling a new notification scheduler when one is already scheduled
                if job.has_failed
                    #do nothing
                else 
+
+                   job.failed  
+
                    #if failed job has not been marked as failed, then mark it as failed
                    job.has_failed = TRUE
-
+ 
                    #send out first notification
-                   job.notify      
+                   job.notify    
                  
                    #setup notification scheduler
                    #this scheduler will schedule the notifcations to be sent out at the specified notification interval
