@@ -663,9 +663,7 @@ Source code for the http plugin, notice how the init(options) and test_command()
 
 
 ===Testing your plugin
-Ragios uses RSpec for testing. Save specs for your plugins in the spec/plugins directory. 
-
-Specs for the http plugin
+Ragios uses RSpec for testing. The specs for your plugin should cover a Passing and failing condition for the plugin. Below is an example of a plugin specs. Using the specs for the http plugin as an example:
  #spec/plugins/http_plugin_spec.rb
  require 'spec_base.rb'
 
@@ -701,7 +699,6 @@ Specs for the http plugin
     f.test_command.should ==  FALSE
   end 
  end
-
 To run the above specs from the spec/plugins directory
 
  rspec http_plugin_spec.rb
@@ -709,6 +706,8 @@ To run the above specs from the spec/plugins directory
 To run the complete test suite for Ragios (this will ensure that the Ragios system is still working fine).
 From the Ragios root directory type
  rake spec
+
+Save specs for your plugins in the spec/plugins directory.
 
 If any questions please leave me a message here or email me: obi.akubue@gmail.com
 
