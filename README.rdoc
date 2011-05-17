@@ -712,19 +712,14 @@ From the Ragios root directory type
 
 If any questions please leave me a message here or email me: obi.akubue@gmail.com
 
-Thanks for reading. I am updating this documentation as I code the project. I will write more soon. 
+Thanks for reading. I am updating this document as I code the project. This document is changing daily.  
 
 ===Tested and developed on    
 * Ubuntu 
 * FreeBSD 8.1
 
 ===Great Gems that made this possible
-* Bundler
-* Pony
-* Twitter 
-* Oauth
-* Rufus-scheduler 
-* Gmail
+Bundler, Pony, Twitter, Oauth, Rufus-scheduler, Gmail, RSpec
 
 ===License
 MIT License.
