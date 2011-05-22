@@ -11,8 +11,13 @@ module Notifiers
        tweet_notify
      else 
        raise 'Notifier: Not Found'
-     end    
-   end
+     end   
+
+    if @plugin.respond_to?('notify')
+       @plugin.notify
+    end    
+ 
+ end
                 
  def fixed
   #execute the code block if provided
@@ -121,6 +126,10 @@ class GenericMonitor < Ragios::Monitors::System
           @failed.call
        end
       end
+    end
+     
+    if @plugin.respond_to?('failed')
+       @plugin.failed
     end
 
     include Notifiers
