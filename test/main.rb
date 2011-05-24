@@ -41,7 +41,7 @@
 
    monitoring = { monitor: 'url',
                    every: '1m',
-                   test: '3 test',
+                   test: '3 test feed',
                    url: 'http://www.website.com/89843/videos.xml',
                    contact: 'obi.akubue@mail.com',
                    via: 'gmail',  
@@ -60,8 +60,13 @@
                    fixed:run_on_fixed 
                   }
 
-   
-   Ragios::Monitor.start monitoring
+  monitors = Ragios::Monitor.start monitoring
+       
+      monitors.each do |monitor|  
+         puts monitor.test_description 
+         puts monitor.creation_date
+         puts monitor.time_of_last_test
+      end
 
  #trap Ctrl-C to exit gracefully
     puts "PRESS CTRL-C to QUIT"
