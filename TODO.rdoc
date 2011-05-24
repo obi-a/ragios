@@ -1,3 +1,6 @@
+
+*Plugins should be able to override all methods of the Ragios::Monitors::System class. Making plugins firstclass Monitors
+
 =Goals for versions 0.5+
 
 ==todo

@@ -11,12 +11,7 @@ module Notifiers
        tweet_notify
      else 
        raise 'Notifier: Not Found'
-     end   
-
-    if @plugin.respond_to?('notify')
-       @plugin.notify
-    end    
- 
+     end      
  end
                 
  def fixed

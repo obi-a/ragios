@@ -4,8 +4,6 @@ GEM
   specs:
     activesupport (3.0.1)
     addressable (2.2.5)
-    csv-mapper (0.5.1)
-      fastercsv
     daemons (1.1.0)
     diff-lcs (1.1.2)
     faraday (0.6.1)
@@ -14,7 +12,6 @@ GEM
       rack (>= 1.1.0, < 2)
     faraday_middleware (0.6.3)
       faraday (~> 0.6.0)
-    fastercsv (1.5.4)
     gmail (0.3.4)
       mail (>= 2.2.1)
       mime (>= 0.1)
@@ -44,7 +41,6 @@ GEM
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.5.0)
     rufus-scheduler (2.0.6)
-    simple-rss (1.2.3)
     simple_oauth (0.1.5)
     treetop (1.4.8)
       polyglot (>= 0.3.1)
@@ -61,12 +57,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  csv-mapper
   daemons
   gmail
   i18n
   pony
   rspec
   rufus-scheduler
-  simple-rss
   twitter

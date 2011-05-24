@@ -35,11 +35,6 @@ require dir + 'ragios/monitor'
 #global variable path to the folder with erb message files
 $path_to_messages =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/messages/')) 
 
-#experimental  dependencies for #hackdisrupt project
-require 'open-uri'
-require 'rss/1.0'  
-require 'rss/2.0'
-require 'csv-mapper'
-require 'simple-rss'
+
 
 
