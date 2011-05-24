@@ -4,7 +4,7 @@ module Schedulers
 
 class RagiosScheduler
     
-    attr :monitors 
+    attr :monitors #list of long running monitors
     attr :start_time
     attr :current_monitors 
 
@@ -61,8 +61,6 @@ class RagiosScheduler
 
    def init()
      
-      
-
        	puts "Ragios: Initializing"
 
 	count = 1
