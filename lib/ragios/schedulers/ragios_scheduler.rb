@@ -4,18 +4,18 @@ module Schedulers
 
 class RagiosScheduler
     
-    attr :jobs 
+    attr :monitors 
     attr :start_time
 
-    def initialize(jobs)
-         @jobs = jobs
+    def initialize(monitors)
+         @monitors = monitors
          #time since the first status report -- will be from the time Ragios started running -- see status_report.erb
          @start_time  =  Time.now
     end
     
   #returns a list of all active monitors managed by this scheduler
    def get_monitors
-        return @jobs
+        return @monitors
    end
 
    def status_report
@@ -62,10 +62,10 @@ class RagiosScheduler
        	puts "Initializing"
 
 	count = 1
-	puts @jobs.length.to_s + " Monitors detected"
+	puts @monitors.length.to_s + " Monitors detected"
 	puts "\n"
 
-	@jobs.each do |job|
+	@monitors.each do |job|
  		puts "test " + count.to_s + ". "+  job.test_description 
  		puts "Scheduled to run every " + job.time_interval + "\n"
  		puts "Running First Test..."
@@ -95,9 +95,9 @@ class RagiosScheduler
    end 
    
  def start
-   #schedule all the jobs to execute test_command() at every time_interval
+   #schedule all the monitors to execute test_command() at every time_interval
    scheduler = Rufus::Scheduler.start_new 
-   @jobs.each do |job|
+   @monitors.each do |job|
  
      #reset this value to ensure that a monitor that failed the init() test will still be tracked properly
      job.has_failed = nil #FALSE
