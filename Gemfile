@@ -9,4 +9,5 @@ gem "i18n"
 gem "gmail"
 gem "rspec"
 
-
+gem "sinatra"
+gem "yajl-ruby"
