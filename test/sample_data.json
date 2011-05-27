@@ -1,5 +1,5 @@
 
- curl -X PUT http://localhost:4567/ragios/monitor -d '[{"monitor":"url","every":"1m","test":"1 test feed","url":"http://www.website.com/89843/videos.xml","contact": "obi.akubue@mail.com","via": "gmail","notify_interval": "6h"},{"monitor":"url","every":"1m","test":"4 test","url":"https://github.com/obi-a/Ragios","contact": "obi.akubue@mail.com","via":"gmail","notify_interval":"3m"}]'
+ curl -X PUT http://localhost:4567/ragios/monitors -d '[{"monitor":"url","every":"1m","test":"1 test feed","url":"http://www.website.com/89843/videos.xml","contact": "obi.akubue@mail.com","via": "gmail","notify_interval": "6h"},{"monitor":"url","every":"1m","test":"4 test","url":"https://github.com/obi-a/Ragios","contact": "obi.akubue@mail.com","via":"gmail","notify_interval":"3m"}]'
 
 
 
