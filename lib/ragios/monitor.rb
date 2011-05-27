@@ -58,6 +58,10 @@ class Monitor
      Ragios::System.update_status config 
     end
 
+    def self.get_monitors
+      Ragios::System.get_monitors
+    end    
+
     def self.start(monitoring)
         monitor = []
         count = 0
