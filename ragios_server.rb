@@ -8,14 +8,27 @@ require 'yajl'
 
 
 get '/' do
- "Ragios Server"
+
+  Yajl::Encoder.encode({ Ragios: "welcome"})
+
 end
 
 
-put '/ragios/monitor' do
-
+put '/ragios/monitors' do
+ begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
   Ragios::Monitor.start monitors
+  Yajl::Encoder.encode({ok:"true"})
+ rescue 
+    Yajl::Encoder.encode({error: $!.to_s})
+ end
+end
 
-  "{\"ok\":true}"
+get '/ragios/monitors' do
+   #convert each monitor into a hash
+   #Ragios::Monitor.get_monitors
+end
+
+not_found do
+     Yajl::Encoder.encode({error:"not found"})
 end
