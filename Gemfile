@@ -11,3 +11,5 @@ gem "rspec"
 
 gem "sinatra"
 gem "yajl-ruby"
+
+gem "thin"
