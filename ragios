@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ "$1" = "start" ]; then
+   thin start -R config.ru  -C server.yml
+elif [ "$1" = "stop" ]; then
+   thin stop -R config.ru  -C server.yml
+elif [ "$1" = "restart" ]; then
+  thin restart -R config.ru  -C server.yml
+else 
+ echo "Use one of the options start | restart | stop "
+fi
+
+
