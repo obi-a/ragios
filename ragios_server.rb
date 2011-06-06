@@ -6,13 +6,13 @@ require dir + 'config'
 require 'sinatra' 
 require 'yajl'
 
-
-configure do
-    set :bind, 'localhost'
-    set :environment, 'production'
-    set :port, '5041'
-    set :server, %w[thin mongrel webrick]
-end
+#using config.yml with thin instead
+#configure do
+   # set :bind, 'localhost'
+    #set :environment, 'production'
+   # set :port, '5041'
+   # set :server, %w[thin mongrel webrick]
+#end
 
 
 get '/' do
