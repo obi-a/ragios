@@ -1,5 +1,5 @@
-require 'rubygems'
-require "bundler/setup"
+#require 'rubygems'
+#require "bundler/setup"
 dir = Pathname(__FILE__).dirname.expand_path
 require dir + 'lib/ragios'
 require dir + 'config'
@@ -7,10 +7,16 @@ require 'sinatra'
 require 'yajl'
 
 
+configure do
+    set :bind, 'localhost'
+    set :environment, 'production'
+    set :port, '5041'
+    set :server, %w[thin mongrel webrick]
+end
+
+
 get '/' do
-
   Yajl::Encoder.encode({ Ragios: "welcome"})
-
 end
 
 
