@@ -8,11 +8,11 @@ require 'yajl'
 
 #using config.yml with thin instead
 #configure do
-   # set :bind, 'localhost'
-    #set :environment, 'production'
-   # set :port, '5041'
-   # set :server, %w[thin mongrel webrick]
-#end
+#    set :bind, 'localhost'
+#    set :port, '5041'
+#    set :server, %w[thin mongrel webrick]
+    
+# end
 
 
 get '/' do
@@ -20,7 +20,7 @@ get '/' do
 end
 
 
-put '/ragios/monitors' do
+put '/monitors' do
  begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
   Ragios::Monitor.start monitors
@@ -30,9 +30,10 @@ put '/ragios/monitors' do
  end
 end
 
-get '/ragios/monitors' do
-   #convert each monitor into a hash
-   #Ragios::Monitor.get_monitors
+get '/monitors' do
+ monitors =  Ragios::Monitor.get_monitors
+ puts monitors.inspect
+ Yajl::Encoder.encode(monitors)
 end
 
 not_found do
