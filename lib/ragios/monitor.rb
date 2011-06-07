@@ -59,7 +59,16 @@ class Monitor
     end
 
     def self.get_monitors
-      Ragios::System.get_monitors
+       monitors = Ragios::System.get_monitors
+       hash = {}
+       count = 0
+      monitors.each do |monitor|
+        #monitor.instance_variables.each {|var| hash[var[1..-1].to_sym] = monitor.instance_variable_get(var) }
+        monitor.instance_variables.each {|var| hash[var.to_s.delete("@")] = monitor.instance_variable_get(var) }
+        monitors[count] = hash
+        count = count + 1
+      end  
+      monitors 
     end    
 
     def self.start(monitoring)
