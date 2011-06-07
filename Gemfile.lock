@@ -6,7 +6,6 @@ GEM
     addressable (2.2.5)
     daemons (1.1.0)
     diff-lcs (1.1.2)
-    eventmachine (0.12.10)
     faraday (0.6.1)
       addressable (~> 2.2.4)
       multipart-post (~> 1.1.0)
@@ -43,14 +42,6 @@ GEM
     rspec-mocks (2.5.0)
     rufus-scheduler (2.0.6)
     simple_oauth (0.1.5)
-    sinatra (1.2.1)
-      rack (~> 1.1)
-      tilt (>= 1.2.2, < 2.0)
-    thin (1.2.11)
-      daemons (>= 1.0.9)
-      eventmachine (>= 0.12.6)
-      rack (>= 1.0.0)
-    tilt (1.2.2)
     treetop (1.4.8)
       polyglot (>= 0.3.1)
     twitter (1.4.1)
@@ -61,7 +52,6 @@ GEM
       multi_xml (~> 0.2.0)
       rash (~> 0.3.0)
       simple_oauth (~> 0.1.4)
-    yajl-ruby (0.8.2)
 
 PLATFORMS
   ruby
@@ -73,7 +63,4 @@ DEPENDENCIES
   pony
   rspec
   rufus-scheduler
-  sinatra
-  thin
   twitter
-  yajl-ruby

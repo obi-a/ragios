@@ -9,7 +9,7 @@ gem "i18n"
 gem "gmail"
 gem "rspec"
 
-gem "sinatra"
-gem "yajl-ruby"
-
-gem "thin"
+#uncomment this for ragios server
+#gem "sinatra"
+#gem "yajl-ruby"
+#gem "thin"
