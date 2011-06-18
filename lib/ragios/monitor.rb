@@ -71,7 +71,7 @@ class Monitor
       monitors 
     end    
 
-    def self.start(monitoring)
+    def self.start(monitoring, server = nil)
         monitor = []
         count = 0
         monitoring.each do|m|
@@ -94,13 +94,19 @@ class Monitor
          monitor[count] = ragios_monitor
          count = count + 1
         end #end of each...do loop
-        Ragios::System.start monitor 
+        
+        if server == TRUE
+          Ragios::Server.start monitor 
+        else
+          Ragios::System.start monitor 
+        end
     end   
  end
 
 class GenericMonitor < Ragios::Monitors::System
 
       attr_reader :plugin
+      attr_reader :options
 
       #create the right type of monitor instance
     def initialize(plugin,options)
@@ -112,7 +118,8 @@ class GenericMonitor < Ragios::Monitors::System
             @describe_test_result = @plugin.describe_test_result 
           else
             raise '@describe_test_result must be defined in ' + @plugin.to_s
-          end       
+          end   
+        @options = options #to be used by the server scheduler     
         super()
     end
     
