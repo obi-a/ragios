@@ -10,6 +10,8 @@ gem "gmail"
 gem "rspec"
 
 #uncomment this for ragios server
-#gem "sinatra"
-#gem "yajl-ruby"
-#gem "thin"
+gem "sinatra"
+gem "yajl-ruby"
+gem "thin"
+gem "leanback"
+gem "uuidtools"
