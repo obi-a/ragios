@@ -4,6 +4,9 @@ require 'twitter'
 require 'net/http'
 require 'net/https'
 require 'gmail'
+require 'leanback'
+require 'uuidtools'
+
 
 dir = Pathname(__FILE__).dirname.expand_path
 
@@ -26,11 +29,13 @@ require_all '/ragios/monitors/plugins'
 #schedulers
 require dir + 'ragios/schedulers/ragios_scheduler'
 require dir + 'ragios/schedulers/notification_scheduler'
+require dir + 'ragios/schedulers/server'
 
 
 #system
 require dir + 'ragios/system'
 require dir + 'ragios/monitor'
+require dir + 'ragios/server'
 
 #global variable path to the folder with erb message files
 $path_to_messages =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/messages/')) 
