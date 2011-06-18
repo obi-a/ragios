@@ -7,15 +7,6 @@
   require 'yajl'
 
  #Add your code here
- run_when_failed = lambda{ 
-                            puts 'switch to backup datafeed'
-                            puts 'do something'
-                           }
- 
-  run_on_fixed = lambda{
-                         puts 'switch back to main datafeed'
-                         puts 'fixed'
-                       }
 
   monitoring = { monitor: 'url',
                    every: '1m',
@@ -34,7 +25,7 @@
                    notify_interval:'3m'
                   }
 
-  #Ragios::Monitor.start monitoring
+  Ragios::Monitor.start monitoring,server=TRUE
 
 
    monitoring = [{ monitor: 'url',
@@ -43,14 +34,13 @@
                    url: 'http://www.website.com/89843/videos.xml',
                    contact: 'obi.akubue@mail.com',
                    via: 'gmail',  
-                   notify_interval: '6h'
-                  
+                  notify_interval: '6h'               
                     }]
 
- Ragios::Monitor.start monitoring
+  #Ragios::Monitor.start monitoring,server=TRUE
 
-   monitors = Ragios::Monitor.get_monitors
-    puts Yajl::Encoder.encode(monitors)
+   #monitors = Ragios::Monitor.get_monitors
+   # puts Yajl::Encoder.encode(monitors)
    #puts monitors.inspect
       # hash = {}
     #  monitors.each do |monitor|  
@@ -62,6 +52,26 @@
      #    puts monitor.creation_date
       #   puts monitor.time_of_last_test
     # end
+
+
+class Monitor1 < Ragios::Monitors::System
+   def initialize
+      @time_interval = '10m'
+      @notification_interval = '6h'
+      @contact = "obi@mail.com"
+      @test_description = "sample test 1"
+      @describe_test_result = "sample test 1"
+      @test_result = "sample result"
+     super
+   end 
+
+   def test_command
+      TRUE 
+   end
+end
+
+#server = Ragios::Schedulers::Server.new [Monitor1.new]
+
 
  #trap Ctrl-C to exit gracefully
     puts "PRESS CTRL-C to QUIT"
