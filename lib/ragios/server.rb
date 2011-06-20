@@ -23,7 +23,7 @@ module Ragios
         
      @ragios = Ragios::Schedulers::Server.new monitoring
      #@ragios.init
-     #@ragios.start 
+     @ragios.start 
      #returns a list of active monitors
      #@ragios.get_monitors
     end
