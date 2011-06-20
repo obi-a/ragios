@@ -107,6 +107,7 @@ class GenericMonitor < Ragios::Monitors::System
 
       attr_reader :plugin
       attr_reader :options
+      attr_accessor :id
 
       #create the right type of monitor instance
     def initialize(plugin,options)
