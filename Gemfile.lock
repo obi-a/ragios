@@ -18,7 +18,7 @@ GEM
       mime (>= 0.1)
     hashie (1.0.0)
     i18n (0.4.1)
-    leanback (0.1.6)
+    leanback (0.1.7)
       rest-client
       yajl-ruby
     mail (2.2.7)
