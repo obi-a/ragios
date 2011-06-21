@@ -21,8 +21,8 @@ module Ragios
 
     def self.start monitoring
         
-     @ragios = Ragios::Schedulers::Server.new monitoring
-     #@ragios.init
+     @ragios = Ragios::Schedulers::Server.new 
+     @ragios.create monitoring
      @ragios.start 
      #returns a list of active monitors
      #@ragios.get_monitors

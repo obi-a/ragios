@@ -5,15 +5,22 @@ class Server
     
     attr :monitors #list of long running monitors 
 
-    def initialize(monitors)
+    #create the monitors and them to the database
+    def create(monitors)
          @monitors = monitors 
          Couchdb.create 'monitors'
+         Couchdb.create 'stats'
          
          @monitors.each do |monitor|
            #puts monitor.options.inspect
             monitor.creation_date = Time.now.to_s(:long) 
             monitor.id = UUIDTools::UUID.random_create.to_s
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => monitor.options}
+           Document.create doc
+           
+           #create the stats database
+           data = {:creation_date => monitor.creation_date}
+           doc = {:database => 'stats', :doc_id => monitor.id, :data => data }
            Document.create doc 
          end
          
@@ -32,6 +39,11 @@ class Server
 
  def init()
  end 
+
+ #create and restart all monitors from database 
+ def restart()
+
+ end
    
  def start  
     #schedule all the monitors to execute test_command() at every time_interval
@@ -48,10 +60,10 @@ class Server
            monitor.num_tests_passed = monitor.num_tests_passed + 1
            #set to nil since the monitor passed
            monitor.has_failed = nil #FALSE
-           puts monitor.test_description + "   [PASSED]" + " Created on: "+ Time.now.to_s(:long)
+           #puts monitor.test_description + "   [PASSED]" + " Created on: "+ Time.now.to_s(:long)
        else
            monitor.num_tests_failed = monitor.num_tests_failed + 1
-           puts monitor.test_description +   "   [FAILED]" + " Created on: "+ Time.now.to_s(:long)
+           #puts monitor.test_description +   "   [FAILED]" + " Created on: "+ Time.now.to_s(:long)
            
                #if the failed monitor has been marked as failed
                #this prevents the system from scheduling a new notification scheduler when one is already scheduled
@@ -83,17 +95,22 @@ class Server
        monitor.total_num_tests = monitor.total_num_tests + 1 
       
       #get this monitor's document from the database 
-      doc = {:database => 'monitors', :doc_id => monitor.id}
+      doc = {:database => 'stats', :doc_id => monitor.id}
       hash = Couchdb.find doc
           
       #update document with latest stats on the monitor
        if monitor.has_failed == TRUE 
-          status = "PASSED" 
+          status = "FAILED" 
        else 
-          status = "FAILED"
+          status = "PASSED"
       end 
         
-      data = { 
+      data = {   
+         :every => monitor.time_interval,
+         :test => monitor.test_description, 
+         :contact => monitor.contact,
+         :describe_test_result => monitor.describe_test_result,
+         :creation_date => hash["creation_date"],
          :time_of_last_test => monitor.time_of_last_test.to_s,
          :num_tests_passed => monitor.num_tests_passed.to_s,
          :num_tests_failed => monitor.num_tests_failed.to_s,
@@ -104,8 +121,8 @@ class Server
        
          #puts data.inspect
 
-       doc = {:database => 'monitors', :doc_id => monitor.id, :data => data}
-       #Document.edit doc
+       doc = {:database => 'stats', :doc_id => monitor.id, :data => data}
+       Document.edit doc
                
      end #end of scheduler
     end  
