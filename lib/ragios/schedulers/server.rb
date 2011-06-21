@@ -5,14 +5,13 @@ class Server
     
     attr :monitors #list of long running monitors 
 
-    #create the monitors and them to the database
+    #create the monitors and add them to the database
     def create(monitors)
          @monitors = monitors 
          Couchdb.create 'monitors'
          Couchdb.create 'stats'
          
          @monitors.each do |monitor|
-           #puts monitor.options.inspect
             monitor.creation_date = Time.now.to_s(:long) 
             monitor.id = UUIDTools::UUID.random_create.to_s
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => monitor.options}
@@ -60,17 +59,14 @@ class Server
            monitor.num_tests_passed = monitor.num_tests_passed + 1
            #set to nil since the monitor passed
            monitor.has_failed = nil #FALSE
-           #puts monitor.test_description + "   [PASSED]" + " Created on: "+ Time.now.to_s(:long)
        else
            monitor.num_tests_failed = monitor.num_tests_failed + 1
-           #puts monitor.test_description +   "   [FAILED]" + " Created on: "+ Time.now.to_s(:long)
            
                #if the failed monitor has been marked as failed
                #this prevents the system from scheduling a new notification scheduler when one is already scheduled
                if monitor.has_failed
                    #do nothing
                else 
-
                    monitor.failed  
 
                    #if failed monitor has not been marked as failed, then mark it as failed
@@ -118,8 +114,6 @@ class Server
          :last_test_result => monitor.test_result.to_s, 
          :status => status,
          :_rev=> hash["_rev"]}
-       
-         #puts data.inspect
 
        doc = {:database => 'stats', :doc_id => monitor.id, :data => data}
        Document.edit doc
