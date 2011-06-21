@@ -1,7 +1,7 @@
 module Ragios 
 
 #hides the messy details of the scheduler from users 
-#provides an easy interface to start monitoring the system by calling Ragios::Server start monitoring 
+#provides an easy interface to start monitoring the system by calling Ragios::Server start monitors 
  class Server
    
     attr_accessor :ragios
@@ -19,10 +19,10 @@ module Ragios
        # @ragios.get_monitors
     end
 
-    def self.start monitoring
+    def self.start monitors
         
      @ragios = Ragios::Schedulers::Server.new 
-     @ragios.create monitoring
+     @ragios.create monitors
      @ragios.start 
      #returns a list of active monitors
      #@ragios.get_monitors
