@@ -14,6 +14,7 @@ class Server
          @monitors.each do |monitor|
             monitor.creation_date = Time.now.to_s(:long) 
             monitor.id = UUIDTools::UUID.random_create.to_s
+           #create the monitors database
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => monitor.options}
            Document.create doc
            
@@ -48,10 +49,7 @@ class Server
     #schedule all the monitors to execute test_command() at every time_interval
    scheduler = Rufus::Scheduler.start_new 
    @monitors.each do |monitor|
-   
-     #reset this value to ensure that a monitor that failed the init() test will still be tracked properly
-     monitor.has_failed = nil #FALSE
-
+     
     scheduler.every monitor.time_interval do
      begin 
        monitor.time_of_last_test = Time.now.to_s(:long)  
