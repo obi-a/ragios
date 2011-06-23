@@ -19,6 +19,11 @@ module Ragios
        # @ragios.get_monitors
     end
 
+    def self.restart monitors
+       @ragios = Ragios::Schedulers::Server.new 
+       @ragios.restart monitors 
+    end
+
     def self.start monitors
         
      @ragios = Ragios::Schedulers::Server.new 

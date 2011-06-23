@@ -25,7 +25,9 @@
                    notify_interval:'3m'
                   }
 
-  Ragios::Monitor.start monitoring,server=TRUE
+  #Ragios::Monitor.start monitoring,server=TRUE
+  Ragios::Monitor.restart
+  
 
 
    monitoring = [{ monitor: 'url',

@@ -1,3 +1,13 @@
+class Hash
+  #take keys of hash and transform those to a symbols
+  def self.transform_keys_to_symbols(value)
+    return value if not value.is_a?(Hash)
+    hash = value.inject({}){|memo,(k,v)| memo[k.to_sym] = Hash.transform_keys_to_symbols(v); memo}
+    return hash
+  end
+end
+
+
 module Ragios 
 #Translates the Ragios Domain Specific Language to the object oriented system
 
@@ -58,6 +68,7 @@ class Monitor
      Ragios::System.update_status config 
     end
 
+    #may later remove this method remember to review it
     def self.get_monitors
        monitors = Ragios::System.get_monitors
        hash = {}
@@ -71,8 +82,22 @@ class Monitor
       monitors 
     end    
 
+   #create and restart all monitors from database 
+   def self.restart()
+     #read off monitor values from database into a hash
+     monitors = Couchdb.docs_from 'monitors'
+      
+      count = 0
+      monitors.each do |monitor|
+       monitor = Hash.transform_keys_to_symbols(monitor)
+        monitors[count] = monitor
+        count +=  1
+      end
+     start monitors,server='restart' 
+   end
+
     def self.start(monitoring, server = nil)
-        monitor = []
+        monitors = []
         count = 0
         monitoring.each do|m|
         #create the right type of monitor instance for each monitor and send it to the scheduler    
@@ -91,14 +116,16 @@ class Monitor
               include InitValues
          end
          ragios_monitor = GenericMonitor.new(plugin,options) 
-         monitor[count] = ragios_monitor
+         monitors[count] = ragios_monitor
          count = count + 1
         end #end of each...do loop
         
         if server == TRUE
-          Ragios::Server.start monitor 
+          Ragios::Server.start monitors
+        elsif server == 'restart'
+          Ragios::Server.restart monitors
         else
-          Ragios::System.start monitor 
+          Ragios::System.start monitors 
         end
     end   
  end

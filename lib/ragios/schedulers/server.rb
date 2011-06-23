@@ -40,9 +40,23 @@ class Server
  def init()
  end 
 
- #create and restart all monitors from database 
- def restart()
+ def restart(monitors)
+  @monitors = monitors
 
+  #read up the stats from database and add the stats values to the object   
+  @monitors.each do |monitor|
+     monitor.id = monitor.options[:_id]
+     doc = {:database => 'stats', :doc_id => monitor.id}
+     hash = Couchdb.find doc
+     monitor.time_of_last_test = hash["time_of_last_test"]
+     monitor.num_tests_passed = hash["num_tests_passed"].to_i
+     monitor.num_tests_failed = hash["num_tests_failed"].to_i
+     monitor.total_num_tests = hash["total_num_tests"].to_i
+     monitor.creation_date = hash["creation_date"]
+  end    
+
+   start
+   
  end
    
  def start  
