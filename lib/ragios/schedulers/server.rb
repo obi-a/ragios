@@ -47,7 +47,7 @@ class Server
   @monitors.each do |monitor|
      monitor.id = monitor.options[:_id]
      doc = {:database => 'stats', :doc_id => monitor.id}
-     hash = Couchdb.find doc
+     hash = Couchdb.view doc
      monitor.time_of_last_test = hash["time_of_last_test"]
      monitor.num_tests_passed = hash["num_tests_passed"].to_i
      monitor.num_tests_failed = hash["num_tests_failed"].to_i
@@ -104,7 +104,7 @@ class Server
       
       #get this monitor's document from the database 
       doc = {:database => 'stats', :doc_id => monitor.id}
-      hash = Couchdb.find doc
+      hash = Couchdb.view doc
           
       #update document with latest stats on the monitor
        if monitor.has_failed == TRUE 
