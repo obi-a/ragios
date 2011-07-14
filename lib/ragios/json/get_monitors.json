@@ -1,0 +1,11 @@
+{
+ "language" : "javascript",
+ "views" :{
+    "get_monitors" : {
+      "map" : "function(doc){
+         if(doc.monitor)
+           emit(doc.id,doc);
+        }"
+    }
+ }
+}
