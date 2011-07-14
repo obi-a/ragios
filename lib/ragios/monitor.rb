@@ -52,6 +52,12 @@ module InitValues
   @contact = options[:contact]
   @test_description = options[:test]
   @notifier = options[:via]
+
+   #if tag exists assign it
+   if options[:tag] != nil
+       @tag = options[:tag]
+   end
+   
   #assumes that options[:fixed] and options[failed] are code lambdas when available
   if options[:fixed] != nil
    @fixed =  options[:fixed]
@@ -85,8 +91,15 @@ class Monitor
    #create and restart all monitors from database 
    def self.restart()
      #read off monitor values from database into a hash
-     monitors = Couchdb.docs_from 'monitors'
-      
+     monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
+      #TODO will clean up the code below in the next version leanback gem
+      if(monitors.is_a?(Hash)) && (monitors.keys[0].to_s == "error")
+          #when view doesn't exist docs returns {"error"=>"not_found", "reason"=>"missing"} 
+          doc = { :database => 'monitors', :design_doc => 'monitors', :json_doc => $path_to_json + '/get_monitors.json' }
+          Couchdb.create_design doc  
+          monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
+        end
+
       count = 0
       monitors.each do |monitor|
        monitor = Hash.transform_keys_to_symbols(monitor)
@@ -135,6 +148,7 @@ class GenericMonitor < Ragios::Monitors::System
       attr_reader :plugin
       attr_reader :options
       attr_accessor :id
+      attr_accessor :tag
 
       #create the right type of monitor instance
     def initialize(plugin,options)
