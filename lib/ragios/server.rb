@@ -10,6 +10,14 @@ module Ragios
 
     end
 
+    def self.find_monitors(options) 
+      Couchdb.find_by( :database => 'monitors', options.keys[0] => options.values[0])  
+    end
+
+    def self.find_stats(options)
+      Couchdb.find_by( :database => 'stats', options.keys[0] => options.values[0])  
+    end
+
    def self.update_status config
        #@ragios.update_status config
    end
