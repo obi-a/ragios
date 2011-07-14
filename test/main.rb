@@ -8,7 +8,8 @@
 
  #Add your code here
 
-  monitoring = { monitor: 'url',
+  monitoring = { tag: 'admin',
+                 monitor: 'url',
                    every: '1m',
                    test: '1 test feed',
                    url: 'http://www.website.com/89843/videos.xml',
@@ -16,7 +17,8 @@
                    via: 'gmail',  
                    notify_interval: '6h'
                     },
-                  { monitor: 'url',
+                  { tag: 'obi', 
+                   monitor: 'url',
                    every: '1m',
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
@@ -27,6 +29,13 @@
   #Ragios::Monitor.start monitoring
   #Ragios::Monitor.start monitoring,server=TRUE
   #Ragios::Monitor.restart
+
+  #hash = Ragios::Server.find_monitors(:contact => 'obi.akubue@mail.com')
+  #hash = Ragios::Server.find_monitors(:monitor => 'url')
+  #hash = Ragios::Server.find_stats(:every => '1m')
+  #hash = Ragios::Server.find_monitors(:tag => 'admin')
+  hash = Ragios::Server.find_stats(:tag => 'admin')
+  puts hash.inspect
   
 
  #trap Ctrl-C to exit gracefully
