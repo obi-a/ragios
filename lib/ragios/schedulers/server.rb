@@ -17,13 +17,11 @@ class Server
            #create the monitors database
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => monitor.options}
            Document.create doc
-           
            #create the stats database
            data = {:creation_date => monitor.creation_date}
            doc = {:database => 'stats', :doc_id => monitor.id, :data => data }
            Document.create doc 
          end
-         
     end
     
   #returns a list of all active monitors managed by this scheduler
@@ -48,6 +46,7 @@ class Server
      monitor.id = monitor.options[:_id]
      doc = {:database => 'stats', :doc_id => monitor.id}
      hash = Couchdb.view doc
+     monitor.tag = hash["tag"]
      monitor.time_of_last_test = hash["time_of_last_test"]
      monitor.num_tests_passed = hash["num_tests_passed"].to_i
      monitor.num_tests_failed = hash["num_tests_failed"].to_i
@@ -56,7 +55,6 @@ class Server
   end    
 
    start
-   
  end
    
  def start  
@@ -113,7 +111,8 @@ class Server
           status = "PASSED"
       end 
         
-      data = {   
+      data = { 
+         :tag => monitor.tag,  
          :every => monitor.time_interval,
          :test => monitor.test_description, 
          :contact => monitor.contact,
