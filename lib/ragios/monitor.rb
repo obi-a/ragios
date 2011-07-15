@@ -92,7 +92,9 @@ class Monitor
    def self.restart()
      #read off all monitors from database 
      monitors = Ragios::Server.get_monitors
-
+      if((monitors.is_a?(Hash)) && (monitors.keys[0].to_s == "error")) || (monitors.empty?)
+          return
+      end
       count = 0
       monitors.each do |monitor|
        monitor = Hash.transform_keys_to_symbols(monitor)
