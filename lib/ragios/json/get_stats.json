@@ -1,0 +1,11 @@
+{
+ "language" : "javascript",
+ "views" :{
+    "get_stats" : {
+      "map" : "function(doc){
+         if(doc.last_test_result)
+           emit(doc.id,doc);
+        }"
+    }
+ }
+}
