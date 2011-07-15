@@ -18,7 +18,7 @@ class Server
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => monitor.options}
            Document.create doc
            #create the stats database
-           data = {:creation_date => monitor.creation_date}
+           data = {:creation_date => monitor.creation_date, :tag => monitor.tag}
            doc = {:database => 'stats', :doc_id => monitor.id, :data => data }
            Document.create doc 
          end
