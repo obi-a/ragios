@@ -3,7 +3,7 @@
  "views" :{
     "get_stats" : {
       "map" : "function(doc){
-         if(doc.last_test_result)
+         if(doc.creation_date)
            emit(doc.id,doc);
         }"
     }
