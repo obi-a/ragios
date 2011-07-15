@@ -27,15 +27,16 @@
                    notify_interval:'3m'
                   }
   #Ragios::Monitor.start monitoring
-  #Ragios::Monitor.start monitoring,server=TRUE
+  Ragios::Monitor.start monitoring,server=TRUE
   #Ragios::Monitor.restart
 
   #hash = Ragios::Server.find_monitors(:contact => 'obi.akubue@mail.com')
   #hash = Ragios::Server.find_monitors(:monitor => 'url')
   #hash = Ragios::Server.find_stats(:every => '1m')
   #hash = Ragios::Server.find_monitors(:tag => 'admin')
-  hash = Ragios::Server.find_stats(:tag => 'admin')
-  puts hash.inspect
+  #hash = Ragios::Server.find_stats(:tag => 'admin')
+   #hash = Ragios::Monitor.restart
+   #puts hash.inspect
   
 
  #trap Ctrl-C to exit gracefully
