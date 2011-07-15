@@ -90,15 +90,8 @@ class Monitor
 
    #create and restart all monitors from database 
    def self.restart()
-     #read off monitor values from database into a hash
-     monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
-      #TODO will clean up the code below in the next version leanback gem
-      if(monitors.is_a?(Hash)) && (monitors.keys[0].to_s == "error")
-          #when view doesn't exist docs returns {"error"=>"not_found", "reason"=>"missing"} 
-          doc = { :database => 'monitors', :design_doc => 'monitors', :json_doc => $path_to_json + '/get_monitors.json' }
-          Couchdb.create_design doc  
-          monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
-        end
+     #read off all monitors from database 
+     monitors = Ragios::Server.get_monitors
 
       count = 0
       monitors.each do |monitor|
