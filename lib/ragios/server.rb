@@ -26,9 +26,8 @@ module Ragios
     def self.get_monitors
        #read off monitor values from database into a hash
      monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
-      #TODO will clean up the code below in the next version leanback gem
       if(monitors.is_a?(Hash)) && (monitors.keys[0].to_s == "error")
-        #when view doesn't exist docs returns {"error"=>"not_found", "reason"=>"missing"} 
+        #when view doesn't exist find() returns {"error"=>"not_found", "reason"=>"missing"} 
         doc = { :database => 'monitors', :design_doc => 'monitors', :json_doc => $path_to_json + '/get_monitors.json' }
         Couchdb.create_design doc  
         monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
@@ -39,9 +38,8 @@ module Ragios
     def self.get_stats
       #read off stats values from database into a hash
       stats = Couchdb.find(:database => "stats", :design_doc => 'stats', :view => 'get_stats') 
-      #TODO will clean up the code below in the next version leanback gem
       if(stats.is_a?(Hash)) && (stats.keys[0].to_s == "error")
-        #when view doesn't exist docs returns {"error"=>"not_found", "reason"=>"missing"} 
+        #when view doesn't exist find() returns {"error"=>"not_found", "reason"=>"missing"} 
         doc = { :database => 'stats', :design_doc => 'stats', :json_doc => $path_to_json + '/get_stats.json' }
         Couchdb.create_design doc  
         stats = Couchdb.find(:database => "stats", :design_doc => 'stats', :view => 'get_stats') 
@@ -59,8 +57,6 @@ module Ragios
      @ragios = Ragios::Schedulers::Server.new 
      @ragios.create monitors
      @ragios.start 
-     #returns a list of active monitors
-     #@ragios.get_monitors
     end
  end
 

@@ -26,8 +26,8 @@
                    via: 'gmail',  
                    notify_interval:'3m'
                   }
-  #Ragios::Monitor.start monitoring
-  Ragios::Monitor.start monitoring,server=TRUE
+  Ragios::Monitor.start monitoring
+  #Ragios::Monitor.start monitoring,server=TRUE
   #Ragios::Monitor.restart
 
   #hash = Ragios::Server.find_monitors(:contact => 'obi.akubue@mail.com')

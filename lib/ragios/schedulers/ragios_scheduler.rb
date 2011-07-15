@@ -6,10 +6,9 @@ class RagiosScheduler
     
     attr :monitors #list of long running monitors
     attr :start_time
-    attr :current_monitors 
 
     def initialize(monitors)
-         @current_monitors = monitors 
+         @monitors = monitors 
          #time since the first status report -- will be from the time Ragios started running -- see status_report.erb
          @start_time  =  Time.now
 
@@ -17,17 +16,17 @@ class RagiosScheduler
     
   #returns a list of all active monitors managed by this scheduler
    def get_monitors
-        return @@monitors
+        return @monitors
    end
 
    def status_report
        message_template = ERB.new File.new($path_to_messages + "/status_report.erb" ).read
-       begin 
+       #begin 
        message_template.result(binding)
-       rescue FloatDomainError
+       #rescue FloatDomainError #FIXED - uncommented - to be deleted later
            #KNOWN ISSUE: to be fixed later
-           raise 'Error Generating Status Report: At least one Monitor has total_number_of_tests_performed  = 0' 
-       end
+        #   raise 'Error Generating Status Report: At least one Monitor has total_number_of_tests_performed  = 0' 
+       #end
    end
 
   #send a report  with stats and status information on all active monitors to the system admin via email
@@ -64,10 +63,10 @@ class RagiosScheduler
        	puts "Ragios: Initializing"
 
 	count = 1
-	puts @current_monitors.length.to_s + " Monitors detected"
+	puts @monitors.length.to_s + " Monitors detected"
 	puts "\n"
 
-	@current_monitors.each do |monitor|
+	@monitors.each do |monitor|
  		puts "test " + count.to_s + ". "+  monitor.test_description 
  		puts "Scheduled to run every " + monitor.time_interval + "\n"
  		puts "Running First Test..."
@@ -99,7 +98,7 @@ class RagiosScheduler
  def start
    #schedule all the monitors to execute test_command() at every time_interval
    scheduler = Rufus::Scheduler.start_new 
-   @current_monitors.each do |monitor|
+   @monitors.each do |monitor|
  
      #reset this value to ensure that a monitor that failed the init() test will still be tracked properly
      monitor.has_failed = nil #FALSE
@@ -146,13 +145,6 @@ class RagiosScheduler
        monitor.total_num_tests = monitor.total_num_tests + 1 
      end #end of scheduler
 
-     
-     if defined?(@@monitors )
-      #add current_monitors to the list of running monitors  
-      @@monitors = (@@monitors + @current_monitors).uniq
-     else
-       @@monitors = @current_monitors
-     end
     end  
   end
 

@@ -82,6 +82,7 @@ describe Ragios::System do
   end 
 
  it "should initialize all monitors and activate the scheduler" do 
+    
      @monitors = Ragios::System.start @monitoring 
      @monitors.each do |monitor|  
          monitor.total_num_tests.should == 1
@@ -89,6 +90,7 @@ describe Ragios::System do
          puts monitor.creation_date
          puts monitor.time_of_last_test
      end
+    
  end
 
  it "should setup status reports" do
@@ -96,6 +98,7 @@ describe Ragios::System do
 			:contact => 'obi.akubue@mail.com',
 			:via => 'gmail'})  
  end   
+
 end
 
 

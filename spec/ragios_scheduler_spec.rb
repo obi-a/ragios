@@ -110,8 +110,10 @@ describe Ragios::Schedulers::RagiosScheduler do
     end
 
     it "should display stats on each active monitor" do
-      monitors = @ragios.get_monitors   
        
+      @ragios.init
+      @ragios.start
+      monitors = @ragios.get_monitors  
       monitors.each do |monitor|  
          puts monitor.test_description 
          puts monitor.creation_date
@@ -126,7 +128,10 @@ describe Ragios::Schedulers::RagiosScheduler do
     end
     
    it "should display the status report" do
-     lambda {@ragios.status_report}.should raise_error(RuntimeError, "Error Generating Status Report: At least one Monitor has total_number_of_tests_performed  = 0")
+     @ragios.init
+     @ragios.start
+     puts @ragios.status_report
+     #lambda {@ragios.status_report}.should raise_error(RuntimeError, "Error Generating Status Report: At least one Monitor has total_number_of_tests_performed  = 0")
      
    end
   
