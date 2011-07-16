@@ -1,0 +1,39 @@
+<% @subject = "subject: Ragios Status Report" %> 
+
+Ragios Status Report
+
+<%= Time.now.to_s(:short) %>
+ <%=@monitors.length.to_s %> monitors running on the system
+<% count = 0 %>
+Uptime Report:
+<% @monitors.each do |monitor|  %>
+<% count = count + 1 %>
+<% @uptime = (monitor["num_tests_passed"].to_f / monitor["total_num_tests"].to_f) * 100 %>
+<% @downtime =(monitor["num_tests_failed"].to_f / monitor["total_num_tests"].to_f) * 100 %>
+<%= count %>. <%= monitor["test"] %>  Uptime: <%= @uptime.to_i.to_s %>%  Downtime: <%= @downtime.to_i.to_s %>% Current Status: <%= monitor["status"] %>  
+<% end %>
+
+<% count = 0 %>
+Detailed Report:
+<% @monitors.each do |monitor|  %>
+    <% count = count + 1 %>
+    <%= count %>. <%= monitor["test"] %>
+
+    Running since: <%= monitor["creation_date"] %>
+       
+    Last test was performed on: <%= monitor["time_of_last_test"] %>
+    Last Test Result:
+                 <%= monitor["describe_test_result"] %> = <%= monitor["test_result"] %>
+
+    Total number of tests performed: <%= monitor["total_num_tests"] %>
+
+                   PASSED <%= monitor["num_tests_passed"] %> tests
+                   FAILED <%= monitor["num_tests_failed"] %> tests
+                   <% @uptime = (monitor["num_tests_passed"].to_f / monitor["total_num_tests"].to_f) * 100 %>
+                   <% @downtime =(monitor["num_tests_failed"].to_f / monitor["total_num_tests"].to_f) * 100 %>
+                   UPTIME <%= @uptime.to_i.to_s %>%
+                   DOWNTIME <%= @downtime.to_i.to_s %>%
+
+    Tests are performed every: <%= monitor["every"] %>
+    Notification Interval for failed tests: <%= monitor["notification_interval"] %> 
+<% end  %>

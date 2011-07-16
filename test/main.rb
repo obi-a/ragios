@@ -26,7 +26,7 @@
                    via: 'gmail',  
                    notify_interval:'3m'
                   }
-  Ragios::Monitor.start monitoring
+  #Ragios::Monitor.start monitoring
   #Ragios::Monitor.start monitoring,server=TRUE
   #Ragios::Monitor.restart
 
@@ -37,6 +37,18 @@
   #hash = Ragios::Server.find_stats(:tag => 'admin')
    #hash = Ragios::Monitor.restart
    #puts hash.inspect
+
+  #puts Ragios::Server.status_report(tag = "obi")
+
+ #TODO: add unscheduling of status reports and monitors ability to pause or go active.
+   #store a document in database called update staus
+  config  = {   :every => '1m',
+                   :contact => 'admin@mail.com',
+                   :via => 'gmail',
+                  :tag => 'admin' 
+                  }
+
+  Ragios::Server.update_status config
   
 
  #trap Ctrl-C to exit gracefully
