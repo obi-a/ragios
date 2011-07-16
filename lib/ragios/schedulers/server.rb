@@ -62,7 +62,7 @@ class Server
    scheduler = Rufus::Scheduler.start_new 
    @monitors.each do |monitor|
      
-    scheduler.every monitor.time_interval do
+    scheduler.every monitor.time_interval, :tag => monitor.id do
      begin 
        monitor.time_of_last_test = Time.now.to_s(:long)  
        if monitor.test_command 
@@ -106,13 +106,14 @@ class Server
           
       #update document with latest stats on the monitor
        if monitor.has_failed == TRUE 
-          status = "FAILED" 
+          status = "DOWN" 
        else 
-          status = "PASSED"
+          status = "UP"
       end 
         
       data = { 
          :tag => monitor.tag,  
+         :notification_interval => monitor.notification_interval,
          :every => monitor.time_interval,
          :test => monitor.test_description, 
          :contact => monitor.contact,
