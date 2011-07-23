@@ -8,9 +8,11 @@ class Server
     #create the monitors and add them to the database
     def create(monitors)
          @monitors = monitors 
-         Couchdb.create 'monitors'
-         Couchdb.create 'stats'
-         
+         begin
+          Couchdb.create 'monitors'
+          Couchdb.create 'stats'
+         rescue CouchdbException 
+         end
          @monitors.each do |monitor|
             monitor.creation_date = Time.now.to_s(:long) 
             monitor.id = UUIDTools::UUID.random_create.to_s
