@@ -28,7 +28,13 @@
                   }
   #Ragios::Monitor.start monitoring
   #Ragios::Monitor.start monitoring,server=TRUE
-  #Ragios::Monitor.restart
+ # Ragios::Monitor.restart
+   
+  Ragios::Server.stop_monitor(id ='')
+  
+  Ragios::Server.restart_monitor(id ='')
+  Ragios::Server.delete_monitor(id ='')
+  
 
   #hash = Ragios::Server.find_monitors(:contact => 'obi.akubue@mail.com')
   #hash = Ragios::Server.find_monitors(:monitor => 'url')
@@ -38,17 +44,22 @@
    #hash = Ragios::Monitor.restart
    #puts hash.inspect
 
-  #puts Ragios::Server.status_report(tag = "obi")
+  #puts Ragios::Server.status_report(tag = "admin")
+  #puts Ragios::Server.status_report
 
- #TODO: add unscheduling of status reports and monitors ability to pause or go active.
-   #store a document in database called update staus
-  config  = {   :every => '1m',
+
+  config = {   :every => '1m',
                    :contact => 'admin@mail.com',
                    :via => 'gmail',
                   :tag => 'admin' 
                   }
+    
 
-  Ragios::Server.update_status config
+  #Ragios::Server.start_status_update(config)
+  #Ragios::Server.restart_status_updates('admin')
+  #Ragios::Server.stop_status_update('admin')
+  #Ragios::Server.delete_status_update('admin')
+
   
 
  #trap Ctrl-C to exit gracefully
