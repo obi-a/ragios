@@ -3,9 +3,15 @@
  "views" :{
     "get_stats" : {
       "map" : "function(doc){
-         if(doc.creation_date)
+         if(doc.num_tests_passed)
            emit(doc.id,doc);
         }"
-    }
+    },
+    "get_tag_and_mature_stats" : {
+     "map" : "function(doc){
+        if(doc.num_tests_passed && doc.tag)
+          emit(doc.tag,doc);
+       }"
+   }   
  }
 }
