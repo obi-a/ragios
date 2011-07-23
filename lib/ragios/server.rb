@@ -142,6 +142,21 @@ module Ragios
       end
 
   end
+ 
+  def self.edit_status_update(id,options)
+     
+      doc = Couchdb.view(:database => 'status_update_settings', :doc_id => id)
+      data = {:_rev => doc["_rev"],
+                  :every => options[:every],
+                   :contact => options[:contact],
+                   :via => options[:via],
+                   :tag => options[:tag],
+                   :status => doc["status"]
+                  }
+      
+      doc = {:database => 'status_update_settings', :doc_id => id, :data => data}
+      Document.edit doc 
+  end
 
   def self.delete_status_update(tag)
      updates = find_status_update(:tag => tag)

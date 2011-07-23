@@ -30,10 +30,11 @@
   #Ragios::Monitor.start monitoring,server=TRUE
  # Ragios::Monitor.restart
    
-  Ragios::Server.stop_monitor(id ='')
-  
-  Ragios::Server.restart_monitor(id ='')
-  Ragios::Server.delete_monitor(id ='')
+
+  #TODO
+  #Ragios::Server.stop_monitor(id ='')
+  #Ragios::Server.restart_monitor(id ='')
+  #Ragios::Server.delete_monitor(id ='')
   
 
   #hash = Ragios::Server.find_monitors(:contact => 'obi.akubue@mail.com')
@@ -59,6 +60,14 @@
   #Ragios::Server.restart_status_updates('admin')
   #Ragios::Server.stop_status_update('admin')
   #Ragios::Server.delete_status_update('admin')
+
+   data = {   :every => '7m',
+                   :contact => 'obi@gmail.com',
+                   :via => 'gmail',
+                  :tag => 'obi' 
+                  }
+    id = "26e28402-7b2b-45ba-8ec6-a5200aa473cd"
+   Ragios::Server.edit_status_update(id,data)
 
   
 
