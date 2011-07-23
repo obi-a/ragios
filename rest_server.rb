@@ -19,7 +19,6 @@ get '/' do
   Yajl::Encoder.encode({ "Ragios Server" => "welcome"})
 end
 
-
 put '/monitors' do
  begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
@@ -30,26 +29,26 @@ put '/monitors' do
  end
 end
 
-get '/monitors/:key/:value' do
+get '/monitors/:key/:value*' do
     key = params[:key].to_sym
     value = params[:value]
     monitors = Ragios::Server.find_monitors(key => value)
     Yajl::Encoder.encode(monitors)
 end
 
-get '/stats/:key/:value' do
+get '/stats/:key/:value*' do
     key = params[:key].to_sym
     value = params[:value]
     monitors = Ragios::Server.find_stats(key => value)
     Yajl::Encoder.encode(monitors)
 end
 
-get '/monitors/all' do
+get '/monitors/all*' do
  monitors =  Ragios::Server.get_monitors
  Yajl::Encoder.encode(monitors)
 end
 
-get '/stats/all' do
+get '/stats/all*' do
  monitors = Ragios::Server.get_stats
  Yajl::Encoder.encode(monitors)
 end
