@@ -1,0 +1,11 @@
+{
+ "language" : "javascript",
+ "views" :{
+    "get_status_updates" : {
+      "map" : "function(doc){
+         if(doc.every)
+           emit(doc.id,doc);
+        }"
+    }
+ }
+}
