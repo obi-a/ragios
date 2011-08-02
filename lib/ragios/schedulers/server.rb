@@ -44,17 +44,18 @@ class Server
   @monitors = monitors
 
   #read up the stats from database and add the stats values to the object   
-  @monitors.each do |monitor|
-     monitor.id = monitor.options[:_id]
-     doc = {:database => 'stats', :doc_id => monitor.id}
-     hash = Couchdb.view doc
-     monitor.tag = hash["tag"]
-     monitor.time_of_last_test = hash["time_of_last_test"]
-     monitor.num_tests_passed = hash["num_tests_passed"].to_i
-     monitor.num_tests_failed = hash["num_tests_failed"].to_i
-     monitor.total_num_tests = hash["total_num_tests"].to_i
-     monitor.creation_date = hash["creation_date"]
-  end    
+  #@monitors.each do |monitor|
+   #  monitor.id = monitor.options[:_id]
+    # doc = {:database => 'stats', :doc_id => monitor.id}
+    # hash = Couchdb.view doc
+     
+    # monitor.tag = hash["tag"]
+    # monitor.time_of_last_test = hash["time_of_last_test"]
+    # monitor.num_tests_passed = hash["num_tests_passed"].to_i
+    # monitor.num_tests_failed = hash["num_tests_failed"].to_i
+    # monitor.total_num_tests = hash["total_num_tests"].to_i
+    # monitor.creation_date = hash["creation_date"]
+   #end    
 
    start
  end
@@ -126,6 +127,7 @@ class Server
          :num_tests_failed => monitor.num_tests_failed.to_s,
          :total_num_tests => monitor.total_num_tests.to_s,
          :last_test_result => monitor.test_result.to_s, 
+         :state => "running",
          :status => status,
          :_rev=> hash["_rev"]}
 

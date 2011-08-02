@@ -24,10 +24,10 @@
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
                    via: 'gmail',  
-                   notify_interval:'3m'
+                   notify_interval:'3h'
                   }
   #Ragios::Monitor.start monitoring
-  #Ragios::Monitor.start monitoring,server=TRUE
+  Ragios::Monitor.start monitoring,server=TRUE
  # Ragios::Monitor.restart
    
 
@@ -42,7 +42,7 @@
   #hash = Ragios::Server.find_stats(:every => '1m')
   #hash = Ragios::Server.find_monitors(:tag => 'admin')
   #hash = Ragios::Server.find_stats(:tag => 'admin')
-   #hash = Ragios::Monitor.restart
+  #hash = Ragios::Monitor.restart
    #puts hash.inspect
 
   #puts Ragios::Server.status_report(tag = "admin")
@@ -67,7 +67,7 @@
                   :tag => 'obi' 
                   }
     id = "26e28402-7b2b-45ba-8ec6-a5200aa473cd"
-   Ragios::Server.edit_status_update(id,data)
+  # Ragios::Server.edit_status_update(id,data)
 
   
 
