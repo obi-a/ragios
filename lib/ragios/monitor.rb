@@ -91,6 +91,7 @@ class Monitor
    #create and restart all monitors from database 
    def self.restart()
      #read off all monitors from database 
+     #TODO return only monitors with state == "running"
      monitors = Ragios::Server.get_monitors
       if(monitors.empty?)
           return
@@ -98,8 +99,8 @@ class Monitor
       count = 0
       monitors.each do |monitor|
        monitor = Hash.transform_keys_to_symbols(monitor)
-        monitors[count] = monitor
-        count +=  1
+         monitors[count] = monitor
+         count +=  1
       end
      start monitors,server='restart' 
    end
@@ -144,7 +145,7 @@ class GenericMonitor < Ragios::Monitors::System
       attr_reader :options
       attr_accessor :id
       attr_accessor :tag
-      attr_accessor :state
+      #attr_accessor :state
 
       #create the right type of monitor instance
     def initialize(plugin,options)

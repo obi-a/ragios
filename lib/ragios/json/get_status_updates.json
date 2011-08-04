@@ -1,11 +1,17 @@
 {
  "language" : "javascript",
  "views" :{
-    "get_status_updates" : {
+    "get_active_status_updates" : {
       "map" : "function(doc){
-         if(doc.every)
+         if(doc.state == 'active')
            emit(doc.id,doc);
         }"
-    }
+    },
+    "get_stopped_updates_by_tag" : {
+     "map" : "function(doc){
+        if(doc.state == 'stopped')
+          emit(doc.tag,doc);
+       }"
+   }    
  }
 }

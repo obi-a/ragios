@@ -27,23 +27,23 @@
                    notify_interval:'3h'
                   }
   #Ragios::Monitor.start monitoring
-  Ragios::Monitor.start monitoring,server=TRUE
- # Ragios::Monitor.restart
+  #Ragios::Monitor.start monitoring,server=TRUE
+  #Ragios::Monitor.restart
    
 
   #TODO
-  #Ragios::Server.stop_monitor(id ='')
+  #Ragios::Server.stop_monitor(id ='dd45dc37-cbfc-44cf-b506-7c3b47a7e7c7')
   #Ragios::Server.restart_monitor(id ='')
-  #Ragios::Server.delete_monitor(id ='')
+  #Ragios::Server.delete_monitor(id ='6d897ee5-1051-459e-bd98-82e0d1e6b132')
+  #Ragios::Server.delete_monitor(id ='9a119287-ba1e-416b-bb53-95376dac7977')
   
 
   #hash = Ragios::Server.find_monitors(:contact => 'obi.akubue@mail.com')
   #hash = Ragios::Server.find_monitors(:monitor => 'url')
-  #hash = Ragios::Server.find_stats(:every => '1m')
+  #hash = Ragios::Server.find_monitors(:every => '1m')
   #hash = Ragios::Server.find_monitors(:tag => 'admin')
-  #hash = Ragios::Server.find_stats(:tag => 'admin')
   #hash = Ragios::Monitor.restart
-   #puts hash.inspect
+  #puts hash.inspect
 
   #puts Ragios::Server.status_report(tag = "admin")
   #puts Ragios::Server.status_report
@@ -58,8 +58,9 @@
 
   #Ragios::Server.start_status_update(config)
   #Ragios::Server.restart_status_updates('admin')
+   #Ragios::Server.restart_status_updates
   #Ragios::Server.stop_status_update('admin')
-  #Ragios::Server.delete_status_update('admin')
+  Ragios::Server.delete_status_update('admin')
 
    data = {   :every => '7m',
                    :contact => 'obi@gmail.com',

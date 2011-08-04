@@ -10,7 +10,7 @@ Uptime Report:
 <% count = count + 1 %>
 <% @uptime = (monitor["num_tests_passed"].to_f / monitor["total_num_tests"].to_f) * 100 %>
 <% @downtime =(monitor["num_tests_failed"].to_f / monitor["total_num_tests"].to_f) * 100 %>
-<%= count %>. <%= monitor["test"] %>  Uptime: <%= @uptime.to_i.to_s %>%  Downtime: <%= @downtime.to_i.to_s %>% Current Status: <%= monitor["status"] %>  
+<%= count %>. <%= monitor["test"] %>  Uptime: <%= @uptime.to_i.to_s %>%  Downtime: <%= @downtime.to_i.to_s %>% Current Status: <%= monitor["status"] %>  Current State: <%= monitor["state"]%>
 <% end %>
 
 <% count = 0 %>
@@ -23,7 +23,7 @@ Detailed Report:
        
     Last test was performed on: <%= monitor["time_of_last_test"] %>
     Last Test Result:
-                 <%= monitor["describe_test_result"] %> = <%= monitor["test_result"] %>
+                 <%= monitor["describe_test_result"] %> = <%= monitor["last_test_result"] %>
 
     Total number of tests performed: <%= monitor["total_num_tests"] %>
 
@@ -33,7 +33,9 @@ Detailed Report:
                    <% @downtime =(monitor["num_tests_failed"].to_f / monitor["total_num_tests"].to_f) * 100 %>
                    UPTIME <%= @uptime.to_i.to_s %>%
                    DOWNTIME <%= @downtime.to_i.to_s %>%
+ 
+                   Current State: <%= monitor["state"]%>
 
     Tests are performed every: <%= monitor["every"] %>
-    Notification Interval for failed tests: <%= monitor["notification_interval"] %> 
+    Notification Interval for failed tests: <%= monitor["notify_interval"] %> 
 <% end  %>

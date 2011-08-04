@@ -36,26 +36,62 @@ module Ragios
     def self.status_report(tag = nil)
   
       if(tag == nil)
-          @monitors = get_stats
+          @monitors = get_monitors
       else
-          @monitors = get_stats(tag)
+          @monitors = find_monitors(:tag => tag)
       end 
        
        message_template = ERB.new File.new($path_to_messages + "/server_status_report.erb" ).read
        message_template.result(binding)
     end
 
-  
+   def self.stop_monitor(id)
+       @ragios.stop_monitor(id)
+   end
 
-  
+   def self.restart_monitor(id)
+       #TODO this will not work use couchDB update handlers instead
+       monitors = find_monitor(:_id => id)
+       monitors.each do |monitor|
+         #return, if monitor is already running
+         if monitor["state"] == "running" 
+            return
+         end
+      end
+      @ragios.restart monitors  
+   end
+
+   def self.delete_monitor(id)
+        stop_monitor(id)
+
+      monitors = find_monitors(:_id => id)
+     monitors.each do |monitor|
+         doc = {:database => 'monitors', :doc_id => monitor["_id"], :rev => monitor["_rev"]}
+         Document.delete doc
+     end
+
+       monitors = find_stats(:_id => id)
+     monitors.each do |monitor|
+         doc = {:database => 'stats', :doc_id => monitor["_id"], :rev => monitor["_rev"]}
+         Document.delete doc
+     end
+   end
+
+  #restart all active status updates - used when server is restarting
+  #or restart all stopped status updates by tag - used when restarting a stopped status update 
    def self.restart_status_updates(tag = nil)
        
       if(tag == nil)
-        config_settings = get_status_updates
+
+        config_settings = get_active_status_updates
       else
-        config_settings = find_status_update(:tag => tag)
+        config_settings = get_stopped_status_updates(tag)
       end
-    
+         
+        if config_settings.empty?
+         return
+        end
+        
         #format of config as read from database
         #{:_id=>"dce15781-4fb8-466a-92ac-52ebdc3bbf92", 
         #:_rev=>"1-546e9ca2e1eb06e3712c1f1f5538f0fc", 
@@ -65,17 +101,10 @@ module Ragios
         # :tag=>"admin"}   
         #schedule all available status updates in the database
         config_settings.each do |config| 
-           data = {:_rev => config["_rev"],
-                  :every => config["every"],
-                   :contact => config["contact"],
-                   :via => config["via"],
-                   :tag => config["tag"],
-                   :status => "active"
-                  }
-         doc = {:database => 'status_update_settings', :doc_id => config["_id"], :data => data}
+         doc = {:database => 'status_update_settings', :doc_id => config["_id"], :data => {:state => "active"}}
          config = Hash.transform_keys_to_symbols(config)
          schedule_status_updates(config, tag = config.values[5])
-         Document.edit doc            
+         Document.update doc           
         end
    end
 
@@ -84,13 +113,14 @@ module Ragios
        schedule_status_updates(config,tag = config.values[3])
    end
 
-  #save status update settings for different users to database
+  #create and save status update settings for different users to database
   def self.save_status_updates config
       begin
        Couchdb.create 'status_update_settings'
       rescue CouchdbException => e
       end 
       id =  UUIDTools::UUID.random_create.to_s
+      config = config.merge({:state => "active"})
       doc = {:database => 'status_update_settings', :doc_id => id, :data => config}
       Document.create doc
   end
@@ -102,6 +132,7 @@ module Ragios
           #         :via => 'gmail'
            #        :tag => 'admin'
            #       }
+
 
     @status_update_scheduler = Rufus::Scheduler.start_new
      
@@ -127,20 +158,12 @@ module Ragios
       jobs.each do |job| 
          job.unschedule
       end
-      updates = find_status_update(:tag => tag)
-      
-      updates.each do |update|
-          data = {:_rev => update["_rev"],
-                  :every => update["every"],
-                   :contact => update["contact"],
-                   :via => update["via"],
-                   :tag => update["tag"],
-                   :status => "stopped"
-                  }
-          doc = {:database => 'status_update_settings', :doc_id => update["_id"], :data => data}
-          Document.edit doc 
-      end
 
+      updates = find_status_update(:tag => tag)
+      updates.each do |update|
+       doc = { :database => 'status_update_settings', :doc_id => update["_id"], :data => {:state => "stopped"}}   
+       Document.update doc
+      end
   end
  
   def self.edit_status_update(id,options)
@@ -178,13 +201,26 @@ module Ragios
       return monitors
     end
 
-   def self.get_status_updates
-      begin 
-        status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_status_updates')
+  #get all stopped status updates
+  def self.get_stopped_status_updates(tag)
+    begin 
+        status_updates = Couchdb.find({:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_stopped_updates_by_tag'},key = tag)
+       
      rescue CouchdbException
        doc = { :database => 'status_update_settings', :design_doc => 'status_updates', :json_doc => $path_to_json + '/get_status_updates.json' }
-       Couchdb.create_design doc  
-       status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_status_updates')
+       Couchdb.create_design doc   
+        status_updates = Couchdb.find({:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_stopped_updates_by_tag'},key = tag)
+     end 
+  end
+    
+   #get all active status update by tag
+   def self.get_active_status_updates
+      begin 
+        status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_active_status_updates')
+     rescue CouchdbException
+       doc = { :database => 'status_update_settings', :design_doc => 'status_updates', :json_doc => $path_to_json + '/get_status_updates.json' }
+       Couchdb.create_design doc   
+        status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_active_status_updates')
      end
    end
 
