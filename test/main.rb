@@ -30,6 +30,9 @@
   #Ragios::Monitor.start monitoring,server=TRUE
   #Ragios::Monitor.restart
    
+  #hash = Ragios::Server.get_monitors
+  #hash = Ragios::Server.get_stopped_status_updates('admin')
+  #hash = Ragios::Server.get_active_status_updates
 
   #TODO
   #Ragios::Server.stop_monitor(id ='dd45dc37-cbfc-44cf-b506-7c3b47a7e7c7')
@@ -56,19 +59,18 @@
                   }
     
 
-  #Ragios::Server.start_status_update(config)
+  Ragios::Server.start_status_update(config)
   #Ragios::Server.restart_status_updates('admin')
    #Ragios::Server.restart_status_updates
   #Ragios::Server.stop_status_update('admin')
-  Ragios::Server.delete_status_update('admin')
+  #Ragios::Server.delete_status_update('admin')
 
    data = {   :every => '7m',
                    :contact => 'obi@gmail.com',
-                   :via => 'gmail',
-                  :tag => 'obi' 
+                   :via => 'email'
                   }
-    id = "26e28402-7b2b-45ba-8ec6-a5200aa473cd"
-  # Ragios::Server.edit_status_update(id,data)
+    id = "fdfbaddd-b00f-4838-b3c6-dacd4d220fcb"
+   #Ragios::Server.edit_status_update(id,data)
 
   
 

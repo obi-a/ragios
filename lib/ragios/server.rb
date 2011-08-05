@@ -166,81 +166,103 @@ module Ragios
       end
   end
  
-  def self.edit_status_update(id,options)
+  def self.edit_status_update(id, options)
      
-      doc = Couchdb.view(:database => 'status_update_settings', :doc_id => id)
-      data = {:_rev => doc["_rev"],
-                  :every => options[:every],
-                   :contact => options[:contact],
-                   :via => options[:via],
-                   :tag => options[:tag],
-                   :status => doc["status"]
-                  }
+      #doc = Couchdb.view(:database => 'status_update_settings', :doc_id => id)
+      #data = {:_rev => doc["_rev"],
+       #           :every => options[:every],
+        #           :contact => options[:contact],
+         #          :via => options[:via],
+          #         :tag => options[:tag],
+           #        :status => doc["status"]
+            #      }
       
-      doc = {:database => 'status_update_settings', :doc_id => id, :data => data}
-      Document.edit doc 
+      #doc = {:database => 'status_update_settings', :doc_id => id, :data => data}
+      #Document.edit doc 
+
+      doc = { :database => 'status_update_settings', :doc_id => id, :data => options}   
+      Document.update doc
   end
 
   def self.delete_status_update(tag)
+     #only one status update is expected per tag
      updates = find_status_update(:tag => tag)
      updates.each do |update|
-         doc = {:database => 'status_update_settings', :doc_id => update["_id"], :rev => update["_rev"]}
+         doc = {:database => 'status_update_settings', :doc_id => update["_id"]}
          Document.delete doc
      end
   end
     
     #returns a list of all monitors in the database
     def self.get_monitors
-     begin 
-       monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
-     rescue CouchdbException => e
-        doc = { :database => 'monitors', :design_doc => 'monitors', :json_doc => $path_to_json + '/get_monitors.json' }
-        Couchdb.create_design doc  
-        monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
-      end
-      return monitors
+     #begin 
+      # monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
+     #rescue CouchdbException => e
+      #  doc = { :database => 'monitors', :design_doc => 'monitors', :json_doc => $path_to_json + '/get_monitors.json' }
+       # Couchdb.create_design doc  
+       # monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
+      #end
+      #return monitors
+       view = {:database => 'monitors',
+        :design_doc => 'monitors',
+         :view => 'get_monitors',
+          :json_doc => $path_to_json + '/get_monitors.json'}
+
+         Couchdb.find_on_fly(view)
     end
 
   #get all stopped status updates
   def self.get_stopped_status_updates(tag)
-    begin 
-        status_updates = Couchdb.find({:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_stopped_updates_by_tag'},key = tag)
+    #begin 
+     #   status_updates = Couchdb.find({:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_stopped_updates_by_tag'},key = tag)
        
-     rescue CouchdbException
-       doc = { :database => 'status_update_settings', :design_doc => 'status_updates', :json_doc => $path_to_json + '/get_status_updates.json' }
-       Couchdb.create_design doc   
-        status_updates = Couchdb.find({:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_stopped_updates_by_tag'},key = tag)
-     end 
+     #rescue CouchdbException
+      # doc = { :database => 'status_update_settings', :design_doc => 'status_updates', :json_doc => $path_to_json + '/get_status_updates.json' }
+      # Couchdb.create_design doc   
+       # status_updates = Couchdb.find({:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_stopped_updates_by_tag'},key = tag)
+     #end 
+    view = {:database => 'status_update_settings',
+        :design_doc => 'status_updates',
+         :view => 'get_stopped_updates_by_tag',
+          :json_doc => $path_to_json + '/get_status_updates.json'}
+    
+    Couchdb.find_on_fly(view, key = tag)
   end
     
    #get all active status update by tag
    def self.get_active_status_updates
-      begin 
-        status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_active_status_updates')
-     rescue CouchdbException
-       doc = { :database => 'status_update_settings', :design_doc => 'status_updates', :json_doc => $path_to_json + '/get_status_updates.json' }
-       Couchdb.create_design doc   
-        status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_active_status_updates')
-     end
+      #begin 
+       # status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_active_status_updates')
+     #rescue CouchdbException
+      # doc = { :database => 'status_update_settings', :design_doc => 'status_updates', :json_doc => $path_to_json + '/get_status_updates.json' }
+       #Couchdb.create_design doc   
+        #status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_active_status_updates')
+     #end
+   view = {:database => 'status_update_settings',
+        :design_doc => 'status_updates',
+         :view => 'get_active_status_updates',
+          :json_doc => $path_to_json + '/get_status_updates.json'}
+    
+    Couchdb.find_on_fly(view)
    end
 
     def self.get_stats(tag=nil)
-     begin
-      if( tag == nil)
-       stats = Couchdb.find(:database => "stats", :design_doc => 'stats', :view => 'get_stats') 
-      else
-        stats = Couchdb.find({:database => "stats", :design_doc => 'stats', :view => 'get_tag_and_mature_stats'}, tag) 
-      end
-     rescue CouchdbException => e
-        doc = { :database => 'stats', :design_doc => 'stats', :json_doc => $path_to_json + '/get_stats.json' }
-        Couchdb.create_design doc  
-           if( tag == nil)
-                stats = Couchdb.find(:database => "stats", :design_doc => 'stats', :view => 'get_stats') 
-          else
-                stats = Couchdb.find({:database => "stats", :design_doc => 'stats', :view => 'get_tag_and_mature_stats'}, tag) 
-          end
-      end
-      return stats  
+     #begin
+      #if( tag == nil)
+       #stats = Couchdb.find(:database => "stats", :design_doc => 'stats', :view => 'get_stats') 
+      #else
+       # stats = Couchdb.find({:database => "stats", :design_doc => 'stats', :view => 'get_tag_and_mature_stats'}, tag) 
+      #end
+     #rescue CouchdbException => e
+      #  doc = { :database => 'stats', :design_doc => 'stats', :json_doc => $path_to_json + '/get_stats.json' }
+       # Couchdb.create_design doc  
+        #   if( tag == nil)
+         #       stats = Couchdb.find(:database => "stats", :design_doc => 'stats', :view => 'get_stats') 
+         # else
+          #      stats = Couchdb.find({:database => "stats", :design_doc => 'stats', :view => 'get_tag_and_mature_stats'}, tag) 
+         # end
+      #end
+     # return stats  
     end
 
     
