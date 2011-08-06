@@ -25,9 +25,6 @@ module Ragios
       Couchdb.find_by( :database => 'monitors', options.keys[0] => options.values[0])  
     end
 
-    def self.find_stats(options)
-      Couchdb.find_by( :database => 'stats', options.keys[0] => options.values[0])  
-    end
 
     def self.find_status_update(options)
        Couchdb.find_by( :database => 'status_update_settings', options.keys[0] => options.values[0])  
@@ -50,31 +47,27 @@ module Ragios
    end
 
    def self.restart_monitor(id)
-       #TODO this will not work use couchDB update handlers instead
-       monitors = find_monitor(:_id => id)
-       monitors.each do |monitor|
-         #return, if monitor is already running
-         if monitor["state"] == "running" 
-            return
-         end
-      end
-      @ragios.restart monitors  
+      Ragios::Monitor.restart(id)
    end
 
+
    def self.delete_monitor(id)
-        stop_monitor(id)
-
-      monitors = find_monitors(:_id => id)
-     monitors.each do |monitor|
-         doc = {:database => 'monitors', :doc_id => monitor["_id"], :rev => monitor["_rev"]}
-         Document.delete doc
+    begin 
+     monitor = Couchdb.view :database => 'monitors', :doc_id => id     
+     if(monitor["state"] == "active")
+      stop_monitor(id)
      end
+     Document.delete :database => 'monitors', :doc_id => id
+    rescue CouchdbException => e
+       e.error
+    end
+   end
 
-       monitors = find_stats(:_id => id)
-     monitors.each do |monitor|
-         doc = {:database => 'stats', :doc_id => monitor["_id"], :rev => monitor["_rev"]}
-         Document.delete doc
-     end
+   def self.edit_monitor(id, options)
+      doc = { :database => 'monitors', :doc_id => id, :data => options}   
+      Document.update doc
+      stop_monitor(id)
+      restart_monitor(id)
    end
 
   #restart all active status updates - used when server is restarting
@@ -91,15 +84,7 @@ module Ragios
         if config_settings.empty?
          return
         end
-        
-        #format of config as read from database
-        #{:_id=>"dce15781-4fb8-466a-92ac-52ebdc3bbf92", 
-        #:_rev=>"1-546e9ca2e1eb06e3712c1f1f5538f0fc", 
-        #:every=>"1m", 
-        #:contact=>"admin@mail.com",
-        #:via=>"gmail",
-        # :tag=>"admin"}   
-        #schedule all available status updates in the database
+         
         config_settings.each do |config| 
          doc = {:database => 'status_update_settings', :doc_id => config["_id"], :data => {:state => "active"}}
          config = Hash.transform_keys_to_symbols(config)
@@ -167,21 +152,14 @@ module Ragios
   end
  
   def self.edit_status_update(id, options)
-     
-      #doc = Couchdb.view(:database => 'status_update_settings', :doc_id => id)
-      #data = {:_rev => doc["_rev"],
-       #           :every => options[:every],
-        #           :contact => options[:contact],
-         #          :via => options[:via],
-          #         :tag => options[:tag],
-           #        :status => doc["status"]
-            #      }
-      
-      #doc = {:database => 'status_update_settings', :doc_id => id, :data => data}
-      #Document.edit doc 
 
       doc = { :database => 'status_update_settings', :doc_id => id, :data => options}   
       Document.update doc
+
+      if(options[:tag] != nil)
+        stop_status_update(options[:tag])
+        restart_status_update(options[:tag])
+      end
   end
 
   def self.delete_status_update(tag)
@@ -194,18 +172,10 @@ module Ragios
   end
     
     #returns a list of all monitors in the database
-    def self.get_monitors
-     #begin 
-      # monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
-     #rescue CouchdbException => e
-      #  doc = { :database => 'monitors', :design_doc => 'monitors', :json_doc => $path_to_json + '/get_monitors.json' }
-       # Couchdb.create_design doc  
-       # monitors = Couchdb.find(:database => "monitors", :design_doc => 'monitors', :view => 'get_monitors') 
-      #end
-      #return monitors
+    def self.get_active_monitors
        view = {:database => 'monitors',
         :design_doc => 'monitors',
-         :view => 'get_monitors',
+         :view => 'get_active_monitors',
           :json_doc => $path_to_json + '/get_monitors.json'}
 
          Couchdb.find_on_fly(view)
@@ -213,14 +183,6 @@ module Ragios
 
   #get all stopped status updates
   def self.get_stopped_status_updates(tag)
-    #begin 
-     #   status_updates = Couchdb.find({:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_stopped_updates_by_tag'},key = tag)
-       
-     #rescue CouchdbException
-      # doc = { :database => 'status_update_settings', :design_doc => 'status_updates', :json_doc => $path_to_json + '/get_status_updates.json' }
-      # Couchdb.create_design doc   
-       # status_updates = Couchdb.find({:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_stopped_updates_by_tag'},key = tag)
-     #end 
     view = {:database => 'status_update_settings',
         :design_doc => 'status_updates',
          :view => 'get_stopped_updates_by_tag',
@@ -230,14 +192,7 @@ module Ragios
   end
     
    #get all active status update by tag
-   def self.get_active_status_updates
-      #begin 
-       # status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_active_status_updates')
-     #rescue CouchdbException
-      # doc = { :database => 'status_update_settings', :design_doc => 'status_updates', :json_doc => $path_to_json + '/get_status_updates.json' }
-       #Couchdb.create_design doc   
-        #status_updates = Couchdb.find(:database => "status_update_settings", :design_doc => 'status_updates', :view => 'get_active_status_updates')
-     #end
+  def self.get_active_status_updates
    view = {:database => 'status_update_settings',
         :design_doc => 'status_updates',
          :view => 'get_active_status_updates',
@@ -245,27 +200,7 @@ module Ragios
     
     Couchdb.find_on_fly(view)
    end
-
-    def self.get_stats(tag=nil)
-     #begin
-      #if( tag == nil)
-       #stats = Couchdb.find(:database => "stats", :design_doc => 'stats', :view => 'get_stats') 
-      #else
-       # stats = Couchdb.find({:database => "stats", :design_doc => 'stats', :view => 'get_tag_and_mature_stats'}, tag) 
-      #end
-     #rescue CouchdbException => e
-      #  doc = { :database => 'stats', :design_doc => 'stats', :json_doc => $path_to_json + '/get_stats.json' }
-       # Couchdb.create_design doc  
-        #   if( tag == nil)
-         #       stats = Couchdb.find(:database => "stats", :design_doc => 'stats', :view => 'get_stats') 
-         # else
-          #      stats = Couchdb.find({:database => "stats", :design_doc => 'stats', :view => 'get_tag_and_mature_stats'}, tag) 
-         # end
-      #end
-     # return stats  
-    end
-
-    
+ 
  
     def self.restart monitors
        @ragios = Ragios::Schedulers::Server.new 

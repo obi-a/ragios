@@ -11,20 +11,15 @@ class Server
          @monitors = monitors 
          begin
           Couchdb.create 'monitors'
-          #Couchdb.create 'stats'
          rescue CouchdbException 
          end
          @monitors.each do |monitor|
             monitor.creation_date = Time.now.to_s(:long) 
             monitor.id = UUIDTools::UUID.random_create.to_s
-            options = monitor.options.merge({:creation_date => monitor.creation_date})
+            options = monitor.options.merge({:creation_date => monitor.creation_date, :state => 'active'})
            #create the monitors database
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => options}
            Document.create doc
-           #create the stats database
-           #data = {:creation_date => monitor.creation_date, :tag => monitor.tag}
-           #doc = {:database => 'stats', :doc_id => monitor.id, :data => data }
-           #Document.create doc 
          end
     end
     
@@ -44,37 +39,18 @@ class Server
 
  #stop an active running monitor 
  def stop_monitor(id)
-    #begin
      jobs = @scheduler.find_by_tag(id)
       jobs.each do |job| 
          job.unschedule
       end
-      
-      m = Ragios::Server.find_stats(:_id => id)
-      #TODO later replace with couchDB update helper
-      m.each do |monitor|
 
-          data = {
-                   :tag => monitor["tag"],  
-                   :notification_interval => monitor["notification_interval"],
-         	:every => monitor["every"],
-         	:test => monitor["test"], 
-         	:contact => monitor["contact"],
-        	:describe_test_result => monitor["describe_test_result"],
-         	:creation_date => monitor["creation_date"],
-         	:time_of_last_test => monitor["time_of_last_test"],
-         	:num_tests_passed => monitor["num_tests_passed"],
-         	:num_tests_failed => monitor["num_tests_failed"],
-         	:total_num_tests => monitor["total_num_tests"],
-         	:last_test_result => monitor["last_test_result"], 
-         	:state => "stopped",
-         	:status => monitor["status"],
-         	:_rev=> monitor["_rev"]
-                  }
-          doc = {:database => 'stats', :doc_id => id, :data => data}
-          Document.edit doc 
-      end
-    #finish     
+     begin
+      data = {:state => "stopped"}
+      doc = { :database => 'monitors', :doc_id => id, :data => data}   
+      Document.update doc
+    rescue CouchdbException => e
+        e.error
+    end      
  end
 
  
@@ -85,15 +61,10 @@ class Server
   #read up the stats from database and add the stats values to the object   
   @monitors.each do |monitor|
      monitor.id = monitor.options[:_id]
-     #doc = {:database => 'stats', :doc_id => monitor.id}
-     #hash = Couchdb.view doc
-     
-     #monitor.tag = monitor.options["tag"]
      monitor.time_of_last_test = monitor.options[:time_of_last_test]
      monitor.num_tests_passed = monitor.options[:num_tests_passed].to_i
      monitor.num_tests_failed = monitor.options[:num_tests_failed].to_i
      monitor.total_num_tests = monitor.options[:total_num_tests].to_i
-     #monitor.creation_date = hash["creation_date"]
    end    
 
    start
@@ -142,16 +113,6 @@ class Server
        #count this test
        monitor.total_num_tests = monitor.total_num_tests + 1 
        
-
-      #puts monitor.id
-      #update monitor to running state
-      #data = {"state" => "running" }
-      #doc = { :database => 'monitors', :doc_id => monitor.id, :data => data}   
-      #Document.update doc
-      
-      #get this monitor's document from the database 
-      #doc = {:database => 'stats', :doc_id => monitor.id}
-      #hash = Couchdb.view doc
           
       #update document with latest stats on the monitor
        if monitor.has_failed == TRUE 

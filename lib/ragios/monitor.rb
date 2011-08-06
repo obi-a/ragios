@@ -89,10 +89,18 @@ class Monitor
     end    
 
    #create and restart all monitors from database 
-   def self.restart()
-     #read off all monitors from database 
-     #TODO return only monitors with state == "running"
-     monitors = Ragios::Server.get_monitors
+   def self.restart(id = nil)
+    #read off all monitors from database 
+    if(id == nil) 
+     monitors = Ragios::Server.get_active_monitors
+    else 
+      monitors = Ragios::Server.find_monitors(:_id => id)
+      data = {:state => "active" }
+      doc = { :database => 'monitors', :doc_id => id, :data => data}   
+      Document.update doc
+    end
+    
+    
       if(monitors.empty?)
           return
       end
