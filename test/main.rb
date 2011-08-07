@@ -27,8 +27,8 @@
                    notify_interval:'3h'
                   }
   #Ragios::Monitor.start monitoring
-  Ragios::Monitor.start monitoring,server=TRUE
-  #Ragios::Monitor.restart
+  #Ragios::Monitor.start monitoring,server=TRUE
+  Ragios::Monitor.restart
 
   #restart a stopped monitor while server is still running
   #Ragios::Monitor.restart(id = 'a62e051e-46dc-437a-90af-965577444884')
@@ -40,7 +40,7 @@
   #TODO
   #hash = Ragios::Server.stop_monitor(id ='a62e051e-46dc-437a-90af-965577444884')
   #Ragios::Server.restart_monitor(id ='a62e051e-46dc-437a-90af-965577444884')
-  #Ragios::Server.delete_monitor(id ='6d897ee5-1051-459e-bd98-82e0d1e6b132')
+  #hash = Ragios::Server.delete_monitor(id ='f9663c34-533f-4a27-b04e-b6d54cd7a870')
   #hash = Ragios::Server.delete_monitor(id ='a62e051e-46dc-437a-90af-965577444884')
   
 
@@ -49,7 +49,7 @@
   #hash = Ragios::Server.find_monitors(:every => '1m')
   #hash = Ragios::Server.find_monitors(:tag => 'admin')
   #hash = Ragios::Monitor.restart
-  puts hash.inspect
+  
 
   #puts Ragios::Server.status_report(tag = "admin")
   #puts Ragios::Server.status_report
@@ -68,15 +68,15 @@
    #this should be run with a server restart
    #Ragios::Server.restart_status_updates
    
-   #Ragios::Server.stop_status_update('admin')
+   #hash = Ragios::Server.stop_status_update('admin')
   #Ragios::Server.delete_status_update('admin')
-
+   #  
    data = {   :every => '8m',
                    :contact => 'obi@gmail.com',
                    :via => 'email'
                   }
-    id = "f0e08260-ba64-4ccb-8421-b60333297958"
-   Ragios::Server.edit_status_update(id,data)
+    id = "99bd3064-01b6-4544-90c9-40d3e534ecba"
+  hash =  Ragios::Server.edit_status_update(id,data)
 
    data  = {    monitor: 'url',
                    every: '5m',
@@ -84,7 +84,9 @@
                    via: 'gmail'
                   }
   # id = "16b2ae38-9116-438c-9c5e-ab743e4edc79"
- # Ragios::Server.edit_monitor(id,data)
+ # Ragios::Server.update_monitor(id,data)
+
+puts hash.inspect
 
  #trap Ctrl-C to exit gracefully
     puts "PRESS CTRL-C to QUIT"

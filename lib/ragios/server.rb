@@ -33,9 +33,9 @@ module Ragios
     def self.status_report(tag = nil)
   
       if(tag == nil)
-          @monitors = get_monitors
+          @monitors = get_stats
       else
-          @monitors = find_monitors(:tag => tag)
+          @monitors = get_stats(tag)
       end 
        
        message_template = ERB.new File.new($path_to_messages + "/server_status_report.erb" ).read
@@ -53,7 +53,8 @@ module Ragios
 
    def self.delete_monitor(id)
     begin 
-     monitor = Couchdb.view :database => 'monitors', :doc_id => id     
+     monitor = Couchdb.view :database => 'monitors', :doc_id => id    
+ 
      if(monitor["state"] == "active")
       stop_monitor(id)
      end
@@ -63,11 +64,16 @@ module Ragios
     end
    end
 
-   def self.edit_monitor(id, options)
+   def self.update_monitor(id, options)
       doc = { :database => 'monitors', :doc_id => id, :data => options}   
       Document.update doc
+
+     monitor = Couchdb.view( {:database => 'monitors', :doc_id => id})
+     
+    if(monitor["state"] == "active")
       stop_monitor(id)
       restart_monitor(id)
+    end
    end
 
   #restart all active status updates - used when server is restarting
@@ -156,7 +162,9 @@ module Ragios
       doc = { :database => 'status_update_settings', :doc_id => id, :data => options}   
       Document.update doc
 
-      if(options[:tag] != nil)
+     updates = Couchdb.view( {:database => 'status_update_settings', :doc_id => id})
+     
+      if(options[:tag] != nil) && (updates["state"] == "active")
         stop_status_update(options[:tag])
         restart_status_update(options[:tag])
       end
@@ -199,6 +207,36 @@ module Ragios
           :json_doc => $path_to_json + '/get_status_updates.json'}
     
     Couchdb.find_on_fly(view)
+   end
+  
+   def self.get_monitor(id)
+       doc = {:database => 'monitors', :doc_id => id}
+       Couchdb.view doc
+   end
+
+   def self.get_all_monitors
+      view = {:database => 'monitors',
+        :design_doc => 'monitors',
+         :view => 'get_monitors',
+          :json_doc => $path_to_json + '/get_monitors.json'}
+
+         Couchdb.find_on_fly(view)
+   end
+
+   def self.get_stats(tag = nil)
+       if(tag == nil)
+           view = {:database => 'monitors',
+        		:design_doc => 'get_stats',
+         		:view => 'get_stats',
+          		:json_doc => $path_to_json + '/get_stats.json'}
+               Couchdb.find_on_fly(view)  
+       else
+         view = {:database => 'monitors',
+        		:design_doc => 'get_stats',
+         		:view => 'get_tag_and_mature_stats',
+          		:json_doc => $path_to_json + '/get_stats.json'}
+               Couchdb.find_on_fly(view, key = tag)
+      end
    end
  
  
