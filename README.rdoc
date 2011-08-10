@@ -198,23 +198,23 @@ Since main.rb is pure ruby code we can run it directly, from the Ragios/ directo
 This will run the ragios system on our terminal as a top program. This can be useful for debugging purposes, to test our configuration script for errors.
 
 Output from running the above main.rb script will look like this :
-	Welcome to Ragios
-	Initializing
-	3 Monitors detected
+ Welcome to Ragios
+ Initializing
+ 3 Monitors detected
 
-	test 1. Http connection to my blog
-	Scheduled to run every 2m
-	Running First Test...
-	  [PASSED] Created on: February 06, 2011 20:18
-	HTTP Connection to obi-akubue.org = PASSED
+ test 1. Http connection to my blog
+ Scheduled to run every 2m
+ Running First Test...
+  [PASSED] Created on: February 06, 2011 20:18
+ HTTP Connection to obi-akubue.org = PASSED
 
-	test 2. My Website Test
-	Scheduled to run every 2m
-	Running First Test...
-	  [PASSED] Created on: February 06, 2011 20:18
-	HTTP Request to http://www.whisperservers.com/blog/ = 200
+ test 2. My Website Test
+ Scheduled to run every 2m
+ Running First Test...
+  [PASSED] Created on: February 06, 2011 20:18
+ HTTP Request to http://www.whisperservers.com/blog/ = 200
 
-	PRESS CTRL-C to QUIT
+ PRESS CTRL-C to QUIT	
 
 We can also run Ragios as a daemon by running the ragiosd ruby script also in the Ragios/ directory. 
 
@@ -375,9 +375,7 @@ Also includes a summary of each active monitor
 * date/time the last test was performed etc.
 
 To configure Ragios to send Status Reports
-  Ragios::Monitor.update_status({every:'1d',
-			         contact:'admin@mail.com',
-			         via:'gmail'}) 
+  Ragios::Monitor.update_status({every:'1d', contact:'admin@mail.com', via:'gmail'}) 
 
 The above sample means that Ragios will send a Status Report every day '1d' to the email address 'admin@mail.com' via gmail. 
 Ragios can send Status Reports every (n) minutes, hours, days, weeks or combined. 
