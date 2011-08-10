@@ -198,7 +198,6 @@ Since main.rb is pure ruby code we can run it directly, from the Ragios/ directo
 This will run the ragios system on our terminal as a top program. This can be useful for debugging purposes, to test our configuration script for errors.
 
 Output from running the above main.rb script will look like this :
-
 	Welcome to Ragios
 	Initializing
 	3 Monitors detected
@@ -351,7 +350,6 @@ Now on the main.rb script use via:'twitter' example
                     }]
 
 Example of an email notification may look like this: 
-
  Subject: Http connection to my blog FAILED
  
  Http connection to my blog FAILED! HTTP Connection to obi-akubue.org = getaddrinfo: Name or service not known
@@ -359,7 +357,6 @@ Example of an email notification may look like this:
 
 
 A tweet notification may look like this:
-
  Http connection to my blog FAILED! HTTP Request to http://obi-akubue.org/ = getaddrinfo: Name or service not known 
  Created on: October 16, 04:48
 
