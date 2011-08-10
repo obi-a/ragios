@@ -223,24 +223,15 @@ We can also run Ragios as a daemon by running the ragiosd ruby script also in th
 Ragios runs as a daemon in unix/linux systems. 
 
 To Start Ragios as a daemon from the terminal :
-
-	$ruby ragiosd start
-
+ $ruby ragiosd start
 Stop the daemon :
-
-	$ruby ragiosd stop
-
+ $ruby ragiosd stop
 Restart the daemon :
-
-	$ruby ragiosd restart
-
+ $ruby ragiosd restart
 Check Status of the daemon :
-
-	$ruby ragiosd status
-
+ $ruby ragiosd status
 To run Ragios as a top program, useful for testing purposes :
-
-	$ruby ragiosd run
+ $ruby ragiosd run
 
 The ragiosd script simply demonizes the Ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the Ragios/log directory as ragios.log and ragios.output respectively.
 
@@ -705,7 +696,7 @@ To run the above specs from the spec/plugins directory
 
 To run the complete test suite for Ragios (this will ensure that the Ragios system is still working fine).
 From the Ragios root directory type
- rake spec
+ bundle exec rake spec
 
 Save specs for your plugins in the spec/plugins directory.
 
