@@ -2,9 +2,8 @@
 require 'rubygems'
 require "bundler/setup"
 dir = Pathname(__FILE__).dirname.expand_path
-
-require dir + 'rest_server'
-
+require dir + 'config'
+require dir + 'lib/ragios/rest_server'
 
 run Sinatra::Application
 

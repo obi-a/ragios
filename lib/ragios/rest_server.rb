@@ -1,8 +1,8 @@
 #require 'rubygems'
 #require "bundler/setup"
-dir = Pathname(__FILE__).dirname.expand_path
-require dir + 'lib/ragios'
-require dir + 'config'
+#dir = Pathname(__FILE__).dirname.expand_path
+#require dir + 'lib/ragios'
+#require dir + 'config'
 require 'sinatra' 
 require 'yajl'
 

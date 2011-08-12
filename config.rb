@@ -1,3 +1,6 @@
+dir = Pathname(__FILE__).dirname.expand_path
+require dir + 'lib/ragios'
+
 #Replace with Gmail username and password
 gmail_account = {username: 'Gmail Username',
                  password: 'Gmail Password'} 

@@ -1,8 +1,7 @@
-  require 'rubygems'
-  require "bundler/setup"
-  dir = Pathname(__FILE__).dirname.expand_path
-  require dir + 'lib/ragios'
-  require dir + 'config'
+require 'rubygems'
+require "bundler/setup"
+dir = Pathname(__FILE__).dirname.expand_path
+require dir + 'config'
 
   #Add your code here
 
