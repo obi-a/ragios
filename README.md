@@ -23,10 +23,3 @@ Ragios could be used to monitor any type of system including servers, workstatio
 
 [Ragios Plugin System](http://www.whisperservers.com/ragios/ragios-plugin-system/)
 
-###Tested and developed on    
-*  Ubuntu 
-*  FreeBSD 8.1
-
-###License
-MIT License.
-Copyright (c) 2011 Obi Akubue, obi-akubue.org
