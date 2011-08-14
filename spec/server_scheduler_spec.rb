@@ -7,7 +7,7 @@ class Monitor1 < Ragios::Monitors::System
 
    def initialize
 
-      @options = { tag: 'admin',
+      @options = { tag: 'test',
                  monitor: 'url',
                    every: '1m',
                    test: '1 test feed',
@@ -28,7 +28,7 @@ class Monitor2 < Ragios::Monitors::System
  attr_accessor :id
  attr_reader :options
    def initialize
-      @options = { tag: 'obi', 
+      @options = { tag: 'test', 
                    monitor: 'url',
                    every: '1m',
                    test: '2 test',
@@ -50,7 +50,7 @@ class Monitor3 < Ragios::Monitors::System
  attr_accessor :id
  attr_reader :options
    def initialize
-      @options = { tag: 'obi', 
+      @options = { tag: 'test', 
                    monitor: 'url',
                    every: '1m',
                    test: '2 test',
@@ -88,7 +88,7 @@ describe Ragios::Schedulers::Server do
 
     it "should stop a monitor" do
 
-      data = { tag: 'obi', 
+      data = { tag: 'test', 
                    monitor: 'url',
                    every: '1m',
                    test: '2 test',
