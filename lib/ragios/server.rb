@@ -238,7 +238,14 @@ module Ragios
                Couchdb.find_on_fly(view, key = tag)
       end
    end
- 
+    
+   def self.get_monitors_frm_scheduler(tag = nil)
+     if (tag == nil)
+        @ragios.get_monitors
+      else
+        @ragios.get_monitors(tag)
+      end
+   end
  
     def self.restart monitors
        @ragios = Ragios::Schedulers::Server.new 

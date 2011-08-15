@@ -14,7 +14,8 @@ class Monitor1 < Ragios::Monitors::System
                    url: 'http://www.website.com/89843/videos.xml',
                    contact: 'obi.akubue@mail.com',
                    via: 'gmail',  
-                   notify_interval: '6h'
+                   notify_interval: '6h',
+                   _id: 'runtime_id'
                     }
          @time_interval = @options[:every]
         @notification_interval = @options[:notify_interval]
@@ -35,7 +36,8 @@ class Monitor2 < Ragios::Monitors::System
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
                    via: 'gmail',  
-                   notify_interval:'3h'
+                   notify_interval:'3h',
+                   _id: 'runtime_id'
                   }
         @time_interval = @options[:every]
         @notification_interval = @options[:notify_interval]
@@ -57,15 +59,13 @@ class Monitor3 < Ragios::Monitors::System
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
                    via: 'gmail',  
-                   notify_interval:'3h'
+                   notify_interval:'3h',
+                   _id: 'test_monitor'
                   }
         @time_interval = @options[:every]
         @notification_interval = @options[:notify_interval]
         @contact = @options[:contact]
-        @test_description = @options[:test]
-        @id = "test_monitor"
-        
-      
+        @test_description = @options[:test]      
    end 
 end
 
@@ -73,6 +73,7 @@ describe Ragios::Schedulers::Server do
     it "should create new monitors and store in the database" do 
       @ragios = Ragios::Schedulers::Server.new 
       @ragios.create [Monitor1.new, Monitor2.new] 
+      
     end
  
     it "should start monitoring new monitors" do 
@@ -84,6 +85,9 @@ describe Ragios::Schedulers::Server do
     it "should restart monitors" do
       @ragios = Ragios::Schedulers::Server.new 
       @ragios.restart [Monitor1.new, Monitor2.new] 
+      sch = @ragios.get_monitors('runtime_id')
+      sch[0].class.should ==  Rufus::Scheduler::EveryJob
+      sch[1].class.should ==  Rufus::Scheduler::EveryJob
     end
 
     it "should stop a monitor" do
@@ -102,14 +106,16 @@ describe Ragios::Schedulers::Server do
      begin
       Document.create doc
      rescue CouchdbException => e
-       puts "Error message: " + e.to_s
+       #puts "Error message: " + e.to_s
      end 
 
       @ragios = Ragios::Schedulers::Server.new 
-      @ragios.restart [Monitor1.new, Monitor2.new]
-      @ragios.stop_monitor('test_monitor')
-    end
+      @ragios.restart [Monitor1.new, Monitor2.new, Monitor3.new]
 
-    
-        
+      sch = @ragios.get_monitors('test_monitor')
+      sch[0].class.should ==  Rufus::Scheduler::EveryJob
+
+      @ragios.stop_monitor('test_monitor')
+      @ragios.get_monitors('test_monitor').should == []
+    end      
 end

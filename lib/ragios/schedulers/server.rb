@@ -24,8 +24,12 @@ class Server
     end
     
   #returns a list of all active monitors managed by this scheduler
-   def get_monitors
-        
+   def get_monitors(tag = nil)
+      if (tag == nil)
+        @scheduler.jobs
+      else
+        @scheduler.find_by_tag(tag)
+      end
    end
 
    def status_report
