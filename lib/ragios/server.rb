@@ -239,6 +239,14 @@ module Ragios
       end
    end
     
+   def self.get_status_update_frm_scheduler(tag = nil)     
+      if (tag == nil)
+        @status_update_scheduler.jobs
+      else
+        @status_update_scheduler.find_by_tag(tag)
+      end
+   end
+
    def self.get_monitors_frm_scheduler(tag = nil)
      if (tag == nil)
         @ragios.get_monitors

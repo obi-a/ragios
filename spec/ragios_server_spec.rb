@@ -31,6 +31,7 @@ describe Ragios::Server do
       hash["state"].should == "active"
       sch = Ragios::Server.get_monitors_frm_scheduler("active_monitor")
       sch[0].class.should ==  Rufus::Scheduler::EveryJob
+      sch[0].params[:tags].should == ["active_monitor"]
   end
 
   it "should stop a monitor" do 
@@ -49,5 +50,45 @@ describe Ragios::Server do
      Ragios::Server.find_monitors(:tag => 'to_be_deleted').should == []
 
    end
+ 
+ it "should update a running monitor" do
+     Ragios::Server.restart_monitor("active_monitor")
+     
+     options  = {
+                   every: '40m',
+                   contact: 'clark@mail.com',
+                   via: 'gmail'
+                  }
+
+     Ragios::Server.update_monitor("active_monitor", options)
+     monitors = Ragios::Server.find_monitors(:tag => 'active_monitor')
+      hash = monitors[0]
+      hash["_id"].should == "active_monitor"
+      hash["state"].should == "active"
+      sch = Ragios::Server.get_monitors_frm_scheduler("active_monitor")
+      sch[0].class.should ==  Rufus::Scheduler::EveryJob
+      sch[0].t.should == "40m"
+      sch[0].params[:tags].should == ["active_monitor"]
+ end
+
+ it "should save and schedule status updates" do
+   config = {   :every => '1m',
+                   :contact => 'test@mail.com',
+                   :via => 'gmail',
+                  :tag => 'save_test' 
+                  }
+  Ragios::Server.start_status_update(config)
+  updates = Ragios::Server.find_status_update(:tag => 'save_test')
+  hash = updates[0]
+  hash["tag"].should == "save_test"
+  hash["contact"].should == "test@mail.com"
+  hash["every"].should == "1m"
+  sch = Ragios::Server.get_status_update_frm_scheduler(tag = "save_test")
+  sch[0].class.should ==  Rufus::Scheduler::EveryJob
+  sch[0].t.should == "1m" 
+  sch[0].params[:tags].should == ["save_test"]
+ 
+ end
+
   
 end

@@ -9,7 +9,7 @@ class Monitor1 < Ragios::Monitors::System
 
       @options = { tag: 'test',
                  monitor: 'url',
-                   every: '1m',
+                   every: '87m',
                    test: '1 test feed',
                    url: 'http://www.website.com/89843/videos.xml',
                    contact: 'obi.akubue@mail.com',
@@ -31,7 +31,7 @@ class Monitor2 < Ragios::Monitors::System
    def initialize
       @options = { tag: 'test', 
                    monitor: 'url',
-                   every: '1m',
+                   every: '88m',
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
@@ -87,7 +87,9 @@ describe Ragios::Schedulers::Server do
       @ragios.restart [Monitor1.new, Monitor2.new] 
       sch = @ragios.get_monitors('runtime_id')
       sch[0].class.should ==  Rufus::Scheduler::EveryJob
+      sch[0].t.should == "87m"
       sch[1].class.should ==  Rufus::Scheduler::EveryJob
+      sch[1].t.should == "88m"
     end
 
     it "should stop a monitor" do
@@ -114,8 +116,10 @@ describe Ragios::Schedulers::Server do
 
       sch = @ragios.get_monitors('test_monitor')
       sch[0].class.should ==  Rufus::Scheduler::EveryJob
+      sch[0].params[:tags].should == ["test_monitor"]
 
       @ragios.stop_monitor('test_monitor')
       @ragios.get_monitors('test_monitor').should == []
+      
     end      
 end
