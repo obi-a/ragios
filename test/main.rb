@@ -27,8 +27,14 @@
                    notify_interval:'3h'
                   }
   #Ragios::Monitor.start monitoring
+  
+  #Ragios::Server.init
   #Ragios::Monitor.start monitoring,server=TRUE
-  Ragios::Monitor.restart
+  #Ragios::Monitor.restart
+  #sch = Ragios::Server.get_monitors_frm_scheduler
+  #puts sch.inspect
+
+  #Ragios::Monitor.restart
 
   #restart a stopped monitor while server is still running
   #Ragios::Monitor.restart(id = 'a62e051e-46dc-437a-90af-965577444884')
@@ -48,7 +54,7 @@
   #hash = Ragios::Server.find_monitors(:monitor => 'url')
   #hash = Ragios::Server.find_monitors(:every => '1m')
   #hash = Ragios::Server.find_monitors(:tag => 'admin')
-  #hash = Ragios::Monitor.restart
+  
   
 
   #puts Ragios::Server.status_report(tag = "admin")
@@ -58,7 +64,7 @@
   config = {   :every => '1m',
                    :contact => 'admin@mail.com',
                    :via => 'gmail',
-                  :tag => 'admin' 
+                  :tag => 'obi' 
                   }
     
 
@@ -66,8 +72,10 @@
   #Ragios::Server.restart_status_updates('admin')
 
    #this should be run with a server restart
+   Ragios::Server.init
    #Ragios::Server.restart_status_updates
-   
+    #sch = Ragios::Server.get_status_update_frm_scheduler
+    #puts sch.inspect
    #hash = Ragios::Server.stop_status_update('admin')
   #Ragios::Server.delete_status_update('admin')
    #  
@@ -75,7 +83,7 @@
                    :contact => 'obi@gmail.com',
                    :via => 'email'
                   }
-    id = "99bd3064-01b6-4544-90c9-40d3e534ecba"
+    id = "sample_status_update"
   hash =  Ragios::Server.edit_status_update(id,data)
 
    data  = {    monitor: 'url',
@@ -86,7 +94,7 @@
   # id = "16b2ae38-9116-438c-9c5e-ab743e4edc79"
  # Ragios::Server.update_monitor(id,data)
 
-puts hash.inspect
+#puts hash.inspect
 
  #trap Ctrl-C to exit gracefully
     puts "PRESS CTRL-C to QUIT"

@@ -94,7 +94,6 @@ class BadCodeMonitor < Ragios::Monitors::System
 end
 
 
-
 describe Ragios::Schedulers::RagiosScheduler do
 
     before(:each) do

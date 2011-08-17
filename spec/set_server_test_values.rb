@@ -14,7 +14,8 @@ end
 config = {   :every => '1m',
                    :contact => 'admin@mail.com',
                    :via => 'gmail',
-                  :tag => 'test' 
+                  :tag => 'test', 
+                  :state => 'active'
                   }
        doc = {:database => 'status_update_settings', :doc_id => 'test_config_settings', :data => config}
      begin
@@ -80,6 +81,36 @@ config = {   :every => '1m',
                   }
 
       doc = {:database => 'monitors', :doc_id => 'to_be_deleted', :data => data}
+     begin
+      Document.create doc
+     rescue CouchdbException => e
+       #puts "Error message: " + e.to_s
+     end 
+
+ #create sample status update to be deleted
+   data = { tag: 'to_be_deleted', 
+                   :every => '1m',
+                   :contact => 'admin@mail.com',
+                   :via => 'gmail',
+                   :state => 'stopped'
+                  }
+
+      doc = {:database => 'status_update_settings', :doc_id => 'to_be_deleted', :data => data}
+     begin
+      Document.create doc
+     rescue CouchdbException => e
+       #puts "Error message: " + e.to_s
+     end 
+
+#create sample status update
+ data = { tag: 'sample_status_update', 
+                   :every => '1m',
+                   :contact => 'admin@mail.com',
+                   :via => 'gmail',
+                   :state => 'active'
+                  }
+
+      doc = {:database => 'status_update_settings', :doc_id => 'sample_status_update', :data => data}
      begin
       Document.create doc
      rescue CouchdbException => e
