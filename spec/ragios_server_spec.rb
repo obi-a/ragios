@@ -49,13 +49,13 @@ describe Ragios::Server do
    it "should delete a running monitor" do
     #restart the monitor
      Ragios::Server.restart_monitor("to_be_deleted")
-    #validate that the monitor is running
+    #verify that the monitor is running
      sch = Ragios::Server.get_monitors_frm_scheduler("to_be_deleted")
      sch[0].class.should ==  Rufus::Scheduler::EveryJob
      sch[0].params[:tags].should == ["to_be_deleted"]     
     #delete the monitor
      Ragios::Server.delete_monitor("to_be_deleted")
-    #validate that the monitor was stopped
+    #verify that the monitor was deleted and stopped
      Ragios::Server.find_monitors(:tag => 'to_be_deleted').should == []
      sch = Ragios::Server.get_monitors_frm_scheduler("to_be_deleted")
      sch.should ==  []
@@ -63,23 +63,29 @@ describe Ragios::Server do
  
  it "should update a running monitor" do
      Ragios::Server.restart_monitor("active_monitor")
-     
+     #verify that the monitor is running
+     sch = Ragios::Server.get_monitors_frm_scheduler("active_monitor")
+     sch[0].class.should ==  Rufus::Scheduler::EveryJob
+     sch[0].params[:tags].should == ["active_monitor"]   
+     #update the monitor
      options  = {
-                   every: '2d',
-                   contact: 'admin@mail.com',
+                   every: '3m',
+                   contact: 'kent@mail.com',
                    via: 'gmail'
                   }
 
      Ragios::Server.update_monitor("active_monitor", options)
+     #verify that the monitor was updated
      monitors = Ragios::Server.find_monitors(:tag => 'active_monitor')
       hash = monitors[0]
       hash["_id"].should == "active_monitor"
-      hash ["contact"].should == "admin@mail.com"
-      hash ["every"].should == "2d"
+      hash ["contact"].should == "kent@mail.com"
+      hash ["every"].should == "3m"
       hash["state"].should == "active"
+     #verify that the monitor is still on schedule and running on new time_interval
       sch = Ragios::Server.get_monitors_frm_scheduler("active_monitor")
       sch[0].class.should ==  Rufus::Scheduler::EveryJob
-      sch[0].t.should == "2d"
+      sch[0].t.should == "3m"
       sch[0].params[:tags].should == ["active_monitor"]
  end
 
@@ -90,11 +96,13 @@ describe Ragios::Server do
                   :tag => 'save_test' 
                   }
   Ragios::Server.start_status_update(config)
+  #verify that the status update exists in the database
   updates = Ragios::Server.find_status_update(:tag => 'save_test')
   hash = updates[0]
   hash["tag"].should == "save_test"
   hash["contact"].should == "test@mail.com"
   hash["every"].should == "1m"
+  #verify scheduler is running the status update
   sch = Ragios::Server.get_status_update_frm_scheduler(tag = "save_test")
   sch[0].class.should ==  Rufus::Scheduler::EveryJob
   sch[0].t.should == "1m" 
@@ -136,11 +144,13 @@ describe Ragios::Server do
       hash["state"].should == "stopped"
       sch = Ragios::Server.get_status_update_frm_scheduler(tag = "to_be_deleted")
       sch.should ==  []
-     #restart status update
+     #restart the status update
       Ragios::Server.restart_status_updates('to_be_deleted')
+     #verify that the status update was restarted by scheduler
       sch = Ragios::Server.get_status_update_frm_scheduler(tag = "to_be_deleted")
       sch[0].class.should ==  Rufus::Scheduler::EveryJob 
       sch[0].params[:tags].should == ["to_be_deleted"]
+     #verify that the database was updated
       updates = Ragios::Server.find_status_update(:tag => 'to_be_deleted')
       hash = updates[0]
       hash["tag"].should == "to_be_deleted"
@@ -164,7 +174,7 @@ describe Ragios::Server do
 
      #edit the running status update
      data  = {
-                   every: '5d',
+                   every: '7d',
                    contact: 'clark@mail.com',
                    via: 'gmail'
                   }
@@ -175,12 +185,12 @@ describe Ragios::Server do
       hash = updates[0]
       hash["_id"].should == "sample_status_update"
       hash["contact"].should == "clark@mail.com"
-      hash["every"].should == "5d"
+      hash["every"].should == "7d"
       hash["state"].should == "active"
       #verify that the time interval for the active scheduler was also updated
       sch = Ragios::Server.get_status_update_frm_scheduler("sample_status_update")
       sch[0].class.should ==  Rufus::Scheduler::EveryJob
-      sch[0].t.should == "5d"
+      sch[0].t.should == "7d"
       sch[0].params[:tags].should == ["sample_status_update"]  
    end
 end
