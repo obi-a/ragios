@@ -17,8 +17,9 @@ module Ragios
     attr_accessor :ragios
     attr :status_update_scheduler
     
-    def initialize
-
+    def self.init
+       @ragios = Ragios::Schedulers::Server.new 
+       @status_update_scheduler = Rufus::Scheduler.start_new
     end
 
     def self.find_monitors(options) 
@@ -88,20 +89,20 @@ module Ragios
       end
          
         if config_settings.empty?
-         return
+         return 
         end
-         
+
         config_settings.each do |config| 
          doc = {:database => 'status_update_settings', :doc_id => config["_id"], :data => {:state => "active"}}
          config = Hash.transform_keys_to_symbols(config)
-         schedule_status_updates(config, tag = config.values[5])
+         schedule_status_updates(config, tag = config[:tag])
          Document.update doc           
         end
    end
 
    def self.start_status_update (config)
        save_status_updates(config)
-       schedule_status_updates(config,tag = config.values[3])
+       schedule_status_updates(config,tag = config[:tag])
    end
 
   #create and save status update settings for different users to database
@@ -123,9 +124,6 @@ module Ragios
           #         :via => 'gmail'
            #        :tag => 'admin'
            #       }
-
-
-    @status_update_scheduler = Rufus::Scheduler.start_new
      
     @status_update_scheduler.every config[:every], :tags => tag do 
              
@@ -163,15 +161,15 @@ module Ragios
       Document.update doc
 
      updates = Couchdb.view( {:database => 'status_update_settings', :doc_id => id})
-     
-      if(options[:tag] != nil) && (updates["state"] == "active")
-        stop_status_update(options[:tag])
-        restart_status_update(options[:tag])
+      if(updates["tag"] != nil) && (updates["state"] == "active")
+        stop_status_update(updates["tag"])
+        restart_status_updates(updates["tag"])
       end
   end
 
   def self.delete_status_update(tag)
      #only one status update is expected per tag
+     stop_status_update(tag)
      updates = find_status_update(:tag => tag)
      updates.each do |update|
          doc = {:database => 'status_update_settings', :doc_id => update["_id"]}
@@ -256,13 +254,11 @@ module Ragios
    end
  
     def self.restart monitors
-       @ragios = Ragios::Schedulers::Server.new 
        @ragios.restart monitors 
     end
 
     def self.start monitors
         
-     @ragios = Ragios::Schedulers::Server.new 
      @ragios.create monitors
      @ragios.start 
     end

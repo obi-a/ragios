@@ -6,6 +6,10 @@ class Server
     attr :monitors #list of long running monitors 
     attr :scheduler
 
+    def initialize()
+     @scheduler = Rufus::Scheduler.start_new 
+    end 
+
     #create the monitors and add them to the database
     def create(monitors)
          @monitors = monitors 
@@ -38,8 +42,7 @@ class Server
 
   
 
- def init()
- end 
+ 
 
  #stop an active running monitor 
  def stop_monitor(id)
@@ -76,7 +79,7 @@ class Server
    
  def start  
     #schedule all the monitors to execute test_command() at every time_interval
-    @scheduler = Rufus::Scheduler.start_new 
+    
    @monitors.each do |monitor|
      
     @scheduler.every monitor.time_interval, :tags => monitor.id do

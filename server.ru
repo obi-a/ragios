@@ -7,6 +7,8 @@ require dir + 'lib/ragios/rest_server'
 
 run Sinatra::Application
 
+Ragios::Server.init
+
 #restart monitors from the database
 Ragios::Monitor.restart
 
