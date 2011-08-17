@@ -158,6 +158,11 @@ describe Ragios::Server do
   end
    
   it "should delete an active status update" do 
+    #verify that the status update is running
+     sch = Ragios::Server.get_status_update_frm_scheduler(tag = "to_be_deleted")
+     sch[0].class.should ==  Rufus::Scheduler::EveryJob
+     sch[0].params[:tags].should == ["to_be_deleted"]
+    #delete status update
     Ragios::Server.delete_status_update('to_be_deleted')
     #verify that the status update was removed from the scheduler
     sch = Ragios::Server.get_status_update_frm_scheduler(tag = "to_be_deleted")
