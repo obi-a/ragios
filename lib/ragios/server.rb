@@ -177,7 +177,7 @@ module Ragios
      end
   end
     
-    #returns a list of all monitors in the database
+    #returns a list of all active monitors in the database
     def self.get_active_monitors
        view = {:database => 'monitors',
         :design_doc => 'monitors',
@@ -197,7 +197,7 @@ module Ragios
     Couchdb.find_on_fly(view, key = tag)
   end
     
-   #get all active status update by tag
+   #get all active status updates 
   def self.get_active_status_updates
    view = {:database => 'status_update_settings',
         :design_doc => 'status_updates',
