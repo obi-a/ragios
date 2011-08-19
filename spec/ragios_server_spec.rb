@@ -198,4 +198,39 @@ describe Ragios::Server do
       sch[0].t.should == "7d"
       sch[0].params[:tags].should == ["sample_status_update"]  
    end
-end
+
+   it "should return a list of all active monitors" do
+      monitors = Ragios::Server.get_active_monitors
+      hash = monitors[0]
+      hash["state"].should == "active"
+   end
+   
+   it "should return a list of all stopped status updates by tag" do
+      updates = Ragios::Server.get_stopped_status_updates("save_test")
+      hash = updates[0]
+      hash["state"].should == "stopped"
+      hash["tag"].should == "save_test"
+   end
+
+  it "should return a list of all active status updates" do
+    updates = Ragios::Server.get_active_status_updates
+    hash = updates[0]
+    hash["state"].should == "active"
+  end
+  
+  it "should return a monitor by id" do
+     hash = Ragios::Server.get_monitor("trial_monitor")
+     hash["tag"].should == "trial_monitor"
+     hash["monitor"].should == "url"
+     hash["via"].should == "gmail"
+     hash["url"].should == "https://github.com/obi-a/Ragios"
+     hash["every"].should == "1m"
+  end
+
+ it "should return all monitors (active & stopped)" do
+      monitors = Ragios::Server.get_active_monitors
+      puts monitors
+      hash = monitors[0]
+      hash["monitor"].should == "url"
+ end
+end 
