@@ -28,13 +28,13 @@
                   }
   #Ragios::Monitor.start monitoring
   
-  #Ragios::Server.init
+  Ragios::Server.init
   #Ragios::Monitor.start monitoring,server=TRUE
   #Ragios::Monitor.restart
   #sch = Ragios::Server.get_monitors_frm_scheduler
   #puts sch.inspect
 
-  #Ragios::Monitor.restart
+  Ragios::Monitor.restart
 
   #restart a stopped monitor while server is still running
   #Ragios::Monitor.restart(id = 'a62e051e-46dc-437a-90af-965577444884')
@@ -72,7 +72,7 @@
   #Ragios::Server.restart_status_updates('admin')
 
    #this should be run with a server restart
-   Ragios::Server.init
+   #Ragios::Server.init
    #Ragios::Server.restart_status_updates
     #sch = Ragios::Server.get_status_update_frm_scheduler
     #puts sch.inspect
@@ -84,7 +84,7 @@
                    :via => 'email'
                   }
     id = "sample_status_update"
-  hash =  Ragios::Server.edit_status_update(id,data)
+ # hash =  Ragios::Server.edit_status_update(id,data)
 
    data  = {    monitor: 'url',
                    every: '5m',
@@ -93,6 +93,10 @@
                   }
   # id = "16b2ae38-9116-438c-9c5e-ab743e4edc79"
  # Ragios::Server.update_monitor(id,data)
+
+
+sch = Ragios::Server.get_monitors_frm_scheduler
+puts sch.inspect
 
 #puts hash.inspect
 

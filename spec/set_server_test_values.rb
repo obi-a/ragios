@@ -116,3 +116,50 @@ config = {   :every => '1m',
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
+
+class Monitor1 < Ragios::Monitors::System
+  attr_accessor :id
+  attr_reader :options
+
+   def initialize
+
+      @options = { tag: 'test',
+                 monitor: 'url',
+                   every: '87m',
+                   test: '1 test feed',
+                   url: 'http://www.website.com/89843/videos.xml',
+                   contact: 'obi.akubue@mail.com',
+                   via: 'gmail',  
+                   notify_interval: '6h',
+                   _id: 'runtime_id'
+                    }
+         @time_interval = @options[:every]
+        @notification_interval = @options[:notify_interval]
+        @contact = @options[:contact]
+        @test_description = @options[:test]
+   end 
+end
+
+
+class Monitor2 < Ragios::Monitors::System
+ attr_accessor :id
+ attr_reader :options
+   def initialize
+      @options = { tag: 'test', 
+                   monitor: 'url',
+                   every: '88m',
+                   test: '2 test',
+                   url: 'https://github.com/obi-a/Ragios',
+                   contact: 'obi.akubue@mail.com',
+                   via: 'gmail',  
+                   notify_interval:'3h',
+                   _id: 'runtime_id'
+                  }
+        @time_interval = @options[:every]
+        @notification_interval = @options[:notify_interval]
+        @contact = @options[:contact]
+        @test_description = @options[:test]
+        
+      
+   end 
+end

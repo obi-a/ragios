@@ -245,6 +245,10 @@ module Ragios
       end
    end
 
+  def self.get_monitors(tag = nil)
+      @ragios.get_monitors(tag)
+  end
+
    def self.get_monitors_frm_scheduler(tag = nil)
      if (tag == nil)
         @ragios.get_monitors

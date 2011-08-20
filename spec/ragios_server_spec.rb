@@ -228,9 +228,59 @@ describe Ragios::Server do
   end
 
  it "should return all monitors (active & stopped)" do
-      monitors = Ragios::Server.get_active_monitors
-      puts monitors
+      monitors = Ragios::Server.get_all_monitors
       hash = monitors[0]
       hash["monitor"].should == "url"
+ end
+
+ it "should return stats of monitors with the specified tag " do
+   #(only returns monitors that have been executed at least once)
+      monitors = Ragios::Server.get_stats("active_monitor")
+      hash = monitors[0]
+      hash.has_key?("num_tests_passed").should == true
+ end
+
+ it "should return stats of monitors " do
+    #(only returns monitors that have been executed at least once)
+      monitors = Ragios::Server.get_stats
+      hash = monitors[0]
+      hash.has_key?("num_tests_passed").should == true
+ end
+
+ it "should return status updates currently running on the scheduler" do
+     sch = Ragios::Server.get_status_update_frm_scheduler
+     sch.should_not == nil
+     sch.class.should ==  Hash
+ end
+
+ it "should return status updates by specified tag currently running on the scheduler" do
+     sch = Ragios::Server.get_status_update_frm_scheduler("sample_status_update")
+     sch[0].class.should ==  Rufus::Scheduler::EveryJob
+     sch[0].params[:tags].should == ["sample_status_update"]  
+ end
+
+ it "should return monitors by specified tag currently running on the scheduler" do
+    sch = Ragios::Server.get_monitors_frm_scheduler("active_monitor")
+    sch[0].class.should ==  Rufus::Scheduler::EveryJob
+    sch[0].params[:tags].should == ["active_monitor"]
+ end
+
+  it "should return all monitors currently running on the scheduler" do
+    sch = Ragios::Server.get_monitors_frm_scheduler
+    sch.should_not == nil
+    sch.class.should ==  Hash
+ end
+
+  it "should restart monitoring objects" do
+    Ragios::Server.restart [Monitor1.new, Monitor2.new]
+    sch = Ragios::Server.get_monitors('runtime_id')
+    sch[0].class.should ==  Rufus::Scheduler::EveryJob
+    sch[0].t.should == "87m"
+    sch[1].class.should ==  Rufus::Scheduler::EveryJob
+    sch[1].t.should == "88m"
+
+    sch = Ragios::Server.get_monitors
+    sch.should_not == nil
+    sch.class.should ==  Hash
  end
 end 
