@@ -95,6 +95,7 @@ class Monitor
      monitors = Ragios::Server.get_active_monitors
     else 
       monitors = Ragios::Server.find_monitors(:_id => id)
+      #TODO if monitor is already active, do nothing, return
       data = {:state => "active" }
       doc = { :database => 'monitors', :doc_id => id, :data => data}   
       Document.update doc

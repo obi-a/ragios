@@ -261,8 +261,7 @@ module Ragios
        @ragios.restart monitors 
     end
 
-    def self.start monitors
-        
+    def self.start monitors 
      @ragios.create monitors
      @ragios.start 
     end
