@@ -95,7 +95,9 @@ class Monitor
      monitors = Ragios::Server.get_active_monitors
     else 
       monitors = Ragios::Server.find_monitors(:_id => id)
-      #TODO if monitor is already active, do nothing, return
+       if monitors[0]["state"] == "active"
+         return nil #monitor is already active. nothing to restart
+       end
       data = {:state => "active" }
       doc = { :database => 'monitors', :doc_id => id, :data => data}   
       Document.update doc
@@ -103,7 +105,7 @@ class Monitor
     
     
       if(monitors.empty?)
-          return
+          return nil
       end
       count = 0
       monitors.each do |monitor|
