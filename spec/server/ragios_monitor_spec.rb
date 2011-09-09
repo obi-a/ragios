@@ -1,5 +1,11 @@
 require 'spec_base.rb'
 
+class Object
+ def boolean?
+  self.is_a?(TrueClass) || self.is_a?(FalseClass) 
+ end
+end
+
 Ragios::Server.init
 
 describe Ragios::GenericMonitor do
@@ -56,7 +62,8 @@ describe Ragios::Monitor do
  it "should restart monitors saved on the server" do
      monitors = Ragios::Monitor.restart
      monitors[0].class.should == Ragios::GenericMonitor
-     monitors[0].test_command.should == (false || true)
+   
+     monitors[0].test_command.boolean?.should ==  true
      sch = Ragios::Server.get_monitors_frm_scheduler
      sch.should_not == nil
      sch.class.should ==  Hash     
@@ -89,9 +96,20 @@ describe Ragios::Monitor do
        #puts "Error message: " + e.to_s
      end 
 
-     #restart monitor_monitor     
+     monitors = Ragios::Monitor.restart(id = 'monitor_monitor') 
+
+     monitors[0].class.should == Ragios::GenericMonitor
+   
+     monitors[0].test_command.boolean?.should ==  true
+     sch = Ragios::Server.get_monitors_frm_scheduler
+     sch.should_not == nil
+     sch.class.should ==  Hash        
  end 
  
-   #TODO add specs for trying to restart an already running monitor
-   #delete the sample monitor used in this test from database to provide an accurate test on each run
+  it "should try to restart an already running monitor but returns false" do
+     Ragios::Monitor.restart(id = 'monitor_monitor').should == nil 
+     #delete the sample monitor used in this test from database to provide an accurate test on each run
+     Ragios::Server.delete_monitor(id ='monitor_monitor')
+  end
+   
 end

@@ -12,7 +12,7 @@ options1 = { monitor: 'http',
 options2 =  { monitor: 'http',
               every: '2m',
               test: 'domain doesnt exist',
-              domain: 'www.ragios-ruby.com',
+              domain: 'southmunn.n',
               contact: 'admin@mail.com',
               via: 'gmail',  
               notify_interval: '6h'

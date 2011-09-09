@@ -263,6 +263,8 @@ describe Ragios::Server do
     sch = Ragios::Server.get_monitors_frm_scheduler("active_monitor")
     sch[0].class.should ==  Rufus::Scheduler::EveryJob
     sch[0].params[:tags].should == ["active_monitor"]
+   #delete the sample monitor used in this test from database to provide an accurate test on each run
+   Ragios::Server.delete_monitor(id ='active_monitor')
  end
 
   it "should return all monitors currently running on the scheduler" do
@@ -284,3 +286,4 @@ describe Ragios::Server do
     sch.class.should ==  Hash
  end
 end 
+

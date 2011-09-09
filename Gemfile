@@ -8,6 +8,7 @@ gem "daemons"
 gem "i18n"
 gem "gmail"
 gem "rspec"
+gem "rake"
 
 #uncomment this for ragios server
 gem "sinatra"
