@@ -24,7 +24,7 @@ describe Ragios::Monitor do
                     }]
      Ragios::Server.init
      monitors =  Ragios::Monitor.start monitoring,server=TRUE
-     #ensure that the generic monitor was properly created
+     #verify that the generic monitor was properly created
      monitors[0].class.should == Ragios::GenericMonitor
      monitors[0].notify
      monitors[0].fixed

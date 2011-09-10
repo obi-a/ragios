@@ -26,15 +26,21 @@ describe Ragios::GenericMonitor do
      Monitors::Url.class_eval do |options|
        include Ragios::InitValues
      end
-
+    #create plugin
     @plugin = Monitors::Url.new
     @plugin.init(options)
+
+    #add init values to generic monitor
      Ragios::GenericMonitor.class_eval do |options|
        include Ragios::InitValues
      end
+    #create generic monitor
     @generic_monitor = Ragios::GenericMonitor.new(@plugin,options) 
-    
+    #generic monitor executes the plugin
+
+    #Run the generic monitor's test_command
     @generic_monitor.test_command.should == true
+    #Run the plugin's test_command
     @plugin.test_command.should == true
   end 
 end
@@ -51,9 +57,10 @@ describe Ragios::Monitor do
                    notify_interval: '6h'
                     }]
      monitors =  Ragios::Monitor.start monitoring,server=TRUE
-     #ensure that the generic monitor was properly created
+     #verify that the generic monitor was properly created
      monitors[0].class.should == Ragios::GenericMonitor
      monitors[0].test_command.should == true
+     #verify that the scheduler is running
      sch = Ragios::Server.get_monitors_frm_scheduler
      sch.should_not == nil
      sch.class.should ==  Hash     
@@ -61,9 +68,10 @@ describe Ragios::Monitor do
 
  it "should restart monitors saved on the server" do
      monitors = Ragios::Monitor.restart
-     monitors[0].class.should == Ragios::GenericMonitor
-   
+     #verify that the generic monitor was properly created
+     monitors[0].class.should == Ragios::GenericMonitor   
      monitors[0].test_command.boolean?.should ==  true
+     #verify that the scheduler is running
      sch = Ragios::Server.get_monitors_frm_scheduler
      sch.should_not == nil
      sch.class.should ==  Hash     
