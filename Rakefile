@@ -2,6 +2,10 @@ task :spec do
   sh 'rspec spec/'
 end
 
+task :notifiers do
+  sh 'rspec spec/notifiers'
+end
+
 task :plugins do
   sh 'rspec spec/plugins'
 end
@@ -14,6 +18,7 @@ task :server do
   sh 'rspec spec/server'
 end
 
+task :test_plugins => :notifiers
 task :test_plugins => :plugins
 task :test_core => :core
 task :test_server => :server

@@ -41,7 +41,7 @@ end
 
 describe Ragios::Monitor do
   it "should start monitoring with the server" do
-      monitoring = [{ tag: 'admin',
+      monitoring = [{ tag: 'test',
                    monitor: 'url',
                    every: '1m',
                    test: 'is google UP',

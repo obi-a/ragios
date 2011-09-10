@@ -98,7 +98,7 @@ class Monitor
        if monitors[0]["state"] == "active"
          return nil #monitor is already active. nothing to restart
        end
-      data = {:state => "active" }
+      data = {:state => "active"}
       doc = { :database => 'monitors', :doc_id => id, :data => data}   
       Document.update doc
     end

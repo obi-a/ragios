@@ -110,14 +110,12 @@ class System
 
   #inform the system admin that the issue has been resolved via gmail
    def gmail_resolved
-        puts 'sending gmail issue resolved message...'
        Ragios::GmailNotifier.new.send(message("email_resolved.erb"))
    end 
 
 
    #inform the system admin that the issue has been resolved via sendmail
    def email_resolved
-       puts 'sending issue resolved message...'
         Ragios::Notifiers::EmailNotifier.new.send(message("email_resolved.erb")) 
    end
 
@@ -136,7 +134,6 @@ class System
 
   #sends notifcations via gmail to the system admin when a test fails
   def gmail_notify
-       puts 'sending gmail alert...'
        Ragios::GmailNotifier.new.send(message("email_notify.erb"))
   end
    
