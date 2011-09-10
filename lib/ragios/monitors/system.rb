@@ -63,7 +63,6 @@ class System
       #the attributes must be assigned values by the tests that extend this class
       raise "A description of the test must be specified, @test_description must be assigned a value" if @test_description.nil?
       raise "@describe_test_result must be assigned a value" if @describe_test_result.nil?
-      raise "A contact must be specified, @contact must be assigned a value" if @contact.nil?
       raise "A time interval for running tests must be specified, @time_interval must be assigned a value" if @time_interval.nil?
       raise "An interval for notifications must be specified, @notification_interval must be assigned a value" if @notification_interval.nil?
    end
