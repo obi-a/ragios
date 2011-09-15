@@ -18,7 +18,7 @@ GEM
       mime (>= 0.1)
     hashie (1.0.0)
     i18n (0.4.1)
-    leanback (0.2.7)
+    leanback (0.2.8)
       rest-client
       yajl-ruby
     mail (2.2.7)
@@ -37,7 +37,7 @@ GEM
     rake (0.9.2)
     rash (0.3.0)
       hashie (~> 1.0.0)
-    rest-client (1.6.3)
+    rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec (2.5.0)
       rspec-core (~> 2.5.0)
