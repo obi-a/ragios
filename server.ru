@@ -7,6 +7,19 @@ require dir + 'lib/ragios/rest_server'
 
 run Sinatra::Application
 
+#create the database if they don't already exist
+begin
+ Couchdb.create 'monitors'
+rescue CouchdbException 
+end
+
+begin
+ Couchdb.create 'status_update_settings'
+rescue CouchdbException 
+end
+
+
+
 Ragios::Server.init
 
 #restart monitors from the database
@@ -14,3 +27,4 @@ Ragios::Monitor.restart
 
 #run schedule any available status updates
 Ragios::Server.restart_status_updates
+
