@@ -134,6 +134,11 @@ describe Ragios::Server do
      sch.class.should ==  Hash
  end
 
+it "should not restart a status update for a tag that doesnt exist" do
+    #restart the status update
+    Ragios::Server.restart_status_updates('can_not_be_found').should == nil
+end
+
   it "should restart a stopped status update" do
     #stop the status update
       Ragios::Server.stop_status_update('to_be_deleted')
@@ -145,7 +150,8 @@ describe Ragios::Server do
       sch = Ragios::Server.get_status_update_frm_scheduler(tag = "to_be_deleted")
       sch.should ==  []
      #restart the status update
-      Ragios::Server.restart_status_updates('to_be_deleted')
+      hash  = Ragios::Server.restart_status_updates('to_be_deleted')
+      hash.should_not == nil
      #verify that the status update was restarted by scheduler
       sch = Ragios::Server.get_status_update_frm_scheduler(tag = "to_be_deleted")
       sch[0].class.should ==  Rufus::Scheduler::EveryJob 
@@ -198,6 +204,7 @@ describe Ragios::Server do
       sch[0].t.should == "7d"
       sch[0].params[:tags].should == ["sample_status_update"]  
    end
+
 
    it "should return a list of all active monitors" do
       monitors = Ragios::Server.get_active_monitors

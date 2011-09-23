@@ -154,27 +154,57 @@ end
 
 post '/restart/status_update/:tag*' do
    tag = params[:tag]
-   hash = Ragios::Server.restart_status_updates(tag)
-   Yajl::Encoder.encode(hash)
+   update = Ragios::Server.restart_status_updates(tag)
+   if update == nil 
+      status 404
+      Yajl::Encoder.encode({ "Error" => "no stopped status update found for named tag"})
+   else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
+     Yajl::Encoder.encode({ok:'true'})
+  end
 end
 
 post '/stop/status_update/:tag*' do
    tag = params[:tag]
-   hash = Ragios::Server.stop_status_update(tag)
-   Yajl::Encoder.encode(hash)
+   update = Ragios::Server.stop_status_update(tag)
+   if update == []
+      status 404
+      Yajl::Encoder.encode({ "Error" => "not found"})
+   else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
+     Yajl::Encoder.encode({ok:'true'})
+   end
 end
 
 delete '/delete/status_update/:tag*' do
    tag = params[:tag]
-   hash = Ragios::Server.delete_status_update(tag)
-   Yajl::Encoder.encode(hash)
+   update = Ragios::Server.delete_status_update(tag)
+   if update == []
+      status 404
+      Yajl::Encoder.encode({ "Error" => "not found"})
+   else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
+     Yajl::Encoder.encode({ok:'true'})
+   end
 end
 
 put '/edit/status_update/:id*' do
+ begin
    data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
    id = params[:id]
-   hash = Ragios::Server.edit_status_update(id,data)
+   update = Ragios::Server.edit_status_update(id,data)
    Yajl::Encoder.encode(hash)
+   if update[0].include?("_id") 
+       Yajl::Encoder.encode({ok:'true'})
+   else
+       status 500
+        Yajl::Encoder.encode({error:'unknown'})
+   end
+  rescue CouchdbException => e
+   if e.to_s == 'CouchDB: Error - not_found. Reason - missing'
+     status 404
+     Yajl::Encoder.encode({ "error" => e.error, check: 'status_update_id'})
+   else
+    raise
+   end
+  end
 end
 
 not_found do

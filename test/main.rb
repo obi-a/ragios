@@ -95,10 +95,10 @@
  # Ragios::Server.update_monitor(id,data)
 
 
-sch = Ragios::Server.get_monitors_frm_scheduler
-puts sch.inspect
+#sch = Ragios::Server.get_monitors_frm_scheduler
+#puts sch.inspect
 
-#puts hash.inspect
+puts hash.inspect
 
  #trap Ctrl-C to exit gracefully
     puts "PRESS CTRL-C to QUIT"
