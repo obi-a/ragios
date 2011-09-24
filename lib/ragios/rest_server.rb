@@ -20,7 +20,7 @@ get '/' do
 end
 
 #adds monitors to the system and starts monitoring them
-put '/monitors' do
+post '/monitors' do
  begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
   Ragios::Monitor.start monitors,server=TRUE
@@ -43,7 +43,7 @@ get '/monitors/:key/:value*' do
     end
 end
 
-put  '/update/monitor/:id*' do
+put  '/monitor/:id*' do
   begin
     data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
     id = params[:id]
@@ -55,7 +55,7 @@ put  '/update/monitor/:id*' do
  end
 end
 
-delete '/delete/monitor/:id*' do
+delete '/monitor/:id*' do
    id = params[:id]
    hash = Ragios::Server.delete_monitor(id)
    if hash.to_s == "not_found"  
@@ -69,7 +69,7 @@ delete '/delete/monitor/:id*' do
   end
 end
 
-post '/stop/monitor/:id*' do
+post '/monitor/:id/stop*' do
    id = params[:id]
    hash = Ragios::Server.stop_monitor(id)
    if hash.to_s == "not_found"  
@@ -83,7 +83,7 @@ post '/stop/monitor/:id*' do
   end
 end
 
-post '/restart/monitor/:id*' do
+post '/monitor/:id/restart*' do
   begin 
    id = params[:id]
    Ragios::Server.restart_monitor(id)
@@ -94,7 +94,7 @@ post '/restart/monitor/:id*' do
     end
 end
 
-get '/monitor/id/:id*' do
+get '/monitor/:id*' do
   begin
    id = params[:id]
    monitor = Ragios::Server.get_monitor(id)
@@ -134,7 +134,7 @@ get '/status_update/:key/:value*' do
  end
 end
 
-post '/start/status_update*' do
+post '/status_update/start*' do
   begin
    config = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
    hash = Ragios::Server.start_status_update(config)
@@ -146,7 +146,7 @@ post '/start/status_update*' do
 
 end
 
-post '/restart/status_update/:tag*' do
+post '/status_update/:tag/restart*' do
    tag = params[:tag]
    update = Ragios::Server.restart_status_updates(tag)
    if update == nil 
@@ -157,7 +157,7 @@ post '/restart/status_update/:tag*' do
   end
 end
 
-post '/stop/status_update/:tag*' do
+post '/status_update/:tag/stop*' do
    tag = params[:tag]
    update = Ragios::Server.stop_status_update(tag)
    if update == []
@@ -168,7 +168,8 @@ post '/stop/status_update/:tag*' do
    end
 end
 
-delete '/delete/status_update/:tag*' do
+#delete status update by tag
+delete '/status_update/:tag*' do
    tag = params[:tag]
    update = Ragios::Server.delete_status_update(tag)
    if update == []
@@ -179,7 +180,8 @@ delete '/delete/status_update/:tag*' do
    end
 end
 
-put '/edit/status_update/:id*' do
+#edit status update
+put '/status_update/:id*' do
  begin
    data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
    id = params[:id]
