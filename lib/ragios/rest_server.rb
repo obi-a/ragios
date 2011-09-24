@@ -37,7 +37,6 @@ get '/monitors/:key/:value*' do
     monitors = Ragios::Server.find_monitors(key => value)
     m = Yajl::Encoder.encode(monitors)
     if m.to_s == '[]'
-     status 404
      Yajl::Encoder.encode({ error: "not_found"})
     else 
       m
@@ -202,7 +201,24 @@ put '/edit/status_update/:id*' do
   end
 end
 
-#not_found do
- #    status 404
- #    Yajl::Encoder.encode({error:"not found"})
-#end
+get '/*' do 
+  status 400
+  Yajl::Encoder.encode({ error: "bad_request"})
+end
+
+put '/*' do 
+  status 400
+  Yajl::Encoder.encode({ error: "bad_request"})
+end
+
+post '/*' do 
+  status 400
+  Yajl::Encoder.encode({ error: "bad_request"})
+end
+
+delete '/*' do 
+  status 400
+  Yajl::Encoder.encode({ error: "bad_request"})
+end
+
+
