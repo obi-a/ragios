@@ -7,6 +7,8 @@ class Hash
   end
 end
 
+#TODO: Ragios::Server may need to should have an exception class 
+#to allow clients like the RESTserver know exactly what a problem is with specific details.
 
 module Ragios 
 
