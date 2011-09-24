@@ -27,7 +27,7 @@ put '/monitors' do
   Yajl::Encoder.encode({ok:"true"})
  rescue 
   status 500
-  body  Yajl::Encoder.encode({error: $!.to_s})
+  body  Yajl::Encoder.encode({error: "something went wrong"})
  end
 end
 
@@ -49,23 +49,20 @@ put  '/update/monitor/:id*' do
     data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
     id = params[:id]
     hash = Ragios::Server.update_monitor(id,data)
-    Yajl::Encoder.encode(hash)
     Yajl::Encoder.encode({ "ok" => "true"})
   rescue 
   status 500
-  body  Yajl::Encoder.encode({error: $!.to_s})
+  body  Yajl::Encoder.encode({error: "something went wrong"})
  end
 end
 
 delete '/delete/monitor/:id*' do
    id = params[:id]
    hash = Ragios::Server.delete_monitor(id)
-   m = Yajl::Encoder.encode(hash)
-   
-   if m.to_s == '"not_found"'  
+   if hash.to_s == "not_found"  
     status 404
     body  Yajl::Encoder.encode({error: 'not_found', check: 'monitor_id'})
-   elsif m.include?("id") && m.include?("ok") 
+   elsif hash.include?("id") && hash.include?("ok") 
     Yajl::Encoder.encode({ok:'true'})
    else
     status 500
@@ -76,12 +73,10 @@ end
 post '/stop/monitor/:id*' do
    id = params[:id]
    hash = Ragios::Server.stop_monitor(id)
-   m = Yajl::Encoder.encode(hash) 
-
-   if m.to_s == '"not_found"'  
+   if hash.to_s == "not_found"  
     status 404
     body  Yajl::Encoder.encode({error: 'not_found', check: 'monitor_id'})
-   elsif m.include?("id") && m.include?("ok") 
+   elsif hash.include?("id") && hash.include?("ok") 
     Yajl::Encoder.encode({ok:'true'})
    else
     status 500
@@ -96,7 +91,7 @@ post '/restart/monitor/:id*' do
    Yajl::Encoder.encode({ok: 'true'})
    rescue 
     status 500
-    body  Yajl::Encoder.encode({error: $!.to_s, check: 'monitor_id'})
+    body  Yajl::Encoder.encode({error: 'something went wrong', check: 'monitor_id'})
     end
 end
 
@@ -147,7 +142,7 @@ post '/start/status_update*' do
    Yajl::Encoder.encode(hash)
   rescue 
   status 500
-  body  Yajl::Encoder.encode({error: $!.to_s})
+  body  Yajl::Encoder.encode({error: "something went wrong"})
  end
 
 end
@@ -207,7 +202,7 @@ put '/edit/status_update/:id*' do
   end
 end
 
-not_found do
-     status 404
-     Yajl::Encoder.encode({error:"not found"})
-end
+#not_found do
+ #    status 404
+ #    Yajl::Encoder.encode({error:"not found"})
+#end
