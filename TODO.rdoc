@@ -1,3 +1,8 @@
+*Ragios::Server may need to should have an exception class to allow clients like the RESTserver know exactly what a problem is with specific details.
+
+*Ragios URL plugin should allow users to set the timeout 
+
+*Ragios URL plugin should allow users to set the type of http request they choose either a GET or POST and include body  data for a POST
 
 *Plugins should be able to override all methods of the Ragios::Monitors::System class. Making plugins firstclass Monitors
 
