@@ -256,7 +256,7 @@ end
 
  it "should return status updates currently running on the scheduler" do
      sch = Ragios::Server.get_status_update_frm_scheduler
-     sch.should_not == nil
+     sch.should_not be_nil
      sch.class.should ==  Hash
  end
 
@@ -268,6 +268,7 @@ end
 
  it "should return monitors by specified tag currently running on the scheduler" do
     sch = Ragios::Server.get_monitors_frm_scheduler("active_monitor")
+    sch[0].should be_a_kind_of(Rufus::Scheduler::EveryJob)
     sch[0].class.should ==  Rufus::Scheduler::EveryJob
     sch[0].params[:tags].should == ["active_monitor"]
    #delete the sample monitor used in this test from database to provide an accurate test on each run
@@ -276,8 +277,8 @@ end
 
   it "should return all monitors currently running on the scheduler" do
     sch = Ragios::Server.get_monitors_frm_scheduler
-    sch.should_not == nil
-    sch.class.should ==  Hash
+    sch.should_not be_nil
+    sch.class.should == Hash
  end
 
   it "should restart monitoring objects" do
@@ -289,8 +290,8 @@ end
     sch[1].t.should == "88m"
 
     sch = Ragios::Server.get_monitors
-    sch.should_not == nil
-    sch.class.should ==  Hash
+    sch.should_not be_nil
+    sch.class.should == Hash
  end
 end 
 
