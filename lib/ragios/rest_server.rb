@@ -37,6 +37,7 @@ get '/monitors/:key/:value*' do
     monitors = Ragios::Server.find_monitors(key => value)
     m = Yajl::Encoder.encode(monitors)
     if m.to_s == '[]'
+     status 404
      Yajl::Encoder.encode({ error: "not_found"})
     else 
       m
