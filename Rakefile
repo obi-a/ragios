@@ -7,15 +7,15 @@ task :notifiers do
 end
 
 task :plugins do
-  sh 'rspec spec/plugins'
+  sh 'rspec -fs spec/plugins'
 end
 
 task :core do
-  sh 'rspec spec/ragios'
+  sh 'rspec -fs spec/ragios'
 end
 
 task :server do
-  sh 'rspec spec/server'
+  sh 'rspec -fs spec/server'
 end
 
 task :test_notifiers => :notifiers
