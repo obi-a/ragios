@@ -77,12 +77,19 @@ end
 put '/monitors/:id/state/active*' do
   begin 
    id = params[:id]
-   Ragios::Server.restart_monitor(id)
-   Yajl::Encoder.encode({ok: 'true'})
-   rescue 
+    m = Ragios::Server.restart_monitor(id)
+   if m[0].class == Ragios::GenericMonitor
+    Yajl::Encoder.encode({ok: 'true'})
+   end
+  rescue => e
+   if e.to_s == "monitor not found"
+    status 404
+    body  Yajl::Encoder.encode({error: e.to_s}) 
+   else
     status 500
-    body  Yajl::Encoder.encode({error: 'something went wrong', check: 'monitor_id'})
-    end
+    body  Yajl::Encoder.encode({error: e.to_s})
+   end
+  end
 end
 
 put  '/monitors/:id*' do
