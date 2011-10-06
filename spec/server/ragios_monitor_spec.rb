@@ -103,7 +103,7 @@ describe Ragios::Monitor do
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
-
+  # begin
      monitors = Ragios::Monitor.restart(id = 'monitor_monitor') 
 
      monitors[0].class.should == Ragios::GenericMonitor
@@ -111,11 +111,15 @@ describe Ragios::Monitor do
      monitors[0].test_command.boolean?.should ==  true
      sch = Ragios::Server.get_monitors_frm_scheduler
      sch.should_not == nil
-     sch.class.should ==  Hash        
+     sch.class.should ==  Hash    
+   #rescue => e
+    # e.to_s.should == 
+   #end
  end 
  
-  it "should try to restart an already running monitor but returns false" do
-     Ragios::Monitor.restart(id = 'monitor_monitor').should == nil 
+  it "should not restart an already running monitor" do
+     #Ragios::Monitor.restart(id = 'monitor_monitor').should == nil 
+     lambda {Ragios::Monitor.restart(id = 'monitor_monitor')}.should raise_error(RuntimeError, "monitor is already active. nothing to restart")
      #delete the sample monitor used in this test from database to provide an accurate test on each run
      Ragios::Server.delete_monitor(id ='monitor_monitor')
   end
