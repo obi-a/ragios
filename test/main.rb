@@ -36,9 +36,40 @@
 
   Ragios::Monitor.restart
 
-  #restart a stopped monitor while server is still running
-  #Ragios::Monitor.restart(id = 'a62e051e-46dc-437a-90af-965577444884')
+  data = { tag: 'test', 
+                   monitor: 'url',
+                   every: '1m',
+                   test: '2 test',
+                   url: 'https://github.com/obi-a/Ragios',
+                   contact: 'obi.akubue@mail.com',
+                   via: 'gmail',  
+                   notify_interval:'3h',
+                   describe_test_result:  "sample monitor for specs",
+        	   time_of_last_test: "2:30pm",
+         	   num_tests_passed: "10",
+         	   num_tests_failed: "20",
+                   total_num_tests: "30",
+                   last_test_result: "PASSED", 
+                   status: "UP",
+                   state: "stopped"
+                  }
+
+      doc = {:database => 'monitors', :doc_id => 'rest_monitor', :data => data}
+     begin
+      Document.create doc
+     rescue CouchdbException => e
+       #puts "Error message: " + e.to_s
+     end 
+
+#restart a stopped monitor while server is still running
+#Ragios::Monitor.restart(id = 'rest_monitor')
    
+ RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/active',{:content_type => :json}
+ #sch = Ragios::Server.get_monitors_frm_scheduler('rest_monitor')
+ #puts sch.inspect
+response = RestClient.delete 'http://127.0.0.1:5041/monitors/rest_monitor'
+
+  
   #hash = Ragios::Server.get_active_monitors
   #hash = Ragios::Server.get_stopped_status_updates('admin')
   #hash = Ragios::Server.get_active_status_updates
@@ -98,11 +129,11 @@
 #sch = Ragios::Server.get_monitors_frm_scheduler
 #puts sch.inspect
 
-puts hash.inspect
+#puts hash.inspect
 
  #trap Ctrl-C to exit gracefully
-    puts "PRESS CTRL-C to QUIT"
-     loop do
-       trap("INT") { puts "\nExiting"; exit; }
-     sleep(3)
-    end
+#    puts "PRESS CTRL-C to QUIT"
+#     loop do
+#       trap("INT") { puts "\nExiting"; exit; }
+#     sleep(3)
+#    end
