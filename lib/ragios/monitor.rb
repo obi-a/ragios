@@ -95,8 +95,10 @@ class Monitor
      monitors = Ragios::Server.get_active_monitors
     else 
       monitors = Ragios::Server.find_monitors(:_id => id)
-       if monitors[0]["state"] == "active"
-         return nil #monitor is already active. nothing to restart
+       if monitors == []
+        raise "monitor not found"
+       elsif monitors[0]["state"] == "active"
+         raise "monitor is already active. nothing to restart"
        end
       data = {:state => "active"}
       doc = { :database => 'monitors', :doc_id => id, :data => data}   
@@ -105,7 +107,7 @@ class Monitor
     
     
       if(monitors.empty?)
-          return nil
+          raise "monitor not found"
       end
       count = 0
       monitors.each do |monitor|
