@@ -13,3 +13,8 @@ twitter_cred = {consumer_key: 'Consumer Key',
 
 Ragios::TwitterNotifier.config(twitter_cred)  
 
+database_admin = {username: 'ragios_server',
+                 password: 'ragios'} 
+
+Ragios::DatabaseAdmin.config(database_admin)
+

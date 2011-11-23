@@ -28,13 +28,17 @@
                   }
   #Ragios::Monitor.start monitoring
   
-  Ragios::Server.init
+  #Ragios::Server.init
   #Ragios::Monitor.start monitoring,server=TRUE
   #Ragios::Monitor.restart
   #sch = Ragios::Server.get_monitors_frm_scheduler
   #puts sch.inspect
 
-  Ragios::Monitor.restart
+ # Ragios::Monitor.restart
+ 
+ #auth_session = Ragios::DatabaseAdmin.session
+ #puts auth_session
+
 
   data = { tag: 'test', 
                    monitor: 'url',
@@ -56,7 +60,7 @@
 
       doc = {:database => 'monitors', :doc_id => 'rest_monitor', :data => data}
      begin
-      Document.create doc
+      #Document.create doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -64,10 +68,10 @@
 #restart a stopped monitor while server is still running
 #Ragios::Monitor.restart(id = 'rest_monitor')
    
- RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/active',{:content_type => :json}
+ #RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/active',{:content_type => :json}
  #sch = Ragios::Server.get_monitors_frm_scheduler('rest_monitor')
  #puts sch.inspect
-response = RestClient.delete 'http://127.0.0.1:5041/monitors/rest_monitor'
+#response = RestClient.delete 'http://127.0.0.1:5041/monitors/rest_monitor'
 
   
   #hash = Ragios::Server.get_active_monitors

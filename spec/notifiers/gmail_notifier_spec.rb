@@ -55,7 +55,7 @@ describe Ragios::Server do
 
       doc = {:database => 'monitors', :doc_id => 'monitor_monitor2', :data => data}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -80,7 +80,7 @@ describe Ragios::Server do
 
       doc = {:database => 'monitors', :doc_id => 'monitor_monitor3', :data => data}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 

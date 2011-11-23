@@ -12,9 +12,10 @@ class Server
 
     #create the monitors and add them to the database
     def create(monitors)
+          auth_session = Ragios::DatabaseAdmin.session
          @monitors = monitors 
          begin
-          Couchdb.create 'monitors'
+          Couchdb.create 'monitors',auth_session
          rescue CouchdbException 
          end
          @monitors.each do |monitor|
@@ -23,7 +24,7 @@ class Server
             options = monitor.options.merge({:creation_date => monitor.creation_date, :state => 'active'})
            #create the monitors database
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => options}
-           Couchdb.create_doc doc
+           Couchdb.create_doc doc,auth_session
          end
     end
     
@@ -54,7 +55,7 @@ class Server
      begin
       data = {:state => "stopped"}
       doc = { :database => 'monitors', :doc_id => id, :data => data}   
-      Couchdb.update_doc doc
+      Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
     rescue CouchdbException => e
         e.error
     end      
@@ -140,7 +141,7 @@ class Server
               }
 
        doc = { :database => 'monitors', :doc_id => monitor.id, :data => data}   
-       Couchdb.update_doc doc
+       Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
                
      end #end of scheduler
     end  

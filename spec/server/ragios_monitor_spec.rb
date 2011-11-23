@@ -6,6 +6,8 @@ class Object
  end
 end
 
+
+
 Ragios::Server.init
 
 describe Ragios::GenericMonitor do
@@ -98,8 +100,9 @@ describe Ragios::Monitor do
                   }
 
       doc = {:database => 'monitors', :doc_id => 'monitor_monitor', :data => data}
+     
      begin
-      Couchdb.create_doc doc
+      Couchdb.create_doc doc,Ragios::DatabaseAdmin.session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 

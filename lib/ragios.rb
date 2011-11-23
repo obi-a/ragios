@@ -36,6 +36,7 @@ require dir + 'ragios/schedulers/server'
 require dir + 'ragios/system'
 require dir + 'ragios/monitor'
 require dir + 'ragios/server'
+require dir + 'ragios/database_admin'
 
 #global variable path to the folder with erb message files
 $path_to_messages =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/messages/')) 

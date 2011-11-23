@@ -1,12 +1,16 @@
 #prepare database for testing the server
 
+hash = Couchdb.login(username = 'ragios_server',password ='ragios') 
+auth_session =  hash["AuthSession"]
+
+
 begin
- Couchdb.create 'status_update_settings'
+ Couchdb.create 'status_update_settings',auth_session
 rescue CouchdbException => e
 end
 
 begin
- Couchdb.create 'monitors'
+ Couchdb.create 'monitors',auth_session
 rescue CouchdbException => e
 end
 
@@ -19,7 +23,7 @@ config = {   :every => '1m',
                   }
        doc = {:database => 'status_update_settings', :doc_id => 'test_config_settings', :data => config}
      begin
-      Couchdb.create_doc doc
+      Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end  
@@ -38,7 +42,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'monitors', :doc_id => 'trial_monitor', :data => data}
      begin
-      Couchdb.create_doc doc
+      Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -64,7 +68,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'monitors', :doc_id => 'active_monitor', :data => data}
      begin
-      Couchdb.create_doc doc
+      Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -82,7 +86,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'monitors', :doc_id => 'to_be_deleted', :data => data}
      begin
-      Couchdb.create_doc doc
+      Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -112,7 +116,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'status_update_settings', :doc_id => 'sample_status_update', :data => data}
      begin
-      Couchdb.create_doc doc
+      Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 

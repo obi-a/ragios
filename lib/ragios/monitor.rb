@@ -102,7 +102,7 @@ class Monitor
        end
       data = {:state => "active"}
       doc = { :database => 'monitors', :doc_id => id, :data => data}   
-      Couchdb.update_doc doc
+      Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
     end
     
     
