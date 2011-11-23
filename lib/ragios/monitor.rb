@@ -102,7 +102,7 @@ class Monitor
        end
       data = {:state => "active"}
       doc = { :database => 'monitors', :doc_id => id, :data => data}   
-      Document.update doc
+      Couchdb.update_doc doc
     end
     
     

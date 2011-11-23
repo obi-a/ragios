@@ -19,7 +19,7 @@ config = {   :every => '1m',
                   }
        doc = {:database => 'status_update_settings', :doc_id => 'test_config_settings', :data => config}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end  
@@ -38,7 +38,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'monitors', :doc_id => 'trial_monitor', :data => data}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -64,7 +64,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'monitors', :doc_id => 'active_monitor', :data => data}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -82,7 +82,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'monitors', :doc_id => 'to_be_deleted', :data => data}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -97,7 +97,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'status_update_settings', :doc_id => 'to_be_deleted', :data => data}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -112,7 +112,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'status_update_settings', :doc_id => 'sample_status_update', :data => data}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 

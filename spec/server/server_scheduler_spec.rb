@@ -106,7 +106,7 @@ describe Ragios::Schedulers::Server do
 
       doc = {:database => 'monitors', :doc_id => 'test_monitor', :data => data}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 

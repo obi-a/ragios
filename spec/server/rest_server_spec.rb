@@ -83,7 +83,7 @@ it "should restart a stopped monitor" do
 
       doc = {:database => 'monitors', :doc_id => 'rest_monitor', :data => data}
      begin
-      Document.create doc
+      Couchdb.create_doc doc
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 

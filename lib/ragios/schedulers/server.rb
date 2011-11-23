@@ -23,7 +23,7 @@ class Server
             options = monitor.options.merge({:creation_date => monitor.creation_date, :state => 'active'})
            #create the monitors database
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => options}
-           Document.create doc
+           Couchdb.create_doc doc
          end
     end
     
@@ -54,7 +54,7 @@ class Server
      begin
       data = {:state => "stopped"}
       doc = { :database => 'monitors', :doc_id => id, :data => data}   
-      Document.update doc
+      Couchdb.update_doc doc
     rescue CouchdbException => e
         e.error
     end      
@@ -140,7 +140,7 @@ class Server
               }
 
        doc = { :database => 'monitors', :doc_id => monitor.id, :data => data}   
-       Document.update doc
+       Couchdb.update_doc doc
                
      end #end of scheduler
     end  

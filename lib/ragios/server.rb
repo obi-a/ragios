@@ -61,7 +61,7 @@ module Ragios
      if(monitor["state"] == "active")
       stop_monitor(id)
      end
-     Document.delete :database => 'monitors', :doc_id => id
+     Couchdb.delete_doc :database => 'monitors', :doc_id => id
     rescue CouchdbException => e
        e.error
     end
@@ -69,7 +69,7 @@ module Ragios
 
    def self.update_monitor(id, options)
       doc = { :database => 'monitors', :doc_id => id, :data => options}   
-      Document.update doc
+      Couchdb.update_doc doc
 
      monitor = Couchdb.view( {:database => 'monitors', :doc_id => id})
      
@@ -98,7 +98,7 @@ module Ragios
          doc = {:database => 'status_update_settings', :doc_id => config["_id"], :data => {:state => "active"}}
          config = Hash.transform_keys_to_symbols(config)
          schedule_status_updates(config, tag = config[:tag])
-         Document.update doc           
+         Couchdb.update_doc doc           
         end
    end
 
@@ -116,7 +116,7 @@ module Ragios
       id =  UUIDTools::UUID.random_create.to_s
       config = config.merge({:state => "active"})
       doc = {:database => 'status_update_settings', :doc_id => id, :data => config}
-      Document.create doc
+      Couchdb.create_doc doc
   end
 
    def self.schedule_status_updates(config, tag = nil)
@@ -153,14 +153,14 @@ module Ragios
       updates = find_status_update(:tag => tag)
       updates.each do |update|
        doc = { :database => 'status_update_settings', :doc_id => update["_id"], :data => {:state => "stopped"}}   
-       Document.update doc
+       Couchdb.update_doc doc
       end
   end
  
   def self.edit_status_update(id, options)
 
       doc = { :database => 'status_update_settings', :doc_id => id, :data => options}   
-      Document.update doc
+      Couchdb.update_doc doc
 
      updates = Couchdb.view( {:database => 'status_update_settings', :doc_id => id})
       if(updates["tag"] != nil) && (updates["state"] == "active")
@@ -175,7 +175,7 @@ module Ragios
      updates = find_status_update(:tag => tag)
      updates.each do |update|
          doc = {:database => 'status_update_settings', :doc_id => update["_id"]}
-         Document.delete doc
+         Couchdb.delete_doc doc
      end
   end
     
@@ -196,7 +196,7 @@ module Ragios
          :view => 'get_stopped_updates_by_tag',
           :json_doc => $path_to_json + '/get_status_updates.json'}
     
-    Couchdb.find_on_fly(view, key = tag)
+    Couchdb.find_on_fly(view,"", key = tag)
   end
     
    #get all active status updates 
@@ -235,7 +235,7 @@ module Ragios
         		:design_doc => 'get_stats',
          		:view => 'get_tag_and_mature_stats',
           		:json_doc => $path_to_json + '/get_stats.json'}
-               Couchdb.find_on_fly(view, key = tag)
+               Couchdb.find_on_fly(view, "", key = tag)
       end
    end
     

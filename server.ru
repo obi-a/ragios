@@ -23,8 +23,13 @@ end
 Ragios::Server.init
 
 #restart monitors from the database
+begin
 Ragios::Monitor.restart
+rescue RuntimeError
+end
 
 #run schedule any available status updates
+begin
 Ragios::Server.restart_status_updates
-
+rescue RuntimeError
+end
