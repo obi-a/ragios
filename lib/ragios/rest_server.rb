@@ -92,6 +92,7 @@ put '/monitors/:id/state/active*' do
   end
 end
 
+#edit an already existing monitor
 put  '/monitors/:id*' do
   begin
     data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
@@ -102,6 +103,27 @@ put  '/monitors/:id*' do
   status 500
   body  Yajl::Encoder.encode({error: "something went wrong"})
  end
+end
+
+get '/scheduler/monitors/:id*' do
+  begin
+     id = params[:id]
+     sch = Ragios::Server.get_monitors_frm_scheduler(id)
+     sch.inspect
+  rescue CouchdbException => e
+     status 500
+     body  Yajl::Encoder.encode({error: "something went wrong"})
+  end
+end
+
+get '/scheduler/monitors*' do
+  begin
+     sch = Ragios::Server.get_monitors_frm_scheduler
+     sch.inspect
+  rescue CouchdbException => e
+     status 500
+     body  Yajl::Encoder.encode({error: "something went wrong"})
+  end
 end
 
 get '/monitors/:id*' do
@@ -178,6 +200,27 @@ put '/status_updates/:tag/state/stopped*' do
    else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
      Yajl::Encoder.encode({ok:'true'})
    end
+end
+
+get '/scheduler/status_updates/:tag*' do
+  begin
+     tag = params[:tag]
+     sch = Ragios::Server.get_status_update_frm_scheduler(tag)
+     sch.inspect
+  rescue CouchdbException => e
+     status 500
+     body  Yajl::Encoder.encode({error: "something went wrong"})
+  end
+end
+
+get '/scheduler/status_updates*' do
+  begin
+     sch = Ragios::Server.get_status_update_frm_scheduler
+     sch.inspect
+  rescue CouchdbException => e
+     status 500
+     body  Yajl::Encoder.encode({error: "something went wrong"})
+  end
 end
 
 #delete status update by tag

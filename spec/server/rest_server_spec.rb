@@ -31,10 +31,13 @@ describe "REST interface to Ragios Monitor" do
       hash = monitors[0]
       hash["url"].should == 'https://add_monitor.com'
       hash["test"].should == 'Sample Test'
-      #verify that a monitor is now running in the scheduler
-      sch = Ragios::Server.get_status_update_frm_scheduler
-      sch.should_not be_nil
-      sch.class.should ==  Hash
+      #verify that the monitor is now running in the scheduler
+      response = RestClient.get 'http://127.0.0.1:5041/scheduler/monitors/'
+      response.should include(hash["_id"])
+      #delete the monitor
+      response = RestClient.delete 'http://127.0.0.1:5041/monitors/' + hash["_id"] 
+      response.code.should == 200
+      response.should include('{"ok":"true"}')
  end
 
  it "should return a 500 response because of wrong body in http post request" do
@@ -91,6 +94,9 @@ it "should restart a stopped monitor" do
   response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/active',{:content_type => :json}
   response.code.should == 200
   response.should include('{"ok":"true"}') 
+  #verify that the monitor is now running in the scheduler
+  response = RestClient.get 'http://127.0.0.1:5041/scheduler/monitors/rest_monitor'
+  response.should include("rest_monitor")
 end
 
 it "should not restart a monitor that's already running" do
@@ -111,9 +117,19 @@ it "should not restart a monitor that doesn't exist" do
  end 
 end
 
-it "should delete a monitor" do
-  response = RestClient.delete 'http://127.0.0.1:5041/monitors/rest_monitor'
-  
+it "should update a running monitor" do
+
 end
+
+it "should delete a running monitor" do
+  response = RestClient.delete 'http://127.0.0.1:5041/monitors/rest_monitor'
+  response.code.should == 200
+  response.should include('{"ok":"true"}')
+  #verify that the monitor is no longer running in the scheduler
+  response = RestClient.get 'http://127.0.0.1:5041/scheduler/monitors/rest_monitor'
+  response.should == "[]"
+end
+
+
 
 end
