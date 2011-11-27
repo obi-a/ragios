@@ -118,7 +118,21 @@ it "should not restart a monitor that doesn't exist" do
 end
 
 it "should update a running monitor" do
+   data  = {     every: '55h',
+                   contact: 'admin@aol.com',
+                   via: 'gmail'
+                  }
+  
+  str = Yajl::Encoder.encode(data)
 
+  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor',str, {:content_type => :json, :accept => :json}
+  response.code.should == 200
+  response.should include('{"ok":"true"}')
+
+  response = RestClient.get 'http://127.0.0.1:5041/scheduler/monitors/rest_monitor'
+  response.include?("rest_monitor").should == true
+
+  response.include?("55h").should == true
 end
 
 it "should delete a running monitor" do
