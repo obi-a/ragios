@@ -163,7 +163,7 @@ it "should update a running monitor" do
   response.include?("55h").should == true
 end
 
-it "should update a stopped status update and remain stopped" do
+it "should update a stopped monitor and remain stopped" do
   response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/stopped',{:content_type => :json}
   response.code.should == 200
   response.should include('{"ok":"true"}')

@@ -146,7 +146,7 @@ get '/monitors*' do
   m = Yajl::Encoder.encode(monitors)
   if m.to_s == '[]'
      status 404
-     Yajl::Encoder.encode({ "Error" => "not_found"})
+     Yajl::Encoder.encode({ "error" => "not_found"})
   else 
     m
   end
@@ -160,7 +160,7 @@ get '/status_updates/:key/:value*' do
  m = Yajl::Encoder.encode(monitors) 
  if m.to_s == '[]'
   status 404
-  Yajl::Encoder.encode({ "Error" => "not_found"})
+  Yajl::Encoder.encode({ "error" => "not_found"})
  else 
    m
  end
@@ -170,7 +170,7 @@ post '/status_updates*' do
   begin
    config = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
    hash = Ragios::Server.start_status_update(config)
-   Yajl::Encoder.encode(hash)
+   Yajl::Encoder.encode({ok:"true"})
   rescue 
   status 500
   body  Yajl::Encoder.encode({error: "something went wrong"})
@@ -184,7 +184,7 @@ put '/status_updates/:tag/state/active*' do
    update = Ragios::Server.restart_status_updates(tag)
    if update == nil 
       status 404
-      Yajl::Encoder.encode({ "Error" => "no stopped status update found for named tag"})
+      Yajl::Encoder.encode({ "error" => "no stopped status update found for named tag"})
    else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
      Yajl::Encoder.encode({ok:'true'})
   end
@@ -196,7 +196,7 @@ put '/status_updates/:tag/state/stopped*' do
    update = Ragios::Server.stop_status_update(tag)
    if update == []
       status 404
-      Yajl::Encoder.encode({ "Error" => "not found"})
+      Yajl::Encoder.encode({ "error" => "not found"})
    else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
      Yajl::Encoder.encode({ok:'true'})
    end
@@ -229,7 +229,7 @@ delete '/status_updates/:tag*' do
    update = Ragios::Server.delete_status_update(tag)
    if update == []
       status 404
-      Yajl::Encoder.encode({ "Error" => "not found"})
+      Yajl::Encoder.encode({ "error" => "not found"})
    else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
      Yajl::Encoder.encode({ok:'true'})
    end
@@ -241,8 +241,7 @@ put '/status_updates/:id*' do
    data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
    id = params[:id]
    update = Ragios::Server.edit_status_update(id,data)
-   Yajl::Encoder.encode(hash)
-   if update[0].include?("_id") 
+   if update.include?("_id") 
        Yajl::Encoder.encode({ok:'true'})
    else
        status 500

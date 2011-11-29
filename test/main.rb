@@ -69,9 +69,21 @@
 #Ragios::Monitor.restart(id = 'rest_monitor')
    
 # RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/active',{:content_type => :json}
- sch = Ragios::Server.get_monitors_frm_scheduler('rest_monitor')
- puts sch.inspect
-response = RestClient.delete 'http://127.0.0.1:5041/monitors/rest_monitor'
+ #sch = Ragios::Server.get_monitors_frm_scheduler('rest_monitor')
+ #puts sch.inspect
+#response = RestClient.delete 'http://127.0.0.1:5041/monitors/rest_monitor'
+
+
+#response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/state/stopped',{:content_type => :json}
+
+   data  = { every: '18m',
+                   contact: 'skyla@ateam.com',
+                   via: 'twitter'
+                  }
+  
+  str = Yajl::Encoder.encode(data)
+  response = RestClient.put 'http://127.0.0.1:5041/status_updates/just_nother_status_update',str, {:content_type => :json, :accept => :json}
+ 
 
   
   #hash = Ragios::Server.get_active_monitors

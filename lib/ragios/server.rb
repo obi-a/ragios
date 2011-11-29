@@ -164,12 +164,12 @@ module Ragios
       auth_session = Ragios::DatabaseAdmin.session
       doc = { :database => 'status_update_settings', :doc_id => id, :data => options}   
       Couchdb.update_doc doc,auth_session
-
      updates = Couchdb.view( {:database => 'status_update_settings', :doc_id => id},auth_session)
       if(updates["tag"] != nil) && (updates["state"] == "active")
         stop_status_update(updates["tag"])
         restart_status_updates(updates["tag"])
       end
+      return updates
   end
 
   def self.delete_status_update(tag)
