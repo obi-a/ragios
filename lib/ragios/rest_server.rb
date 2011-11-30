@@ -79,6 +79,7 @@ put '/monitors/:id/state/active*' do
    id = params[:id]
     m = Ragios::Server.restart_monitor(id)
    if m[0].class == Ragios::GenericMonitor
+    status 200
     Yajl::Encoder.encode({ok: 'true'})
    end
   rescue => e
@@ -170,6 +171,7 @@ post '/status_updates*' do
   begin
    config = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
    hash = Ragios::Server.start_status_update(config)
+   status 200
    Yajl::Encoder.encode({ok:"true"})
   rescue 
   status 500
@@ -186,6 +188,7 @@ put '/status_updates/:tag/state/active*' do
       status 404
       Yajl::Encoder.encode({ "error" => "no stopped status update found for named tag"})
    else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
+     status 200
      Yajl::Encoder.encode({ok:'true'})
   end
 end
@@ -198,6 +201,7 @@ put '/status_updates/:tag/state/stopped*' do
       status 404
       Yajl::Encoder.encode({ "error" => "not found"})
    else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
+     status 200
      Yajl::Encoder.encode({ok:'true'})
    end
 end
