@@ -7,7 +7,7 @@ So I started writing such a tool. Since it was inspired by Nagios, I will call i
 
 This is all just for fun and educational purposes. Ruby makes programmers more productive, a longterm goal of this project is to make system administration fun and more productive.
 
-Ragios could be used to monitor any type of system including servers, workstations, switches, routers, system services and applications, locally or over a network. The system admin can define the tests he wants to run on the system or re-use tests written by other developers. The tests run periodically on the system. When a test fails the admin receives an email or SMS alert from Ragios. Everything is written in ruby, the configuration settings are all in ruby syntax. The Ragios system itself is written in ruby.
+Ragios could be used to monitor any type of system including servers, workstations, switches, routers, system services and applications, locally or over a network. The system admin can define the tests he wants to run on the system or re-use tests written by other developers. The tests run periodically on the system. When a test fails the admin receives an email or SMS alert from Ragios.
 
 * [Ragios (Saint Ruby)](http://www.whisperservers.com/ragios/ragios-saint-ruby/)
 
