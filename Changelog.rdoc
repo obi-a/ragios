@@ -1,3 +1,11 @@
+==Ragios v0.5.1 (Ragios Server)
+11-30-2011
+The following changes were made:
+* Added a database backend for persisting monitors powered by couchDB
+* Added access to Ragios via a HTTP server powered by Sinatra and Thin
+* Added a REST API for accessing Ragios over HTTP
+
+
 ==Ragios v0.5.0
 This is a rolling release.
 The following changes were made:
