@@ -1,7 +1,7 @@
 ###Ragios (Saint Ruby)
 
 
-While reading the book “Nagios: system and Network Monitoring” by Wolfgang Barth, I thought it will be a good idea to write a Ruby based Object Oriented System and Network Monitoring tool similar to Nagios.
+While reading the book “Nagios: system and Network Monitoring” by Wolfgang Barth, I thought it will be a good idea to write a Ruby based System and Network Monitoring tool similar to Nagios. Ruby makes programmers more productive, so the goal of this project is to make system administration fun and more productive.
 
 So I started writing such a tool. Since it was inspired by Nagios, I will call it Ragios (Ruby Agios) aka Saint Ruby since Agios is Saint in Greek.
 
