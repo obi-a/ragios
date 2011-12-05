@@ -6,11 +6,10 @@
 
 *Plugins should be able to override all methods of the Ragios::Monitors::System class. Making plugins firstclass Monitors
 
-=Goals for versions 0.5+
+=Goals for versions 0.5.2
 
 ==TODO
-*Document the new Ragios system 0.5.1
-
+* Add a web UI admin dashboard for using Ragios Server.
 
 ==DONE
 *Complete test coverage of the new system
@@ -20,4 +19,6 @@
 *Create a simple http server for Ragios that responds to REST requests. This will enable other apps to communicate with Ragios via REST. Example a Rails,Sinatra or javascript app could provide a Web UI for Ragios via REST. The datafeed from Ragios could be fed to webpage, blog or mobile app.
 
 *Add ability to persist Ragios information and real-time statistics to a database. This will allow service performance monitoring overtime. It will also enable better monitor control.
+
+*Document the new Ragios system 0.5.1
 
