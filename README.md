@@ -20,7 +20,6 @@ Ragios could be used to monitor any type of system including servers, workstatio
    + [Status Reports](http://www.whisperservers.com/ragios/ragios-saint-ruby/status-reports/)
 
    + Adding [Failure Recovery](http://www.whisperservers.com/ragios/ragios-saint-ruby/adding-failure-recovery-code-to-monitors/) code to your monitors
-
 * [Ragios Plugin System](http://www.whisperservers.com/ragios/ragios-plugin-system/)
 * [Ragios Server](http://www.whisperservers.com/ragios/ragios-server/)
    + [Server Setup](http://www.whisperservers.com/ragios/server-setup/) 
