@@ -6,6 +6,11 @@ module Ragios
      @@username = database_admin[:username]
      @@password = database_admin[:password]
     end
+
+    def self.admin
+       database_admin = {username: @@username,
+                 password: @@password} 
+    end
     
     def self.session
       hash = Couchdb.login(@@username,@@password) 
