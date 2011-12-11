@@ -28,7 +28,7 @@ begin
  data = { :admins => {"names" => [database_admin[:username]], "roles" => ["admin"]},
                    :readers => {"names" => [database_admin[:username]],"roles"  => ["admin"]}
                   }
- #TO BE ENABLED AFTER Proper testing
+ #TO BE ENABLED AFTER Tests PASS
  #Couchdb.set_security('status_update_settings',data,auth_session)
 rescue CouchdbException 
 end
