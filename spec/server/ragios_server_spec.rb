@@ -17,6 +17,14 @@ describe Ragios::Server do
      hash["_id"].should == "test_config_settings"
  end
 
+ it "should get status update by id" do
+  hash  = Ragios::Server.get_status_update("test_config_settings")
+  hash["_id"].should == "test_config_settings"
+  hash["contact"].should == "admin@mail.com"
+  hash["tag"].should == "test"
+  hash["every"].should == "1m"
+ end
+
  it "should display status update" do
    puts Ragios::Server.status_report
  end
@@ -223,6 +231,12 @@ end
     updates = Ragios::Server.get_active_status_updates
     hash = updates[0]
     hash["state"].should == "active"
+  end
+
+  it "should get all status updates" do
+    updates  = Ragios::Server.get_all_status_updates
+    hash = updates[0]
+    hash["via"].should == "gmail"
   end
   
   it "should return a monitor by id" do

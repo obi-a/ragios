@@ -34,6 +34,14 @@
   #sch = Ragios::Server.get_monitors_frm_scheduler
   #puts sch.inspect
 
+  #TODO write tests with these
+  #hash  = Ragios::Server.get_all_status_updates
+  #puts hash.inspect
+   
+   
+   hash  = Ragios::Server.get_status_update("ce1aaf2b-6d7d-413e-907e-3425a55953ab")
+   puts hash.inspect
+
  # Ragios::Monitor.restart
  
  #auth_session = Ragios::DatabaseAdmin.session
@@ -82,7 +90,7 @@
                   }
   
   str = Yajl::Encoder.encode(data)
-  response = RestClient.put 'http://127.0.0.1:5041/status_updates/just_nother_status_update',str, {:content_type => :json, :accept => :json}
+  #response = RestClient.put 'http://127.0.0.1:5041/status_updates/just_nother_status_update',str, {:content_type => :json, :accept => :json}
  
 
   

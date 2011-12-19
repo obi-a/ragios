@@ -201,7 +201,17 @@ module Ragios
     
     Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session, key = tag)
   end
+
+ #get all status updates in the system
+ def self.get_all_status_updates
+   view = {:database => 'status_update_settings',
+        :design_doc => 'status_updates',
+         :view => 'get_all_status_updates',
+          :json_doc => $path_to_json + '/get_status_updates.json'}
     
+  Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
+ end
+  
    #get all active status updates 
   def self.get_active_status_updates
    view = {:database => 'status_update_settings',
@@ -217,6 +227,11 @@ module Ragios
        Couchdb.view doc, Ragios::DatabaseAdmin.session
    end
 
+   def self.get_status_update(id)
+      doc = {:database => 'status_update_settings', :doc_id => id}
+      Couchdb.view doc, Ragios::DatabaseAdmin.session
+   end
+
    def self.get_all_monitors
       view = {:database => 'monitors',
         :design_doc => 'monitors',
@@ -225,6 +240,8 @@ module Ragios
 
          Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
    end
+
+ 
 
    def self.get_stats(tag = nil)
 

@@ -12,6 +12,12 @@
         if(doc.state == 'stopped')
           emit(doc.tag,doc);
        }"
+     },
+    "get_all_status_updates" : {
+     "map" : "function(doc){
+        if(doc.contact)
+          emit(doc.id,doc);
+       }"
    }    
  }
 }

@@ -201,11 +201,27 @@ it "should delete a running monitor" do
 end
 
 #status updates 
-it "should return status updates" do
+it "should return status updates with tagg 'test'" do
   response = RestClient.get 'http://127.0.0.1:5041/status_updates/tag/test/'
   response.code.should == 200
   response.should include('"tag":"test"')
   response.should include('"_id":"test_config_settings"')
+end
+
+it "should get all status updates" do
+  response = RestClient.get 'http://127.0.0.1:5041/status_updates'
+  response.code.should == 200
+  response.should include('"tag":"test"')
+  response.should include('"_id":"test_config_settings"')
+end
+
+it "should get a status update by id" do 
+  response = RestClient.get 'http://127.0.0.1:5041/status_updates/test_config_settings'
+  response.code.should == 200
+  response.should include('"tag":"test"')
+  response.should include('"_id":"test_config_settings"')
+  response.should include('"every":"1m"')
+  response.should include('"contact":"admin@mail.com"')
 end
 
 it "should be unable to get status update that matches the tag" do

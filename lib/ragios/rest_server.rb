@@ -170,6 +170,8 @@ get '/monitors*' do
   end
 end
 
+
+
 #status updates
 get '/status_updates/:key/:value*' do
  key = params[:key].to_sym
@@ -185,9 +187,6 @@ get '/status_updates/:key/:value*' do
  end
 end
 
-get '/status_updates*' do
-   Yajl::Encoder.encode({ "error" => "Not implemented - use GET /status_updates/:key/:value HTTP/1.0"})
-end
 
 post '/status_updates*' do
   begin
@@ -290,6 +289,35 @@ put '/status_updates/:id*' do
    else
     raise
    end
+  end
+end
+
+get '/status_updates/:id*' do
+  begin
+   id = params[:id]
+   status_update = Ragios::Server.get_status_update(id)
+   content_type('application/json')
+   Yajl::Encoder.encode(status_update) 
+ rescue CouchdbException => e
+   if e.to_s == 'CouchDB: Error - not_found. Reason - missing'
+     content_type('application/json')
+     status 404
+     Yajl::Encoder.encode({ "error" => e.error, check: 'monitor_id'})
+   else
+    raise
+   end
+ end 
+end
+
+get '/status_updates*' do
+  updates =  Ragios::Server.get_all_status_updates
+  content_type('application/json')
+  u = Yajl::Encoder.encode(updates)
+  if u.to_s == '[]'
+     status 404
+     Yajl::Encoder.encode({ "error" => "not_found"})
+  else 
+    u
   end
 end
 
