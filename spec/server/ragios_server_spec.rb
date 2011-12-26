@@ -3,7 +3,36 @@ require 'set_server_test_values.rb'
 
 Ragios::Server.init
 
+
+describe "monitors" do
+ it "should return security object of monitors database" do
+    database_admin = Ragios::DatabaseAdmin.admin
+    hash = Couchdb.get_security("monitors",Ragios::DatabaseAdmin.session)
+    admins = hash["admins"]
+    readers = hash["readers"]
+    admins["names"].should == [database_admin[:username]]
+    admins["roles"].should == ["admin"]
+    readers["names"].should == [database_admin[:username]]
+    readers["roles"].should == ["admin"]
+ end
+end
+ 
+describe "status updates" do
+ it "should return security object of status updates database" do
+    database_admin = Ragios::DatabaseAdmin.admin
+    hash = Couchdb.get_security("monitors",Ragios::DatabaseAdmin.session)
+    admins = hash["admins"]
+    readers = hash["readers"]
+    admins["names"].should == [database_admin[:username]]
+    admins["roles"].should == ["admin"]
+    readers["names"].should == [database_admin[:username]]
+    readers["roles"].should == ["admin"]
+ end
+end
+
+
 describe Ragios::Server do
+
        
   it "should find monitors by tag" do
      monitors = Ragios::Server.find_monitors(:tag => 'trial_monitor')
