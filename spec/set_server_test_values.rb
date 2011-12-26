@@ -101,7 +101,7 @@ config = {   :every => '1m',
 
       doc = {:database => 'status_update_settings', :doc_id => 'to_be_deleted', :data => data}
      begin
-      Couchdb.create_doc doc
+      Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
