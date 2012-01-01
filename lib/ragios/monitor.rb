@@ -158,6 +158,8 @@ class GenericMonitor < Ragios::Monitors::System
       attr_reader :options
       attr_accessor :id
       attr_accessor :tag
+      attr_accessor :status
+      attr_accessor :was_down
       #attr_accessor :state
 
       #create the right type of monitor instance

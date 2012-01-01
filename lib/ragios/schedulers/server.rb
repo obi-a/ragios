@@ -73,6 +73,11 @@ class Server
      monitor.num_tests_passed = monitor.options[:num_tests_passed].to_i
      monitor.num_tests_failed = monitor.options[:num_tests_failed].to_i
      monitor.total_num_tests = monitor.options[:total_num_tests].to_i
+     monitor.status = monitor.options[:status]
+     
+     if monitor.status == 'DOWN'
+       monitor.was_down = TRUE   
+     end
    end    
 
    start
@@ -89,19 +94,25 @@ class Server
        if monitor.test_command 
            monitor.num_tests_passed = monitor.num_tests_passed + 1
            #set to nil since the monitor passed
-           monitor.has_failed = nil #FALSE
+           #monitor.has_failed = nil #FALSE
+            if monitor.was_down 
+              monitor.fixed
+              #stop notification scheduler
+              Ragios::Schedulers::NotificationScheduler.unschedule(monitor.id)  
+           end
+           monitor.status = 'UP'
        else
            monitor.num_tests_failed = monitor.num_tests_failed + 1
-           
+           monitor.status = 'DOWN'
                #if the failed monitor has been marked as failed
                #this prevents the system from scheduling a new notification scheduler when one is already scheduled
-               if monitor.has_failed
+               if monitor.was_down
                    #do nothing
                else 
                    monitor.failed  
 
                    #if failed monitor has not been marked as failed, then mark it as failed
-                   monitor.has_failed = TRUE
+                   #monitor.has_failed = TRUE
  
                    #send out first notification
                    monitor.notify    
@@ -122,13 +133,7 @@ class Server
        monitor.total_num_tests = monitor.total_num_tests + 1 
        
           
-      #update document with latest stats on the monitor
-       if monitor.has_failed == TRUE 
-          status = "DOWN" 
-       else 
-          status = "UP"
-      end 
-        
+      #update document with latest stats on the monitor        
       data = {   
          :describe_test_result => monitor.describe_test_result,
          :time_of_last_test => monitor.time_of_last_test.to_s,
@@ -136,7 +141,7 @@ class Server
          :num_tests_failed => monitor.num_tests_failed.to_s,
          :total_num_tests => monitor.total_num_tests.to_s,
          :last_test_result => monitor.test_result.to_s, 
-         :status => status,
+         :status => monitor.status,
          :state => "active"
               }
 
