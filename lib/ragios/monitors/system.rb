@@ -53,8 +53,8 @@ class System
     
     #time/date this monitor was last tested by the scheduler
     attr_accessor :time_of_last_test
-    
-    
+
+    attr_accessor :status
   
    def initialize 
       @creation_date = Time.now
