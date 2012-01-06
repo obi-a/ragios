@@ -84,23 +84,22 @@ class Server
  end
    
  def start  
-    #schedule all the monitors to execute test_command() at every time_interval
-    
+   #schedule all the monitors to execute test_command() at every time_interval 
    @monitors.each do |monitor|
-     
     @scheduler.every monitor.time_interval, :tags => monitor.id do
      begin 
        monitor.time_of_last_test = Time.now.to_s(:long)  
        if monitor.test_command 
+           monitor.status = 'UP'
            monitor.num_tests_passed = monitor.num_tests_passed + 1
            #set to nil since the monitor passed
            #monitor.has_failed = nil #FALSE
             if monitor.was_down 
               monitor.fixed
               #stop notification scheduler
-              Ragios::Schedulers::NotificationScheduler.unschedule(monitor.id)  
+              #Ragios::Schedulers::NotificationScheduler.unschedule(monitor.id)  
            end
-           monitor.status = 'UP'
+           monitor.was_down = FALSE
        else
            monitor.num_tests_failed = monitor.num_tests_failed + 1
            monitor.status = 'DOWN'
@@ -120,13 +119,13 @@ class Server
                    #setup notification scheduler
                    #this scheduler will schedule the notifcations to be sent out at the specified notification interval
                   Ragios::Schedulers::NotificationScheduler.new(monitor).start
- 
+                  monitor.was_down = TRUE
                end 
        end
        #catch all exceptions
       rescue Exception
           #puts "ERROR: " +  $!.to_s  + " Created on: "+ Time.now.to_s(:long) 
-          monitor.has_failed = TRUE
+          #monitor.has_failed = TRUE
           monitor.error_handler
       end
        #count this test

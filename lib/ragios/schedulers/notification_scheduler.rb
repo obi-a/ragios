@@ -12,14 +12,14 @@ class NotificationScheduler
       
   end 
 
-  def self.unschedule(id)
-   jobs = @scheduler.find_by_tag(id)
-   if jobs != nil
-    jobs.each do |job|
-        job.unschedule 
-    end
-   end
-  end
+  #def self.unschedule(id)
+  # jobs = @scheduler.find_by_tag(id)
+  # if jobs != nil
+  #  jobs.each do |job|
+   #     job.unschedule 
+  #  end
+ #  end
+ # end
 
   def start
      @scheduler = Rufus::Scheduler.start_new
