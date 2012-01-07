@@ -5,6 +5,7 @@ class Server
     
     attr :monitors #list of long running monitors 
     attr :scheduler
+    attr :notification_scheduler
 
     def initialize()
      @scheduler = Rufus::Scheduler.start_new 
@@ -92,40 +93,34 @@ class Server
        if monitor.test_command 
            monitor.status = 'UP'
            monitor.num_tests_passed = monitor.num_tests_passed + 1
-           #set to nil since the monitor passed
-           #monitor.has_failed = nil #FALSE
             if monitor.was_down 
               monitor.fixed
               #stop notification scheduler
-              #Ragios::Schedulers::NotificationScheduler.unschedule(monitor.id)  
+              @notification_scheduler.unschedule unless @notification_scheduler == nil 
            end
            monitor.was_down = FALSE
        else
            monitor.num_tests_failed = monitor.num_tests_failed + 1
            monitor.status = 'DOWN'
-               #if the failed monitor has been marked as failed
-               #this prevents the system from scheduling a new notification scheduler when one is already scheduled
+             
                if monitor.was_down
                    #do nothing
                else 
                    monitor.failed  
-
-                   #if failed monitor has not been marked as failed, then mark it as failed
-                   #monitor.has_failed = TRUE
  
                    #send out first notification
                    monitor.notify    
                  
                    #setup notification scheduler
                    #this scheduler will schedule the notifcations to be sent out at the specified notification interval
-                  Ragios::Schedulers::NotificationScheduler.new(monitor).start
+                  @notification_scheduler = Ragios::Schedulers::NotificationScheduler.new(monitor)
+                  @notification_scheduler.start
                   monitor.was_down = TRUE
                end 
        end
        #catch all exceptions
       rescue Exception
           #puts "ERROR: " +  $!.to_s  + " Created on: "+ Time.now.to_s(:long) 
-          #monitor.has_failed = TRUE
           monitor.error_handler
       end
        #count this test
