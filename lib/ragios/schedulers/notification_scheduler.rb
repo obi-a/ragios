@@ -26,7 +26,6 @@ class NotificationScheduler
         #test passed, the condition is no longer true 
         #unschedule this job
         this_job.unschedule 
-        #@job.fixed
       else 
         @job.notify
       end
