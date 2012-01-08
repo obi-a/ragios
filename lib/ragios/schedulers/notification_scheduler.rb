@@ -14,7 +14,7 @@ class NotificationScheduler
   end 
 
   def unschedule
-     puts @thread.inspect
+     #puts @thread.inspect
      @thread.unschedule 
   end
 
