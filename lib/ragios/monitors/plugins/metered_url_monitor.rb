@@ -9,6 +9,7 @@ class MeteredUrlMonitor
   attr_reader :url 
   
   def init(options)
+      @user = options[:tag]
       @url = options[:url] 
       raise "A url to test must be specified, url must be assigned a value" if @url.nil?    
       @describe_test_result = "HTTP GET Request to " + @url
@@ -16,6 +17,7 @@ class MeteredUrlMonitor
   
   def test_command
     begin
+     
      response = RestClient.get @url, {"User-Agent" => "Ragios (Saint-Ruby)"}
      @test_result = response.code
      return TRUE
