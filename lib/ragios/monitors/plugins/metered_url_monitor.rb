@@ -36,8 +36,7 @@ class MeteredUrlMonitor
     doc = {:database => 'invoice', :doc_id => id.to_s}
     current_invoice = Couchdb.view doc,Ragios::DatabaseAdmin.session
     num_of_checks = current_invoice['url_monitoring'] + 1
-    balance = current_invoice['balance'] + charge_per_check
-    balance.round_to(4)    
+    balance = current_invoice['balance'] + charge_per_check  
 
     data = { :url_monitoring => num_of_checks, 
              :balance => balance }
