@@ -16,3 +16,6 @@ gem "yajl-ruby"
 gem "thin"
 gem "leanback"
 gem "uuidtools"
+
+#metered_url_plugin
+gem "chronic"
