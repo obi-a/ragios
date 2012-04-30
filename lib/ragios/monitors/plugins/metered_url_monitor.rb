@@ -1,4 +1,5 @@
 require 'chronic'
+require 'sqlite3'
 
 module Monitors
 
@@ -28,35 +29,34 @@ class MeteredUrlMonitor
    time.year.to_s
   end
 
+
   def log
-    charge_per_check = 0.0001
+    charge_per_check = '0.0001' 
     id = @user + this_month + this_year
+    db = SQLite3::Database.new( '/home/obi/bin/invoice.db' )    
+    
+   #check if an invoice has  been created <--clean up later
+   rows = db.execute( "select * from invoice where id = ?",id)
 
-    begin
-    doc = {:database => 'invoice', :doc_id => id.to_s}
-    current_invoice = Couchdb.view doc,Ragios::DatabaseAdmin.session
-    num_of_checks = current_invoice['url_monitoring'] + 1
-    balance = current_invoice['balance'] + charge_per_check  
-
-    data = { :url_monitoring => num_of_checks, 
-             :balance => balance }
- 
-    doc = { :database => 'invoice', :doc_id => id, :data => data}   
-    Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
-    rescue CouchdbException => e
+   if (rows != []) 
+    #invoice has been created
+    	rows = db.execute( "UPDATE invoice
+		SET balance = (balance + 0.0001),
+		 url_monitoring = (url_monitoring + 1) 
+				WHERE id = ?",id )
+     puts 'another I was called'
+  else
        billing_period = this_month + ', ' + this_year 
-       data = {:username => @user, 
-               :billing_period => billing_period, 
-               :date_due => Chronic.parse('1st day next month'),
-               :balance => charge_per_check,
-               :url_monitoring => 1,
-               :status => 'not_due',
-             }
- 
-     doc = {:database => 'invoice', :doc_id => id, :data => data}
-     Couchdb.create_doc doc,Ragios::DatabaseAdmin.session 
-    end
-  end
+       username = @user
+       date_due = (Chronic.parse('1st day next month')).to_s
+       balance = charge_per_check
+       url_monitoring = '1'
+       status = 'not_due'
+             puts 'I was called'
+     rows = db.execute( "INSERT OR IGNORE INTO invoice (id,balance, billing_period,date_due,status,url_monitoring,username)
+VALUES('"+id +"','"+balance+"','"+billing_period+"','"+ date_due +"','"+status+"','"+url_monitoring+"','"+username+"');" )
+ end
+end
   
   def test_command
     begin
