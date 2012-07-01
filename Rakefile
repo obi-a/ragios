@@ -1,3 +1,14 @@
+ task :create_db_admin do
+    require 'leanback'
+    hash = Couchdb.login("current_admin_username","current_admin_password") 
+    auth_session =  hash["AuthSession"]
+
+    data = {:section => "admins",
+              :key => "ragios_server",
+                :value => "ragios"}
+    Couchdb.set_config data,auth_session
+ end
+
 task :spec do
   sh 'rspec spec/'
 end
