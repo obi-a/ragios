@@ -5,7 +5,7 @@ class Server
     
     attr :monitors #list of long running monitors 
     attr :scheduler
-    attr :notification_scheduler
+    #attr :notification_scheduler #no longer necessary for ragios server
 
     def initialize()
      @scheduler = Rufus::Scheduler.start_new 
@@ -95,8 +95,9 @@ class Server
            monitor.num_tests_passed = monitor.num_tests_passed + 1
             if monitor.was_down 
               monitor.fixed
+              #notification_scheduler no longer necessary for ragios server
               #stop notification scheduler
-              @notification_scheduler.unschedule unless @notification_scheduler == nil 
+              #@notification_scheduler.unschedule unless @notification_scheduler == nil 
            end
            monitor.was_down = FALSE
        else
@@ -110,11 +111,14 @@ class Server
  
                    #send out first notification
                    monitor.notify    
-                 
+                   
+                   
                    #setup notification scheduler
                    #this scheduler will schedule the notifcations to be sent out at the specified notification interval
-                  @notification_scheduler = Ragios::Schedulers::NotificationScheduler.new(monitor)
-                  @notification_scheduler.start
+                  #DO NOT use notification scheduler for ragios server -- doesn't work & unnecessary
+                  #commented out
+                  #@notification_scheduler = Ragios::Schedulers::NotificationScheduler.new(monitor)
+                  #@notification_scheduler.start
                   monitor.was_down = TRUE
                end 
        end
