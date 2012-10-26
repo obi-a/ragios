@@ -48,6 +48,9 @@ module InitValues
  def ragios_init_values(options)
   #translate values of the DSL to a Ragios::Monitors::System object
   @time_interval = options[:every]
+  if options[:notify_interval] == nil
+     options[:notify_interval] = '6h'
+  end
   @notification_interval = options[:notify_interval]
   @contact = options[:contact]
   @test_description = options[:test]
