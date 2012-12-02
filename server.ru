@@ -39,7 +39,7 @@ rescue CouchdbException
 end
 
 
-1
+
 Ragios::Server.init
 
 #restart monitors from the database
