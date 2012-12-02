@@ -2,16 +2,10 @@
  "language" : "javascript",
  "views" :{
     "get_monitors" : {
-      "map" : "function(doc){
-         if(doc.monitor)
-           emit(doc.id,doc);
-        }"
+      "map" : "function(doc){if(doc.monitor) emit(doc.id,doc); }"
     },
     "get_active_monitors" : {
-     "map" : "function(doc){
-        if(doc.state == 'active')
-          emit(doc.id,doc);
-       }"
+     "map" : "function(doc){ if(doc.state == 'active') emit(doc.id,doc); }"
    }    
  }
 }
