@@ -18,5 +18,5 @@ gem "leanback"
 gem "uuidtools"
 
 #metered_url_plugin
-#gem "chronic"
-#gem "sqlite3"
+gem "chronic"
+gem "sqlite3"
