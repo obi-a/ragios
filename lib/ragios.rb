@@ -1,6 +1,6 @@
 require 'pony'
 require 'rufus/scheduler'
-require 'twitter'
+#require 'twitter'
 require 'net/http'
 require 'net/https'
 require 'gmail'
