@@ -33,7 +33,7 @@ class MeteredUrlMonitor
   def log
     charge_per_check = '0.0001' 
     id = @user + this_month + this_year
-    db = SQLite3::Database.new( '/home/obi/bin/invoice.db' )    
+    db = SQLite3::Database.new( '/home/obi/bin/yeti/invoice.db' )    
     
    #check if an invoice has  been created <--clean up later
    rows = db.execute( "select * from invoice where id = ?",id)
@@ -44,7 +44,6 @@ class MeteredUrlMonitor
 		SET balance = (balance + 0.0001),
 		 url_monitoring = (url_monitoring + 1) 
 				WHERE id = ?",id )
-     puts 'another I was called'
   else
        billing_period = this_month + ', ' + this_year 
        username = @user
@@ -52,7 +51,6 @@ class MeteredUrlMonitor
        balance = charge_per_check
        url_monitoring = '1'
        status = 'not_due'
-             puts 'I was called'
      rows = db.execute( "INSERT OR IGNORE INTO invoice (id,balance, billing_period,date_due,status,url_monitoring,username)
 VALUES('"+id +"','"+balance+"','"+billing_period+"','"+ date_due +"','"+status+"','"+url_monitoring+"','"+username+"');" )
  end
@@ -61,7 +59,7 @@ end
   def test_command
     begin
      log
-     response = RestClient.get @url, {"User-Agent" => "Ragios (Saint-Ruby)"}
+     response = RestClient.get @url, {"User-Agent" => "SouthMunn Monitor"}
      @test_result = response.code
      return TRUE
    rescue => e
