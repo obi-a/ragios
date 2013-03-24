@@ -9,6 +9,7 @@ gem "i18n"
 gem "gmail"
 gem "rspec"
 gem "rake"
+gem "aws-ses"
 
 #uncomment this for ragios server
 gem "sinatra"
