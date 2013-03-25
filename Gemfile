@@ -14,10 +14,12 @@ gem "aws-ses"
 #uncomment this for ragios server
 gem "sinatra"
 gem "yajl-ruby"
-gem "thin"
+gem "thin" 
 gem "leanback"
 gem "uuidtools"
 
 #metered_url_plugin
-#gem "chronic"
-#gem "sqlite3"
+gem "chronic", :require => 'chronic'
+gem "sqlite3", :require => 'sqlite3'
+
+
