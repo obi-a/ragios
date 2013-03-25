@@ -112,6 +112,11 @@ class System
        Ragios::GmailNotifier.new.send(message("email_resolved.erb"))
    end 
 
+#inform the system admin that the issue has been resolved via amazon ses
+   def ses_resolved
+       Ragios::SESNotifier.new.send(message("email_resolved.erb"))
+   end 
+
 
    #inform the system admin that the issue has been resolved via sendmail
    def email_resolved
@@ -134,6 +139,11 @@ class System
   #sends notifcations via gmail to the system admin when a test fails
   def gmail_notify
        Ragios::GmailNotifier.new.send(message("email_notify.erb"))
+  end
+
+  #sends notifcations via Amazon SES to the system admin when a test fails
+  def ses_notify
+       Ragios::SESNotifier.new.send(message("email_notify.erb"))
   end
    
   #sends notifcations via twitter to the system admin when a test fails

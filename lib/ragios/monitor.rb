@@ -17,6 +17,8 @@ module Notifiers
         email_notify
      elsif @notifier == 'gmail'
         gmail_notify
+     elsif @notifier == 'ses'
+        ses_notify
      elsif @notifier == 'twitter'
        tweet_notify
      else 
@@ -36,6 +38,8 @@ module Notifiers
     email_resolved
   elsif @notifier == 'gmail'
     gmail_resolved
+   elsif @notifier == 'ses'
+    ses_resolved
   elsif @notifier == 'twitter'
     tweet_resolved
   else 

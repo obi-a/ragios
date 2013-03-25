@@ -6,6 +6,7 @@ require 'net/https'
 require 'gmail'
 require 'leanback'
 require 'uuidtools'
+require 'aws/ses'
 
 
 dir = Pathname(__FILE__).dirname.expand_path
@@ -21,6 +22,7 @@ end
 require dir + 'ragios/notifiers/twitter_notifier'
 require dir + 'ragios/notifiers/email_notifier'
 require dir + 'ragios/notifiers/gmail_notifier'
+require dir + 'ragios/notifiers/ses_notifier'
 
 #monitors and plugins 
 require dir + 'ragios/monitors/system'
