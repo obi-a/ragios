@@ -28,7 +28,7 @@
                   }
   #Ragios::Monitor.start monitoring
   
-  Ragios::Server.init
+  #Ragios::Server.init
   #Ragios::Monitor.start monitoring,server=TRUE
   #Ragios::Monitor.restart
   #sch = Ragios::Server.get_monitors_frm_scheduler
@@ -39,8 +39,8 @@
   #puts hash.inspect
    
    
-   hash  = Ragios::Server.get_status_update("ce1aaf2b-6d7d-413e-907e-3425a55953ab")
-   puts hash.inspect
+  # hash  = Ragios::Server.get_status_update("ce1aaf2b-6d7d-413e-907e-3425a55953ab")
+ #   puts hash.inspect
 
  # Ragios::Monitor.restart
  
@@ -89,7 +89,7 @@
                    via: 'twitter'
                   }
   
-  str = Yajl::Encoder.encode(data)
+  #str = Yajl::Encoder.encode(data)
   #response = RestClient.put 'http://127.0.0.1:5041/status_updates/just_nother_status_update',str, {:content_type => :json, :accept => :json}
  
 
@@ -155,9 +155,20 @@
 
 #puts hash.inspect
 
+ monitoring =  [{ monitor:'url',
+                every:'1m',
+                test:'video datafeed test',
+                url:'http://pennywizard.com/central/wizzer.html',
+                contact:'obi.akubue@gmail.com',
+                via:'ses',  
+                notify_interval:'6m'
+                }]
+ 
+Ragios::Monitor.start monitoring
+
  #trap Ctrl-C to exit gracefully
-#    puts "PRESS CTRL-C to QUIT"
-#     loop do
-#       trap("INT") { puts "\nExiting"; exit; }
-#     sleep(3)
-#    end
+   puts "PRESS CTRL-C to QUIT"
+     loop do
+       trap("INT") { puts "\nExiting"; exit; }
+     sleep(3)
+    end
