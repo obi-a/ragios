@@ -19,7 +19,7 @@ gem "leanback"
 gem "uuidtools"
 
 #metered_url_plugin
-gem "chronic", :require => 'chronic'
-gem "sqlite3", :require => 'sqlite3'
+gem "chronic"
+gem "sqlite3"
 
 
