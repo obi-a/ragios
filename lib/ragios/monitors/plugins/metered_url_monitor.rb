@@ -1,5 +1,5 @@
-require 'chronic'
-require 'sqlite3'
+#require 'chronic'
+#require 'sqlite3'
 
 module Monitors
 
@@ -58,7 +58,7 @@ end
   
   def test_command
     begin
-     log
+     #log
      response = RestClient.get @url, {"User-Agent" => "SouthMunn Monitor"}
      @test_result = response.code
      return TRUE
