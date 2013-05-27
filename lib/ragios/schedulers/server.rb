@@ -71,9 +71,9 @@ class Server
   @monitors.each do |monitor|
      monitor.id = monitor.options[:_id]
      monitor.time_of_last_test = monitor.options[:time_of_last_test]
-     monitor.num_tests_passed = monitor.options[:num_tests_passed].to_i
-     monitor.num_tests_failed = monitor.options[:num_tests_failed].to_i
-     monitor.total_num_tests = monitor.options[:total_num_tests].to_i
+     monitor.num_tests_passed = monitor.options[:num_tests_passed].to_i #move 2 performance database
+     monitor.num_tests_failed = monitor.options[:num_tests_failed].to_i #move 2 performance
+     monitor.total_num_tests = monitor.options[:total_num_tests].to_i   #move 2 performance
      monitor.status = monitor.options[:status]
      
      if monitor.status == 'DOWN'
@@ -92,7 +92,7 @@ class Server
        monitor.time_of_last_test = Time.now.to_s(:long)  
        if monitor.test_command 
            monitor.status = 'UP'
-           monitor.num_tests_passed = monitor.num_tests_passed + 1
+           monitor.num_tests_passed = monitor.num_tests_passed + 1 #move 2 performance 
             if monitor.was_down 
               monitor.fixed
               #notification_scheduler no longer necessary for ragios server
@@ -101,7 +101,7 @@ class Server
            end
            monitor.was_down = FALSE
        else
-           monitor.num_tests_failed = monitor.num_tests_failed + 1
+           monitor.num_tests_failed = monitor.num_tests_failed + 1 #move 2 performance
            monitor.status = 'DOWN'
              
                if monitor.was_down
@@ -127,17 +127,21 @@ class Server
           #puts "ERROR: " +  $!.to_s  + " Created on: "+ Time.now.to_s(:long) 
           monitor.error_handler
       end
+
+       Ragios::Logger.new.log(monitor)
+
+
        #count this test
-       monitor.total_num_tests = monitor.total_num_tests + 1 
+       monitor.total_num_tests = monitor.total_num_tests + 1 #move 2 performance
        
           
       #update document with latest stats on the monitor        
       data = {   
-         :describe_test_result => monitor.describe_test_result,
+         :describe_test_result => monitor.describe_test_result, 
          :time_of_last_test => monitor.time_of_last_test.to_s,
-         :num_tests_passed => monitor.num_tests_passed.to_s,
-         :num_tests_failed => monitor.num_tests_failed.to_s,
-         :total_num_tests => monitor.total_num_tests.to_s,
+         :num_tests_passed => monitor.num_tests_passed.to_s, #move 2 performance
+         :num_tests_failed => monitor.num_tests_failed.to_s, #move 2 performance
+         :total_num_tests => monitor.total_num_tests.to_s,  #move 2 performance
          :last_test_result => monitor.test_result.to_s, 
          :status => monitor.status,
          :state => "active"
