@@ -18,6 +18,9 @@ def require_all(path)
 end
 
 
+#loggers
+require dir + 'ragios/loggers/logger'
+
 #notifiers
 require dir + 'ragios/notifiers/twitter_notifier'
 require dir + 'ragios/notifiers/email_notifier'
