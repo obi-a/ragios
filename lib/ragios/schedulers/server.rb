@@ -89,7 +89,8 @@ class Server
    @monitors.each do |monitor|
     @scheduler.every monitor.time_interval, :tags => monitor.id do
      begin 
-       monitor.time_of_last_test = Time.now.to_s(:long)  
+       monitor.time_of_last_test = Time.now.to_s(:long) 
+       monitor.timestamp = Time.now.to_i 
        if monitor.test_command 
            monitor.status = 'UP'
            monitor.num_tests_passed = monitor.num_tests_passed + 1 #move 2 performance 
