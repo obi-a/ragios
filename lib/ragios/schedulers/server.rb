@@ -14,6 +14,7 @@ class Server
     #create the monitors and add them to the database
     def create(monitors)
           auth_session = Ragios::DatabaseAdmin.session
+          database_admin = Ragios::DatabaseAdmin.admin
          @monitors = monitors 
          begin
           Couchdb.create 'monitors',auth_session
@@ -26,7 +27,14 @@ class Server
            #create the monitors database
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => options}
            Couchdb.create_doc doc,auth_session
-           Couchdb.create monitor.id,auth_session
+           #create a database for logging activity
+           Couchdb.create monitor.id,auth_session 
+           #create security object for the database
+           data = { :admins => {"names" => [database_admin[:username]], "roles" => ["admin"]},
+                   :readers => {"names" => [database_admin[:username]],"roles"  => ["admin"]}
+                  }
+           Couchdb.set_security(monitor.id,data,auth_session)
+
          end
     end
     
