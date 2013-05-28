@@ -62,7 +62,12 @@ module Ragios
      if(monitor["state"] == "active")
       stop_monitor(id)
      end
+     
+     #delete monitor from log
+     Couchdb.delete id,auth_session
+
      Couchdb.delete_doc({:database => 'monitors', :doc_id => id},auth_session)
+
     rescue CouchdbException => e
        e.error
     end
