@@ -21,11 +21,12 @@ class Server
          end
          @monitors.each do |monitor|
             monitor.creation_date = Time.now.to_s(:long) 
-            monitor.id = UUIDTools::UUID.random_create.to_s
+            monitor.id = 'z' + monitor.tag + Time.now.to_i.to_s + 'z' + SecureRandom.hex(8)
             options = monitor.options.merge({:creation_date => monitor.creation_date, :state => 'active'})
            #create the monitors database
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => options}
            Couchdb.create_doc doc,auth_session
+           Couchdb.create monitor.id,auth_session
          end
     end
     
@@ -129,8 +130,8 @@ class Server
           monitor.error_handler
       end
 
+       
        Ragios::Logger.new.log(monitor)
-
 
        #count this test
        monitor.total_num_tests = monitor.total_num_tests + 1 #move 2 performance
