@@ -76,9 +76,9 @@ class Server
    @monitors.each do |monitor|
      @scheduler.every monitor.time_interval, :tags => monitor.id do          
       do_task(monitor)
-     end #end of scheduler
+     end 
     end  
- end #end of start
+ end
 
  def do_task(monitor)
     begin 
@@ -104,7 +104,7 @@ class Server
       end
       Ragios::Logger.new.log(monitor)
           
-      #update document with latest stats on the monitor        
+      #update document with current state of this monitor        
       data = {   
          :describe_test_result => monitor.describe_test_result, 
          :time_of_last_test => monitor.time_of_last_test.to_s, 
