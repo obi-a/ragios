@@ -65,7 +65,7 @@ delete '/monitors/:id*' do
 end
 
 #stop a running monitor
-put '/monitors/:id/state/stopped*' do
+put '/monitors/:id/stop*' do
    id = params[:id]
    hash = Ragios::Server.stop_monitor(id)
    content_type('application/json')
@@ -81,7 +81,7 @@ put '/monitors/:id/state/stopped*' do
 end
 
 #restart a running monitor
-put '/monitors/:id/state/active*' do
+put '/monitors/:id/start*' do
   begin 
    id = params[:id]
     m = Ragios::Server.restart_monitor(id)
@@ -203,7 +203,7 @@ post '/status_updates*' do
 end
 
 #restart a status update
-put '/status_updates/:tag/state/active*' do
+put '/status_updates/:tag/start*' do
    tag = params[:tag]
    content_type('application/json')
    update = Ragios::Server.restart_status_updates(tag)
@@ -217,7 +217,7 @@ put '/status_updates/:tag/state/active*' do
 end
 
 #stop a status update
-put '/status_updates/:tag/state/stopped*' do
+put '/status_updates/:tag/stop*' do
    tag = params[:tag]
    content_type('application/json')
    update = Ragios::Server.stop_status_update(tag)
