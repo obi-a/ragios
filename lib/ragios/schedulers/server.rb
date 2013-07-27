@@ -2,7 +2,7 @@ module Ragios
 module Schedulers
 
 class Server
-    
+
     attr :monitors #list of long running monitors 
     attr :scheduler
     #attr :notification_scheduler #no longer necessary for ragios server
@@ -13,28 +13,19 @@ class Server
 
     #create the monitors and add them to the database
     def create(monitors)
-          auth_session = Ragios::DatabaseAdmin.session
-          database_admin = Ragios::DatabaseAdmin.admin
+         auth_session = Ragios::DatabaseAdmin.session
+         database_admin = Ragios::DatabaseAdmin.admin
          @monitors = monitors 
          begin
-          Couchdb.create 'monitors',auth_session
+           Couchdb.create 'monitors',auth_session
          rescue CouchdbException 
          end
          @monitors.each do |monitor|
-            monitor.creation_date = Time.now.to_s(:long) 
-            monitor.id = 'z' + monitor.tag + Time.now.to_i.to_s + 'z' + SecureRandom.hex(8)
-            options = monitor.options.merge({:creation_date => monitor.creation_date, :state => 'active'})
-           #create the monitors database
+           monitor.creation_date = Time.now.to_s(:long) 
+           monitor.id = UUIDTools::UUID.random_create.to_s
+           options = monitor.options.merge({:creation_date => monitor.creation_date, :state => 'active'})
            doc = {:database => 'monitors', :doc_id => monitor.id, :data => options}
            Couchdb.create_doc doc,auth_session
-           #create a database for logging activity
-           Couchdb.create monitor.id,auth_session 
-           #create security object for the database
-           data = { :admins => {"names" => [database_admin[:username]], "roles" => ["admin"]},
-                   :readers => {"names" => [database_admin[:username]],"roles"  => ["admin"]}
-                  }
-           Couchdb.set_security(monitor.id,data,auth_session)
-
          end
     end
     
@@ -47,31 +38,24 @@ class Server
       end
    end
 
-   def status_report
-       
+   def status_report   
    end
-
-  
-
- 
 
  #stop an active running monitor 
  def stop_monitor(id)
-     jobs = @scheduler.find_by_tag(id)
-      jobs.each do |job| 
-         job.unschedule
-      end
-
-     begin
-      data = {:state => "stopped"}
-      doc = { :database => 'monitors', :doc_id => id, :data => data}   
-      Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
+   jobs = @scheduler.find_by_tag(id)
+   jobs.each do |job| 
+     job.unschedule
+   end
+   begin
+     data = {:state => "stopped"}
+     doc = { :database => 'monitors', :doc_id => id, :data => data}   
+     Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
     rescue CouchdbException => e
-        e.error
+      e.error
     end      
  end
 
- 
 
  def restart(monitors)
   @monitors = monitors
@@ -79,17 +63,16 @@ class Server
   #read up the stats from database and add the stats values to the object   
   @monitors.each do |monitor|
      monitor.id = monitor.options[:_id]
-     monitor.time_of_last_test = monitor.options[:time_of_last_test]
-     monitor.num_tests_passed = monitor.options[:num_tests_passed].to_i #move 2 performance database
-     monitor.num_tests_failed = monitor.options[:num_tests_failed].to_i #move 2 performance
-     monitor.total_num_tests = monitor.options[:total_num_tests].to_i   #move 2 performance
+     monitor.time_of_last_test = monitor.options[:time_of_last_test]    #move 2 activity log database
+     monitor.num_tests_passed = monitor.options[:num_tests_passed].to_i #move 2 activity log database
+     monitor.num_tests_failed = monitor.options[:num_tests_failed].to_i #move 2 activity log
+     monitor.total_num_tests = monitor.options[:total_num_tests].to_i   #move 2 activity log
      monitor.status = monitor.options[:status]
      
      if monitor.status == 'DOWN'
        monitor.was_down = TRUE   
      end
    end    
-
    start
  end
    
@@ -102,7 +85,7 @@ class Server
        monitor.timestamp = Time.now.to_i 
        if monitor.test_command 
            monitor.status = 'UP'
-           monitor.num_tests_passed = monitor.num_tests_passed + 1 #move 2 performance 
+           monitor.num_tests_passed = monitor.num_tests_passed + 1 #move 2 activity log 
             if monitor.was_down 
               monitor.fixed
               #notification_scheduler no longer necessary for ragios server
@@ -111,7 +94,7 @@ class Server
            end
            monitor.was_down = FALSE
        else
-           monitor.num_tests_failed = monitor.num_tests_failed + 1 #move 2 performance
+           monitor.num_tests_failed = monitor.num_tests_failed + 1 #move 2 activity log
            monitor.status = 'DOWN'
              
                if monitor.was_down
@@ -139,20 +122,20 @@ class Server
       end
 
        
-       Ragios::Logger.new.log(monitor)
+      Ragios::Logger.new.log(monitor)
 
        #count this test
-       monitor.total_num_tests = monitor.total_num_tests + 1 #move 2 performance
+       monitor.total_num_tests = monitor.total_num_tests + 1 #move 2 activity log
        
           
       #update document with latest stats on the monitor        
       data = {   
-         :describe_test_result => monitor.describe_test_result, 
-         :time_of_last_test => monitor.time_of_last_test.to_s,
-         :num_tests_passed => monitor.num_tests_passed.to_s, #move 2 performance
-         :num_tests_failed => monitor.num_tests_failed.to_s, #move 2 performance
-         :total_num_tests => monitor.total_num_tests.to_s,  #move 2 performance
-         :last_test_result => monitor.test_result.to_s, 
+         :describe_test_result => monitor.describe_test_result, #move 2 activity log
+         :time_of_last_test => monitor.time_of_last_test.to_s, #move 2 activity log
+         :num_tests_passed => monitor.num_tests_passed.to_s, #move 2 activity log
+         :num_tests_failed => monitor.num_tests_failed.to_s, #move 2 activity log
+         :total_num_tests => monitor.total_num_tests.to_s,  #move 2 activity log
+         :last_test_result => monitor.test_result.to_s,   #move 2 activity log
          :status => monitor.status,
          :state => "active"
               }
