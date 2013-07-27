@@ -30,5 +30,4 @@ Ragios::DatabaseAdmin.config(database_admin)
 
 #log activity of monitors, set true to log activity
 log_activity = false
-
 Ragios::Logger.config(log_activity)
