@@ -5,7 +5,6 @@ class Server
 
     attr :monitors #list of long running monitors 
     attr :scheduler
-    #attr :notification_scheduler #no longer necessary for ragios server
 
     def initialize()
      @scheduler = Rufus::Scheduler.start_new 
