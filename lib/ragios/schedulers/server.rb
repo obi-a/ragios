@@ -79,53 +79,40 @@ class Server
  def start  
    #schedule all the monitors to execute test_command() at every time_interval 
    @monitors.each do |monitor|
-    @scheduler.every monitor.time_interval, :tags => monitor.id do
-     begin 
-       monitor.time_of_last_test = Time.now.to_s(:long) 
-       monitor.timestamp = Time.now.to_i 
-       if monitor.test_command 
-           monitor.status = 'UP'
-           monitor.num_tests_passed = monitor.num_tests_passed + 1 #move 2 activity log 
-            if monitor.was_down 
-              monitor.fixed
-              #notification_scheduler no longer necessary for ragios server
-              #stop notification scheduler
-              #@notification_scheduler.unschedule unless @notification_scheduler == nil 
-           end
-           monitor.was_down = FALSE
-       else
-           monitor.num_tests_failed = monitor.num_tests_failed + 1 #move 2 activity log
-           monitor.status = 'DOWN'
-             
-               if monitor.was_down
-                   #do nothing
-               else 
-                   monitor.failed  
- 
-                   #send out first notification
-                   monitor.notify    
-                   
-                   
-                   #setup notification scheduler
-                   #this scheduler will schedule the notifcations to be sent out at the specified notification interval
-                  #DO NOT use notification scheduler for ragios server -- doesn't work & unnecessary
-                  #commented out
-                  #@notification_scheduler = Ragios::Schedulers::NotificationScheduler.new(monitor)
-                  #@notification_scheduler.start
-                  monitor.was_down = TRUE
-               end 
-       end
-       #catch all exceptions
-      rescue Exception
-          #puts "ERROR: " +  $!.to_s  + " Created on: "+ Time.now.to_s(:long) 
-          monitor.error_handler
-      end
+     @scheduler.every monitor.time_interval, :tags => monitor.id do          
+      do_task(monitor)
+     end #end of scheduler
+    end  
+ end #end of start
 
-       
+ def do_task(monitor)
+    begin 
+      monitor.time_of_last_test = Time.now.to_s(:long) 
+      monitor.timestamp = Time.now.to_i 
+      if monitor.test_command 
+        monitor.status = 'UP'
+        monitor.num_tests_passed = monitor.num_tests_passed + 1 #move 2 activity log 
+        monitor.fixed if monitor.was_down 
+        monitor.was_down = FALSE
+      else
+        monitor.num_tests_failed = monitor.num_tests_failed + 1 #move 2 activity log
+        monitor.status = 'DOWN'
+             
+        unless monitor.was_down 
+          monitor.failed  
+          monitor.notify    
+          monitor.was_down = TRUE
+        end 
+      end
+      #catch all exceptions
+      rescue Exception
+        #puts "ERROR: " +  $!.to_s  + " Created on: "+ Time.now.to_s(:long) 
+        monitor.error_handler
+      end
       Ragios::Logger.new.log(monitor)
 
-       #count this test
-       monitor.total_num_tests = monitor.total_num_tests + 1 #move 2 activity log
+      #count this test
+      monitor.total_num_tests = monitor.total_num_tests + 1 #move 2 activity log
        
           
       #update document with latest stats on the monitor        
@@ -140,13 +127,9 @@ class Server
          :state => "active"
               }
 
-       doc = { :database => 'monitors', :doc_id => monitor.id, :data => data}   
-       Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
-               
-     end #end of scheduler
-    end  
- end #end of start
-
+     doc = { :database => 'monitors', :doc_id => monitor.id, :data => data}   
+     Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
+  end #end of do_task
  end # end of class
  end
 end
