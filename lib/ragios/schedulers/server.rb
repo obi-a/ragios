@@ -5,7 +5,8 @@ class Server
 
     attr :monitors #list of long running monitors 
     attr :scheduler
-    
+    #attr :notification_scheduler #no longer necessary for ragios server
+
     def initialize()
      @scheduler = Rufus::Scheduler.start_new 
     end 
@@ -58,9 +59,11 @@ class Server
 
  def restart(monitors)
   @monitors = monitors
+
   #read up the stats from database and add the stats values to the object   
   @monitors.each do |monitor|
      monitor.id = monitor.options[:_id]
+     monitor.time_of_last_test = monitor.options[:time_of_last_test]   
      monitor.status = monitor.options[:status]
      if monitor.status == 'DOWN'
        monitor.was_down = TRUE   
@@ -104,6 +107,9 @@ class Server
           
       #update document with latest stats on the monitor        
       data = {   
+         :describe_test_result => monitor.describe_test_result, 
+         :time_of_last_test => monitor.time_of_last_test.to_s, 
+         :last_test_result => monitor.test_result.to_s,  
          :status => monitor.status,
          :state => "active"
               }
@@ -114,3 +120,8 @@ class Server
  end # end of class
  end
 end
+
+
+
+
+
