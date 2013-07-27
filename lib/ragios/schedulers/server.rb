@@ -5,8 +5,7 @@ class Server
 
     attr :monitors #list of long running monitors 
     attr :scheduler
-    #attr :notification_scheduler #no longer necessary for ragios server
-
+    
     def initialize()
      @scheduler = Rufus::Scheduler.start_new 
     end 
@@ -59,16 +58,10 @@ class Server
 
  def restart(monitors)
   @monitors = monitors
-
   #read up the stats from database and add the stats values to the object   
   @monitors.each do |monitor|
      monitor.id = monitor.options[:_id]
-     monitor.time_of_last_test = monitor.options[:time_of_last_test]    #move 2 activity log database
-     monitor.num_tests_passed = monitor.options[:num_tests_passed].to_i #move 2 activity log database
-     monitor.num_tests_failed = monitor.options[:num_tests_failed].to_i #move 2 activity log
-     monitor.total_num_tests = monitor.options[:total_num_tests].to_i   #move 2 activity log
      monitor.status = monitor.options[:status]
-     
      if monitor.status == 'DOWN'
        monitor.was_down = TRUE   
      end
@@ -91,11 +84,9 @@ class Server
       monitor.timestamp = Time.now.to_i 
       if monitor.test_command 
         monitor.status = 'UP'
-        monitor.num_tests_passed = monitor.num_tests_passed + 1 #move 2 activity log 
         monitor.fixed if monitor.was_down 
         monitor.was_down = FALSE
       else
-        monitor.num_tests_failed = monitor.num_tests_failed + 1 #move 2 activity log
         monitor.status = 'DOWN'
              
         unless monitor.was_down 
@@ -110,19 +101,9 @@ class Server
         monitor.error_handler
       end
       Ragios::Logger.new.log(monitor)
-
-      #count this test
-      monitor.total_num_tests = monitor.total_num_tests + 1 #move 2 activity log
-       
           
       #update document with latest stats on the monitor        
       data = {   
-         :describe_test_result => monitor.describe_test_result, #move 2 activity log
-         :time_of_last_test => monitor.time_of_last_test.to_s, #move 2 activity log
-         :num_tests_passed => monitor.num_tests_passed.to_s, #move 2 activity log
-         :num_tests_failed => monitor.num_tests_failed.to_s, #move 2 activity log
-         :total_num_tests => monitor.total_num_tests.to_s,  #move 2 activity log
-         :last_test_result => monitor.test_result.to_s,   #move 2 activity log
          :status => monitor.status,
          :state => "active"
               }
@@ -133,8 +114,3 @@ class Server
  end # end of class
  end
 end
-
-
-
-
-
