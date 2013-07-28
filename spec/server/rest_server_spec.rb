@@ -281,7 +281,7 @@ it "should restart a stopped status update" do
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end  
-
+ 
   response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/start',{:content_type => :json}
   response.code.should == 200
   response.should include('{"ok":"true"}') 
@@ -300,7 +300,7 @@ it "should not restart a status update that's already running" do
 end
 
 it "should stop a running status update and restart it" do
- response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/start',{:content_type => :json}
+ response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/stop',{:content_type => :json}
   response.code.should == 200
   response.should include('{"ok":"true"}') 
   #verify that the monitor is now running in the scheduler
