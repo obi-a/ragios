@@ -18,6 +18,8 @@ def require_all(path)
 end
 
 
+
+
 #notifiers
 require dir + 'ragios/notifiers/twitter_notifier'
 require dir + 'ragios/notifiers/email_notifier'
@@ -39,6 +41,9 @@ require dir + 'ragios/system'
 require dir + 'ragios/monitor'
 require dir + 'ragios/server'
 require dir + 'ragios/database_admin'
+
+#loggers
+require dir + 'ragios/loggers/logger'
 
 #global variable path to the folder with erb message files
 $path_to_messages =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/messages/')) 
