@@ -1,3 +1,8 @@
+
+
+==TODO
+* Document the feature: Grouping monitors by tag
+
 * Notification scheduler should be tagged so that it could be controlled (start/stopped)
 
 * Follow REST completely for status updates, Add status updates delete/restart/stop by id instead by tag
