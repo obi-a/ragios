@@ -72,10 +72,11 @@ class Server
  end
    
  def start  
+  
    #schedule all the monitors to execute test_command() at every time_interval 
    @monitors.each do |monitor|
      @scheduler.every monitor.time_interval, :tags => monitor.id do          
-      do_task(monitor)
+       do_task(monitor)
      end 
     end  
  end
@@ -105,14 +106,12 @@ class Server
       Ragios::Logger.new.log(monitor)
           
       #update document with current state of this monitor        
-      data = {   
+      data = { 
          :describe_test_result => monitor.describe_test_result, 
          :time_of_last_test => monitor.time_of_last_test.to_s, 
          :last_test_result => monitor.test_result.to_s,  
          :status => monitor.status,
-         :state => "active"
-              }
-
+         :state => "active" }
      doc = { :database => 'monitors', :doc_id => monitor.id, :data => data}   
      Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
   end #end of do_task

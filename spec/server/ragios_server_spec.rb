@@ -84,15 +84,15 @@ describe Ragios::Server do
   end
 
    it "should delete a running monitor" do
-    #restart the monitor
+     #restart the monitor
      Ragios::Server.restart_monitor("to_be_deleted")
-    #verify that the monitor is running
+     #verify that the monitor is running
      sch = Ragios::Server.get_monitors_frm_scheduler("to_be_deleted")
      sch[0].class.should ==  Rufus::Scheduler::EveryJob
      sch[0].params[:tags].should == ["to_be_deleted"]     
-    #delete the monitor
+     #delete the monitor
      Ragios::Server.delete_monitor("to_be_deleted")
-    #verify that the monitor was deleted and stopped
+     #verify that the monitor was deleted and stopped
      Ragios::Server.find_monitors(:tag => 'to_be_deleted').should == []
      sch = Ragios::Server.get_monitors_frm_scheduler("to_be_deleted")
      sch.should ==  []
