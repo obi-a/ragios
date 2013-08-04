@@ -15,11 +15,12 @@ module Ragios
          :time_of_test => monitor.time_of_last_test.to_s,
          :test_result => monitor.test_result.to_s, 
          :status => monitor.status,
-         :tag => monitor.tag,
          :day => Date.today.strftime("%d"), 
          :month => Date.today.strftime("%B"), 
          :year => Date.today.strftime("%Y")
               }
+      data.merge(:tag => monitor.tag) if defined? monitor.tag
+
        doc = { :database => 'ragios_activity_log', :doc_id => UUIDTools::UUID.random_create.to_s, :data => data}   
        Couchdb.create_doc doc,Ragios::DatabaseAdmin.session    
   end 
