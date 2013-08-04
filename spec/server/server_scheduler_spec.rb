@@ -69,11 +69,39 @@ class Monitor3 < Ragios::Monitors::System
    end 
 end
 
+class Monitor4 < Ragios::Monitors::System
+  attr_accessor :id
+  attr_reader :options
+  def initialize
+    @options = { tag: 'something', 
+                   monitor: 'url',
+                   every: '1h',
+                   test: 'Great test to somewhere',
+                   url: 'http://o-b-i-akubue.com',
+                   contact: 'obi.akubue@mail.com',
+                   via: 'gmail',  
+                   notify_interval:'3h',
+                   _id: 'test-2-somewhere'
+                  }
+    @time_interval = @options[:every]
+    @notification_interval = @options[:notify_interval]
+    @contact = @options[:contact]
+    @test_description = @options[:test]  
+    @describe_test_result = ""  
+    @id = @options[:_id]
+    super
+  end 
+
+  def test_command
+    @test_result = "GOOD"
+    TRUE
+  end
+end
+
 describe Ragios::Schedulers::Server do
     it "should create new monitors and store in the database" do 
       @ragios = Ragios::Schedulers::Server.new 
       @ragios.create [Monitor1.new, Monitor2.new] 
-      
     end
  
     it "should start monitoring new monitors" do 
@@ -122,4 +150,48 @@ describe Ragios::Schedulers::Server do
       @ragios.get_monitors('test_monitor').should == []
       
     end      
+
+    it "should verify that task was done and the activity was logged" do
+       #add the monitor to DB
+       data = { monitor: 'url',
+                   every: '1h',
+                   test: 'Great test to somewhere',
+                   url: 'http://o-b-i-akubue.com',
+                   contact: 'obi.akubue@mail.com',
+                   via: 'gmail',  
+                   notify_interval:'3h'
+                  }
+
+      doc = {:database => 'monitors', :doc_id => 'test-2-somewhere', :data => data}
+     begin
+      Couchdb.create_doc doc,Ragios::DatabaseAdmin.session
+     rescue CouchdbException => e
+       #puts "Error message: " + e.to_s
+     end 
+      #start the same monitor as a class
+      @ragios = Ragios::Schedulers::Server.new  
+      @ragios.do_task(Monitor4.new)
+
+      #The running monitor should match the logged activity information
+      doc = {:database => 'monitors', :doc_id => 'test-2-somewhere'}
+      hash = Couchdb.view doc,Ragios::DatabaseAdmin.session
+
+      keys = {:time_of_test => hash["time_of_last_test"],:monitor_id => 'test-2-somewhere'}
+      activities = Couchdb.find_by_keys({:database => 'ragios_activity_log', :keys => keys},Ragios::DatabaseAdmin.session)
+      activity = activities[0]
+
+      #proof that the task was excuted
+      hash["status"].should == "UP"
+      activity["status"].should == "UP"
+      hash["last_test_result"].should == "GOOD"
+      activity["test_result"].should == "GOOD"
+      
+      #Proof that the activity was logged
+      hash["time_of_last_test"].should == activity["time_of_test"]
+      hash["_id"].should == activity["monitor_id"]
+      
+      #clean up
+      doc = {:database => 'monitors', :doc_id => 'test-2-somewhere'}
+      Couchdb.delete_doc doc,Ragios::DatabaseAdmin.session
+    end
 end

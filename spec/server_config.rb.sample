@@ -3,5 +3,9 @@ database_admin = {username: 'ragios_server',
 
 Ragios::DatabaseAdmin.config(database_admin)
 
+#log activity of monitors, set true to log activity
+log_activity = true
+Ragios::Logger.config(log_activity)
+
 
 
