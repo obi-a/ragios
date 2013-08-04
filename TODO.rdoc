@@ -1,6 +1,7 @@
 
 
 ==TODO
+* When a monitor is deleted, also delete all its activity from the activity log 
 * Document the feature: Grouping monitors by tag
 
 * Notification scheduler should be tagged so that it could be controlled (start/stopped)
