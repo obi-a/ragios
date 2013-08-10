@@ -41,6 +41,7 @@ require dir + 'ragios/system'
 require dir + 'ragios/monitor'
 require dir + 'ragios/server'
 require dir + 'ragios/database_admin'
+require dir + 'ragios/admin'
 
 #loggers
 require dir + 'ragios/loggers/logger'
