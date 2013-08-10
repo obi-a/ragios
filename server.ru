@@ -5,7 +5,8 @@ dir = Pathname(__FILE__).dirname.expand_path
 require dir + 'config'
 require dir + 'lib/ragios/rest_server'
 
-run Sinatra::Application
+run Sinatra::Base::App
+
 
 auth_session = Ragios::DatabaseAdmin.session
 database_admin = Ragios::DatabaseAdmin.admin

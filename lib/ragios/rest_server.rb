@@ -3,7 +3,7 @@
 #dir = Pathname(__FILE__).dirname.expand_path
 #require dir + 'lib/ragios'
 #require dir + 'config'
-require 'sinatra' 
+require 'sinatra/base'
 require 'yajl'
 
 #using config.yml with thin instead
@@ -14,11 +14,33 @@ require 'yajl'
     
 # end
 
+
 #TODO set Content-Type and other header attributes for each request
 #TODO add sinatra last_modified reduce computation and save bandwidth
+
+class App < Sinatra::Base
+register do
+  def check (name)
+    condition do
+      error 401 unless send(name) == true
+     end
+  end
+end
+
+helpers do
+  def valid_key?
+    false
+  end
+end
+
 get '/' do
   content_type('application/json')
   Yajl::Encoder.encode({ "Ragios Server" => "welcome"})
+end
+
+post '/session*' do
+  hash = Ragios::DatabaseAdmin
+  return Ragios::DatabaseAdmin.session if ((params[:username] == hash[:username]) && (params[:password] == params[:password]))   
 end
 
 #adds monitors to the system and starts monitoring them
@@ -302,7 +324,7 @@ get '/status_updates/:id*' do
    if e.to_s == 'CouchDB: Error - not_found. Reason - missing'
      content_type('application/json')
      status 404
-     Yajl::Encoder.encode({ "error" => e.error, check: 'monitor_id'})
+     Yajl::Encoder.encode({ "error" => e.error, check: 'status update id'})
    else
     raise
    end
@@ -345,4 +367,4 @@ delete '/*' do
   Yajl::Encoder.encode({ error: "bad_request"})
 end
 
-
+end
