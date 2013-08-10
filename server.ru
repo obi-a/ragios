@@ -5,22 +5,19 @@ dir = Pathname(__FILE__).dirname.expand_path
 require dir + 'config'
 require dir + 'lib/ragios/rest_server'
 
-run Sinatra::Base::App
-
+run App
 
 auth_session = Ragios::DatabaseAdmin.session
 database_admin = Ragios::DatabaseAdmin.admin
 
-
-
 #create the database if they don't already exist
 begin
-
  Couchdb.create 'monitors',auth_session
 
  data = { :admins => {"names" => [database_admin[:username]], "roles" => ["admin"]},
                    :readers => {"names" => [database_admin[:username]],"roles"  => ["admin"]}
                   }
+
 Couchdb.set_security('monitors',data,auth_session)
 rescue CouchdbException  => e
  #raise error unless the database have already been creates
@@ -50,7 +47,15 @@ rescue CouchdbException  => e
   raise e unless e.to_s == "CouchDB: Error - file_exists. Reason - The database could not be created, the file already exists."
 end
 
-
+begin
+  Couchdb.create 'ragios_auth_session',auth_session
+  data = { :admins => {"names" => [database_admin[:username]], "roles" => ["admin"]},
+                   :readers => {"names" => [database_admin[:username]],"roles"  => ["admin"]}}
+  Couchdb.set_security('ragios_auth_session',data,auth_session)
+rescue CouchdbException  => e
+  #raise error unless the database have already been creates
+  raise e unless e.to_s == "CouchDB: Error - file_exists. Reason - The database could not be created, the file already exists."
+end
 
 Ragios::Server.init
 
