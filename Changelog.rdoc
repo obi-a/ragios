@@ -2,6 +2,7 @@
 08-11-2013
 The following changes were made:
 * Added cookie based authentication for the REST API
+* Updated API for start & stop monitors and status-updates see documentation for details
 
 ==Ragios v0.5.1 (Ragios Server)
 11-30-2011
