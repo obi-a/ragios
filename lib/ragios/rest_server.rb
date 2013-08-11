@@ -93,8 +93,25 @@ delete '/monitors/:id*', :check => :valid_key? do
   end
 end
 
+#edit an already existing monitor
+put  '/monitors/:id*', :check => :valid_key? do
+  begin
+    pass unless request.media_type == 'application/json'
+    data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
+    id = params[:id]
+    Ragios::Server.update_monitor(id,data)
+    content_type('application/json')
+    Yajl::Encoder.encode({ "ok" => "true"})
+  rescue 
+  content_type('application/json')
+  status 500
+  body  Yajl::Encoder.encode({error: "something went wrong"})
+ end
+end
+
 #stop a running monitor
-put '/monitors/:id/state/stopped*', :check => :valid_key? do
+put '/monitors/:id*', :check => :valid_key? do
+   pass unless params["state"] == "stopped"
    id = params[:id]
    hash = Ragios::Server.stop_monitor(id)
    content_type('application/json')
@@ -110,7 +127,8 @@ put '/monitors/:id/state/stopped*', :check => :valid_key? do
 end
 
 #restart a running monitor
-put '/monitors/:id/state/active*', :check => :valid_key? do
+put '/monitors/:id*', :check => :valid_key? do
+  pass unless params["state"] == "active"
   begin 
    id = params[:id]
     m = Ragios::Server.restart_monitor(id)
@@ -128,21 +146,6 @@ put '/monitors/:id/state/active*', :check => :valid_key? do
     body  Yajl::Encoder.encode({error: e.to_s})
    end
   end
-end
-
-#edit an already existing monitor
-put  '/monitors/:id*', :check => :valid_key? do
-  begin
-    data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
-    id = params[:id]
-    Ragios::Server.update_monitor(id,data)
-    content_type('application/json')
-    Yajl::Encoder.encode({ "ok" => "true"})
-  rescue 
-  content_type('application/json')
-  status 500
-  body  Yajl::Encoder.encode({error: "something went wrong"})
- end
 end
 
 get '/scheduler/monitors/:id*', :check => :valid_key? do
@@ -231,8 +234,34 @@ post '/status_updates*', :check => :valid_key? do
 
 end
 
+#edit status update
+put '/status_updates/:id*', :check => :valid_key? do
+ begin
+   pass unless request.media_type == 'application/json'
+   data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
+   id = params[:id]
+   content_type('application/json')
+   update = Ragios::Server.edit_status_update(id,data)
+   if update.include?("_id") 
+       Yajl::Encoder.encode({ok:'true'})
+   else
+       status 500
+        Yajl::Encoder.encode({error:'unknown'})
+   end
+  rescue CouchdbException => e
+   if e.to_s == 'CouchDB: Error - not_found. Reason - missing'
+     content_type('application/json')
+     status 404
+     Yajl::Encoder.encode({ "error" => e.error, check: 'status_update_id'})
+   else
+    raise
+   end
+  end
+end
+
 #restart a status update
-put '/status_updates/:tag/state/active*', :check => :valid_key? do
+put '/status_updates/:tag*', :check => :valid_key? do
+   pass unless params["state"] == "active"
    tag = params[:tag]
    content_type('application/json')
    update = Ragios::Server.restart_status_updates(tag)
@@ -246,7 +275,8 @@ put '/status_updates/:tag/state/active*', :check => :valid_key? do
 end
 
 #stop a status update
-put '/status_updates/:tag/state/stopped*', :check => :valid_key? do
+put '/status_updates/:tag*', :check => :valid_key? do
+   pass unless params["state"] == "stopped"
    tag = params[:tag]
    content_type('application/json')
    update = Ragios::Server.stop_status_update(tag)
@@ -295,30 +325,6 @@ delete '/status_updates/:tag*', :check => :valid_key? do
    else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
      Yajl::Encoder.encode({ok:'true'})
    end
-end
-
-#edit status update
-put '/status_updates/:id*', :check => :valid_key? do
- begin
-   data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
-   id = params[:id]
-   content_type('application/json')
-   update = Ragios::Server.edit_status_update(id,data)
-   if update.include?("_id") 
-       Yajl::Encoder.encode({ok:'true'})
-   else
-       status 500
-        Yajl::Encoder.encode({error:'unknown'})
-   end
-  rescue CouchdbException => e
-   if e.to_s == 'CouchDB: Error - not_found. Reason - missing'
-     content_type('application/json')
-     status 404
-     Yajl::Encoder.encode({ "error" => e.error, check: 'status_update_id'})
-   else
-    raise
-   end
-  end
 end
 
 get '/status_updates/:id*', :check => :valid_key? do
