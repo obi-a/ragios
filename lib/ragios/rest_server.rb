@@ -94,7 +94,7 @@ delete '/monitors/:id*', :check => :valid_key? do
 end
 
 #stop a running monitor
-put '/monitors/:id/stop*', :check => :valid_key? do
+put '/monitors/:id/state/stopped*', :check => :valid_key? do
    id = params[:id]
    hash = Ragios::Server.stop_monitor(id)
    content_type('application/json')
@@ -110,7 +110,7 @@ put '/monitors/:id/stop*', :check => :valid_key? do
 end
 
 #restart a running monitor
-put '/monitors/:id/start*', :check => :valid_key? do
+put '/monitors/:id/state/active*', :check => :valid_key? do
   begin 
    id = params[:id]
     m = Ragios::Server.restart_monitor(id)
@@ -122,7 +122,7 @@ put '/monitors/:id/start*', :check => :valid_key? do
   rescue => e
    if e.to_s == "monitor not found"
     status 404
-    body  Yajl::Encoder.encode({error: e.to_s}) 
+    body  Yajl::Encoder.encode({error: 'not_found', check: 'monitor_id'}) 
    else
     status 500
     body  Yajl::Encoder.encode({error: e.to_s})
@@ -232,7 +232,7 @@ post '/status_updates*', :check => :valid_key? do
 end
 
 #restart a status update
-put '/status_updates/:tag/start*', :check => :valid_key? do
+put '/status_updates/:tag/state/active*', :check => :valid_key? do
    tag = params[:tag]
    content_type('application/json')
    update = Ragios::Server.restart_status_updates(tag)
@@ -246,7 +246,7 @@ put '/status_updates/:tag/start*', :check => :valid_key? do
 end
 
 #stop a status update
-put '/status_updates/:tag/stop*', :check => :valid_key? do
+put '/status_updates/:tag/state/stopped*', :check => :valid_key? do
    tag = params[:tag]
    content_type('application/json')
    update = Ragios::Server.stop_status_update(tag)

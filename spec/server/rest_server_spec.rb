@@ -99,7 +99,7 @@ it "should restart a stopped monitor" do
        #puts "Error message: " + e.to_s
      end  
 
-  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/start',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/active',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
   response.should include('{"ok":"true"}') 
   #verify that the monitor is now running in the scheduler
@@ -109,7 +109,7 @@ end
 
 it "should not restart a monitor that's already running" do
  begin
-  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/start',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/active',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
  rescue => e
   e.response.should == '{"error":"monitor is already active. nothing to restart"}'
   e.should be_an_instance_of RestClient::InternalServerError
@@ -118,22 +118,22 @@ end
 
 it "should not restart a monitor that doesn't exist" do
   begin
-  response = RestClient.put 'http://127.0.0.1:5041/monitors/we_dont_exist/start',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/monitors/we_dont_exist/state/active',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
  rescue => e
-  e.response.should == '{"error":"monitor not found"}'
+  e.response.should == '{"error":"not_found","check":"monitor_id"}'
   e.should be_an_instance_of RestClient::ResourceNotFound
  end 
 end
 
 it "should stop a running monitor and restart it" do
- response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/stop',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
+ response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/stopped',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
   response.should include('{"ok":"true"}') 
   #verify that the monitor is now running in the scheduler
   response = RestClient.get 'http://127.0.0.1:5041/scheduler/monitors/rest_monitor',{:cookies => {:AuthSession => @auth_session}}
   response.should_not include("rest_monitor")
   response.should == "[]"
-  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/start',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/active',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
 end
 
 it "should try to change a monitor to an unknown state" do
@@ -172,7 +172,7 @@ it "should update a running monitor" do
 end
 
 it "should update a stopped monitor and remain stopped" do
-  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/stop',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/stopped',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
   response.should include('{"ok":"true"}')
 
@@ -196,7 +196,7 @@ it "should update a stopped monitor and remain stopped" do
 
   response = RestClient.get 'http://127.0.0.1:5041/scheduler/monitors/rest_monitor',{:cookies => {:AuthSession => @auth_session}}
   response.should == "[]"
-  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/start',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor/state/active',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
 end
 
 it "should delete a running monitor" do
@@ -290,7 +290,7 @@ it "should restart a stopped status update" do
        #puts "Error message: " + e.to_s
      end  
  
-  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/start',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/state/active',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
   response.should include('{"ok":"true"}') 
   #verify that the monitor is now running in the scheduler
@@ -300,7 +300,7 @@ end
 
 it "should not restart a status update that's already running" do
  begin
-  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/start',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/state/active',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
  rescue => e
   e.response.should == '{"error":"no stopped status update found for named tag"}'
   e.response.code.should == 404
@@ -308,23 +308,22 @@ it "should not restart a status update that's already running" do
 end
 
 it "should stop a running status update and restart it" do
- response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/stop',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
+ response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/state/stopped',{},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
   response.should include('{"ok":"true"}') 
   #verify that the monitor is now running in the scheduler
   response = RestClient.get 'http://127.0.0.1:5041/scheduler/status_updates/this_status_update',{:cookies => {:AuthSession => @auth_session}}
   response.should_not include("rest_monitor")
   response.should == "[]"
-  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/start',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/state/active',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
 end
 
 it "should try to change a status update to an unknown state" do
   begin
    response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/state/unknown',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
   rescue => e 
-   #TODO change up the design to get this handled properly, with an appropriate error message
-   e.response.should == '<h1>Internal Server Error</h1>'
-   e.response.code.should == 500
+   e.response.should == '{"error":"not_found","check":"status_update_id"}'
+   e.response.code.should == 404
   end 
 end
 
@@ -355,7 +354,7 @@ end
 
 it "should update a stopped status update and remain stopped" do
   
-  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/stop',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/state/stopped',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
   response.should include('{"ok":"true"}')
 
@@ -379,7 +378,7 @@ it "should update a stopped status update and remain stopped" do
 
   response = RestClient.get 'http://127.0.0.1:5041/scheduler/status_updates/this_status_update',{:cookies => {:AuthSession => @auth_session}}
   response.should == "[]"
-  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/start',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.put 'http://127.0.0.1:5041/status_updates/this_status_update/state/active',{},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
 end
 
 it "should delete a running status update" do
