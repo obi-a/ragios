@@ -1,6 +1,13 @@
-
-
 ==TODO
+
+===Priority
+* add tests for 
+  GET /monitors
+  GET /monitors/:id
+* change GET /monitors/every/1m to GET /monitors?every=1m
+* add specs for Ragios::Admin
+
+===Nice to have
 * When a monitor is deleted, also delete all its activity from the activity log 
 * Document the feature: Grouping monitors by tag
 
