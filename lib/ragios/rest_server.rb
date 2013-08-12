@@ -31,8 +31,8 @@ register do
 end
 
 helpers do
-  def valid_key?
-    Ragios::Admin.valid_key?(request.cookies["AuthSession"]) 
+  def valid_token?
+    Ragios::Admin.valid_token?(request.cookies["AuthSession"]) 
   end
 end
 
@@ -42,7 +42,8 @@ get '/' do
 end
 
 post '/session*' do
-  if Ragios::Admin.authenticate?(params[:username],params[:password])   
+  if Ragios::Admin.authenticate?(params[:username],params[:password])
+    content_type('application/json')   
     Yajl::Encoder.encode({ AuthSession: Ragios::Admin.session })
   else
    status 401
@@ -51,7 +52,7 @@ post '/session*' do
 end
 
 #adds monitors to the system and starts monitoring them
-post '/monitors*', :check => :valid_key? do
+post '/monitors*', :check => :valid_token? do
  begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
   Ragios::Monitor.start monitors,server=TRUE
@@ -64,7 +65,7 @@ post '/monitors*', :check => :valid_key? do
  end
 end
 
-get '/monitors/:key/:value*', :check => :valid_key? do
+get '/monitors/:key/:value*', :check => :valid_token? do
     key = params[:key].to_sym
     value = params[:value]
     monitors = Ragios::Server.find_monitors(key => value)
@@ -78,7 +79,7 @@ get '/monitors/:key/:value*', :check => :valid_key? do
     end
 end
 
-delete '/monitors/:id*', :check => :valid_key? do
+delete '/monitors/:id*', :check => :valid_token? do
    id = params[:id]
    hash = Ragios::Server.delete_monitor(id)
    content_type('application/json')
@@ -94,7 +95,7 @@ delete '/monitors/:id*', :check => :valid_key? do
 end
 
 #edit an already existing monitor
-put  '/monitors/:id*', :check => :valid_key? do
+put  '/monitors/:id*', :check => :valid_token? do
   begin
     pass unless request.media_type == 'application/json'
     data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
@@ -110,7 +111,7 @@ put  '/monitors/:id*', :check => :valid_key? do
 end
 
 #stop a running monitor
-put '/monitors/:id*', :check => :valid_key? do
+put '/monitors/:id*', :check => :valid_token? do
    pass unless params["state"] == "stopped"
    id = params[:id]
    hash = Ragios::Server.stop_monitor(id)
@@ -127,7 +128,7 @@ put '/monitors/:id*', :check => :valid_key? do
 end
 
 #restart a running monitor
-put '/monitors/:id*', :check => :valid_key? do
+put '/monitors/:id*', :check => :valid_token? do
   pass unless params["state"] == "active"
   begin 
    id = params[:id]
@@ -148,7 +149,7 @@ put '/monitors/:id*', :check => :valid_key? do
   end
 end
 
-get '/scheduler/monitors/:id*', :check => :valid_key? do
+get '/scheduler/monitors/:id*', :check => :valid_token? do
   begin
      id = params[:id]
      sch = Ragios::Server.get_monitors_frm_scheduler(id)
@@ -161,7 +162,7 @@ get '/scheduler/monitors/:id*', :check => :valid_key? do
   end
 end
 
-get '/scheduler/monitors*', :check => :valid_key? do
+get '/scheduler/monitors*', :check => :valid_token? do
   begin
      sch = Ragios::Server.get_monitors_frm_scheduler
      content_type('application/json')
@@ -173,7 +174,7 @@ get '/scheduler/monitors*', :check => :valid_key? do
   end
 end
 
-get '/monitors/:id*', :check => :valid_key? do
+get '/monitors/:id*', :check => :valid_token? do
   begin
    id = params[:id]
    monitor = Ragios::Server.get_monitor(id)
@@ -190,7 +191,7 @@ get '/monitors/:id*', :check => :valid_key? do
  end 
 end
 
-get '/monitors*', :check => :valid_key? do
+get '/monitors*', :check => :valid_token? do
   monitors =  Ragios::Server.get_all_monitors
   content_type('application/json')
   m = Yajl::Encoder.encode(monitors)
@@ -205,7 +206,7 @@ end
 
 
 #status updates
-get '/status_updates/:key/:value*', :check => :valid_key? do
+get '/status_updates/:key/:value*', :check => :valid_token? do
  key = params[:key].to_sym
  value = params[:value]
  monitors = Ragios::Server.find_status_update(key => value)
@@ -220,7 +221,7 @@ get '/status_updates/:key/:value*', :check => :valid_key? do
 end
 
 
-post '/status_updates*', :check => :valid_key? do
+post '/status_updates*', :check => :valid_token? do
   begin
    config = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
    Ragios::Server.start_status_update(config)
@@ -235,7 +236,7 @@ post '/status_updates*', :check => :valid_key? do
 end
 
 #edit status update
-put '/status_updates/:id*', :check => :valid_key? do
+put '/status_updates/:id*', :check => :valid_token? do
  begin
    pass unless request.media_type == 'application/json'
    data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
@@ -260,7 +261,7 @@ put '/status_updates/:id*', :check => :valid_key? do
 end
 
 #restart a status update
-put '/status_updates/:tag*', :check => :valid_key? do
+put '/status_updates/:tag*', :check => :valid_token? do
    pass unless params["state"] == "active"
    tag = params[:tag]
    content_type('application/json')
@@ -275,7 +276,7 @@ put '/status_updates/:tag*', :check => :valid_key? do
 end
 
 #stop a status update
-put '/status_updates/:tag*', :check => :valid_key? do
+put '/status_updates/:tag*', :check => :valid_token? do
    pass unless params["state"] == "stopped"
    tag = params[:tag]
    content_type('application/json')
@@ -289,7 +290,7 @@ put '/status_updates/:tag*', :check => :valid_key? do
    end
 end
 
-get '/scheduler/status_updates/:tag*', :check => :valid_key? do
+get '/scheduler/status_updates/:tag*', :check => :valid_token? do
   begin
      tag = params[:tag]
      sch = Ragios::Server.get_status_update_frm_scheduler(tag)
@@ -302,7 +303,7 @@ get '/scheduler/status_updates/:tag*', :check => :valid_key? do
   end
 end
 
-get '/scheduler/status_updates*', :check => :valid_key? do
+get '/scheduler/status_updates*', :check => :valid_token? do
   begin
      sch = Ragios::Server.get_status_update_frm_scheduler
      content_type('application/json')
@@ -315,7 +316,7 @@ get '/scheduler/status_updates*', :check => :valid_key? do
 end
 
 #delete status update by tag
-delete '/status_updates/:tag*', :check => :valid_key? do
+delete '/status_updates/:tag*', :check => :valid_token? do
    tag = params[:tag]
    content_type('application/json')
    update = Ragios::Server.delete_status_update(tag)
@@ -327,7 +328,7 @@ delete '/status_updates/:tag*', :check => :valid_key? do
    end
 end
 
-get '/status_updates/:id*', :check => :valid_key? do
+get '/status_updates/:id*', :check => :valid_token? do
   begin
    id = params[:id]
    status_update = Ragios::Server.get_status_update(id)
@@ -344,7 +345,7 @@ get '/status_updates/:id*', :check => :valid_key? do
  end 
 end
 
-get '/status_updates*', :check => :valid_key? do
+get '/status_updates*', :check => :valid_token? do
   updates =  Ragios::Server.get_all_status_updates
   content_type('application/json')
   u = Yajl::Encoder.encode(updates)

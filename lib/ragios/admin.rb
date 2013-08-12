@@ -20,10 +20,10 @@ module Ragios
       true if (username == @@username) && (password == @@password)
     end 
 
-    def self.valid_key?(key)
+    def self.valid_token?(token)
       begin
-        return false if key.nil?
-        doc = {:database => 'ragios_auth_session', :doc_id => key}
+        return false if token.nil?
+        doc = {:database => 'ragios_auth_session', :doc_id => token}
         auth = Couchdb.view doc, Ragios::DatabaseAdmin.session
         time_elapsed = (Time.now.to_f - Time.at(auth["timestamp"]).to_f).to_i
         if (time_elapsed > auth["timeout"])
@@ -37,11 +37,11 @@ module Ragios
     end
     
     def self.session
-      auth_session_key = UUIDTools::UUID.random_create.to_s
+      auth_session_token = UUIDTools::UUID.random_create.to_s
       data = {:timeout => @@auth_timeout, :timestamp => Time.now.to_i}
-      doc = {:database => 'ragios_auth_session', :doc_id => auth_session_key, :data => data}
+      doc = {:database => 'ragios_auth_session', :doc_id => auth_session_token, :data => data}
       Couchdb.create_doc doc, Ragios::DatabaseAdmin.session
-      auth_session_key
+      auth_session_token
     end
   end
 end
