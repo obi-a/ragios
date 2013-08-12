@@ -28,5 +28,12 @@ database_admin = {username: 'ragios_server',
 
 Ragios::DatabaseAdmin.config(database_admin)
 
+#log activity of monitors, set true to log activity
+log_activity = false
+Ragios::Logger.config(log_activity)
 
+ragios_admin_user = {username: 'admin',
+                     password: 'ragios',
+                     auth_timeout: 900} 
 
+Ragios::Admin.config(ragios_admin_user)

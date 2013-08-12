@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Using Ragios</title>
+
+<link rel="stylesheet" href="http://www.whisperservers.com/ragios/wp-content/themes/hybrid/style.css" type="text/css" media="all" />
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="http://www.whisperservers.com/ragios/xmlrpc.php" />
+
+<meta name="generator" content="WordPress 3.2.1 - really-static 0.5" />
+<meta name="template" content="Hybrid 0.9" />
+<meta name="robots" content="index,follow" />
+<meta name="author" content="admin" />
+<meta name="copyright" content="Copyright (c) August 2011" />
+<meta name="revised" content="Thursday, August 11th, 2011, 12:42 am" />
+<link rel="alternate" type="application/rss+xml" title="Ragios (St. Ruby) &raquo; Feed" href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/feed/" />
+
+<script type='text/javascript' src='http://www.whisperservers.com/ragios/wp-includes/js/l10n.js?ver=20101110'></script>
+<script type='text/javascript' src='http://www.whisperservers.com/ragios/wp-includes/js/jquery/jquery.js?ver=1.6.1'></script>
+<link rel='index' title='Ragios (St. Ruby)' href='http://www.whisperservers.com/ragios/' />
+<link rel='up' title='Ragios (Saint Ruby)' href='http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/' />
+<link rel='prev' title='Installation' href='http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/installation/' />
+<link rel='next' title='Notifications' href='http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/notifications/' />
+<link rel='canonical' href='http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/using-ragios/' />
+
+<link rel="stylesheet" href="http://www.whisperservers.com/ragios/wp-content/plugins/wp-syntax/wp-syntax.css" type="text/css" media="screen" />
+
+</head>
+
+<body class="wordpress ltr en_US y2013 m08 d12 h00 monday logged-out singular singular-page singular-page-6 page-template-default page-6 primary-active secondary-inactive subsidiary-inactive">
+
+
+<div id="body-container">
+
+	
+	<div id="header-container">
+
+		<div id="header">
+
+			<div id="site-title"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/" title="Ragios (St. Ruby)" rel="home"><span>Ragios (St. Ruby)</span></a></div>
+			<div id="site-description"><span>System &amp; Network Monitoring Tool</span></div>
+
+		</div><!-- #header -->
+
+	</div><!-- #header-container -->
+
+	
+	<div id="container">
+
+		
+	<div id="content" class="hfeed content">
+
+		<div class="breadcrumb breadcrumbs"><div class="breadcrumb-trail"><span class="trail-before"><span class="breadcrumb-title">Browse:</span></span> <a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/" title="Ragios (St. Ruby)" rel="home" class="trail-begin">Home</a> <span class="sep">/</span> <a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/" title="Ragios (Saint Ruby)">Ragios (Saint Ruby)</a> <span class="sep">/</span> <span class="trail-end">Using Ragios</span></div></div>
+		
+			<div id="post-6" class="hentry page publish post-1 odd author-admin">
+
+				<h1 class="page-title entry-title"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/using-ragios/" title="Using Ragios" rel="bookmark">Using Ragios</a></h1>
+				<div class="entry-content">
+					<p><strong>To Monitor a Website</strong></p>
+<p>To monitor a website for availability; enter the following in the ragios/main.rb script</p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;">  monitoring = <span style="color:#006600; font-weight:bold;">&#91;</span><span style="color:#006600; font-weight:bold;">&#123;</span>monitor:<span style="color:#996600;">'http'</span>, 
+                 every:<span style="color:#996600;">'5m'</span>,
+                 test:<span style="color:#996600;">'Http connection to my site'</span>,
+                 domain:<span style="color:#996600;">'www.mysite.com'</span>,
+                 contact:<span style="color:#996600;">'admin@mysite.com'</span>,
+                 via:<span style="color:#996600;">'gmail'</span>,  
+                 notify_interval:<span style="color:#996600;">'6h'</span>
+                <span style="color:#006600; font-weight:bold;">&#125;</span><span style="color:#006600; font-weight:bold;">&#93;</span>
+&nbsp;
+ <span style="color:#6666ff; font-weight:bold;">Ragios::Monitor</span>.<span style="color:#9900CC;">start</span> monitoring</pre></div></div>
+
+<p>This will try to establish a http connection with the domain:‘www.mysite.com’ every ‘5m’ (5 minutes), when it fails to establish a connection it will send a notification to the system admin specified by contact:‘admin@mysite.com’ via ‘gmail’. if the website is still offline it will notify the admin again after 6 hours specified by notify_interval:‘6h’. test: is a description of the test being performed. It helps Ragios notify the system admin with accurate details of what went wrong on the system.</p>
+<p>To send notifications via twitter use via:‘twitter’ and to send notifications via sendmail installed on the system use via:‘email’, using via:‘gmail’ means the notifications will be sent via gmail.</p>
+<p>To monitor multiple sites</p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;"> monitoring  = <span style="color:#006600; font-weight:bold;">&#123;</span>monitor:<span style="color:#996600;">'http'</span>, 
+                 every:<span style="color:#996600;">'5m'</span>,
+                 test:<span style="color:#996600;">'Http connection to my site'</span>,
+                 domain:<span style="color:#996600;">'www.mysite.com'</span>,
+                 contact:<span style="color:#996600;">'admin@mysite.com'</span>,
+                 via:<span style="color:#996600;">'gmail'</span>,  
+                 notify_interval:<span style="color:#996600;">'6h'</span>
+                <span style="color:#006600; font-weight:bold;">&#125;</span>,
+                 <span style="color:#006600; font-weight:bold;">&#123;</span>monitor:<span style="color:#996600;">'http'</span>, 
+                  every:<span style="color:#996600;">'30s'</span>,
+                  test:<span style="color:#996600;">'Http connection to client A website'</span>,
+                  domain:<span style="color:#996600;">'www.clientA.com'</span>,
+                  contact:<span style="color:#996600;">'admin@mysite.com'</span>,
+                  via:<span style="color:#996600;">'twitter'</span>,  
+                  notify_interval:<span style="color:#996600;">'6h'</span>
+                <span style="color:#006600; font-weight:bold;">&#125;</span>,
+                <span style="color:#006600; font-weight:bold;">&#123;</span>monitor:<span style="color:#996600;">'http'</span>, 
+                 every:<span style="color:#996600;">'3h'</span>,
+                 test:<span style="color:#996600;">'Http connection to client B website'</span>,
+                 domain:<span style="color:#996600;">'www.clientB.com'</span>,
+                 contact:<span style="color:#996600;">'admin@mysite.com'</span>,
+                 via:<span style="color:#996600;">'twitter'</span>,  
+                 notify_interval:<span style="color:#996600;">'6h'</span>
+                <span style="color:#006600; font-weight:bold;">&#125;</span>
+&nbsp;
+<span style="color:#6666ff; font-weight:bold;">Ragios::Monitor</span>.<span style="color:#9900CC;">start</span> monitoring</pre></div></div>
+
+<p>The time interval between tests could be in seconds, minutes, hours or combined,</p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;">every:<span style="color:#996600;">'5m'</span>, <span style="color:#008000; font-style:italic;">#every 5 minutes</span>
+every:<span style="color:#996600;">'30s'</span>, <span style="color:#008000; font-style:italic;">#every 30 seconds</span>
+every:<span style="color:#996600;">'4h'</span>, <span style="color:#008000; font-style:italic;">#every 5 hours</span>
+every:<span style="color:#996600;">'6h30m'</span>, <span style="color:#008000; font-style:italic;">#every 5 minutes</span></pre></div></div>
+
+<p>Same thing applies to the values of the notify_interval, they can be in seconds, minutes, hours or combined.</p>
+<p><strong>Monitoring URLs</strong></p>
+<p>To monitor a URL,</p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;"> monitoring =  <span style="color:#006600; font-weight:bold;">&#91;</span><span style="color:#006600; font-weight:bold;">&#123;</span> monitor:<span style="color:#996600;">'url'</span>,
+                every:<span style="color:#996600;">'5m'</span>,
+                test:<span style="color:#996600;">'video datafeed test'</span>,
+                url:<span style="color:#996600;">'http://www.datafeed.com/resources/videos/1'</span>,
+                contact:<span style="color:#996600;">'admin@mail.com'</span>,
+                via:<span style="color:#996600;">'gmail'</span>,  
+                notify_interval:<span style="color:#996600;">'6h'</span>
+                <span style="color:#006600; font-weight:bold;">&#125;</span><span style="color:#006600; font-weight:bold;">&#93;</span>
+&nbsp;
+<span style="color:#6666ff; font-weight:bold;">Ragios::Monitor</span>.<span style="color:#9900CC;">start</span> monitoring</pre></div></div>
+
+<p>This will send a Http GET request to the specified url ‘www.datafeed.com/resources/videos/1’ every 5 minutes, it will notify the contact ‘admin@mail.com’ via gmail if it gets an ERROR response code from the url. Every 6 hours it will re-send a notification message to contact if the issue has not been fixed. When the issue is fixed it will send an issue resolved message to the contact.</p>
+<p>You can monitor a combination of websites and URLs,</p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;">   monitoring=<span style="color:#006600; font-weight:bold;">&#123;</span>monitor:<span style="color:#996600;">'url'</span>,
+                 every:<span style="color:#996600;">'5m'</span>,
+                 test:<span style="color:#996600;">'video datafeed test'</span>,
+                 url:<span style="color:#996600;">'http://www.datafeed.com/resources/videos/1'</span>,
+                 contact:<span style="color:#996600;">'admin@mail.com'</span>,
+                 via:<span style="color:#996600;">'gmail'</span>,  
+                 notify_interval:<span style="color:#996600;">'6h'</span>
+                 <span style="color:#006600; font-weight:bold;">&#125;</span>,
+              <span style="color:#006600; font-weight:bold;">&#123;</span>monitor:<span style="color:#996600;">'http'</span>, 
+                every:<span style="color:#996600;">'30s'</span>,
+                test:<span style="color:#996600;">'Http connection to client A website'</span>,
+                domain:<span style="color:#996600;">'www.clientA.com'</span>,
+                contact:<span style="color:#996600;">'admin@mysite.com'</span>,
+                via:<span style="color:#996600;">'twitter'</span>,  
+                notify_interval:<span style="color:#996600;">'6h'</span>
+                <span style="color:#006600; font-weight:bold;">&#125;</span>,
+              <span style="color:#006600; font-weight:bold;">&#123;</span>monitor:<span style="color:#996600;">'url'</span>,
+                every:<span style="color:#996600;">'5m'</span>,
+                test:<span style="color:#996600;">'My blog URL test'</span>,
+                url:<span style="color:#996600;">'http://www.myblog.com'</span>,
+                contact:<span style="color:#996600;">'admin@mail.com'</span>,
+                via:<span style="color:#996600;">'email'</span>,  
+                notify_interval:<span style="color:#996600;">'6h'</span>
+               <span style="color:#006600; font-weight:bold;">&#125;</span>
+&nbsp;
+<span style="color:#6666ff; font-weight:bold;">Ragios::Monitor</span>.<span style="color:#9900CC;">start</span> monitoring</pre></div></div>
+
+<p>Ragios also notifies the system admin when an issue is resolved example when a website comes back online.</p>
+<p><strong>main.rb</strong></p>
+<p>The Ragios configuration settings should in the Ragios/main.rb script. A sample copy of the script looks like this:</p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;"><span style="color:#CC0066; font-weight:bold;">require</span> <span style="color:#996600;">'rubygems'</span>
+<span style="color:#CC0066; font-weight:bold;">require</span> <span style="color:#996600;">&quot;bundler/setup&quot;</span>
+dir = <span style="color:#CC00FF; font-weight:bold;">Pathname</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#0000FF; font-weight:bold;">__FILE__</span><span style="color:#006600; font-weight:bold;">&#41;</span>.<span style="color:#9900CC;">dirname</span>.<span style="color:#9900CC;">expand_path</span>
+<span style="color:#CC0066; font-weight:bold;">require</span> dir <span style="color:#006600; font-weight:bold;">+</span> <span style="color:#996600;">'lib/ragios'</span>
+<span style="color:#CC0066; font-weight:bold;">require</span> dir <span style="color:#006600; font-weight:bold;">+</span> <span style="color:#996600;">'config'</span>
+&nbsp;
+<span style="color:#008000; font-style:italic;">#Add your code here</span>
+   monitoring = <span style="color:#006600; font-weight:bold;">&#123;</span> monitor:<span style="color:#996600;">'http'</span>,
+                  every:<span style="color:#996600;">'2m'</span>,
+                  test:<span style="color:#996600;">'Http connection to my blog'</span>,
+                  domain:<span style="color:#996600;">'obi-akubue.org'</span>,
+                  contact:<span style="color:#996600;">'obi.akubue@mail.com'</span>,
+                  via:<span style="color:#996600;">'gmail'</span>,  
+                  notify_interval:<span style="color:#996600;">'6h'</span>
+                <span style="color:#006600; font-weight:bold;">&#125;</span> ,
+                <span style="color:#006600; font-weight:bold;">&#123;</span> monitor:<span style="color:#996600;">'url'</span>,
+                  every:<span style="color:#996600;">'2m'</span>,
+                  test:<span style="color:#996600;">'My Website Test'</span>,
+                  url:<span style="color:#996600;">'http://www.whisperservers.com/blog/'</span>,
+                  contact:<span style="color:#996600;">'obi.akubue@mail.com'</span>,
+                  via:<span style="color:#996600;">'gmail'</span>,  
+                  notify_interval:<span style="color:#996600;">'6h'</span>
+                <span style="color:#006600; font-weight:bold;">&#125;</span>
+&nbsp;
+   <span style="color:#6666ff; font-weight:bold;">Ragios::Monitor</span>.<span style="color:#9900CC;">start</span> monitoring
+&nbsp;
+   <span style="color:#008000; font-style:italic;">#trap Ctrl-C to exit gracefully</span>
+   <span style="color:#CC0066; font-weight:bold;">puts</span> <span style="color:#996600;">&quot;PRESS CTRL-C to QUIT&quot;</span>
+    <span style="color:#CC0066; font-weight:bold;">loop</span> <span style="color:#9966CC; font-weight:bold;">do</span>
+     <span style="color:#CC0066; font-weight:bold;">trap</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#996600;">&quot;INT&quot;</span><span style="color:#006600; font-weight:bold;">&#41;</span> <span style="color:#006600; font-weight:bold;">&#123;</span> <span style="color:#CC0066; font-weight:bold;">puts</span> <span style="color:#996600;">&quot;<span style="color:#000099;">\n</span>Exiting&quot;</span>; <span style="color:#CC0066; font-weight:bold;">exit</span>; <span style="color:#006600; font-weight:bold;">&#125;</span>
+    <span style="color:#CC0066; font-weight:bold;">sleep</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#006666;">3</span><span style="color:#006600; font-weight:bold;">&#41;</span>
+   <span style="color:#9966CC; font-weight:bold;">end</span></pre></div></div>
+
+<p>Since main.rb is pure ruby code we can run it directly, from the Ragios/ directory :</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"> <span style="color: #007800;">$ruby</span> main.rb</pre></div></div>
+
+<p>This will run the ragios system on our terminal as a top program. This can be useful for debugging purposes, to test our configuration script for errors.</p>
+<p>Output from running the above main.rb script will look like this :</p>
+<p><code><br />
+Welcome to Ragios<br />
+Initializing<br />
+3 Monitors detected</p>
+<p>test 1. Http connection to my blog<br />
+Scheduled to run every 2m<br />
+Running First Test...<br />
+ [PASSED] Created on: February 06, 2011 20:18<br />
+HTTP Connection to obi-akubue.org = PASSED</p>
+<p>test 2. My Website Test<br />
+Scheduled to run every 2m<br />
+Running First Test...<br />
+ [PASSED] Created on: February 06, 2011 20:18<br />
+HTTP Request to http://www.whisperservers.com/blog/ = 200</p>
+<p>PRESS CTRL-C to QUIT<br />
+</code><br />
+We can also run Ragios as a daemon by running the ragiosd ruby script also in the Ragios/ directory.</p>
+<p><strong>Starting the Ragios System</strong></p>
+<p>Ragios runs as a daemon in unix/linux systems.</p>
+<p>To Start Ragios as a daemon from the terminal :</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"> <span style="color: #007800;">$ruby</span> ragiosd start</pre></div></div>
+
+<p>Stop the daemon :</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"> <span style="color: #007800;">$ruby</span> ragiosd stop</pre></div></div>
+
+<p>Restart the daemon :</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"> <span style="color: #007800;">$ruby</span> ragiosd restart</pre></div></div>
+
+<p>Check Status of the daemon :</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"> <span style="color: #007800;">$ruby</span> ragiosd status</pre></div></div>
+
+<p>To run Ragios as a top program, useful for testing purposes :</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"> <span style="color: #007800;">$ruby</span> ragiosd run</pre></div></div>
+
+<p>The ragiosd script simply demonizes the Ragios/main.rb script and runs it as a daemon. The logs and output of the daemon is saved in the Ragios/log directory as ragios.log and ragios.output respectively.</p>
+<p>Run Ragios as ‘sudo’ when you need it to restart processes i.e.</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"> <span style="color: #c20cb9; font-weight: bold;">sudo</span> ruby ragiosd start</pre></div></div>
+
+									</div><!-- .entry-content -->
+
+				
+			</div><!-- .hentry -->
+
+			
+			
+			
+		
+		
+	
+	</div><!-- .content .hfeed -->
+
+		
+	<div id="primary" class="sidebar aside">
+
+		
+		<div id="hybrid-nav-menu-3" class="widget nav-menu widget-nav-menu"><div class="widget-wrap widget-inside"><h3 class="widget-title">Ragios</h3><div class="menu-ragios-container"><ul id="menu-ragios" class="nav-menu"><li id="menu-item-28" class="menu-item menu-item-type-post_type menu-item-object-page current-page-ancestor current-menu-ancestor current-menu-parent current-page-parent current_page_parent current_page_ancestor menu-item-28"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/">Ragios (Saint Ruby)</a><ul class="sub-menu"><li id="menu-item-34" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/installation/">Installation</a></li><li id="menu-item-30" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-6 current_page_item menu-item-30"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/using-ragios/">Using Ragios</a></li><li id="menu-item-29" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/notifications/">Notifications</a></li><li id="menu-item-33" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/status-reports/">Status Reports</a></li><li id="menu-item-31" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/adding-failure-recovery-code-to-monitors/">Failure Recovery</a></li></ul></li><li id="menu-item-32" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-plugin-system/">Ragios Plugin System</a></li><li id="menu-item-102" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-102"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-server/">Ragios Server</a><ul class="sub-menu"><li id="menu-item-124" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-124"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/server-setup/">Server Setup</a></li><li id="menu-item-111" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-111"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/usage/">Using Ragios Server</a></li><li id="menu-item-141" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-141"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-rest-api/">REST API</a><ul class="sub-menu"><li id="menu-item-239" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-239"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/api-authentication/">API Authentication</a></li><li id="menu-item-183" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-183"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/monitors-api/">Monitors</a></li><li id="menu-item-182" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-182"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/status-updates-api/">Status Updates</a></li></ul></li></ul></li><li id="menu-item-90" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-90"><a href="https://github.com/obi-a/Ragios">Source Code</a></li></ul></div></div></div>
+		
+	</div><!-- #primary .aside -->
+
+
+	</div><!-- #container -->
+
+	<div id="footer-container">
+
+		
+		<div id="footer">
+
+			<div class="footer-insert"><p class="copyright">Copyright &#169; 2013 <a href="http://obi-akubue.org">obi-akubue.org</a>.</p>
+
+</div>
+		</div><!-- #footer -->
+
+		
+	</div><!-- #footer-container -->
+
+</div><!-- #body-container -->
+
+<script type='text/javascript' src='http://www.whisperservers.com/ragios/wp-content/themes/hybrid/library/js/drop-downs.js?ver=1.4'></script>
+
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20190925-5']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+  })();
+</script>
+
+<a style='color:transparent;position:absolute;left:-99999px;z-index:-99999' href='http://www.wpdownloadmanager.com/' title='Premium Wordpress Plugin download manager'>Premium Wordpress Plugin</a>
+    
+</body>
+</html>
+<!-- Dynamic page generated in 0.681 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2013-08-12 00:18:11 -->
+
+<!-- super cache -->

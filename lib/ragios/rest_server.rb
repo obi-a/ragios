@@ -3,7 +3,7 @@
 #dir = Pathname(__FILE__).dirname.expand_path
 #require dir + 'lib/ragios'
 #require dir + 'config'
-require 'sinatra' 
+require 'sinatra/base'
 require 'yajl'
 
 #using config.yml with thin instead
@@ -14,15 +14,45 @@ require 'yajl'
     
 # end
 
+
 #TODO set Content-Type and other header attributes for each request
 #TODO add sinatra last_modified reduce computation and save bandwidth
+
+class App < Sinatra::Base
+
+register do
+  def check (name)
+    condition do
+      unless send(name) == true
+        error 401, Yajl::Encoder.encode({ error: "You are not authorized to access this resource"})
+      end
+    end
+  end
+end
+
+helpers do
+  def valid_token?
+    Ragios::Admin.valid_token?(request.cookies["AuthSession"]) 
+  end
+end
+
 get '/' do
   content_type('application/json')
   Yajl::Encoder.encode({ "Ragios Server" => "welcome"})
 end
 
+post '/session*' do
+  if Ragios::Admin.authenticate?(params[:username],params[:password])
+    content_type('application/json')   
+    Yajl::Encoder.encode({ AuthSession: Ragios::Admin.session })
+  else
+   status 401
+   Yajl::Encoder.encode({ error: "You are not authorized to access this resource"})
+  end 
+end
+
 #adds monitors to the system and starts monitoring them
-post '/monitors*' do
+post '/monitors*', :check => :valid_token? do
  begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
   Ragios::Monitor.start monitors,server=TRUE
@@ -35,7 +65,7 @@ post '/monitors*' do
  end
 end
 
-get '/monitors/:key/:value*' do
+get '/monitors/:key/:value*', :check => :valid_token? do
     key = params[:key].to_sym
     value = params[:value]
     monitors = Ragios::Server.find_monitors(key => value)
@@ -49,7 +79,7 @@ get '/monitors/:key/:value*' do
     end
 end
 
-delete '/monitors/:id*' do
+delete '/monitors/:id*', :check => :valid_token? do
    id = params[:id]
    hash = Ragios::Server.delete_monitor(id)
    content_type('application/json')
@@ -64,8 +94,25 @@ delete '/monitors/:id*' do
   end
 end
 
+#edit an already existing monitor
+put  '/monitors/:id*', :check => :valid_token? do
+  begin
+    pass unless request.media_type == 'application/json'
+    data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
+    id = params[:id]
+    Ragios::Server.update_monitor(id,data)
+    content_type('application/json')
+    Yajl::Encoder.encode({ "ok" => "true"})
+  rescue 
+  content_type('application/json')
+  status 500
+  body  Yajl::Encoder.encode({error: "something went wrong"})
+ end
+end
+
 #stop a running monitor
-put '/monitors/:id/stop*' do
+put '/monitors/:id*', :check => :valid_token? do
+   pass unless params["state"] == "stopped"
    id = params[:id]
    hash = Ragios::Server.stop_monitor(id)
    content_type('application/json')
@@ -81,7 +128,8 @@ put '/monitors/:id/stop*' do
 end
 
 #restart a running monitor
-put '/monitors/:id/start*' do
+put '/monitors/:id*', :check => :valid_token? do
+  pass unless params["state"] == "active"
   begin 
    id = params[:id]
     m = Ragios::Server.restart_monitor(id)
@@ -93,7 +141,7 @@ put '/monitors/:id/start*' do
   rescue => e
    if e.to_s == "monitor not found"
     status 404
-    body  Yajl::Encoder.encode({error: e.to_s}) 
+    body  Yajl::Encoder.encode({error: 'not_found', check: 'monitor_id'}) 
    else
     status 500
     body  Yajl::Encoder.encode({error: e.to_s})
@@ -101,22 +149,7 @@ put '/monitors/:id/start*' do
   end
 end
 
-#edit an already existing monitor
-put  '/monitors/:id*' do
-  begin
-    data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
-    id = params[:id]
-    Ragios::Server.update_monitor(id,data)
-    content_type('application/json')
-    Yajl::Encoder.encode({ "ok" => "true"})
-  rescue 
-  content_type('application/json')
-  status 500
-  body  Yajl::Encoder.encode({error: "something went wrong"})
- end
-end
-
-get '/scheduler/monitors/:id*' do
+get '/scheduler/monitors/:id*', :check => :valid_token? do
   begin
      id = params[:id]
      sch = Ragios::Server.get_monitors_frm_scheduler(id)
@@ -129,7 +162,7 @@ get '/scheduler/monitors/:id*' do
   end
 end
 
-get '/scheduler/monitors*' do
+get '/scheduler/monitors*', :check => :valid_token? do
   begin
      sch = Ragios::Server.get_monitors_frm_scheduler
      content_type('application/json')
@@ -141,7 +174,7 @@ get '/scheduler/monitors*' do
   end
 end
 
-get '/monitors/:id*' do
+get '/monitors/:id*', :check => :valid_token? do
   begin
    id = params[:id]
    monitor = Ragios::Server.get_monitor(id)
@@ -158,7 +191,7 @@ get '/monitors/:id*' do
  end 
 end
 
-get '/monitors*' do
+get '/monitors*', :check => :valid_token? do
   monitors =  Ragios::Server.get_all_monitors
   content_type('application/json')
   m = Yajl::Encoder.encode(monitors)
@@ -173,7 +206,7 @@ end
 
 
 #status updates
-get '/status_updates/:key/:value*' do
+get '/status_updates/:key/:value*', :check => :valid_token? do
  key = params[:key].to_sym
  value = params[:value]
  monitors = Ragios::Server.find_status_update(key => value)
@@ -188,7 +221,7 @@ get '/status_updates/:key/:value*' do
 end
 
 
-post '/status_updates*' do
+post '/status_updates*', :check => :valid_token? do
   begin
    config = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
    Ragios::Server.start_status_update(config)
@@ -202,75 +235,10 @@ post '/status_updates*' do
 
 end
 
-#restart a status update
-put '/status_updates/:tag/start*' do
-   tag = params[:tag]
-   content_type('application/json')
-   update = Ragios::Server.restart_status_updates(tag)
-   if update == nil 
-      status 404
-      Yajl::Encoder.encode({ "error" => "no stopped status update found for named tag"})
-   else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
-     status 200
-     Yajl::Encoder.encode({ok:'true'})
-  end
-end
-
-#stop a status update
-put '/status_updates/:tag/stop*' do
-   tag = params[:tag]
-   content_type('application/json')
-   update = Ragios::Server.stop_status_update(tag)
-   if update == []
-      status 404
-      Yajl::Encoder.encode({ "error" => "not found"})
-   else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
-     status 200
-     Yajl::Encoder.encode({ok:'true'})
-   end
-end
-
-get '/scheduler/status_updates/:tag*' do
-  begin
-     tag = params[:tag]
-     sch = Ragios::Server.get_status_update_frm_scheduler(tag)
-     content_type('application/json')
-     sch.inspect
-  rescue CouchdbException => e
-     content_type('application/json')
-     status 500
-     body  Yajl::Encoder.encode({error: "something went wrong"})
-  end
-end
-
-get '/scheduler/status_updates*' do
-  begin
-     sch = Ragios::Server.get_status_update_frm_scheduler
-     content_type('application/json')
-     sch.inspect
-  rescue CouchdbException => e
-     content_type('application/json')
-     status 500
-     body  Yajl::Encoder.encode({error: "something went wrong"})
-  end
-end
-
-#delete status update by tag
-delete '/status_updates/:tag*' do
-   tag = params[:tag]
-   content_type('application/json')
-   update = Ragios::Server.delete_status_update(tag)
-   if update == []
-      status 404
-      Yajl::Encoder.encode({ "error" => "not found"})
-   else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
-     Yajl::Encoder.encode({ok:'true'})
-   end
-end
-
 #edit status update
-put '/status_updates/:id*' do
+put '/status_updates/:id*', :check => :valid_token? do
  begin
+   pass unless request.media_type == 'application/json'
    data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
    id = params[:id]
    content_type('application/json')
@@ -292,7 +260,75 @@ put '/status_updates/:id*' do
   end
 end
 
-get '/status_updates/:id*' do
+#restart a status update
+put '/status_updates/:tag*', :check => :valid_token? do
+   pass unless params["state"] == "active"
+   tag = params[:tag]
+   content_type('application/json')
+   update = Ragios::Server.restart_status_updates(tag)
+   if update == nil 
+      status 404
+      Yajl::Encoder.encode({ "error" => "no stopped status update found for named tag"})
+   else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
+     status 200
+     Yajl::Encoder.encode({ok:'true'})
+  end
+end
+
+#stop a status update
+put '/status_updates/:tag*', :check => :valid_token? do
+   pass unless params["state"] == "stopped"
+   tag = params[:tag]
+   content_type('application/json')
+   update = Ragios::Server.stop_status_update(tag)
+   if update == []
+      status 404
+      Yajl::Encoder.encode({ "error" => "not found"})
+   else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
+     status 200
+     Yajl::Encoder.encode({ok:'true'})
+   end
+end
+
+get '/scheduler/status_updates/:tag*', :check => :valid_token? do
+  begin
+     tag = params[:tag]
+     sch = Ragios::Server.get_status_update_frm_scheduler(tag)
+     content_type('application/json')
+     sch.inspect
+  rescue CouchdbException => e
+     content_type('application/json')
+     status 500
+     body  Yajl::Encoder.encode({error: "something went wrong"})
+  end
+end
+
+get '/scheduler/status_updates*', :check => :valid_token? do
+  begin
+     sch = Ragios::Server.get_status_update_frm_scheduler
+     content_type('application/json')
+     sch.inspect
+  rescue CouchdbException => e
+     content_type('application/json')
+     status 500
+     body  Yajl::Encoder.encode({error: "something went wrong"})
+  end
+end
+
+#delete status update by tag
+delete '/status_updates/:tag*', :check => :valid_token? do
+   tag = params[:tag]
+   content_type('application/json')
+   update = Ragios::Server.delete_status_update(tag)
+   if update == []
+      status 404
+      Yajl::Encoder.encode({ "error" => "not found"})
+   else update[0].include?("_id") && update[0].include?("_rev") && update[0].include?(tag)
+     Yajl::Encoder.encode({ok:'true'})
+   end
+end
+
+get '/status_updates/:id*', :check => :valid_token? do
   begin
    id = params[:id]
    status_update = Ragios::Server.get_status_update(id)
@@ -302,14 +338,14 @@ get '/status_updates/:id*' do
    if e.to_s == 'CouchDB: Error - not_found. Reason - missing'
      content_type('application/json')
      status 404
-     Yajl::Encoder.encode({ "error" => e.error, check: 'monitor_id'})
+     Yajl::Encoder.encode({ "error" => e.error, check: 'status update id'})
    else
     raise
    end
  end 
 end
 
-get '/status_updates*' do
+get '/status_updates*', :check => :valid_token? do
   updates =  Ragios::Server.get_all_status_updates
   content_type('application/json')
   u = Yajl::Encoder.encode(updates)
@@ -345,4 +381,4 @@ delete '/*' do
   Yajl::Encoder.encode({ error: "bad_request"})
 end
 
-
+end

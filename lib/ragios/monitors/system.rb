@@ -54,6 +54,9 @@ class System
     #time/date this monitor was last tested by the scheduler
     attr_accessor :time_of_last_test
 
+    #timestamp of last test
+    attr_accessor :timestamp
+
     attr_accessor :status
   
    def initialize 

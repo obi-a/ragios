@@ -30,6 +30,8 @@ Ragios could be used to monitor any type of system including servers, workstatio
    + [Using Ragios Server](http://www.whisperservers.com/ragios/usage/)
    
    + [REST API](http://www.whisperservers.com/ragios/ragios-rest-api/)
+
+     * [API Authentication](http://www.whisperservers.com/ragios/api-authentication/) 
    
      * [Monitors](http://www.whisperservers.com/ragios/monitors-api/) 
      

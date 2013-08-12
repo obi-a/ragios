@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Status Reports</title>
+
+<link rel="stylesheet" href="http://www.whisperservers.com/ragios/wp-content/themes/hybrid/style.css" type="text/css" media="all" />
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="http://www.whisperservers.com/ragios/xmlrpc.php" />
+
+<meta name="generator" content="WordPress 3.2.1 - really-static 0.5" />
+<meta name="template" content="Hybrid 0.9" />
+<meta name="robots" content="index,follow" />
+<meta name="author" content="admin" />
+<meta name="copyright" content="Copyright (c) August 2011" />
+<meta name="revised" content="Thursday, August 11th, 2011, 4:29 am" />
+<link rel="alternate" type="application/rss+xml" title="Ragios (St. Ruby) &raquo; Feed" href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/feed/" />
+
+<script type='text/javascript' src='http://www.whisperservers.com/ragios/wp-includes/js/l10n.js?ver=20101110'></script>
+<script type='text/javascript' src='http://www.whisperservers.com/ragios/wp-includes/js/jquery/jquery.js?ver=1.6.1'></script>
+<link rel='index' title='Ragios (St. Ruby)' href='http://www.whisperservers.com/ragios/' />
+<link rel='up' title='Ragios (Saint Ruby)' href='http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/' />
+<link rel='prev' title='Notifications' href='http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/notifications/' />
+<link rel='next' title='Failure Recovery' href='http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/adding-failure-recovery-code-to-monitors/' />
+<link rel='canonical' href='http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/status-reports/' />
+
+<link rel="stylesheet" href="http://www.whisperservers.com/ragios/wp-content/plugins/wp-syntax/wp-syntax.css" type="text/css" media="screen" />
+
+</head>
+
+<body class="wordpress ltr en_US y2013 m08 d12 h00 monday logged-out singular singular-page singular-page-10 page-template-default page-10 primary-active secondary-inactive subsidiary-inactive">
+
+
+<div id="body-container">
+
+	
+	<div id="header-container">
+
+		<div id="header">
+
+			<div id="site-title"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/" title="Ragios (St. Ruby)" rel="home"><span>Ragios (St. Ruby)</span></a></div>
+			<div id="site-description"><span>System &amp; Network Monitoring Tool</span></div>
+
+		</div><!-- #header -->
+
+	</div><!-- #header-container -->
+
+	
+	<div id="container">
+
+		
+	<div id="content" class="hfeed content">
+
+		<div class="breadcrumb breadcrumbs"><div class="breadcrumb-trail"><span class="trail-before"><span class="breadcrumb-title">Browse:</span></span> <a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/" title="Ragios (St. Ruby)" rel="home" class="trail-begin">Home</a> <span class="sep">/</span> <a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/" title="Ragios (Saint Ruby)">Ragios (Saint Ruby)</a> <span class="sep">/</span> <span class="trail-end">Status Reports</span></div></div>
+		
+			<div id="post-10" class="hentry page publish post-1 odd author-admin">
+
+				<h1 class="page-title entry-title"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/status-reports/" title="Status Reports" rel="bookmark">Status Reports</a></h1>
+				<div class="entry-content">
+					<p>Ragios can be configured to regularly send you a Status Report on all the active monitors running in the system. This Status Report includes:</p>
+<ul>
+<li>The number of monitors running on the system</li>
+<li>How long the monitors have been running</li>
+<li>Also includes a summary of each active monitor</li>
+<li>how many times the monitor has been tested</li>
+<li>how many tests it passed</li>
+<li>how many tests failed</li>
+<li>results of the last test</li>
+<li>date/time the last test was performed etc.</li>
+</ul>
+<p><strong>To configure Ragios to send Status Reports</strong></p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;"><span style="color:#6666ff; font-weight:bold;">Ragios::Monitor</span>.<span style="color:#9900CC;">update_status</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#006600; font-weight:bold;">&#123;</span> every:<span style="color:#996600;">'1d'</span>, 
+                                contact:<span style="color:#996600;">'admin@mail.com'</span>, 
+                                via:<span style="color:#996600;">'gmail'</span><span style="color:#006600; font-weight:bold;">&#125;</span><span style="color:#006600; font-weight:bold;">&#41;</span></pre></div></div>
+
+<p>The above sample means that Ragios will send a Status Report every day ‘1d’ to the email address ‘admin@mail.com’ via gmail. Ragios can send Status Reports every (n) minutes, hours, days, weeks or combined.</p>
+<p>Example</p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;">every:<span style="color:#996600;">'40m'</span> <span style="color:#008000; font-style:italic;">#every 40 minutes</span>
+every:<span style="color:#996600;">'2d'</span> <span style="color:#008000; font-style:italic;">#every 2 days</span>
+every:<span style="color:#996600;">'6h'</span> <span style="color:#008000; font-style:italic;">#every 6 hours</span>
+every:<span style="color:#996600;">'1w'</span> <span style="color:#008000; font-style:italic;">#every week</span>
+every:<span style="color:#996600;">'4w'</span> <span style="color:#008000; font-style:italic;">#every 4 weeks</span>
+every:<span style="color:#996600;">'1w2d'</span> <span style="color:#008000; font-style:italic;">#every week and 2 days i.e every 9 days</span></pre></div></div>
+
+<p>The Status Report can be sent via gmail or sendmail,</p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;">via:gmail <span style="color:#008000; font-style:italic;"># sends the report via gmail</span>
+via:email <span style="color:#008000; font-style:italic;"># sends the report via sendmail installed on the system</span></pre></div></div>
+
+<p>Example with 2 monitors:</p>
+
+<div class="wp_syntax"><div class="code"><pre class="ruby" style="font-family:monospace;">monitoring = <span style="color:#006600; font-weight:bold;">&#123;</span>monitor:<span style="color:#996600;">'url'</span>,
+               every:<span style="color:#996600;">'5m'</span>,
+               test:<span style="color:#996600;">'video datafeed test'</span>,
+               url:<span style="color:#996600;">'http://www.datafeed.com/resources/videos/1'</span>,
+               contact:<span style="color:#996600;">'admin@mail.com'</span>,
+               via:<span style="color:#996600;">'gmail'</span>,
+               notify_interval:<span style="color:#996600;">'6h'</span>
+              <span style="color:#006600; font-weight:bold;">&#125;</span>,
+            <span style="color:#006600; font-weight:bold;">&#123;</span> monitor:<span style="color:#996600;">'http'</span>,
+              every:<span style="color:#996600;">'30s'</span>,
+              test:<span style="color:#996600;">'Http connection to client A website'</span>,
+              domain:<span style="color:#996600;">'www.clientA.com'</span>,
+              contact:<span style="color:#996600;">'admin@mysite.com'</span>,
+              via:<span style="color:#996600;">'twitter'</span>,
+              notify_interval:<span style="color:#996600;">'6h'</span>
+             <span style="color:#006600; font-weight:bold;">&#125;</span>
+&nbsp;
+       <span style="color:#6666ff; font-weight:bold;">Ragios::Monitor</span>.<span style="color:#9900CC;">start</span> monitoring
+&nbsp;
+       <span style="color:#6666ff; font-weight:bold;">Ragios::Monitor</span>.<span style="color:#9900CC;">update_status</span><span style="color:#006600; font-weight:bold;">&#40;</span><span style="color:#006600; font-weight:bold;">&#123;</span> every:<span style="color:#996600;">'5d'</span>, 
+                                       contact:‘admin@mail.<span style="color:#9900CC;">com</span>’, 
+                                       via:‘gmail’<span style="color:#006600; font-weight:bold;">&#125;</span><span style="color:#006600; font-weight:bold;">&#41;</span></pre></div></div>
+
+<p>This above example will send a Status Report to the email ‘admin@mail.com’ every 5 days via gmail.</p>
+<p><strong>Editing the Status Report</strong></p>
+<p>The Status report is generated from the ERB Template file Ragios/lib/ragios/messages/status_report.erb. You can edit this template to add or remove attributes of the monitors you want to see in the report. You can also format the layout or text of the report from this template.</p>
+									</div><!-- .entry-content -->
+
+				
+			</div><!-- .hentry -->
+
+			
+			
+			
+		
+		
+	
+	</div><!-- .content .hfeed -->
+
+		
+	<div id="primary" class="sidebar aside">
+
+		
+		<div id="hybrid-nav-menu-3" class="widget nav-menu widget-nav-menu"><div class="widget-wrap widget-inside"><h3 class="widget-title">Ragios</h3><div class="menu-ragios-container"><ul id="menu-ragios" class="nav-menu"><li id="menu-item-28" class="menu-item menu-item-type-post_type menu-item-object-page current-page-ancestor current-menu-ancestor current-menu-parent current-page-parent current_page_parent current_page_ancestor menu-item-28"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/">Ragios (Saint Ruby)</a><ul class="sub-menu"><li id="menu-item-34" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/installation/">Installation</a></li><li id="menu-item-30" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/using-ragios/">Using Ragios</a></li><li id="menu-item-29" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/notifications/">Notifications</a></li><li id="menu-item-33" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-10 current_page_item menu-item-33"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/status-reports/">Status Reports</a></li><li id="menu-item-31" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-saint-ruby/adding-failure-recovery-code-to-monitors/">Failure Recovery</a></li></ul></li><li id="menu-item-32" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-plugin-system/">Ragios Plugin System</a></li><li id="menu-item-102" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-102"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-server/">Ragios Server</a><ul class="sub-menu"><li id="menu-item-124" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-124"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/server-setup/">Server Setup</a></li><li id="menu-item-111" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-111"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/usage/">Using Ragios Server</a></li><li id="menu-item-141" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-141"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/ragios-rest-api/">REST API</a><ul class="sub-menu"><li id="menu-item-239" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-239"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/api-authentication/">API Authentication</a></li><li id="menu-item-183" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-183"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/monitors-api/">Monitors</a></li><li id="menu-item-182" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-182"><a href="http://www.whisperservers.com/ragios/wp-content/plugins/really-static/static/status-updates-api/">Status Updates</a></li></ul></li></ul></li><li id="menu-item-90" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-90"><a href="https://github.com/obi-a/Ragios">Source Code</a></li></ul></div></div></div>
+		
+	</div><!-- #primary .aside -->
+
+
+	</div><!-- #container -->
+
+	<div id="footer-container">
+
+		
+		<div id="footer">
+
+			<div class="footer-insert"><p class="copyright">Copyright &#169; 2013 <a href="http://obi-akubue.org">obi-akubue.org</a>.</p>
+
+</div>
+		</div><!-- #footer -->
+
+		
+	</div><!-- #footer-container -->
+
+</div><!-- #body-container -->
+
+<script type='text/javascript' src='http://www.whisperservers.com/ragios/wp-content/themes/hybrid/library/js/drop-downs.js?ver=1.4'></script>
+
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20190925-5']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+  })();
+</script>
+
+<a style='color:transparent;position:absolute;left:-99999px;z-index:-99999' href='http://www.wpdownloadmanager.com/' title='Premium Wordpress Plugin download manager'>Premium Wordpress Plugin</a>
+    
+</body>
+</html>
+<!-- Dynamic page generated in 0.421 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2013-08-12 00:18:11 -->
+
+<!-- super cache -->
