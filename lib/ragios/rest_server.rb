@@ -65,10 +65,11 @@ post '/monitors*', :check => :valid_token? do
  end
 end
 
-get '/monitors/:key/:value*', :check => :valid_token? do
-    key = params[:key].to_sym
-    value = params[:value]
-    monitors = Ragios::Server.find_monitors(key => value)
+get '/monitors*', :check => :valid_token? do
+    pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
+    key = params.keys[0]
+    value = params[key]
+    monitors = Ragios::Server.find_monitors(key.to_sym => value)
     m = Yajl::Encoder.encode(monitors)
     content_type('application/json')
     if m.to_s == '[]'
@@ -91,7 +92,7 @@ delete '/monitors/:id*', :check => :valid_token? do
    else
     status 500
     body  Yajl::Encoder.encode({error: 'unknown'})
-  end
+   end
 end
 
 #edit an already existing monitor
@@ -142,6 +143,10 @@ put '/monitors/:id*', :check => :valid_token? do
    if e.to_s == "monitor not found"
     status 404
     body  Yajl::Encoder.encode({error: 'not_found', check: 'monitor_id'}) 
+   elsif e.to_s == "monitor is already active. nothing to restart"
+    #idempotent put request
+    status 200
+    Yajl::Encoder.encode({ok: 'true'})
    else
     status 500
     body  Yajl::Encoder.encode({error: e.to_s})
@@ -202,24 +207,6 @@ get '/monitors*', :check => :valid_token? do
     m
   end
 end
-
-
-
-#status updates
-get '/status_updates/:key/:value*', :check => :valid_token? do
- key = params[:key].to_sym
- value = params[:value]
- monitors = Ragios::Server.find_status_update(key => value)
- content_type('application/json')
- m = Yajl::Encoder.encode(monitors) 
- if m.to_s == '[]'
-  status 404
-  Yajl::Encoder.encode({ "error" => "not_found"})
- else 
-   m
- end
-end
-
 
 post '/status_updates*', :check => :valid_token? do
   begin
@@ -343,6 +330,22 @@ get '/status_updates/:id*', :check => :valid_token? do
     raise
    end
  end 
+end
+
+#status updates
+get '/status_updates*', :check => :valid_token? do
+ pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
+ key = params.keys[0]
+ value = params[key]
+ monitors = Ragios::Server.find_status_update(key.to_sym => value)
+ content_type('application/json')
+ m = Yajl::Encoder.encode(monitors) 
+ if m.to_s == '[]'
+  status 404
+  Yajl::Encoder.encode({ "error" => "not_found"})
+ else 
+   m
+ end
 end
 
 get '/status_updates*', :check => :valid_token? do
