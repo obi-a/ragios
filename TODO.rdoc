@@ -1,7 +1,7 @@
 ==TODO
 
 ===Priority
-* add specs for Ragios::Admin
+
 
 ===Nice to have
 * Add a ragios console similar to rails console or irb.
@@ -32,6 +32,7 @@
   GET /monitors
   GET /monitors/:id
 * change GET /monitors/every/1m to GET /monitors?every=1m
+* add specs for Ragios::Admin
 
 *Complete test coverage of the new system
 
