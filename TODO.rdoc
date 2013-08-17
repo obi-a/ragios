@@ -1,10 +1,6 @@
 ==TODO
 
 ===Priority
-* add tests for 
-  GET /monitors
-  GET /monitors/:id
-* change GET /monitors/every/1m to GET /monitors?every=1m
 * add specs for Ragios::Admin
 
 ===Nice to have
@@ -32,6 +28,11 @@
 * Add a web UI admin dashboard for using Ragios Server.
 
 ==DONE
+* add tests for 
+  GET /monitors
+  GET /monitors/:id
+* change GET /monitors/every/1m to GET /monitors?every=1m
+
 *Complete test coverage of the new system
 
 *Create a plugin architecture, so that all monitors (like HTTP, DNS,process monitors) are added as plugins. This will also allow developers to easily write customized plugins. OR easily install plugins written by other developers.
