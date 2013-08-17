@@ -58,7 +58,7 @@ describe "REST interface to Ragios Monitor" do
  end
  
 it "Should find monitors by key" do
-   response = RestClient.get 'http://127.0.0.1:5041/monitors/tag/test/',{:cookies => {:AuthSession => @auth_session}}
+   response = RestClient.get 'http://127.0.0.1:5041/monitors?tag=test',{:cookies => {:AuthSession => @auth_session}}
    response.code.should == 200
    response.should include('"tag":"test"')
    response.should include('"monitor":"url"')
@@ -66,7 +66,7 @@ end
 
 it "should be unable to find value that matches the key" do
   begin
-   response = RestClient.get 'http://127.0.0.1:5041/monitors/tag/unknown/',{:cookies => {:AuthSession => @auth_session}}
+   response = RestClient.get 'http://127.0.0.1:5041/monitors?tag=unknown',{:cookies => {:AuthSession => @auth_session}}
   rescue => e
    e.response.should == '{"error":"not_found"}'
    e.should be_an_instance_of RestClient::ResourceNotFound
@@ -107,13 +107,17 @@ it "should restart a stopped monitor" do
   response.should include("rest_monitor")
 end
 
-it "should not restart a monitor that's already running" do
- begin
+it "should get monitor by id" do 
+  response = RestClient.get 'http://127.0.0.1:5041/monitors/rest_monitor',{:cookies => {:AuthSession => @auth_session}}
+  response.code.should == 200
+  response.should include('"monitor":"url"')
+  response.should include('"_id":"rest_monitor"')
+  response.should include('"every":"1m"')
+end
+
+it "should not give an error on restarting a monitor that's already running - put request is idempotent" do
   response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor',{:state => "active"},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
- rescue => e
-  e.response.should == '{"error":"monitor is already active. nothing to restart"}'
-  e.should be_an_instance_of RestClient::InternalServerError
- end 
+  response.code.should == 200
 end
 
 it "should not restart a monitor that doesn't exist" do
@@ -129,10 +133,16 @@ it "should stop a running monitor and restart it" do
  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor',{:state => "stopped"},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
   response.should include('{"ok":"true"}') 
-  #verify that the monitor is now running in the scheduler
+  #verify that the monitor is not running in the scheduler
   response = RestClient.get 'http://127.0.0.1:5041/scheduler/monitors/rest_monitor',{:cookies => {:AuthSession => @auth_session}}
   response.should_not include("rest_monitor")
   response.should == "[]"
+
+  #put requests are idempotent calling - stopping monitor that is already stopped should not give an error
+  response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor',{:state => "stopped"},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
+  response.code.should == 200
+  response.should include('{"ok":"true"}') 
+
   response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor',{:state => "active"},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
 end
 
@@ -199,6 +209,13 @@ it "should update a stopped monitor and remain stopped" do
   response = RestClient.put 'http://127.0.0.1:5041/monitors/rest_monitor',{:state => "active"},{:content_type => :json, :cookies => {:AuthSession => @auth_session}}
 end
 
+it "should get all monitors" do
+  response = RestClient.get 'http://127.0.0.1:5041/monitors/',{:cookies => {:AuthSession => @auth_session}}
+  response.code.should == 200
+  response.should include('"monitor":"url"')
+  response.should include('"_id":"rest_monitor"')
+end
+
 it "should delete a running monitor" do
   response = RestClient.delete 'http://127.0.0.1:5041/monitors/rest_monitor',{:cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
@@ -210,14 +227,14 @@ end
 
 #status updates 
 it "should return status updates with tagg 'test'" do
-  response = RestClient.get 'http://127.0.0.1:5041/status_updates/tag/test/',{:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.get 'http://127.0.0.1:5041/status_updates?tag=test',{:cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
   response.should include('"tag":"test"')
   response.should include('"_id":"test_config_settings"')
 end
 
 it "should get all status updates" do
-  response = RestClient.get 'http://127.0.0.1:5041/status_updates',{:cookies => {:AuthSession => @auth_session}}
+  response = RestClient.get 'http://127.0.0.1:5041/status_updates/',{:cookies => {:AuthSession => @auth_session}}
   response.code.should == 200
   response.should include('"tag":"test"')
   response.should include('"_id":"test_config_settings"')
@@ -234,7 +251,7 @@ end
 
 it "should be unable to get status update that matches the tag" do
   begin
-   response = RestClient.get 'http://127.0.0.1:5041/status_updates/tag/unknown/',{:cookies => {:AuthSession => @auth_session}}
+   response = RestClient.get 'http://127.0.0.1:5041/status_updates?tag=unknown',{:cookies => {:AuthSession => @auth_session}}
   rescue => e
    e.response.should == '{"error":"not_found"}'
    e.should be_an_instance_of RestClient::ResourceNotFound
