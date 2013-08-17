@@ -8,6 +8,7 @@
 * add specs for Ragios::Admin
 
 ===Nice to have
+* Add a ragios console similar to rails console or irb.
 * When a monitor is deleted, also delete all its activity from the activity log 
 * Document the feature: Grouping monitors by tag
 
