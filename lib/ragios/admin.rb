@@ -17,7 +17,7 @@ module Ragios
     end
   
     def self.authenticate?(username,password)
-      true if (username == @@username) && (password == @@password)
+      (username == @@username) && (password == @@password) ? true : false
     end 
 
     def self.valid_token?(token)
@@ -26,11 +26,7 @@ module Ragios
         doc = {:database => 'ragios_auth_session', :doc_id => token}
         auth = Couchdb.view doc, Ragios::DatabaseAdmin.session
         time_elapsed = (Time.now.to_f - Time.at(auth["timestamp"]).to_f).to_i
-        if (time_elapsed > auth["timeout"])
-          false
-        else
-          true
-        end
+        time_elapsed > auth["timeout"] ? false : true
       rescue CouchdbException
         false
       end
