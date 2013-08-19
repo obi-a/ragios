@@ -1,6 +1,7 @@
 ==TODO
 
 ===Priority
+* Make notifiers plug and play, move notifier specific information out of the generic.monitor and system.monitor class
 * Get Ragios server running on heroku
 * rename server.ru to config.ru - move items to an initializer file
 * move all configuration to environment variables
