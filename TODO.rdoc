@@ -3,6 +3,7 @@
 ===Priority
 * Make notifiers plug and play, move notifier specific information out of the generic.monitor and system.monitor class
 * Get Ragios server running on heroku
+* Switch from thin to unicorn if conditions are appropriate
 * make the ragios server bind address/port to be configurable
 * update plugin testing documentation 
 
