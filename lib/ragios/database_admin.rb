@@ -7,6 +7,8 @@ module Ragios
      @@status_updates_settings = database_config[:databases][:status_updates_settings]
      @@activity_log = database_config[:databases][:activity_log]
      @@auth_session = database_config[:databases][:auth_session]
+     Couchdb.address = database_config[:couchdb][:bind_address]
+     Couchdb.port = database_config[:couchdb][:port]
     end
 
     def self.monitors
