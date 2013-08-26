@@ -22,12 +22,6 @@ amazon_account = { access_key: ENV['AMAZON_ACCESS_KEY'],
 
 Ragios::SESNotifier.config(amazon_account)
 
-
-database_admin = {username: ENV['COUCHDB_ADMIN_USERNAME'],
-                 password: ENV['COUCHDB_ADMIN_PASSWORD']} 
-
-Ragios::DatabaseAdmin.config(database_admin)
-
 #log activity of monitors, set true to log activity
 log_activity = true
 Ragios::Logger.config(log_activity)
@@ -37,6 +31,22 @@ ragios_admin_user = {username: ENV['RAGIOS_ADMIN_USERNAME'],
                      auth_timeout: ENV['RAGIOS_ADMIN_AUTH_TIMEOUT'].to_i} 
 
 Ragios::Admin.config(ragios_admin_user)
+
+#database configuration
+database_admin = {login:     {username: ENV['COUCHDB_ADMIN_USERNAME'],
+                              password: ENV['COUCHDB_ADMIN_PASSWORD'] },
+                  databases: { monitors: 'ragios_monitors',
+                               status_updates_settings: 'status_update_settings',
+                               activity_log: 'ragios_activity_log',
+                               auth_session: 'ragios_auth_session'}
+                 } 
+
+Ragios::DatabaseAdmin.config(database_admin)
+
+
+
+
+
 
 
 

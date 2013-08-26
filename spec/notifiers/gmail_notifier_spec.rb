@@ -1,5 +1,4 @@
 require 'spec_base.rb'
-require 'notifier_config.rb'
 
 describe Ragios::GmailNotifier do
     it "should send a notification message via gmail" do
@@ -53,7 +52,7 @@ describe Ragios::Server do
                    state: "active"
                   }
 
-      doc = {:database => 'monitors', :doc_id => 'monitor_monitor2', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'monitor_monitor2', :data => data}
      begin
       Couchdb.create_doc doc
      rescue CouchdbException => e
@@ -78,7 +77,7 @@ describe Ragios::Server do
                    state: "active"
                   }
 
-      doc = {:database => 'monitors', :doc_id => 'monitor_monitor3', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'monitor_monitor3', :data => data}
      begin
       Couchdb.create_doc doc
      rescue CouchdbException => e

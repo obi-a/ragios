@@ -7,7 +7,7 @@ Ragios::Server.init
 describe "monitors" do
  it "should return security object of monitors database" do
     database_admin = Ragios::DatabaseAdmin.admin
-    hash = Couchdb.get_security("monitors",Ragios::DatabaseAdmin.session)
+    hash = Couchdb.get_security(Ragios::DatabaseAdmin.monitors,Ragios::DatabaseAdmin.session)
     admins = hash["admins"]
     readers = hash["readers"]
     admins["names"].should == [database_admin[:username]]
@@ -20,7 +20,7 @@ end
 describe "status updates" do
  it "should return security object of status updates database" do
     database_admin = Ragios::DatabaseAdmin.admin
-    hash = Couchdb.get_security("monitors",Ragios::DatabaseAdmin.session)
+    hash = Couchdb.get_security(Ragios::DatabaseAdmin.monitors,Ragios::DatabaseAdmin.session)
     admins = hash["admins"]
     readers = hash["readers"]
     admins["names"].should == [database_admin[:username]]

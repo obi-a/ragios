@@ -99,7 +99,7 @@ describe Ragios::Monitor do
                    state: "stopped"
                   }
 
-      doc = {:database => 'monitors', :doc_id => 'monitor_monitor', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'monitor_monitor', :data => data}
      
      begin
       Couchdb.create_doc doc,Ragios::DatabaseAdmin.session

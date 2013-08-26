@@ -92,7 +92,7 @@ it "should restart a stopped monitor" do
                    state: "stopped"
                   }
 
-      doc = {:database => 'monitors', :doc_id => 'rest_monitor', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'rest_monitor', :data => data}
      begin
       Couchdb.create_doc doc,Ragios::DatabaseAdmin.session
      rescue CouchdbException => e
@@ -169,7 +169,7 @@ it "should update a running monitor" do
   response.code.should == 200
   response.should include('{"ok":"true"}')
 
-  doc = {:database => 'monitors', :doc_id => 'rest_monitor'}
+  doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'rest_monitor'}
   hash = Couchdb.view doc,Ragios::DatabaseAdmin.session
   hash["_id"].should == 'rest_monitor'
   hash["contact"].should == 'admin@aol.com'
@@ -197,7 +197,7 @@ it "should update a stopped monitor and remain stopped" do
   response.code.should == 200
   response.should include('{"ok":"true"}')
 
-  doc = {:database => 'monitors', :doc_id => 'rest_monitor'}
+  doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'rest_monitor'}
   hash = Couchdb.view doc,Ragios::DatabaseAdmin.session
   hash["_id"].should == 'rest_monitor'
   hash["contact"].should == 'bill@java.com'
@@ -300,7 +300,7 @@ it "should restart a stopped status update" do
                   :tag => 'this_status_update', 
                   :state => 'stopped'
                   }
-       doc = {:database => 'status_update_settings', :doc_id => 'just_nother_status_update', :data => config}
+       doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => 'just_nother_status_update', :data => config}
      begin
       Couchdb.create_doc doc,Ragios::DatabaseAdmin.session
      rescue CouchdbException => e
@@ -356,7 +356,7 @@ it "should update a running status update" do
   response.code.should == 200
   response.should include('{"ok":"true"}')
 
-  doc = {:database => 'status_update_settings', :doc_id => 'just_nother_status_update'}
+  doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => 'just_nother_status_update'}
   hash = Couchdb.view doc,Ragios::DatabaseAdmin.session
   hash["_id"].should == 'just_nother_status_update'
   hash["contact"].should == 'james@yarn.com'
@@ -385,7 +385,7 @@ it "should update a stopped status update and remain stopped" do
   response.code.should == 200
   response.should include('{"ok":"true"}')
 
-  doc = {:database => 'status_update_settings', :doc_id => 'just_nother_status_update'}
+  doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => 'just_nother_status_update'}
   hash = Couchdb.view doc,Ragios::DatabaseAdmin.session
   hash["_id"].should == 'just_nother_status_update'
   hash["contact"].should == 'skyla@ateam.com'

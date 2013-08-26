@@ -108,7 +108,7 @@ class Monitor
          raise "monitor is already active. nothing to restart"
        end
       data = {:state => "active"}
-      doc = { :database => 'monitors', :doc_id => id, :data => data}   
+      doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
       Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
     end
     

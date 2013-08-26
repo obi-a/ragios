@@ -2,7 +2,7 @@
   require 'rubygems'
   require "bundler/setup"
   require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios'))
-  require  Pathname(__FILE__).dirname.expand_path + 'config' 
+  require File.expand_path(File.join(File.dirname(__FILE__), '..', 'config')) 
 
   require 'yajl'
 
@@ -66,7 +66,7 @@
                    state: "stopped"
                   }
 
-      doc = {:database => 'monitors', :doc_id => 'rest_monitor', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'rest_monitor', :data => data}
      begin
      # Couchdb.create_doc doc
      rescue CouchdbException => e

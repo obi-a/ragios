@@ -1,5 +1,4 @@
 require 'spec_base.rb'
-require 'notifier_config.rb'
 
 describe Ragios::TwitterNotifier do
  

@@ -1,12 +1,30 @@
 module Ragios
   class DatabaseAdmin
-    attr_accessor :username
-    attr_accessor :password
-    def self.config(database_admin)
-     @@username = database_admin[:username]
-     @@password = database_admin[:password]
+    def self.config(database_config)
+     @@username = database_config[:login][:username]
+     @@password = database_config[:login][:password]
+     @@monitors = database_config[:databases][:monitors]
+     @@status_updates_settings = database_config[:databases][:status_updates_settings]
+     @@activity_log = database_config[:databases][:activity_log]
+     @@auth_session = database_config[:databases][:auth_session]
     end
 
+    def self.monitors
+      @@monitors
+    end
+   
+    def self.status_updates_settings
+      @@status_updates_settings
+    end
+
+    def self.activity_log
+      @@activity_log
+    end
+
+    def self.auth_session
+      @@auth_session
+    end
+   
     def self.admin
        database_admin = {username: @@username,
                  password: @@password} 

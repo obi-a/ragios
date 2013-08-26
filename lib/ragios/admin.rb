@@ -23,7 +23,7 @@ module Ragios
     def self.valid_token?(token)
       begin
         return false if token.nil?
-        doc = {:database => 'ragios_auth_session', :doc_id => token}
+        doc = {:database => Ragios::DatabaseAdmin.auth_session, :doc_id => token}
         auth = Couchdb.view doc, Ragios::DatabaseAdmin.session
         time_elapsed = (Time.now.to_f - Time.at(auth["timestamp"]).to_f).to_i
         time_elapsed > auth["timeout"] ? false : true
@@ -35,7 +35,7 @@ module Ragios
     def self.session
       auth_session_token = UUIDTools::UUID.random_create.to_s
       data = {:timeout => @@auth_timeout, :timestamp => Time.now.to_i}
-      doc = {:database => 'ragios_auth_session', :doc_id => auth_session_token, :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.auth_session, :doc_id => auth_session_token, :data => data}
       Couchdb.create_doc doc, Ragios::DatabaseAdmin.session
       auth_session_token
     end

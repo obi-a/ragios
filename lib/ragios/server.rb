@@ -25,12 +25,12 @@ module Ragios
     end
 
     def self.find_monitors(options) 
-      Couchdb.find_by({:database => 'monitors', options.keys[0] => options.values[0]},Ragios::DatabaseAdmin.session)  
+      Couchdb.find_by({:database => Ragios::DatabaseAdmin.monitors, options.keys[0] => options.values[0]},Ragios::DatabaseAdmin.session)  
     end
 
 
     def self.find_status_update(options)
-      Couchdb.find_by({:database => 'status_update_settings', options.keys[0] => options.values[0]},Ragios::DatabaseAdmin.session)  
+      Couchdb.find_by({:database => Ragios::DatabaseAdmin.status_updates_settings, options.keys[0] => options.values[0]},Ragios::DatabaseAdmin.session)  
     end
 
     def self.status_report(tag = nil)
@@ -57,12 +57,12 @@ module Ragios
    def self.delete_monitor(id)
     begin 
      auth_session = Ragios::DatabaseAdmin.session
-     monitor = Couchdb.view({:database => 'monitors', :doc_id => id},auth_session)    
+     monitor = Couchdb.view({:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)    
      if(monitor["state"] == "active")
       stop_monitor(id)
      end
      
-     Couchdb.delete_doc({:database => 'monitors', :doc_id => id},auth_session)
+     Couchdb.delete_doc({:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)
 
     rescue CouchdbException => e
        e.error
@@ -71,10 +71,10 @@ module Ragios
 
    def self.update_monitor(id, options)
       auth_session = Ragios::DatabaseAdmin.session
-      doc = { :database => 'monitors', :doc_id => id, :data => options}   
+      doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => options}   
       Couchdb.update_doc doc,auth_session
 
-     monitor = Couchdb.view( {:database => 'monitors', :doc_id => id},auth_session)
+     monitor = Couchdb.view( {:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)
      
     if(monitor["state"] == "active")
       stop_monitor(id)
@@ -98,7 +98,7 @@ module Ragios
         end
 
         config_settings.each do |config| 
-         doc = {:database => 'status_update_settings', :doc_id => config["_id"], :data => {:state => "active"}}
+         doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => config["_id"], :data => {:state => "active"}}
          config = Hash.transform_keys_to_symbols(config)
          schedule_status_updates(config, tag = config[:tag])
          Couchdb.update_doc doc,Ragios::DatabaseAdmin.session           
@@ -114,12 +114,12 @@ module Ragios
   def self.save_status_updates config
       auth_session = Ragios::DatabaseAdmin.session
       begin
-       Couchdb.create 'status_update_settings',auth_session
+       Couchdb.create Ragios::DatabaseAdmin.status_updates_settings,auth_session
       rescue CouchdbException => e
       end 
       id =  UUIDTools::UUID.random_create.to_s
       config = config.merge({:state => "active"})
-      doc = {:database => 'status_update_settings', :doc_id => id, :data => config}
+      doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => id, :data => config}
       Couchdb.create_doc doc,auth_session
   end
 
@@ -156,16 +156,16 @@ module Ragios
 
       updates = find_status_update(:tag => tag)
       updates.each do |update|
-       doc = { :database => 'status_update_settings', :doc_id => update["_id"], :data => {:state => "stopped"}}   
+       doc = { :database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => update["_id"], :data => {:state => "stopped"}}   
        Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
       end
   end
  
   def self.edit_status_update(id, options)
       auth_session = Ragios::DatabaseAdmin.session
-      doc = { :database => 'status_update_settings', :doc_id => id, :data => options}   
+      doc = { :database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => id, :data => options}   
       Couchdb.update_doc doc,auth_session
-     updates = Couchdb.view( {:database => 'status_update_settings', :doc_id => id},auth_session)
+     updates = Couchdb.view( {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => id},auth_session)
       if(updates["tag"] != nil) && (updates["state"] == "active")
         stop_status_update(updates["tag"])
         restart_status_updates(updates["tag"])
@@ -178,14 +178,14 @@ module Ragios
      stop_status_update(tag)
      updates = find_status_update(:tag => tag)
      updates.each do |update|
-         doc = {:database => 'status_update_settings', :doc_id => update["_id"]}
+         doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => update["_id"]}
          Couchdb.delete_doc doc, Ragios::DatabaseAdmin.session
      end
   end
     
     #returns a list of all active monitors in the database
     def self.get_active_monitors
-       view = {:database => 'monitors',
+       view = {:database => Ragios::DatabaseAdmin.monitors,
         :design_doc => 'monitors',
          :view => 'get_active_monitors',
           :json_doc => $path_to_json + '/get_monitors.json'}
@@ -195,7 +195,7 @@ module Ragios
 
   #get all stopped status updates
   def self.get_stopped_status_updates(tag)
-    view = {:database => 'status_update_settings',
+    view = {:database => Ragios::DatabaseAdmin.status_updates_settings,
         :design_doc => 'status_updates',
          :view => 'get_stopped_updates_by_tag',
           :json_doc => $path_to_json + '/get_status_updates.json'}
@@ -205,7 +205,7 @@ module Ragios
 
  #get all status updates in the system
  def self.get_all_status_updates
-   view = {:database => 'status_update_settings',
+   view = {:database => Ragios::DatabaseAdmin.status_updates_settings,
         :design_doc => 'status_updates',
          :view => 'get_all_status_updates',
           :json_doc => $path_to_json + '/get_status_updates.json'}
@@ -215,7 +215,7 @@ module Ragios
   
    #get all active status updates 
   def self.get_active_status_updates
-   view = {:database => 'status_update_settings',
+   view = {:database => Ragios::DatabaseAdmin.status_updates_settings,
         :design_doc => 'status_updates',
          :view => 'get_active_status_updates',
           :json_doc => $path_to_json + '/get_status_updates.json'}
@@ -224,17 +224,17 @@ module Ragios
    end
   
    def self.get_monitor(id)
-       doc = {:database => 'monitors', :doc_id => id}
+       doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => id}
        Couchdb.view doc, Ragios::DatabaseAdmin.session
    end
 
    def self.get_status_update(id)
-      doc = {:database => 'status_update_settings', :doc_id => id}
+      doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => id}
       Couchdb.view doc, Ragios::DatabaseAdmin.session
    end
 
    def self.get_all_monitors
-      view = {:database => 'monitors',
+      view = {:database => Ragios::DatabaseAdmin.monitors,
         :design_doc => 'monitors',
          :view => 'get_monitors',
           :json_doc => $path_to_json + '/get_monitors.json'}
@@ -249,13 +249,13 @@ module Ragios
        auth_session = Ragios::DatabaseAdmin.session
 
        if(tag == nil)
-           view = {:database => 'monitors',
+           view = {:database => Ragios::DatabaseAdmin.monitors,
         		:design_doc => 'get_stats',
          		:view => 'get_stats',
           		:json_doc => $path_to_json + '/get_stats.json'}
                Couchdb.find_on_fly(view,auth_session)  
        else
-         view = {:database => 'monitors',
+         view = {:database => Ragios::DatabaseAdmin.monitors,
         		:design_doc => 'get_stats',
          		:view => 'get_tag_and_mature_stats',
           		:json_doc => $path_to_json + '/get_stats.json'}

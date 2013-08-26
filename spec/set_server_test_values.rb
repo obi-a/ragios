@@ -1,16 +1,17 @@
 #prepare database for testing the server
+database_admin = Ragios::DatabaseAdmin.admin
 
-hash = Couchdb.login(username = 'ragios_server',password ='ragios') 
+hash = Couchdb.login(username = database_admin[:username], password = database_admin[:password]) 
 auth_session =  hash["AuthSession"]
 
 
 begin
- Couchdb.create 'status_update_settings',auth_session
+ Couchdb.create Ragios::DatabaseAdmin.status_updates_settings,auth_session
 rescue CouchdbException => e
 end
 
 begin
- Couchdb.create 'monitors',auth_session
+ Couchdb.create Ragios::DatabaseAdmin.monitors,auth_session
 rescue CouchdbException => e
 end
 
@@ -21,7 +22,7 @@ config = {   :every => '1m',
                   :tag => 'test', 
                   :state => 'active'
                   }
-       doc = {:database => 'status_update_settings', :doc_id => 'test_config_settings', :data => config}
+       doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => 'test_config_settings', :data => config}
      begin
       Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
@@ -40,7 +41,7 @@ config = {   :every => '1m',
                    notify_interval:'3h'
                   }
 
-      doc = {:database => 'monitors', :doc_id => 'trial_monitor', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'trial_monitor', :data => data}
      begin
       Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
@@ -66,7 +67,7 @@ config = {   :every => '1m',
                    state: "stopped"
                   }
 
-      doc = {:database => 'monitors', :doc_id => 'active_monitor', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'active_monitor', :data => data}
      begin
       Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
@@ -84,7 +85,7 @@ config = {   :every => '1m',
                    notify_interval:'3h'
                   }
 
-      doc = {:database => 'monitors', :doc_id => 'to_be_deleted', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'to_be_deleted', :data => data}
      begin
       Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
@@ -99,7 +100,7 @@ config = {   :every => '1m',
                    :state => 'stopped'
                   }
 
-      doc = {:database => 'status_update_settings', :doc_id => 'to_be_deleted', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => 'to_be_deleted', :data => data}
      begin
       Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
@@ -114,7 +115,7 @@ config = {   :every => '1m',
                    :state => 'active'
                   }
 
-      doc = {:database => 'status_update_settings', :doc_id => 'sample_status_update', :data => data}
+      doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => 'sample_status_update', :data => data}
      begin
       Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e

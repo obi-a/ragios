@@ -32,12 +32,12 @@ describe "monitors" do
     Ragios::Admin.valid_token?(token).should == true
 
     #expire the token with old timestamp
-    doc = { :database => 'ragios_auth_session', :doc_id => token, :data => {:timestamp => 1375576871 }}   
+    doc = { :database => Ragios::DatabaseAdmin.auth_session, :doc_id => token, :data => {:timestamp => 1375576871 }}   
     Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
     Ragios::Admin.valid_token?(token).should == false
 
     #unexpire the token with current timestamp
-    doc = { :database => 'ragios_auth_session', :doc_id => token, :data => {:timestamp => Time.now.to_i }}   
+    doc = { :database => Ragios::DatabaseAdmin.auth_session, :doc_id => token, :data => {:timestamp => Time.now.to_i }}   
     Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
     Ragios::Admin.valid_token?(token).should == true
   end

@@ -1,11 +1,11 @@
 #!/bin/bash
 
 if [ "$1" = "start" ]; then
-   bundle exec thin start -R server.ru  -C server.yml
+   bundle exec thin start -R config.ru  -C server.yml
 elif [ "$1" = "stop" ]; then
-    bundle exec thin stop -R server.ru  -C server.yml
+    bundle exec thin stop -R config.ru  -C server.yml
 elif [ "$1" = "restart" ]; then
-   bundle exec thin restart -R server.ru  -C server.yml
+   bundle exec thin restart -R config.ru  -C server.yml
 else 
  echo "Use one of the options start | restart | stop "
 fi
