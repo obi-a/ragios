@@ -3,8 +3,6 @@
 ===Priority
 * Make notifiers plug and play, move notifier specific information out of the generic.monitor and system.monitor class
 * Get Ragios server running on heroku
-* Switch from thin to unicorn if conditions are appropriate
-* make the ragios server bind address/port to be configurable
 * update plugin testing documentation 
 
 =Goals for versions 0.6.0
@@ -35,6 +33,8 @@
 * Add a web UI admin dashboard for using Ragios Server.
 
 ==DONE
+* Switch from thin to unicorn if conditions are appropriate - no need to switch
+* make the ragios server bind address/port to be configurable - no necessary
 * make it part of the config to choose the name of databases that will be used to store monitors, logs, sessions and status updates
 * rename server.ru to config.ru - move items to an initializer file
 * move all configuration to environment variables
