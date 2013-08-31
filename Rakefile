@@ -9,6 +9,12 @@
     Couchdb.set_config data,auth_session
  end
 
+task :console do 
+  ragios_file = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios/config'))
+  irb = 'bundle exec irb -r ' + ragios_file
+  sh irb 
+end
+
 task :spec do
   sh 'rspec spec/'
 end
@@ -29,6 +35,7 @@ task :server do
   sh 'rspec -fs spec/server'
 end
 
+task :c => :console
 task :test_notifiers => :notifiers
 task :test_plugins => :plugins
 task :test_core => :core

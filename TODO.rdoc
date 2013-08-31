@@ -9,7 +9,6 @@
 * Add a web UI admin dashboard for using Ragios Server.
 
 ===Nice to have
-* Add a ragios console similar to rails console or irb.
 * When a monitor is deleted, also delete all its activity from the activity log 
 * Document the feature: Grouping monitors by tag
 
@@ -33,6 +32,7 @@
 * Add a web UI admin dashboard for using Ragios Server.
 
 ==DONE
+* Add a ragios console similar to rails console or irb.
 * Switch from thin to unicorn if conditions are appropriate - no need to switch
 * make the ragios server bind address/port to be configurable - no necessary
 * make it part of the config to choose the name of databases that will be used to store monitors, logs, sessions and status updates
