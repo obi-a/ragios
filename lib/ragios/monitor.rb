@@ -73,18 +73,8 @@ class Monitor
      Ragios::System.update_status config 
     end
 
-    #may later remove this method remember to review it
     def self.get_monitors
-       monitors = Ragios::System.get_monitors
-       hash = {}
-       count = 0
-      monitors.each do |monitor|
-        #monitor.instance_variables.each {|var| hash[var[1..-1].to_sym] = monitor.instance_variable_get(var) }
-        monitor.instance_variables.each {|var| hash[var.to_s.delete("@")] = monitor.instance_variable_get(var) }
-        monitors[count] = hash
-        count = count + 1
-      end  
-      monitors 
+      Ragios::System.get_monitors 
     end    
 
    #create and restart all monitors from database 
@@ -103,16 +93,15 @@ class Monitor
       doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
       Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
     end
-    
-    
+
       if(monitors.empty?)
           raise "monitor not found"
       end
       count = 0
       monitors.each do |monitor|
        monitor = Hash.transform_keys_to_symbols(monitor)
-         monitors[count] = monitor
-         count +=  1
+       monitors[count] = monitor
+       count +=  1
       end
      start monitors,server='restart' 
    end
@@ -198,7 +187,3 @@ class GenericMonitor < Ragios::Monitors::System
  end
 
 end
-
-
-
-
