@@ -3,7 +3,6 @@
 ===Priority
 * Make notifiers plug and play, move notifier specific information out of the generic.monitor and system.monitor class
 * Get Ragios server running on heroku
-* update plugin testing documentation 
 
 =Goals for versions 0.6.0
 * Add a web UI admin dashboard for using Ragios Server.
@@ -32,6 +31,7 @@
 * Add a web UI admin dashboard for using Ragios Server.
 
 ==DONE
+* update plugin testing documentation 
 * Add a ragios console similar to rails console or irb.
 * Switch from thin to unicorn if conditions are appropriate - no need to switch
 * make the ragios server bind address/port to be configurable - no necessary
