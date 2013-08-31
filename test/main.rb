@@ -156,12 +156,14 @@
 #puts hash.inspect
 
  monitoring =  [{ monitor:'url',
-                every:'1m',
+                every:'1h',
                 test:'video datafeed test',
                 url:'http://pennywizard.com/central/wizzer.html',
                 contact:'obi.akubue@gmail.com',
-                via:'ses',  
-                notify_interval:'6m'
+                via:'ses',
+                tag: 'xyz',
+                fixed: 'obi',
+                failed: 'wan'
                 }]
  
 Ragios::Monitor.start monitoring

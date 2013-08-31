@@ -28,10 +28,8 @@ module Notifiers
                 
  def fixed
   #execute the code block if provided
-  if @fixed != nil 
-   if @fixed.lambda?
-      @fixed.call
-   end
+  unless @fixed.nil?
+   @fixed.call if @fixed.lambda?
   end
 
   if @notifier == 'email'
@@ -52,26 +50,20 @@ module InitValues
  def ragios_init_values(options)
   #translate values of the DSL to a Ragios::Monitors::System object
   @time_interval = options[:every]
-  if options[:notify_interval] == nil
-     options[:notify_interval] = '6h'
-  end
+  
+  options[:notify_interval] = '6h' if options[:notify_interval].nil?
+
   @notification_interval = options[:notify_interval]
   @contact = options[:contact]
   @test_description = options[:test]
   @notifier = options[:via]
 
    #if tag exists assign it
-   if options[:tag] != nil
-       @tag = options[:tag]
-   end
+  @tag = options[:tag] unless options[:tag].nil?
    
   #assumes that options[:fixed] and options[failed] are code lambdas when available
-  if options[:fixed] != nil
-   @fixed =  options[:fixed]
-  end
-  if options[:failed] != nil
-     @failed = options[:failed]
-  end 
+  @fixed =  options[:fixed] unless options[:fixed].nil?
+  @failed = options[:failed] unless options[:failed].nil?
  end 
 end
 
@@ -127,7 +119,6 @@ class Monitor
 
     def self.start(monitoring, server = nil)
         monitors = []
-        count = 0
         monitoring.each do|m|
         #create the right type of monitor instance for each monitor and send it to the scheduler    
          options = m
@@ -145,8 +136,7 @@ class Monitor
               include InitValues
          end
          ragios_monitor = GenericMonitor.new(plugin,options) 
-         monitors[count] = ragios_monitor
-         count = count + 1
+         monitors << ragios_monitor
         end #end of each...do loop
         
         if server == TRUE
@@ -197,18 +187,14 @@ class GenericMonitor < Ragios::Monitors::System
     end
 
     def failed
-      if @failed != nil
-       if @failed.lambda?
-          @failed.call
-       end
+      unless @failed.nil?
+       @failed.call if @failed.lambda?
       end
     end
      
-    if @plugin.respond_to?('failed')
-       @plugin.failed
-    end
+  @plugin.failed if @plugin.respond_to?('failed')
 
-    include Notifiers
+  include Notifiers
  end
 
 end

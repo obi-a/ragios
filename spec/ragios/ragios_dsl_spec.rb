@@ -6,6 +6,11 @@ run_in_failure = lambda{
                        puts 'do some failure recovery here'
                       }
 
+run_in_fixed = lambda{
+                       puts 'test has fixed'
+                       puts 'running on fixed'
+                      }
+
     monitoring = { monitor: 'url',
                    every: '30s',
                    test: 'github repo a http test',
@@ -38,7 +43,8 @@ run_in_failure = lambda{
                    contact: 'obi.akubue@mail.com',
                    via: 'gmail',  
                    notify_interval: '6h',
-                   failed: run_in_failure 
+                   failed: run_in_failure,
+                   fixed: run_in_fixed 
                   }
                
 
