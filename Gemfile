@@ -10,11 +10,13 @@ gem "gmail"
 gem "rspec"
 gem "rake"
 gem "aws-ses"
+gem 'pry'
 
 #uncomment this for ragios server
 gem "sinatra"
 gem "yajl-ruby"
 gem "thin" 
+#gem "puma"
 gem "leanback"
 gem "uuidtools"
 

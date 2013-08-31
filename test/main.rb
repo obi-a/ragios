@@ -161,9 +161,7 @@
                 url:'http://pennywizard.com/central/wizzer.html',
                 contact:'obi.akubue@gmail.com',
                 via:'ses',
-                tag: 'xyz',
-                fixed: 'obi',
-                failed: 'wan'
+                tag: 'xyz'
                 }]
  
 Ragios::Monitor.start monitoring
