@@ -7,6 +7,6 @@ require dir + 'lib/ragios/rest_server'
 
 run App
 
-require dir + 'initialize'
+require dir + 'initializers/initialize'
 
 
