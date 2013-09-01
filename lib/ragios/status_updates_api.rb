@@ -8,7 +8,8 @@ module Ragios
                        :restart => :restart_status_updates,
                        :get => :get_status_update,
                        :scheduler => :get_status_update_frm_scheduler,
-                       :start => :start_status_update
+                       :start => :start_status_update,
+                       :start_all => :restart_status_updates
                      } 
 
     def self.actions

@@ -6,14 +6,19 @@ module Ragios
                        :stop => :stop_monitor,
                        :restart => :restart_monitor,
                        :get => :get_monitor,
-                       :scheduler => :get_monitors_frm_scheduler
+                       :scheduler => :get_monitors_frm_scheduler,
+                       :sch => :get_monitors_frm_scheduler
                      } 
   def self.actions
-    @server_method
+    @server_method.merge({:start => :add_and_start_new_monitors, :start_all => :start_all_monitors})
+  end
+
+  def self.start_all
+    Ragios::Monitor.restart 
   end
 
   def self.start(monitors)
-    return Ragios::Monitor.start monitors, server=TRUE
+    Ragios::Monitor.start monitors, server=TRUE
   end
 
   def self.method_missing(name, *args)
