@@ -4,6 +4,7 @@
 * Make notifiers plug and play, move notifier specific information out of the generic.monitor and system.monitor class
 * Get Ragios server running on heroku
 * Document Ragios Server Ruby API using the console rake server_console
+* Clean up return values from Ragios::Server for REST & APIs
 
 =Goals for versions 0.6.0
 * Add a web UI admin dashboard for using Ragios Server.
