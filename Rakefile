@@ -10,17 +10,10 @@
  end
 
 task :console do 
-  ragios_file = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios/config'))
-  irb = "bundle exec pry -r #{ragios_file}"
-  sh irb 
-end
-
-
-task :server_console do 
   ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios'))
   config = ragios_dir + '/config'
-  initialize = ragios_dir + '/initialize'
-  irb = "bundle exec pry -r #{config} -r #{initialize}"
+  console = ragios_dir + '/initializers/console'
+  irb = "bundle exec pry -r #{config}  -r #{console}"
   sh irb 
 end
 
@@ -44,7 +37,6 @@ task :server do
   sh 'rspec -fs spec/server'
 end
 
-task :s => :server_console
 task :c => :console
 task :test_notifiers => :notifiers
 task :test_plugins => :plugins
