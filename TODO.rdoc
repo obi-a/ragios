@@ -3,8 +3,11 @@
 ===Priority
 * Make notifiers plug and play, move notifier specific information out of the generic.monitor and system.monitor class
 * Get Ragios server running on heroku
-* Document Ragios Server Ruby API using the console rake server_console
+* Document Ragios Server Ruby API using the console rake console
 * Clean up return values from Ragios::Server for REST & APIs
+* Allow email notifiers to support multiple contacts eg { contact: ['xyz@mail.com','foo@mail.com'] }
+* Make Ragios server bind address & port to be configurable (the server.xml can be updated or make it 0.0.0.0 by default), or just document the current way to change it
+* send notifications asynchronously with sucker_punch
 
 =Goals for versions 0.6.0
 * Add a web UI admin dashboard for using Ragios Server.
