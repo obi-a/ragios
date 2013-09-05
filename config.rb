@@ -16,15 +16,14 @@ twitter_cred = {consumer_key: ENV['TWITTER_CONSUMER_KEY'],
 Ragios::TwitterNotifier.config(twitter_cred)  
 
 #Replace with amazon credientials for Amazon Simple Email Service Notifier
-amazon_account = { access_key: ENV['AMAZON_ACCESS_KEY'],
-                   secret_key: ENV['AMAZON_SECRET_KEY'], 
-                   send_from: ENV['AMAZON_ACCESS_SECRET'] }
+amazon_account = { access_key: ENV['AWS_ACCESS_KEY_ID'],
+                   secret_key: ENV['AWS_SECRET_ACCESS_KEY'], 
+                   send_from: "Ragios Alert <alerts@ragios.org>" }
 
 Ragios::SESNotifier.config(amazon_account)
 
 #log activity of monitors, set true to log activity
-log_activity = true
-Ragios::Logger.config(log_activity)
+Ragios::Logger.config(log_activity = true)
 
 ragios_admin_user = {username: ENV['RAGIOS_ADMIN_USERNAME'],
                      password: ENV['RAGIOS_ADMIN_PASSWORD'],
@@ -44,14 +43,3 @@ database_admin = {login:     {username: ENV['COUCHDB_ADMIN_USERNAME'],
                  } 
 
 Ragios::DatabaseAdmin.config(database_admin)
-
-
-
-
-
-
-
-
-
-
-
