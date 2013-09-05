@@ -18,16 +18,16 @@ options2 =  { monitor: 'http',
               notify_interval: '6h'
              }
 
-describe Monitors::Http do
+describe Ragios::Monitors::Http do
 
  it "should establish a http connection with google.com" do
-    h = Monitors::Http.new
+    h = Ragios::Monitors::Http.new
     h.init(options1) 
     h.test_command.should == TRUE
  end
 
  it "should fail to establish a http connection" do 
-    f = Monitors::Http.new
+    f = Ragios::Monitors::Http.new
     f.init(options2)
     f.test_command.should ==  FALSE
  end 

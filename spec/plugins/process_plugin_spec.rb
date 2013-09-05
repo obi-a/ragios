@@ -15,11 +15,11 @@ require 'spec_base.rb'
                    :notify_interval => '1h'
                   }
 
-describe Monitors::Process do 
+describe Ragios::Monitors::Process do 
 
  it "should PASS the test when apache process is running" do 
      #commented out, only works on a system that has apache installed and running
-     #p = Monitors::Process.new
+     #p = Ragios::Monitors::Process.new
      #p.init(options)
      #p.test_command.should == TRUE
  end 

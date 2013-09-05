@@ -30,22 +30,22 @@ fake_url_options  = { monitor: 'url',
               notify_interval: '6h'
              }
 
-describe Monitors::Url do
+describe Ragios::Monitors::Url do
 
  it "should send a http GET request to the url in options and pass" do
-    r = Monitors::Url.new
+    r = Ragios::Monitors::Url.new
     r.init(regular_url_options)
     r.test_command.should == TRUE
  end
 
  it "should send a http GET request to the url in options and fail" do 
-    f = Monitors::Url.new
+    f = Ragios::Monitors::Url.new
     f.init(fake_url_options)
     f.test_command.should ==  FALSE
  end 
 
  it "should send a https GET request to the url in options and pass" do 
-    s = Monitors::Url.new
+    s = Ragios::Monitors::Url.new
     s.init(https_options)
     s.test_command.should == TRUE
  end
