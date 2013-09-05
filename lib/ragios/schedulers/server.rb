@@ -103,7 +103,7 @@ class Server
         #puts "ERROR: " +  $!.to_s  + " Created on: "+ Time.now.to_s(:long) 
         monitor.error_handler
       end
-      Ragios::Logger.new.log(monitor)
+      Ragios::Logger.log(monitor)
           
       #update document with current state of this monitor        
       data = { 
