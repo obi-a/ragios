@@ -1,3 +1,4 @@
+module Ragios
 module Monitors
 
 # Plugin: Monitors a domain to check if its online  
@@ -29,5 +30,6 @@ class Http
    end   
 end
 
+end
 end
 

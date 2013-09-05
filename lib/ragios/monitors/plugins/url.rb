@@ -1,3 +1,4 @@
+module Ragios
 module Monitors
 
 #Plugin: Monitors a URL by sending a http GET request to it
@@ -26,6 +27,7 @@ class Url
   end
 end
 
+end
 end
 
 

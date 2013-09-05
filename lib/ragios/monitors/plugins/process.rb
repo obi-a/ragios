@@ -1,3 +1,4 @@
+module Ragios
 module Monitors
 
 #Plugin: Monitors processes on GNU/Linux systems, restarts the process if it fails
@@ -24,13 +25,6 @@ module Monitors
      @server_alias = options[:server_alias]
      @hostname = options[:hostname]
             
-     raise "@process_name must be assigned a value" if @process_name.nil?  
-     raise "@start_command must be assigned a value" if @start_command.nil? 
-     raise "@restart_command must be assigned a value" if @restart_command.nil? 
-     raise "@stop_command must be assigned a value" if @stop_command.nil? 
-     raise "@pid_file must be assigned a value" if @pid_file.nil?   
-     raise "@hostname must be assigned a value" if @hostname.nil? 
-     raise "@server_alias must be assigned a value" if @server_alias.nil? 
      @describe_test_result =  "The process " + @process_name + " on host: " + @hostname 
    end
    
@@ -61,4 +55,5 @@ module Monitors
       s = system  @restart_command
    end
  end 
+end
 end

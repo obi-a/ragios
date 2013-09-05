@@ -13,6 +13,7 @@ module Ragios
 
 module Notifiers
  def notify
+     
      if @notifier == 'email'
         email_notify
      elsif @notifier == 'gmail'
@@ -106,27 +107,26 @@ class Monitor
 
     def self.start(monitoring, server = nil)
         monitors = []
-        monitoring.each do|m|
-        #create the right type of monitor instance for each monitor and send it to the scheduler    
-         options = m
+        monitoring.each do|options|
+         #create the right type of monitor instance for each monitor and send it to the scheduler    
          module_name = "Monitors"  
-         plugin_name = m[:monitor] 
-         plugin_class = Module.const_get(module_name).const_get(plugin_name.camelize)
+         plugin_name = options[:monitor] 
+         plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize)
          #add method to plugin class that will translate options to real values
          plugin_class.class_eval do |options|
-               include InitValues 
+           include InitValues 
          end     
          plugin = plugin_class.new
          plugin.init(options)
          #add method to GenericMonitor class that will translate options to real values
          GenericMonitor.class_eval do |options|
-              include InitValues
+           include InitValues
          end
          ragios_monitor = GenericMonitor.new(plugin,options) 
          monitors << ragios_monitor
         end #end of each...do loop
         
-        if server == TRUE
+        if server == true
           Ragios::Server.start monitors
         elsif server == 'restart'
           Ragios::Server.restart monitors
@@ -152,13 +152,17 @@ class GenericMonitor < Ragios::Monitors::System
         @plugin.ragios_init_values(options)
         ragios_init_values(options)
         @describe_test_result = ''
-         if defined?(@plugin.describe_test_result) 
-            @describe_test_result = @plugin.describe_test_result 
-          else
-            raise '@describe_test_result must be defined in ' + @plugin.to_s
-          end   
+        if defined?(@plugin.describe_test_result) 
+          @describe_test_result = @plugin.describe_test_result 
+        else
+          raise '@describe_test_result must be defined in ' + @plugin.to_s
+        end   
         @options = options #to be used by the server scheduler     
         super()
+    end
+
+    def notifier(options)
+      notifier_name = options[:via]
     end
     
     def test_command

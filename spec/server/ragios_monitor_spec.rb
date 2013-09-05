@@ -25,11 +25,11 @@ describe Ragios::GenericMonitor do
                     }
      
      #add init values to plugin
-     Monitors::Url.class_eval do |options|
+     Ragios::Monitors::Url.class_eval do |options|
        include Ragios::InitValues
      end
     #create plugin
-    @plugin = Monitors::Url.new
+    @plugin = Ragios::Monitors::Url.new
     @plugin.init(options)
 
     #add init values to generic monitor
