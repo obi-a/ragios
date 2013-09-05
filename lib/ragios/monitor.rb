@@ -79,30 +79,28 @@ class Monitor
 
    #create and restart all monitors from database 
    def self.restart(id = nil)
-    #read off all monitors from database 
-    if(id == nil) 
-     monitors = Ragios::Server.get_active_monitors
-    else 
-      monitors = Ragios::Server.find_monitors(:_id => id)
+     #read off all monitors from database 
+     if(id == nil) 
+       monitors = Ragios::Server.get_active_monitors
+       raise "monitor not found" if monitors.empty?
+     else 
+       monitors = Ragios::Server.find_monitors(:_id => id)
        if monitors == []
-        raise "monitor not found"
-       elsif monitors[0]["state"] == "active"
-         raise "monitor is already active. nothing to restart"
-       end
-      data = {:state => "active"}
-      doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
-      Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
-    end
-
-      if(monitors.empty?)
           raise "monitor not found"
-      end
-      count = 0
-      monitors.each do |monitor|
-       monitor = Hash.transform_keys_to_symbols(monitor)
+       elsif monitors[0]["state"] == "active"
+          #monitor is already active
+          return monitors[0]
+       end
+       data = {:state => "active"}
+       doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
+       Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
+     end
+     count = 0
+     monitors.each do |monitor|
+     monitor = Hash.transform_keys_to_symbols(monitor)
        monitors[count] = monitor
        count +=  1
-      end
+     end
      start monitors,server='restart' 
    end
 
@@ -185,5 +183,4 @@ class GenericMonitor < Ragios::Monitors::System
 
   include Notifiers
  end
-
 end

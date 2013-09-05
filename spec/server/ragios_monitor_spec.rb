@@ -121,10 +121,10 @@ describe Ragios::Monitor do
  end 
  
   it "should not restart an already running monitor" do
-     #Ragios::Monitor.restart(id = 'monitor_monitor').should == nil 
-     lambda {Ragios::Monitor.restart(id = 'monitor_monitor')}.should raise_error(RuntimeError, "monitor is already active. nothing to restart")
-     #delete the sample monitor used in this test from database to provide an accurate test on each run
-     Ragios::Server.delete_monitor(id ='monitor_monitor')
+    monitor = Ragios::Monitor.restart(id = 'monitor_monitor')
+    monitor["_id"].should == 'monitor_monitor'
+    #delete the sample monitor used in this test from database to provide an accurate test on each run
+    Ragios::Server.delete_monitor(id ='monitor_monitor')
   end
    
 end

@@ -132,21 +132,15 @@ end
 put '/monitors/:id*', :check => :valid_token? do
   pass unless params["state"] == "active"
   begin 
-   id = params[:id]
+    id = params[:id]
     m = Ragios::Server.restart_monitor(id)
     content_type('application/json')
-   if m[0].class == Ragios::GenericMonitor
     status 200
     Yajl::Encoder.encode({ok: 'true'})
-   end
   rescue => e
    if e.to_s == "monitor not found"
     status 404
     body  Yajl::Encoder.encode({error: 'not_found', check: 'monitor_id'}) 
-   elsif e.to_s == "monitor is already active. nothing to restart"
-    #idempotent put request
-    status 200
-    Yajl::Encoder.encode({ok: 'true'})
    else
     status 500
     body  Yajl::Encoder.encode({error: e.to_s})
