@@ -5,19 +5,19 @@ module Ragios
     attr_accessor :auth_timeout
 
     def self.config(ragios_admin)
-     @@username = ragios_admin[:username]
-     @@password = ragios_admin[:password]
-     @@auth_timeout = ragios_admin[:auth_timeout]
+      @username = ragios_admin[:username]
+      @password = ragios_admin[:password]
+      @auth_timeout = ragios_admin[:auth_timeout]
     end
 
     def self.admin
-       admin = {username: @@username,
-                 password: @@password,
-                  auth_timeout: @@auth_timeout} 
+       admin = {username: @username,
+                 password: @password,
+                  auth_timeout: @auth_timeout} 
     end
   
     def self.authenticate?(username,password)
-      (username == @@username) && (password == @@password) ? true : false
+      (username == @username) && (password == @password) ? true : false
     end 
 
     def self.valid_token?(token)
@@ -34,7 +34,7 @@ module Ragios
     
     def self.session
       auth_session_token = UUIDTools::UUID.random_create.to_s
-      data = {:timeout => @@auth_timeout, :timestamp => Time.now.to_i}
+      data = {:timeout => @auth_timeout, :timestamp => Time.now.to_i}
       doc = {:database => Ragios::DatabaseAdmin.auth_session, :doc_id => auth_session_token, :data => data}
       Couchdb.create_doc doc, Ragios::DatabaseAdmin.session
       auth_session_token

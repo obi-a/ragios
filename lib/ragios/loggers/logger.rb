@@ -4,10 +4,10 @@ module Ragios
  class Logger
 
   def self.config(log_activity)
-    @@log_activity = log_activity
+    @log_activity = log_activity
   end
 
-  def write(monitor)
+  def self.write(monitor)
       data = {   
          :monitor_id => monitor.id,
          :timestamp => monitor.timestamp.to_s,
@@ -25,8 +25,12 @@ module Ragios
        Couchdb.create_doc doc,Ragios::DatabaseAdmin.session    
   end 
 
-  def log(monitor)
-   if @@log_activity == true
+  def self.activity_log
+    @log_activity
+  end
+
+  def self.log(monitor)
+   if @log_activity == true
      write monitor
    end
   end
