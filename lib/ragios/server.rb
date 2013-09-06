@@ -25,7 +25,7 @@ module Ragios
     end
 
     def self.find_monitors(options) 
-      Couchdb.find_by({:database => Ragios::DatabaseAdmin.monitors, options.keys[0] => options.values[0]},Ragios::DatabaseAdmin.session)  
+      Couchdb.find_by({:database => Ragios::DatabaseAdmin.monitors, options.keys[0] => options.values[0]},Ragios::DatabaseAdmin.session) 
     end
 
 
@@ -190,7 +190,9 @@ module Ragios
          :view => 'get_active_monitors',
           :json_doc => $path_to_json + '/get_monitors.json'}
 
-         Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
+       monitors = Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
+       raise Ragios::MonitorNotFoundException.new(error: "No active monitor found"), "No active monitor found" if monitors.empty?
+       return monitors
     end
 
   #get all stopped status updates

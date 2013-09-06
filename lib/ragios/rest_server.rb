@@ -137,14 +137,9 @@ put '/monitors/:id*', :check => :valid_token? do
     content_type('application/json')
     status 200
     Yajl::Encoder.encode({ok: 'true'})
-  rescue => e
-   if e.to_s == "monitor not found"
+  rescue Ragios::MonitorNotFoundException
     status 404
-    body  Yajl::Encoder.encode({error: 'not_found', check: 'monitor_id'}) 
-   else
-    status 500
-    body  Yajl::Encoder.encode({error: e.to_s})
-   end
+    body  Yajl::Encoder.encode({error: "No monitor found with id = #{id}"}) 
   end
 end
 

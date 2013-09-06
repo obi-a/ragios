@@ -124,8 +124,8 @@ it "should not restart a monitor that doesn't exist" do
   begin
   response = RestClient.put 'http://127.0.0.1:5041/monitors/we_dont_exist',{:state => "active"},{:content_type => :json,:cookies => {:AuthSession => @auth_session}}
  rescue => e
-  e.response.should == '{"error":"not_found","check":"monitor_id"}'
-  e.should be_an_instance_of RestClient::ResourceNotFound
+  e.response.code.should == 404
+  e.response.should == '{"error":"No monitor found with id = we_dont_exist"}'
  end 
 end
 
