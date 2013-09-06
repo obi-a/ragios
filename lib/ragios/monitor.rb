@@ -7,6 +7,17 @@ class Hash
   end
 end
 
+class Array
+  def transform_keys_to_symbols
+    count = 0
+    self.each do |hash|
+      hash = Hash.transform_keys_to_symbols(hash)
+      self[count] = hash
+      count +=  1
+    end
+    self
+  end
+end
 
 module Ragios 
 #Translates the Ragios Domain Specific Language to the object oriented system
@@ -76,32 +87,25 @@ class Monitor
 
     def self.get_monitors
       Ragios::System.get_monitors 
-    end    
+    end  
 
-   #create and restart all monitors from database 
+   def self.set_active(id)
+     data = {:state => "active"}
+     doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
+     Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
+   end
+
+   #restart monitors from database 
    def self.restart(id = nil)
-     #read off all monitors from database 
      if(id == nil) 
        monitors = Ragios::Server.get_active_monitors
-       raise "monitor not found" if monitors.empty?
      else 
        monitors = Ragios::Server.find_monitors(:_id => id)
-       if monitors == []
-          raise "monitor not found"
-       elsif monitors[0]["state"] == "active"
-          #monitor is already active
-          return monitors[0]
-       end
-       data = {:state => "active"}
-       doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
-       Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
+       raise Ragios::MonitorNotFoundException.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
+       return monitors[0] if monitors[0]["state"] == "active"
+       set_active(id)
      end
-     count = 0
-     monitors.each do |monitor|
-     monitor = Hash.transform_keys_to_symbols(monitor)
-       monitors[count] = monitor
-       count +=  1
-     end
+     monitors.transform_keys_to_symbols
      start monitors,server='restart' 
    end
 
