@@ -7,7 +7,8 @@ module Ragios
                        :restart => :restart_monitor,
                        :get => :get_monitor,
                        :scheduler => :get_monitors_frm_scheduler,
-                       :sch => :get_monitors_frm_scheduler
+                       :sch => :get_monitors_frm_scheduler,
+                       :active => :get_active_monitors
                      } 
   def self.actions
     @server_method.merge({:start => :add_and_start_new_monitors, :start_all => :start_all_monitors})
