@@ -30,6 +30,31 @@ describe "status updates" do
  end
 end
 
+describe "activity log" do
+  it "should return security object of activity log database" do
+    database_admin = Ragios::DatabaseAdmin.admin
+    hash = Couchdb.get_security(Ragios::DatabaseAdmin.activity_log,Ragios::DatabaseAdmin.session)
+    admins = hash["admins"]
+    readers = hash["readers"]
+    admins["names"].should == [database_admin[:username]]
+    admins["roles"].should == ["admin"]
+    readers["names"].should == [database_admin[:username]]
+    readers["roles"].should == ["admin"]     
+  end
+end
+
+describe "authsession" do
+  it "should return security object of authsession database" do
+    database_admin = Ragios::DatabaseAdmin.admin
+    hash = Couchdb.get_security(Ragios::DatabaseAdmin.auth_session,Ragios::DatabaseAdmin.session)
+    admins = hash["admins"]
+    readers = hash["readers"]
+    admins["names"].should == [database_admin[:username]]
+    admins["roles"].should == ["admin"]
+    readers["names"].should == [database_admin[:username]]
+    readers["roles"].should == ["admin"]   
+  end
+end
 
 describe Ragios::Server do
 
@@ -108,7 +133,7 @@ describe Ragios::Server do
      options  = {
                    every: '3m',
                    contact: 'kent@mail.com',
-                   via: 'gmail'
+                   via: 'gmail_notifier'
                   }
 
      Ragios::Server.update_monitor("active_monitor", options)
@@ -129,7 +154,7 @@ describe Ragios::Server do
  it "should save and schedule status updates" do
    config = {   :every => '1m',
                    :contact => 'test@mail.com',
-                   :via => 'gmail',
+                   :via => 'gmail_notifier',
                   :tag => 'save_test' 
                   }
   Ragios::Server.start_status_update(config)
@@ -224,7 +249,7 @@ end
      data  = {
                    every: '7d',
                    contact: 'clark@mail.com',
-                   via: 'gmail'
+                   via: 'gmail_notifier'
                   }
 
       Ragios::Server.edit_status_update("sample_status_update",data)
@@ -265,14 +290,14 @@ end
   it "should get all status updates" do
     updates  = Ragios::Server.get_all_status_updates
     hash = updates[0]
-    hash["via"].should == "gmail"
+    hash["via"].should == 'gmail_notifier'
   end
   
   it "should return a monitor by id" do
      hash = Ragios::Server.get_monitor("trial_monitor")
      hash["tag"].should == "trial_monitor"
      hash["monitor"].should == "url"
-     hash["via"].should == "gmail"
+     hash["via"].should == 'gmail_notifier'
      hash["url"].should == "https://github.com/obi-a/Ragios"
      hash["every"].should == "1m"
   end
