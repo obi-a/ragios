@@ -11,7 +11,7 @@ require 'spec_base.rb'
                    :server_alias => 'my home server',
                    :hostname => '192.168.2.9',
                    :contact => 'obi.akubue@mail.com',
-                   :via => 'gmail',
+                   :via => 'gmail_notifier',
                    :notify_interval => '1h'
                   }
 

@@ -1,12 +1,12 @@
 require 'spec_base.rb'
 
-describe Ragios::GmailNotifier do
+describe Ragios::Notifier::GmailNotifier do
     it "should send a notification message via gmail" do
          message = {:to => "obi.akubue@gmail.com",
                     :subject =>"Test notification message from Ragios via gmail", 
                      :body => "stuff"}
    
-      Ragios::GmailNotifier.new.send message
+      Ragios::Notifier::GmailNotifier.new.deliver message
    end
 end
 
@@ -18,7 +18,7 @@ describe Ragios::Monitor do
                    test: 'Generic monitor test notification',
                    url: 'http://www.google.com',
                    contact: 'obi.akubue@gmail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval: '6h'
                     }]
      Ragios::Server.init
@@ -40,7 +40,7 @@ describe Ragios::Server do
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@gmail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h',
                    describe_test_result:  "sample monitor for specs",
         	   time_of_last_test: "2:30pm",
@@ -65,7 +65,7 @@ describe Ragios::Server do
                    test: '3 test',
                    url: 'http://www.google.com',
                    contact: 'obi.akubue@gmail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h',
                    describe_test_result:  "sample monitor for specs",
         	   time_of_last_test: "2:30pm",
@@ -88,7 +88,7 @@ describe Ragios::Server do
    message = {:to => 'obi.akubue@gmail.com',
                :subject => 'Ragios Status Report', 
                   :body => @body}
-   Ragios::GmailNotifier.new.send message
+   Ragios::Notifier::GmailNotifier.new.deliver message
    #delete the sample monitor used in this test from database to provide an accurate test on each run
    Ragios::Server.delete_monitor(id ='monitor_monitor2')   
    Ragios::Server.delete_monitor(id ='monitor_monitor3')              

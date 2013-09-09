@@ -92,16 +92,16 @@ class Monitor
    def self.set_active(id)
      data = {:state => "active"}
      doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
-     Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
+     Couchdb.update_doc doc, Ragios::DatabaseAdmin.session
    end
 
-   #restart monitors from database 
+   #restart monitor(s) from database 
    def self.restart(id = nil)
      if(id == nil) 
        monitors = Ragios::Server.get_active_monitors
      else 
        monitors = Ragios::Server.find_monitors(:_id => id)
-       raise Ragios::MonitorNotFoundException.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
+       raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
        return monitors[0] if monitors[0]["state"] == "active"
        set_active(id)
      end
@@ -161,12 +161,14 @@ class GenericMonitor < Ragios::Monitors::System
         else
           raise '@describe_test_result must be defined in ' + @plugin.to_s
         end   
-        @options = options #to be used by the server scheduler     
+        @options = options #to be used by the server scheduler 
+        create_notifier    
         super()
     end
 
-    def notifier(options)
-      notifier_name = options[:via]
+    def create_notifier
+      raise Ragios::NotifierNotFound.new(error: "No Notifier included"), "No Notifier included" unless @options.has_key?(:via)
+      @notifier = (Module.const_get("Ragios").const_get("Notifier").const_get(options[:via].camelize)).new(self)
     end
     
     def test_command
@@ -185,10 +187,19 @@ class GenericMonitor < Ragios::Monitors::System
       unless @failed.nil?
        @failed.call if @failed.lambda?
       end
+      @plugin.failed if @plugin.respond_to?('failed')
     end
      
-  @plugin.failed if @plugin.respond_to?('failed')
+    def notify
+      @notifier.notify if @notifier.respond_to?('notify')
+    end
 
-  include Notifiers
+    def fixed
+      @notifier.resolved
+      unless @fixed.nil?
+        @fixed.call if @fixed.lambda?
+      end
+    end
+  #include Notifiers
  end
 end

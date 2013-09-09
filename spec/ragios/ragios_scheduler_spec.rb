@@ -123,7 +123,7 @@ describe Ragios::Schedulers::RagiosScheduler do
     it "should scheduler a status report to be sent out at the specified interval" do
        @ragios.update_status({:every => '60m',
 			:contact => 'admin@mail.com',
-			:via => 'gmail'}) 
+			:via => 'gmail_notifier'}) 
     end
     
    it "should display the status report" do

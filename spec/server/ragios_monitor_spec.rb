@@ -20,7 +20,7 @@ describe Ragios::GenericMonitor do
                    test: 'is google UP',
                    url: 'http://www.google.com',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval: '6h'
                     }
      
@@ -55,7 +55,7 @@ describe Ragios::Monitor do
                    test: 'is google UP',
                    url: 'http://www.google.com',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval: '6h'
                     }]
      monitors =  Ragios::Monitor.start monitoring,server=TRUE
@@ -87,7 +87,7 @@ describe Ragios::Monitor do
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h',
                    describe_test_result:  "sample monitor for specs",
         	   time_of_last_test: "2:30pm",

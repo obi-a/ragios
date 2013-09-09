@@ -1,12 +1,12 @@
 require 'spec_base.rb'
 
-describe Ragios::SESNotifier do
+describe Ragios::Notifier::Ses do
     it "should send a notification message via ses" do
          message = {:to => "obi.akubue@gmail.com",
                     :subject =>"Test notification message from Ragios via ses", 
                      :body => "stuff"}
    
-      Ragios::SESNotifier.new.send message
+      Ragios::Notifier::Ses.new.deliver message
    end
 end
 
@@ -88,7 +88,7 @@ describe Ragios::Server do
    message = {:to => 'obi.akubue@gmail.com',
                :subject => 'Ragios Status Report', 
                   :body => @body}
-   Ragios::SESNotifier.new.send message
+   Ragios::Notifier::Ses.new.deliver message
    #delete the sample monitor used in this test from database to provide an accurate test on each run
    Ragios::Server.delete_monitor(id ='monitor_monitor2')   
    Ragios::Server.delete_monitor(id ='monitor_monitor3')              

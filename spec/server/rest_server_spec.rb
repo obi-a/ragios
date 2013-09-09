@@ -25,7 +25,7 @@ describe "REST interface to Ragios Monitor" do
                    :test => 'Sample Test',
                    :url => 'https://add_monitor.com',
                    :contact => 'obi.akubue@gmail.com',
-                   :via => 'gmail',
+                   :via => 'gmail_notifier',
                    :notify_interval => '6h',
                    :tag => 'test'   
                   }]
@@ -80,7 +80,7 @@ it "should restart a stopped monitor" do
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h',
                    describe_test_result:  "sample monitor for specs",
         	   time_of_last_test: "2:30pm",
@@ -160,7 +160,7 @@ end
 it "should update a running monitor" do
    data  = {     every: '55h',
                    contact: 'admin@aol.com',
-                   via: 'gmail'
+                   via: 'gmail_notifier'
                   }
   
   str = Yajl::Encoder.encode(data)
@@ -188,7 +188,7 @@ it "should update a stopped monitor and remain stopped" do
 
    data  = {     every: '43d',
                    contact: 'bill@java.com',
-                   via: 'twitter'
+                   via: 'twitter_notifier'
                   }
   
   str = Yajl::Encoder.encode(data)
@@ -202,7 +202,7 @@ it "should update a stopped monitor and remain stopped" do
   hash["_id"].should == 'rest_monitor'
   hash["contact"].should == 'bill@java.com'
   hash["every"].should == '43d'
-  hash["via"].should == 'twitter'
+  hash["via"].should == 'twitter_notifier'
 
   response = RestClient.get 'http://127.0.0.1:5041/scheduler/monitors/rest_monitor',{:cookies => {:AuthSession => @auth_session}}
   response.should == "[]"
@@ -261,7 +261,7 @@ end
 it "Should add status updates to the system and start running them" do 
       config = {   :every => '24h',
                    :contact => 'user@mail.com',
-                   :via => 'gmail',
+                   :via => 'gmail_notifier',
                   :tag => 'config_status_update_test',                  
                   }
  
@@ -296,7 +296,7 @@ it "Should add status updates to the system and start running them" do
 it "should restart a stopped status update" do
   config = {   :every => '1m',
                    :contact => 'admin@mail.com',
-                   :via => 'gmail',
+                   :via => 'gmail_notifier',
                   :tag => 'this_status_update', 
                   :state => 'stopped'
                   }
@@ -377,7 +377,7 @@ it "should update a stopped status update and remain stopped" do
 
    data  = { every: '18m',
                    contact: 'skyla@ateam.com',
-                   via: 'twitter'
+                   via: 'twitter_notifier'
                   }
   
   str = Yajl::Encoder.encode(data)
@@ -390,7 +390,7 @@ it "should update a stopped status update and remain stopped" do
   hash["_id"].should == 'just_nother_status_update'
   hash["contact"].should == 'skyla@ateam.com'
   hash["every"].should == '18m'
-  hash["via"].should == 'twitter'
+  hash["via"].should == 'twitter_notifier'
   hash["tag"].should == 'this_status_update'
 
   response = RestClient.get 'http://127.0.0.1:5041/scheduler/status_updates/this_status_update',{:cookies => {:AuthSession => @auth_session}}

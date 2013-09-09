@@ -5,7 +5,7 @@ options1 = { monitor: 'http',
              test: 'google site test',
              domain: 'www.google.com',
              contact: 'admin@mail.com',
-             via: 'gmail',  
+             via: 'gmail_notifier',  
              notify_interval: '6h'
              }
 		   
@@ -14,7 +14,7 @@ options2 =  { monitor: 'http',
               test: 'domain doesnt exist',
               domain: 'southmunn.n',
               contact: 'admin@mail.com',
-              via: 'gmail',  
+              via: 'gmail_notifier',  
               notify_interval: '6h'
              }
 

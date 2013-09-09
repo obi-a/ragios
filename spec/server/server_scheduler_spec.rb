@@ -13,7 +13,7 @@ class Monitor1 < Ragios::Monitors::System
                    test: '1 test feed',
                    url: 'http://www.website.com/89843/videos.xml',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval: '6h',
                    _id: 'runtime_id'
                     }
@@ -35,7 +35,7 @@ class Monitor2 < Ragios::Monitors::System
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h',
                    _id: 'runtime_id'
                   }
@@ -58,7 +58,7 @@ class Monitor3 < Ragios::Monitors::System
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h',
                    _id: 'test_monitor'
                   }
@@ -79,7 +79,7 @@ class Monitor4 < Ragios::Monitors::System
                    test: 'Great test to somewhere',
                    url: 'http://o-b-i-akubue.com',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h',
                    _id: 'test-2-somewhere'
                   }
@@ -128,7 +128,7 @@ describe Ragios::Schedulers::Server do
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h'
                   }
 
@@ -158,7 +158,7 @@ describe Ragios::Schedulers::Server do
                    test: 'Great test to somewhere',
                    url: 'http://o-b-i-akubue.com',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h'
                   }
 

@@ -16,7 +16,7 @@ run_in_fixed = lambda{
                    test: 'github repo a http test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'6h'
                   
                   },
@@ -25,7 +25,7 @@ run_in_fixed = lambda{
                     test: 'google site test',
                     domain: 'www.google.com',
                     contact: 'obi.akubue@mail.com',
-                    via: 'gmail',  
+                    via: 'gmail_notifier',  
                     notify_interval: '6h'
                   } ,
                   { monitor: 'url',
@@ -33,7 +33,7 @@ run_in_fixed = lambda{
                    test: 'fake url test',
                    url: 'http://www.google.com/fail/',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval: '6h'
                   },
                   { monitor: 'url',
@@ -41,7 +41,7 @@ run_in_fixed = lambda{
                    test: 'lambda test - the monitors test is expected to fail',
                    url: 'http://www.google.com/fail/',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval: '6h',
                    failed: run_in_failure,
                    fixed: run_in_fixed 
@@ -66,7 +66,7 @@ run_in_fixed = lambda{
   it "should setup status reports" do
      Ragios::Monitor.update_status({:every => '40s',
 			:contact => 'obi.akubue@mail.com',
-			:via => 'gmail'})  
+			:via => 'gmail_notifier'})  
   end
 end
 

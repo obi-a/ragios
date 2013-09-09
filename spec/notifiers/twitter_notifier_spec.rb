@@ -1,10 +1,10 @@
 require 'spec_base.rb'
 
-describe Ragios::TwitterNotifier do
+describe Ragios::Notifier::TwitterNotifier do
  
   it "should send a tweet a notification message " do
 
-       Ragios::TwitterNotifier.new.tweet "Test notification message from Ragios via twitter. " + "Created on: " + Time.now.to_s
+       Ragios::Notifier::TwitterNotifier.new.tweet "Test notification message from Ragios via twitter. " + "Created on: " + Time.now.to_s
   end
 
 
@@ -15,7 +15,7 @@ describe Ragios::TwitterNotifier do
                    every: '1m',
                    test: 'Generic monitor test notification',
                    url: 'http://www.google.com',
-                   via: 'twitter',  
+                   via: 'twitter_notifier',  
                    notify_interval: '6h'
                     }]
      Ragios::Server.init

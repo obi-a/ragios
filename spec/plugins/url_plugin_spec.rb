@@ -6,7 +6,7 @@ https_options = { monitor: 'url',
              test: 'github repo a http test',
              url: 'https://github.com/obi-a/Ragios',
              contact: 'obi.akubue@mail.com',
-             via: 'gmail',  
+             via: 'gmail_notifier',  
              notify_interval:'6h'   
             }
 
@@ -16,7 +16,7 @@ regular_url_options =  { monitor: 'url',
               test: 'google site test',
               url: 'http://www.google.com',
               contact: 'admin@mail.com',
-              via: 'gmail',
+              via: 'gmail_notifier',
               notify_interval: '6h'
             }
 
@@ -26,7 +26,7 @@ fake_url_options  = { monitor: 'url',
               test: 'fake url test',
               url: 'http://www.google.com/fail/',
               contact: 'obi.akubue@mail.com',
-              via: 'gmail',  
+              via: 'gmail_notifier',  
               notify_interval: '6h'
              }
 

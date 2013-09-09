@@ -18,7 +18,7 @@ end
  #create sample config settings for testing
 config = {   :every => '1m',
                    :contact => 'admin@mail.com',
-                   :via => 'gmail',
+                   :via => 'gmail_notifier',
                   :tag => 'test', 
                   :state => 'active'
                   }
@@ -37,7 +37,7 @@ config = {   :every => '1m',
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h'
                   }
 
@@ -55,7 +55,7 @@ config = {   :every => '1m',
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h',
                    describe_test_result:  "sample monitor for specs",
         	   time_of_last_test: "2:30pm",
@@ -81,7 +81,7 @@ config = {   :every => '1m',
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h'
                   }
 
@@ -96,7 +96,7 @@ config = {   :every => '1m',
    data = { tag: 'to_be_deleted', 
                    :every => '1m',
                    :contact => 'admin@mail.com',
-                   :via => 'gmail',
+                   :via => 'gmail_notifier',
                    :state => 'stopped'
                   }
 
@@ -111,7 +111,7 @@ config = {   :every => '1m',
  data = { tag: 'sample_status_update', 
                    :every => '1m',
                    :contact => 'admin@mail.com',
-                   :via => 'gmail',
+                   :via => 'gmail_notifier',
                    :state => 'active'
                   }
 
@@ -134,7 +134,7 @@ class Monitor1 < Ragios::Monitors::System
                    test: '1 test feed',
                    url: 'http://www.website.com/89843/videos.xml',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval: '6h',
                    _id: 'runtime_id'
                     }
@@ -156,7 +156,7 @@ class Monitor2 < Ragios::Monitors::System
                    test: '2 test',
                    url: 'https://github.com/obi-a/Ragios',
                    contact: 'obi.akubue@mail.com',
-                   via: 'gmail',  
+                   via: 'gmail_notifier',  
                    notify_interval:'3h',
                    _id: 'runtime_id'
                   }
