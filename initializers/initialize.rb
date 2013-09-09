@@ -53,7 +53,7 @@ Ragios::Server.init
 #restart monitors from the database
 begin
 Ragios::Monitor.restart
-rescue Ragios::MonitorNotFoundException
+rescue Ragios::MonitorNotFound
 end
 
 #run schedule any available status updates

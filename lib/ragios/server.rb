@@ -35,7 +35,7 @@ module Ragios
 
     def self.status_report(tag = nil)
   
-      if(tag == nil)
+      if(tag.nil?)
           @monitors = get_stats
       else
           @monitors = get_stats(tag)
@@ -86,7 +86,7 @@ module Ragios
   #or restart all stopped status updates by tag - used when restarting a stopped status update 
    def self.restart_status_updates(tag = nil)
        
-      if(tag == nil)
+      if(tag.nil?)
 
         config_settings = get_active_status_updates
       else
@@ -127,9 +127,12 @@ module Ragios
         #format of config {}
       #config  = {   :every => '1d',
          #          :contact => 'admin@mail.com',
-          #         :via => 'gmail'
+          #         :via => 'gmail_notifier'
            #        :tag => 'admin'
            #       }
+    #TODO: redesign or remove the status update system if determined unecessary
+    raise Ragios::NotifierNotFound.new(error: "No Notifier included"), "No Notifier included" unless config.has_key?(:via)
+    @notifier = (Module.const_get("Ragios").const_get("Notifier").const_get(config[:via].camelize)).new
      
     @status_update_scheduler.every config[:every], :tags => tag do 
              
@@ -137,14 +140,8 @@ module Ragios
         message = {:to => config[:contact],
                   :subject => @subject, 
                   :body => @body}
-          
-      if config[:via] == 'gmail'
-          Ragios::GmailNotifier.new.send message   
-        elsif config[:via] == 'email'
-          Ragios::Notifiers::EmailNotifier.new.send message
-        else
-           raise 'Wrong hash parameter for update_status()'
-     end
+
+        @notifier.deliver message
     end
    end
 
@@ -191,7 +188,7 @@ module Ragios
           :json_doc => $path_to_json + '/get_monitors.json'}
 
        monitors = Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
-       raise Ragios::MonitorNotFoundException.new(error: "No active monitor found"), "No active monitor found" if monitors.empty?
+       raise Ragios::MonitorNotFound.new(error: "No active monitor found"), "No active monitor found" if monitors.empty?
        return monitors
     end
 
@@ -250,7 +247,7 @@ module Ragios
 
        auth_session = Ragios::DatabaseAdmin.session
 
-       if(tag == nil)
+       if(tag.nil?)
            view = {:database => Ragios::DatabaseAdmin.monitors,
         		:design_doc => 'get_stats',
          		:view => 'get_stats',
@@ -266,7 +263,7 @@ module Ragios
    end
     
    def self.get_status_update_frm_scheduler(tag = nil)     
-      if (tag == nil)
+      if (tag.nil?)
         @status_update_scheduler.jobs
       else
         @status_update_scheduler.find_by_tag(tag)
@@ -278,7 +275,7 @@ module Ragios
   end
 
    def self.get_monitors_frm_scheduler(tag = nil)
-     if (tag == nil)
+     if (tag.nil?)
         @ragios.get_monitors
       else
         @ragios.get_monitors(tag)

@@ -6,6 +6,6 @@ end
 
 
 module Ragios
-  class MonitorNotFoundException < StandardError
-  end
+  class MonitorNotFound < StandardError; end
+  class NotifierNotFound < StandardError; end
 end
