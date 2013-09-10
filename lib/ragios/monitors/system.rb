@@ -1,6 +1,3 @@
-
-
-
 #base class that defines the behavior of all monitors
 module Ragios
  
@@ -76,100 +73,23 @@ class System
    
    #defines the action to take when a test fails 
    #- May take action to fix the issue like restart a process/service 
-   def failed
-       
+   def failed   
    end
    
    #this method is invoked after a test fails
    #it sends a notification to the system admin about a failed test via email,twitter or any other specified notifier
-   def notify 
-     gmail_notify
-     #email_notify
-     #tweet_notify  
+   def notify  
    end
    
    #this method is invoked after test turns from FAILED to PASSED
    # it informs the system admin that the issue has been resolved
    def fixed
-      
-   end
-
-   
-   #returns email message from the specified erb template
-   def message template
-        message_template = ERB.new File.new($path_to_messages + "/"+ template ).read
-        @body = message_template.result(binding)
-        message = {:to => @contact,
-                  :subject => @subject, 
-                  :body => @body}
-   end
-
-   #returns tweet message from the specified erb template
-   def tweet_message template
-        message_template = ERB.new File.new($path_to_messages + "/"+ template ).read
-        message_template.result(binding)
-   end
-
-  #inform the system admin that the issue has been resolved via gmail
-   def gmail_resolved
-       Ragios::GmailNotifier.new.send(message("email_resolved.erb"))
-   end 
-
-#inform the system admin that the issue has been resolved via amazon ses
-   def ses_resolved
-       Ragios::SESNotifier.new.send(message("email_resolved.erb"))
-   end 
-
-
-   #inform the system admin that the issue has been resolved via sendmail
-   def email_resolved
-        Ragios::Notifiers::EmailNotifier.new.send(message("email_resolved.erb")) 
-   end
-
-   #inform the system admin that the issue has been resolved via twitter
-   def tweet_resolved
-      
-     Ragios::TwitterNotifier.new.tweet(tweet_message("tweet_resolved.erb"))
-
    end
 
    #this method is invoked when a test_command() or failed() method encounters an exception
    #The aim is to inform the system Admin about the exception while the system keeps on running
-   def error_handler
-      
-   end
-
-  #sends notifcations via gmail to the system admin when a test fails
-  def gmail_notify
-       Ragios::GmailNotifier.new.send(message("email_notify.erb"))
-  end
-
-  #sends notifcations via Amazon SES to the system admin when a test fails
-  def ses_notify
-       Ragios::SESNotifier.new.send(message("email_notify.erb"))
-  end
-   
-  #sends notifcations via twitter to the system admin when a test fails
-  def tweet_notify
-     Ragios::TwitterNotifier.new.tweet(tweet_message("tweet_notify.erb"))
-  end
-
-   #sends notifcations via email to the system admin when a test fails
-   def email_notify
-      puts 'sending mail alert...' 
-      Ragios::Notifiers::EmailNotifier.new.send(message("email_notify.erb"))     
-   end
-     
-   #informs a system admin via twitter when a test_command() or failed() method encounters an excepion
-   def tweet_error
-        Ragios::TwitterNotifier.new.tweet(tweet_message("tweet_error.erb"))
-   end
-   
-   #informs a system admin via email when a test_command() or failed() method encounters an excepion
-   def email_error
-       #not yet implemented
-   end
-     
+   def error_handler  
+   end     
 end
 
  end #end of module

@@ -22,42 +22,6 @@ end
 module Ragios 
 #Translates the Ragios Domain Specific Language to the object oriented system
 
-module Notifiers
- def notify
-     
-     if @notifier == 'email'
-        email_notify
-     elsif @notifier == 'gmail'
-        gmail_notify
-     elsif @notifier == 'ses'
-        ses_notify
-     elsif @notifier == 'twitter'
-       tweet_notify
-     else 
-       raise 'Notifier: Not Found'
-     end      
- end
-                
- def fixed
-  #execute the code block if provided
-  unless @fixed.nil?
-   @fixed.call if @fixed.lambda?
-  end
-
-  if @notifier == 'email'
-    email_resolved
-  elsif @notifier == 'gmail'
-    gmail_resolved
-   elsif @notifier == 'ses'
-    ses_resolved
-  elsif @notifier == 'twitter'
-    tweet_resolved
-  else 
-     raise 'Notifier: Not Found'
-  end
- end    
-end
-
 module InitValues
  def ragios_init_values(options)
   #translate values of the DSL to a Ragios::Monitors::System object
@@ -200,6 +164,5 @@ class GenericMonitor < Ragios::Monitors::System
         @fixed.call if @fixed.lambda?
       end
     end
-  #include Notifiers
  end
 end
