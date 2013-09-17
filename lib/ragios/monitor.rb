@@ -59,21 +59,22 @@ class Monitor
      Couchdb.update_doc doc, Ragios::DatabaseAdmin.session
    end
 
-   #restart monitor(s) from database 
-   def self.restart(id = nil)
-     if(id == nil) 
-       monitors = Ragios::Server.get_active_monitors
-     else 
-       monitors = Ragios::Server.find_monitors(:_id => id)
-       raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
-       return monitors[0] if monitors[0]["state"] == "active"
-       set_active(id)
-     end
-     monitors.transform_keys_to_symbols
-     start monitors,server='restart' 
-   end
+  def self.restart_monitor(id)
+    monitors = Ragios::Server.find_monitors(:_id => id)
+    raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
+    return monitors[0] if monitors[0]["state"] == "active"
+    set_active(id)
+    monitors.transform_keys_to_symbols
+    start monitors,server='restart' 
+  end
 
-    def self.start(monitoring, server = nil)
+  def self.restart_monitors
+    monitors = Ragios::Server.get_active_monitors
+    monitors.transform_keys_to_symbols
+    start monitors,server='restart' 
+  end
+
+  def self.start(monitoring, server = nil)
         monitors = []
         monitoring.each do|options|
          #create the right type of monitor instance for each monitor and send it to the scheduler    

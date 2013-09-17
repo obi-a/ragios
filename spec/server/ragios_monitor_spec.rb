@@ -69,7 +69,7 @@ describe Ragios::Monitor do
   end
 
  it "should restart monitors saved on the server" do
-     monitors = Ragios::Monitor.restart
+     monitors = Ragios::Monitor.restart_monitors
      #verify that the generic monitor was properly created
      monitors[0].class.should == Ragios::GenericMonitor   
      monitors[0].test_command.boolean?.should ==  true
@@ -107,7 +107,7 @@ describe Ragios::Monitor do
        #puts "Error message: " + e.to_s
      end 
   # begin
-     monitors = Ragios::Monitor.restart(id = 'monitor_monitor') 
+     monitors = Ragios::Monitor.restart_monitor(id = 'monitor_monitor') 
 
      monitors[0].class.should == Ragios::GenericMonitor
    
@@ -121,7 +121,7 @@ describe Ragios::Monitor do
  end 
  
   it "should not restart an already running monitor" do
-    monitor = Ragios::Monitor.restart(id = 'monitor_monitor')
+    monitor = Ragios::Monitor.restart_monitor(id = 'monitor_monitor')
     monitor["_id"].should == 'monitor_monitor'
     #delete the sample monitor used in this test from database to provide an accurate test on each run
     Ragios::Server.delete_monitor(id ='monitor_monitor')

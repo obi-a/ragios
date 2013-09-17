@@ -15,7 +15,7 @@ module Ragios
   end
 
   def self.start_all
-    Ragios::Monitor.restart 
+    Ragios::Monitor.restart_monitors 
   end
 
   def self.start(monitors)

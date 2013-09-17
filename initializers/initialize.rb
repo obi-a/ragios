@@ -52,7 +52,7 @@ Ragios::Server.init
 
 #restart monitors from the database
 begin
-Ragios::Monitor.restart
+Ragios::Monitor.restart_monitors
 rescue Ragios::MonitorNotFound
 end
 
