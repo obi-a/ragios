@@ -43,66 +43,75 @@ module InitValues
  end 
 end
 
-class Monitor
+class Controller
 
-    def self.update_status config
-     Ragios::System.update_status config 
-    end
+  def self.update_status config
+    Ragios::System.update_status config 
+  end
 
-    def self.get_monitors
-      Ragios::System.get_monitors 
-    end  
-
-   def self.set_active(id)
-     data = {:state => "active"}
-     doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
-     Couchdb.update_doc doc, Ragios::DatabaseAdmin.session
-   end
+  def self.get_monitors
+    Ragios::System.get_monitors 
+  end  
 
   def self.restart_monitor(id)
     monitors = Ragios::Server.find_monitors(:_id => id)
     raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
     return monitors[0] if monitors[0]["state"] == "active"
     set_active(id)
-    monitors.transform_keys_to_symbols
-    start monitors,server='restart' 
+    start_monitors(monitors.transform_keys_to_symbols,server='restart')
   end
-
+  
   def self.restart_monitors
     monitors = Ragios::Server.get_active_monitors
-    monitors.transform_keys_to_symbols
-    start monitors,server='restart' 
+    start_monitors(monitors.transform_keys_to_symbols,server='restart')
   end
 
-  def self.start(monitoring, server = nil)
-        monitors = []
-        monitoring.each do|options|
-         #create the right type of monitor instance for each monitor and send it to the scheduler    
-         module_name = "Monitors"  
-         plugin_name = options[:monitor] 
-         plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize)
-         #add method to plugin class that will translate options to real values
-         plugin_class.class_eval do |options|
-           include InitValues 
-         end     
-         plugin = plugin_class.new
-         plugin.init(options)
-         #add method to GenericMonitor class that will translate options to real values
-         GenericMonitor.class_eval do |options|
-           include InitValues
-         end
-         ragios_monitor = GenericMonitor.new(plugin,options) 
-         monitors << ragios_monitor
-        end #end of each...do loop
-        
-        if server == true
-          Ragios::Server.start monitors
-        elsif server == 'restart'
-          Ragios::Server.restart monitors
-        else
-          Ragios::System.start monitors 
-        end
-    end   
+  def self.add_monitors(monitors)
+    start_monitors(monitors,server= "start")
+  end
+
+  def self.run_monitors(monitors)
+    start_monitors(monitors)
+  end
+
+private
+
+  def self.create_monitors(monitoring)
+    monitors = []
+    monitoring.each do|options|   
+      module_name = "Monitors"  
+      plugin_name = options[:monitor] 
+      plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize)
+      plugin_class.class_eval do |options|
+        include InitValues 
+      end     
+      plugin = plugin_class.new
+      plugin.init(options)
+      GenericMonitor.class_eval do |options|
+        include InitValues
+      end
+      ragios_monitor = GenericMonitor.new(plugin,options) 
+      monitors << ragios_monitor
+    end 
+    monitors
+  end
+
+  def self.start_monitors(monitoring, server = nil)
+    monitors = create_monitors(monitoring) 
+    if server == 'start'
+      Ragios::Server.start monitors
+    elsif server == 'restart'
+      Ragios::Server.restart monitors
+    else
+      Ragios::System.start monitors 
+    end
+  end 
+
+  def self.set_active(id)
+    data = {:state => "active"}
+    doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
+    Couchdb.update_doc doc, Ragios::DatabaseAdmin.session
+  end
  end
 
 class GenericMonitor < Ragios::Monitors::System

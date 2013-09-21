@@ -15,11 +15,11 @@ module Ragios
   end
 
   def self.start_all
-    Ragios::Monitor.restart_monitors 
+    Ragios::Controller.restart_monitors
   end
 
   def self.start(monitors)
-    Ragios::Monitor.start monitors, server=TRUE
+    Ragios::Controller.add_monitors(monitors)
   end
 
   def self.method_missing(name, *args)

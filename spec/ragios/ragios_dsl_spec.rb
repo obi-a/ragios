@@ -48,10 +48,10 @@ run_in_fixed = lambda{
                   }
                
 
- describe Ragios::Monitor do 
+ describe Ragios::Controller do 
 
    it "should initialize all monitors and activate the scheduler" do 
-        monitors = Ragios::Monitor.start monitoring
+        monitors = Ragios::Controller.run_monitors(monitoring)
 
      monitors.each do |monitor|  
          puts monitor.num_tests_failed.to_s
@@ -64,7 +64,7 @@ run_in_fixed = lambda{
    end
 
   it "should setup status reports" do
-     Ragios::Monitor.update_status({:every => '40s',
+     Ragios::Controller.update_status({:every => '40s',
 			:contact => 'obi.akubue@mail.com',
 			:via => 'gmail_notifier'})  
   end

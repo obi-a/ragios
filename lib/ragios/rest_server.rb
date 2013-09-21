@@ -55,7 +55,7 @@ end
 post '/monitors*', :check => :valid_token? do
  begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
-  Ragios::Monitor.start monitors,server=TRUE
+  Ragios::Controller.add_monitors(monitors)
   content_type('application/json')
   Yajl::Encoder.encode({ok:"true"})
  rescue 

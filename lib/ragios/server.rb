@@ -50,7 +50,7 @@ module Ragios
    end
 
    def self.restart_monitor(id)
-      Ragios::Monitor.restart_monitor(id)
+      Ragios::Controller.restart_monitor(id)
    end
 
 
