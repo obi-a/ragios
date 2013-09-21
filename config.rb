@@ -35,7 +35,6 @@ Ragios::Admin.config(ragios_admin_user)
 database_admin = {login:     {username: ENV['COUCHDB_ADMIN_USERNAME'],
                               password: ENV['COUCHDB_ADMIN_PASSWORD'] },
                   databases: { monitors: 'ragios_monitors',
-                               status_updates_settings: 'ragios_status_update_settings',
                                activity_log: 'ragios_activity_log',
                                auth_session: 'ragios_auth_session'},
                   couchdb:  {bind_address: 'http://localhost',

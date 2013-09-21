@@ -62,11 +62,5 @@ run_in_fixed = lambda{
          puts monitor.time_of_last_test
      end
    end
-
-  it "should setup status reports" do
-     Ragios::Controller.update_status({:every => '40s',
-			:contact => 'obi.akubue@mail.com',
-			:via => 'gmail_notifier'})  
-  end
 end
 

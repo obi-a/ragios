@@ -4,7 +4,6 @@ module Ragios
      @username = database_config[:login][:username]
      @password = database_config[:login][:password]
      @monitors = database_config[:databases][:monitors]
-     @status_updates_settings = database_config[:databases][:status_updates_settings]
      @activity_log = database_config[:databases][:activity_log]
      @auth_session = database_config[:databases][:auth_session]
      Couchdb.address = database_config[:couchdb][:bind_address]
@@ -15,9 +14,6 @@ module Ragios
       @monitors
     end
    
-    def self.status_updates_settings
-      @status_updates_settings
-    end
 
     def self.activity_log
       @activity_log

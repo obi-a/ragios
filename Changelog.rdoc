@@ -1,4 +1,6 @@
 ==Ragios v0.6.0 
+09-21-2013
+* Removed Status Reports - no longer necessary for Ragios v0.6.0
 
 08-31-2013
 * Added Ragios console - Pry REPL loaded with Ragios environment and configuration - great for development and testing.

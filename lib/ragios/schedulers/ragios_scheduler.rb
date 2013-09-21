@@ -5,13 +5,9 @@ module Schedulers
 class RagiosScheduler
     
     attr :monitors #list of long running monitors
-    attr :start_time
 
     def initialize(monitors)
          @monitors = monitors 
-         #time since the first status report -- will be from the time Ragios started running -- see status_report.erb
-         @start_time  =  Time.now
-
     end
     
   #returns a list of all active monitors managed by this scheduler
@@ -19,42 +15,7 @@ class RagiosScheduler
         return @monitors
    end
 
-   def status_report
-       message_template = ERB.new File.new($path_to_messages + "/status_report.erb" ).read
-       #begin 
-       message_template.result(binding)
-       #rescue FloatDomainError #FIXED - uncommented - to be deleted later
-           #KNOWN ISSUE: to be fixed later
-        #   raise 'Error Generating Status Report: At least one Monitor has total_number_of_tests_performed  = 0' 
-       #end
-   end
 
-  #send a report  with stats and status information on all active monitors to the system admin via email
-  def update_status config
-
-      #format of config {}
-      #config  = {   :every => '1d',
-         #          :contact => 'admin@mail.com',
-          #         :via => 'gmail'
-           #       }
-
-    scheduler = Rufus::Scheduler.start_new
-    scheduler.every config[:every] do 
-
-        @body = status_report  
-        message = {:to => config[:contact],
-                  :subject => @subject, 
-                  :body => @body}
-
-      if config[:via] == 'gmail'
-           Ragios::GmailNotifier.new.send message   
-        elsif config[:via] == 'email'
-           Ragios::Notifiers::EmailNotifier.new.send message
-        else
-           raise 'Wrong hash parameter for update_status()'
-     end
-    end
- end
 
    def init()
      
@@ -150,4 +111,3 @@ end
 
  end
 end
-

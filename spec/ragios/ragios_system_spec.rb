@@ -92,13 +92,6 @@ describe Ragios::System do
      end
     
  end
-
- it "should setup status reports" do
-   Ragios::System.update_status({:every => '40s',
-			:contact => 'obi.akubue@mail.com',
-			:via => 'gmail_notifier'})  
- end   
-
 end
 
 

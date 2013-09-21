@@ -7,20 +7,9 @@ module Ragios
     attr_accessor :ragios
     
     def initialize
-
     end
-
-   def self.update_status config
-       @ragios.update_status config
-   end
     
-    #returns a list of active monitors
-    def self.get_monitors
-        @ragios.get_monitors
-    end
-
-    def self.start monitoring
-        
+    def self.start monitoring    
      @ragios = Ragios::Schedulers::RagiosScheduler.new monitoring
      @ragios.init
      @ragios.start 

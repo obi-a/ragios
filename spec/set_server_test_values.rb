@@ -4,31 +4,10 @@ database_admin = Ragios::DatabaseAdmin.admin
 hash = Couchdb.login(username = database_admin[:username], password = database_admin[:password]) 
 auth_session =  hash["AuthSession"]
 
-
-begin
- Couchdb.create Ragios::DatabaseAdmin.status_updates_settings,auth_session
-rescue CouchdbException => e
-end
-
 begin
  Couchdb.create Ragios::DatabaseAdmin.monitors,auth_session
 rescue CouchdbException => e
 end
-
- #create sample config settings for testing
-config = {   :every => '1m',
-                   :contact => 'admin@mail.com',
-                   :via => 'gmail_notifier',
-                  :tag => 'test', 
-                  :state => 'active'
-                  }
-       doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => 'test_config_settings', :data => config}
-     begin
-      Couchdb.create_doc doc,auth_session
-     rescue CouchdbException => e
-       #puts "Error message: " + e.to_s
-     end  
-
 
  #create sample monitor for testing
    data = { tag: 'trial_monitor', 
@@ -92,35 +71,6 @@ config = {   :every => '1m',
        #puts "Error message: " + e.to_s
      end 
 
- #create sample status update to be deleted
-   data = { tag: 'to_be_deleted', 
-                   :every => '1m',
-                   :contact => 'admin@mail.com',
-                   :via => 'gmail_notifier',
-                   :state => 'stopped'
-                  }
-
-      doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => 'to_be_deleted', :data => data}
-     begin
-      Couchdb.create_doc doc,auth_session
-     rescue CouchdbException => e
-       #puts "Error message: " + e.to_s
-     end 
-
-#create sample status update
- data = { tag: 'sample_status_update', 
-                   :every => '1m',
-                   :contact => 'admin@mail.com',
-                   :via => 'gmail_notifier',
-                   :state => 'active'
-                  }
-
-      doc = {:database => Ragios::DatabaseAdmin.status_updates_settings, :doc_id => 'sample_status_update', :data => data}
-     begin
-      Couchdb.create_doc doc,auth_session
-     rescue CouchdbException => e
-       #puts "Error message: " + e.to_s
-     end 
 
 class Monitor1 < Ragios::Monitors::System
   attr_accessor :id

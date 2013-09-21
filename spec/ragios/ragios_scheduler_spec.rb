@@ -119,20 +119,6 @@ describe Ragios::Schedulers::RagiosScheduler do
          puts monitor.time_of_last_test
       end
     end
-   
-    it "should scheduler a status report to be sent out at the specified interval" do
-       @ragios.update_status({:every => '60m',
-			:contact => 'admin@mail.com',
-			:via => 'gmail_notifier'}) 
-    end
-    
-   it "should display the status report" do
-     @ragios.init
-     @ragios.start
-     puts @ragios.status_report
-     #lambda {@ragios.status_report}.should raise_error(RuntimeError, "Error Generating Status Report: At least one Monitor has total_number_of_tests_performed  = 0")
-     
-   end
   
     it "should throw an exception during init() when  a monitor's test_command() generates an error" do 
        badlycoded = Ragios::Schedulers::RagiosScheduler.new [ BadCodeMonitor.new]

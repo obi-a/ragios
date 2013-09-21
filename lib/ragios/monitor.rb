@@ -45,14 +45,6 @@ end
 
 class Controller
 
-  def self.update_status config
-    Ragios::System.update_status config 
-  end
-
-  def self.get_monitors
-    Ragios::System.get_monitors 
-  end  
-
   def self.restart_monitor(id)
     monitors = Ragios::Server.find_monitors(:_id => id)
     raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
@@ -139,11 +131,6 @@ class GenericMonitor < Ragios::Monitors::System
         create_notifier    
         super()
     end
-
-    def create_notifier
-      raise Ragios::NotifierNotFound.new(error: "No Notifier included"), "No Notifier included" unless @options.has_key?(:via)
-      @notifier = (Module.const_get("Ragios").const_get("Notifier").const_get(options[:via].camelize)).new(self)
-    end
     
     def test_command
         if @plugin.respond_to?('test_command')
@@ -174,5 +161,11 @@ class GenericMonitor < Ragios::Monitors::System
         @fixed.call if @fixed.lambda?
       end
     end
+
+private
+   def create_notifier
+     raise Ragios::NotifierNotFound.new(error: "No Notifier included"), "No Notifier included" unless @options.has_key?(:via)
+     @notifier = (Module.const_get("Ragios").const_get("Notifier").const_get(options[:via].camelize)).new(self)
+   end
  end
 end

@@ -40,7 +40,6 @@ require dir + 'ragios/server'
 require dir + 'ragios/database_admin'
 require dir + 'ragios/admin'
 require dir + 'ragios/monitors_api'
-require dir + 'ragios/status_updates_api'
 require dir + 'ragios/ragios_exception'
 
 
