@@ -1,6 +1,7 @@
 ==TODO
 
 ===Priority
+* Rename specs to reflect classes and code being tested eg ragios_server_spec to controller.spec
 * fix failing tests on the current new refactor - refactor schedulers
 * Ragios Controller shouldn't know anything about plugins -  generic monitor should handle that internally
 * Make notifiers plug and play, move notifier specific information out of the generic.monitor and system.monitor class
