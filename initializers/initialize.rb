@@ -36,7 +36,13 @@ rescue CouchdbException  => e
   raise e unless e.to_s == "CouchDB: Error - file_exists. Reason - The database could not be created, the file already exists."
 end
 
-Ragios::Server.init
+#create dataStore object
+#create scheduler object
+#Ragios::Controller.init(data_store: couchdb_store)
+
+options = {scheduler: Ragios::Schedulers::Server.new}
+
+Ragios::Controller.init(options)
 
 #restart monitors from the database
 begin

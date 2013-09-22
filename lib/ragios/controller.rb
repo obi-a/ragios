@@ -22,6 +22,99 @@ end
 
 class Controller
 
+  def self.init(args)
+    @scheduler = args[:scheduler]
+  end
+
+  def self.stop_monitor(id)
+    @scheduler.stop_monitor(id)
+  end
+
+  def self.delete_monitor(id)
+    begin 
+      auth_session = Ragios::DatabaseAdmin.session
+      monitor = Couchdb.view({:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)    
+      stop_monitor(id) if(monitor["state"] == "active")
+      Couchdb.delete_doc({:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)
+    rescue CouchdbException => e
+       e.error
+    end
+  end
+
+  def self.update_monitor(id, options)
+    auth_session = Ragios::DatabaseAdmin.session
+    doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => options}   
+    Couchdb.update_doc doc,auth_session
+    monitor = Couchdb.view( {:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)
+    if(monitor["state"] == "active")
+      stop_monitor(id)
+      restart_monitor(id)
+    end
+  end
+
+  #returns a list of all active monitors in the database
+   def self.get_active_monitors
+     view = {:database => Ragios::DatabaseAdmin.monitors,
+                :design_doc => 'monitors',
+                   :view => 'get_active_monitors',
+                         :json_doc => $path_to_json + '/get_monitors.json'}
+     monitors = Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
+     raise Ragios::MonitorNotFound.new(error: "No active monitor found"), "No active monitor found" if monitors.empty?
+     return monitors
+   end
+
+   def self.get_monitor(id)
+     doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => id}
+     Couchdb.view doc, Ragios::DatabaseAdmin.session
+   end
+
+   def self.get_all_monitors
+     view = {:database => Ragios::DatabaseAdmin.monitors,
+        :design_doc => 'monitors',
+         :view => 'get_monitors',
+          :json_doc => $path_to_json + '/get_monitors.json'}
+
+     Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
+   end
+
+  def self.get_monitors(tag = nil)
+      @scheduler.get_monitors(tag)
+  end
+
+  def self.get_monitors_frm_scheduler(tag = nil)
+    if (tag.nil?)
+      @scheduler.get_monitors
+    else
+      @scheduler.get_monitors(tag)
+    end
+  end
+
+  def self.get_stats(tag = nil)
+    auth_session = Ragios::DatabaseAdmin.session
+    if(tag.nil?)
+      view = {:database => Ragios::DatabaseAdmin.monitors,
+        		:design_doc => 'get_stats',
+         		:view => 'get_stats',
+          		:json_doc => $path_to_json + '/get_stats.json'}
+      Couchdb.find_on_fly(view,auth_session)  
+     else
+       view = {:database => Ragios::DatabaseAdmin.monitors,
+        		:design_doc => 'get_stats',
+         		:view => 'get_tag_and_mature_stats',
+          		:json_doc => $path_to_json + '/get_stats.json'}
+       Couchdb.find_on_fly(view, auth_session, key = tag)
+     end
+  end
+ 
+  def self.restart monitors
+    @scheduler.restart monitors 
+  end
+
+  def self.start monitors 
+    @scheduler.create monitors
+    @scheduler.start 
+  end
+
   def self.restart_monitor(id)
     monitors = Ragios::Server.find_monitors(:_id => id)
     raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
