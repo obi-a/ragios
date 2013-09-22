@@ -34,7 +34,6 @@ require dir + 'ragios/schedulers/notification_scheduler'
 require dir + 'ragios/schedulers/server'
 
 #system
-require dir + 'ragios/system'
 require dir + 'ragios/monitor'
 require dir + 'ragios/server'
 require dir + 'ragios/database_admin'

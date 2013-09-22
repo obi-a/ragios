@@ -1,89 +1,30 @@
 require 'spec_base.rb'
 
-class Monitor1 < Ragios::Monitors::System
-   def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "sample test 1"
-      @describe_test_result = "sample test 1"
-      @test_result = "sample result"
-     super
-   end 
-
-   def test_command
-      TRUE 
-   end
-  
-   def notify
-     gmail_notify
-  end
-
-  def fixed
-     gmail_resolved
-  end  
-end
-
-
-class Monitor2 < Ragios::Monitors::System
-   def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "sample test 2"
-      @describe_test_result = "sample test 2"
-      @test_result = "sample result"
-     super
-   end 
-
-   def test_command
-      TRUE 
-   end
-  
-   def notify
-     gmail_notify
-  end
-
-  def fixed
-     gmail_resolved
-  end  
-end
-
-class Monitor3 < Ragios::Monitors::System
-   def initialize
-      @time_interval = '10m'
-      @notification_interval = '6h'
-      @contact = "obi@mail.com"
-      @test_description = "sample test 3"
-      @describe_test_result = "sample test 3"
-      @test_result = "sample result"
-     super
-   end 
-
-   def test_command
-      FALSE 
-   end
-  
-   def notify
-     gmail_notify
-  end
-
-  def fixed
-     gmail_resolved
-  end  
-end
-
-
-
-describe Ragios::System do
-
-   before(:each) do
-     @monitoring = [Monitor1.new, Monitor2.new, Monitor3.new]
-  end 
+describe Ragios::Controller do
 
  it "should initialize all monitors and activate the scheduler" do 
+
+
+  list_of_monitors = { tag: 'admin',
+                 monitor: 'url',
+                   every: '1h',
+                   test: '1 test feed',
+                   url: 'http://obi-akubue.org',
+                   contact: 'obi.akubue@mail.com',
+                   via: 'gmail_notifier',  
+                   notify_interval: '6h'
+                    },
+                  { tag: 'obi', 
+                   monitor: 'url',
+                   every: '1h',
+                   test: '2 test',
+                   url: 'https://github.com/obi-a/Ragios',
+                   contact: 'obi.akubue@mail.com',
+                   via: 'gmail_notifier',  
+                   notify_interval:'3h'
+                  }
     
-     @monitors = Ragios::System.start @monitoring 
+     @monitors = Ragios::Controller.run_monitors(list_of_monitors)
      @monitors.each do |monitor|  
          monitor.total_num_tests.should == 1
          puts monitor.test_description 

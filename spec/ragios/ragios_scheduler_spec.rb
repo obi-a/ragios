@@ -96,19 +96,9 @@ end
 
 describe Ragios::Schedulers::RagiosScheduler do
 
-    before(:each) do
-     @ragios = Ragios::Schedulers::RagiosScheduler.new [Monitor1.new, Monitor2.new,Monitor3.new]
-    end 
-
-    it "should initalize all monitors and run their test command" do 
-      @ragios.init
-    end
-    
-    it "should schedule all monitors to run their tests at their specified time interval" do 
-       @ragios.start
-    end
-
     it "should display stats on each active monitor" do
+
+     @ragios = Ragios::Schedulers::RagiosScheduler.new [Monitor1.new, Monitor2.new,Monitor3.new]
        
       @ragios.init
       @ragios.start
@@ -126,10 +116,4 @@ describe Ragios::Schedulers::RagiosScheduler do
        #and raises the exception again after passing it to a handler if one is implemented  
        lambda {badlycoded.init}.should raise_error(RuntimeError,"something is wrong")     
     end
-  
-   it "should throw an exception: will not start monitoring because a monitor's test_command() generates an error" do 
-      monitoring_bad_monitor = [BadCodeMonitor.new]
-      lambda {Ragios::System.start monitoring_bad_monitor}.should raise_error(RuntimeError,"something is wrong")  
-   end
-
 end

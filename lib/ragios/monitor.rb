@@ -32,7 +32,7 @@ module InitValues
   @notification_interval = options[:notify_interval]
   @contact = options[:contact]
   @test_description = options[:test]
-  @notifier = options[:via]
+  #@notifier = options[:via]
 
    #if tag exists assign it
   @tag = options[:tag] unless options[:tag].nil?
@@ -95,7 +95,7 @@ private
     elsif server == 'restart'
       Ragios::Server.restart monitors
     else
-      Ragios::System.start monitors 
+      start_monitors_on_Core(monitors) 
     end
   end 
 
@@ -103,6 +103,13 @@ private
     data = {:state => "active"}
     doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
     Couchdb.update_doc doc, Ragios::DatabaseAdmin.session
+  end
+
+  def self.start_monitors_on_Core(monitoring)
+    @ragios = Ragios::Schedulers::RagiosScheduler.new monitoring
+    @ragios.init
+    @ragios.start 
+    @ragios.get_monitors    
   end
  end
 
