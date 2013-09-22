@@ -1,6 +1,8 @@
 ==TODO
 
 ===Priority
+* fix failing tests on the current new refactor - refactor schedulers
+* Ragios Controller shouldn't know anything about plugins -  generic monitor should handle that internally
 * Make notifiers plug and play, move notifier specific information out of the generic.monitor and system.monitor class
 * Add specs for plug & play notifiers
 * Document plug & play notifiers

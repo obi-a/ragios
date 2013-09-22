@@ -23,11 +23,12 @@ end
 class Controller
 
   def self.init(args)
-    @scheduler = args[:scheduler]
+    @server_scheduler = args[:server_scheduler] unless args[:server_scheduler].nil?
+    @core_scheduler = args[:core_scheduler] unless args[:core_scheduler].nil?
   end
 
   def self.stop_monitor(id)
-    @scheduler.stop_monitor(id)
+    @server_scheduler.stop_monitor(id)
   end
 
   def self.delete_monitor(id)
@@ -78,14 +79,14 @@ class Controller
    end
 
   def self.get_monitors(tag = nil)
-      @scheduler.get_monitors(tag)
+    @server_scheduler.get_monitors(tag)
   end
 
   def self.get_monitors_frm_scheduler(tag = nil)
     if (tag.nil?)
-      @scheduler.get_monitors
+      @server_scheduler.get_monitors
     else
-      @scheduler.get_monitors(tag)
+      @server_scheduler.get_monitors(tag)
     end
   end
 
@@ -105,26 +106,21 @@ class Controller
        Couchdb.find_on_fly(view, auth_session, key = tag)
      end
   end
- 
-  def self.restart monitors
-    @scheduler.restart monitors 
-  end
-
-  def self.start monitors 
-    @scheduler.create monitors
-    @scheduler.start 
-  end
 
   def self.restart_monitor(id)
-    monitors = Ragios::Server.find_monitors(:_id => id)
+    monitors = find_monitors(:_id => id)
     raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
     return monitors[0] if monitors[0]["state"] == "active"
     set_active(id)
     start_monitors(monitors.transform_keys_to_symbols,server='restart')
   end
+
+  def self.find_monitors(options) 
+    Couchdb.find_by({:database => Ragios::DatabaseAdmin.monitors, options.keys[0] => options.values[0]},Ragios::DatabaseAdmin.session) 
+  end
   
   def self.restart_monitors
-    monitors = Ragios::Server.get_active_monitors
+    monitors = get_active_monitors
     start_monitors(monitors.transform_keys_to_symbols,server='restart')
   end
 
@@ -161,11 +157,11 @@ private
   def self.start_monitors(monitoring, server = nil)
     monitors = create_monitors(monitoring) 
     if server == 'start'
-      Ragios::Server.start monitors
+      start_monitors_on_server(monitors)
     elsif server == 'restart'
-      Ragios::Server.restart monitors
+      restart_monitors_on_server(monitors)
     else
-      start_monitors_on_Core(monitors) 
+      start_monitors_on_core(monitors) 
     end
   end 
 
@@ -175,11 +171,19 @@ private
     Couchdb.update_doc doc, Ragios::DatabaseAdmin.session
   end
 
-  def self.start_monitors_on_Core(monitoring)
-    @ragios = Ragios::Schedulers::RagiosScheduler.new monitoring
-    @ragios.init
-    @ragios.start 
-    @ragios.get_monitors    
+  def self.restart_monitors_on_server(monitors)
+    @server_scheduler.restart monitors 
+  end
+
+  def self.start_monitors_on_server(monitors) 
+    @server_scheduler.create monitors
+    @server_scheduler.start 
+  end
+
+  def self.start_monitors_on_core(monitoring)
+    @core_scheduler.init
+    @core_scheduler.start 
+    @core_scheduler.get_monitors    
   end
  end
 end

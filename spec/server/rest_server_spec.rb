@@ -2,9 +2,8 @@ require 'spec_base.rb'
 require 'rest_client'
 require 'yajl'
 
-Ragios::Server.init
-
-
+options = {server_scheduler: Ragios::Schedulers::Server.new}
+Ragios::Controller.init(options)
 
 describe "REST interface to Ragios Monitor" do
 
@@ -35,7 +34,7 @@ describe "REST interface to Ragios Monitor" do
       response.code.should == 200
       response.should include('{"ok":"true"}')
       #verify that the monitor was added to the database
-      monitors = Ragios::Server.find_monitors(:url => 'https://add_monitor.com')
+      monitors = Ragios::Controller.find_monitors(:url => 'https://add_monitor.com')
       hash = monitors[0]
       hash["url"].should == 'https://add_monitor.com'
       hash["test"].should == 'Sample Test'

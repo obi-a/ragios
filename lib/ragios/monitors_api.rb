@@ -24,6 +24,6 @@ module Ragios
 
   def self.method_missing(name, *args)
     super unless @server_method.has_key?(name.to_sym)
-    return Ragios::Server.send(@server_method[name.to_sym],*args)
+    return Ragios::Controller.send(@server_method[name.to_sym],*args)
   end
 end

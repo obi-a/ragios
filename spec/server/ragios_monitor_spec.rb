@@ -7,8 +7,8 @@ class Object
 end
 
 
-
-Ragios::Server.init
+options = {server_scheduler: Ragios::Schedulers::Server.new}
+Ragios::Controller.init(options)
 
 describe Ragios::GenericMonitor do
 
@@ -63,7 +63,7 @@ describe Ragios::Controller do
      monitors[0].class.should == Ragios::GenericMonitor
      monitors[0].test_command.should == true
      #verify that the scheduler is running
-     sch = Ragios::Server.get_monitors_frm_scheduler
+     sch = Ragios::Controller.get_monitors_frm_scheduler
      sch.should_not == nil
      sch.class.should ==  Hash     
   end
@@ -74,7 +74,7 @@ describe Ragios::Controller do
      monitors[0].class.should == Ragios::GenericMonitor   
      monitors[0].test_command.boolean?.should ==  true
      #verify that the scheduler is running
-     sch = Ragios::Server.get_monitors_frm_scheduler
+     sch = Ragios::Controller.get_monitors_frm_scheduler
      sch.should_not == nil
      sch.class.should ==  Hash     
  end 
@@ -112,7 +112,7 @@ describe Ragios::Controller do
      monitors[0].class.should == Ragios::GenericMonitor
    
      monitors[0].test_command.boolean?.should ==  true
-     sch = Ragios::Server.get_monitors_frm_scheduler
+     sch = Ragios::Controller.get_monitors_frm_scheduler
      sch.should_not == nil
      sch.class.should ==  Hash    
    #rescue => e
@@ -124,7 +124,7 @@ describe Ragios::Controller do
     monitor = Ragios::Controller.restart_monitor(id = 'monitor_monitor')
     monitor["_id"].should == 'monitor_monitor'
     #delete the sample monitor used in this test from database to provide an accurate test on each run
-    Ragios::Server.delete_monitor(id ='monitor_monitor')
+    Ragios::Controller.delete_monitor(id ='monitor_monitor')
   end
    
 end

@@ -40,12 +40,10 @@ end
 #create scheduler object
 #Ragios::Controller.init(data_store: couchdb_store)
 
-options = {scheduler: Ragios::Schedulers::Server.new}
-
-Ragios::Controller.init(options)
-
-#restart monitors from the database
+options = {server_scheduler: Ragios::Schedulers::Server.new}
+controller = Ragios::Controller
+controller.init(options)
 begin
-Ragios::Controller.restart_monitors
+controller.restart_monitors
 rescue Ragios::MonitorNotFound
 end

@@ -18,7 +18,10 @@ describe Ragios::Notifier::TwitterNotifier do
                    via: 'twitter_notifier',  
                    notify_interval: '6h'
                     }]
-     Ragios::Server.init
+
+     options = {server_scheduler: Ragios::Schedulers::Server.new}
+     Ragios::Controller.init(options)
+
      monitors =  Ragios::Controller.add_monitors(monitoring)
      #verify that the generic monitor was properly created
      monitors[0].class.should == Ragios::GenericMonitor

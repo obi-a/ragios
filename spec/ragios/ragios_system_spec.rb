@@ -2,7 +2,7 @@ require 'spec_base.rb'
 
 describe Ragios::Controller do
 
- it "should initialize all monitors and activate the scheduler" do 
+ it "should initialize all monitors on ragios core and activate the core scheduler" do 
 
 
   list_of_monitors = { tag: 'admin',
@@ -23,7 +23,10 @@ describe Ragios::Controller do
                    via: 'gmail_notifier',  
                    notify_interval:'3h'
                   }
-    
+
+     #options = {core_scheduler: Ragios::Schedulers::RagiosScheduler.new}
+     #Ragios::Controller.init(options)
+
      @monitors = Ragios::Controller.run_monitors(list_of_monitors)
      @monitors.each do |monitor|  
          monitor.total_num_tests.should == 1

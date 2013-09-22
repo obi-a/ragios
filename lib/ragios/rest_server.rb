@@ -69,7 +69,7 @@ get '/monitors*', :check => :valid_token? do
     pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
     key = params.keys[0]
     value = params[key]
-    monitors = Ragios::Server.find_monitors(key.to_sym => value)
+    monitors = Ragios::Controller.find_monitors(key.to_sym => value)
     m = Yajl::Encoder.encode(monitors)
     content_type('application/json')
     if m.to_s == '[]'
@@ -82,7 +82,7 @@ end
 
 delete '/monitors/:id*', :check => :valid_token? do
    id = params[:id]
-   hash = Ragios::Server.delete_monitor(id)
+   hash = Ragios::Controller.delete_monitor(id)
    content_type('application/json')
    if hash.to_s == "not_found"  
     status 404
@@ -101,7 +101,7 @@ put  '/monitors/:id*', :check => :valid_token? do
     pass unless request.media_type == 'application/json'
     data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
     id = params[:id]
-    Ragios::Server.update_monitor(id,data)
+    Ragios::Controller.update_monitor(id,data)
     content_type('application/json')
     Yajl::Encoder.encode({ "ok" => "true"})
   rescue 
@@ -115,7 +115,7 @@ end
 put '/monitors/:id*', :check => :valid_token? do
    pass unless params["state"] == "stopped"
    id = params[:id]
-   hash = Ragios::Server.stop_monitor(id)
+   hash = Ragios::Controller.stop_monitor(id)
    content_type('application/json')
    if hash.to_s == "not_found"  
     status 404
@@ -133,7 +133,7 @@ put '/monitors/:id*', :check => :valid_token? do
   pass unless params["state"] == "active"
   begin 
     id = params[:id]
-    m = Ragios::Server.restart_monitor(id)
+    m = Ragios::Controller.restart_monitor(id)
     content_type('application/json')
     status 200
     Yajl::Encoder.encode({ok: 'true'})
@@ -146,7 +146,7 @@ end
 get '/scheduler/monitors/:id*', :check => :valid_token? do
   begin
      id = params[:id]
-     sch = Ragios::Server.get_monitors_frm_scheduler(id)
+     sch = Ragios::Controller.get_monitors_frm_scheduler(id)
      content_type('application/json')
      sch.inspect
   rescue CouchdbException => e
@@ -158,7 +158,7 @@ end
 
 get '/scheduler/monitors*', :check => :valid_token? do
   begin
-     sch = Ragios::Server.get_monitors_frm_scheduler
+     sch = Ragios::Controller.get_monitors_frm_scheduler
      content_type('application/json')
      sch.inspect
   rescue CouchdbException => e
@@ -171,7 +171,7 @@ end
 get '/monitors/:id*', :check => :valid_token? do
   begin
    id = params[:id]
-   monitor = Ragios::Server.get_monitor(id)
+   monitor = Ragios::Controller.get_monitor(id)
    content_type('application/json')
    Yajl::Encoder.encode(monitor) 
  rescue CouchdbException => e
@@ -186,7 +186,7 @@ get '/monitors/:id*', :check => :valid_token? do
 end
 
 get '/monitors*', :check => :valid_token? do
-  monitors =  Ragios::Server.get_all_monitors
+  monitors =  Ragios::Controller.get_all_monitors
   content_type('application/json')
   m = Yajl::Encoder.encode(monitors)
   if m.to_s == '[]'
