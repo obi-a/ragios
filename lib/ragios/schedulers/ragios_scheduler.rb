@@ -6,7 +6,7 @@ class RagiosScheduler
     
     attr :monitors #list of long running monitors
 
-    def initialize(monitors)
+    def create(monitors)
          @monitors = monitors 
     end
     
