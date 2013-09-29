@@ -2,8 +2,7 @@ require 'spec_base.rb'
 require 'rest_client'
 require 'yajl'
 
-options = {server_scheduler: Ragios::Schedulers::Server.new}
-Ragios::Controller.init(options)
+Ragios::Controller.scheduler(Ragios::Schedulers::Server.new)
 
 describe "REST interface to Ragios Monitor" do
 

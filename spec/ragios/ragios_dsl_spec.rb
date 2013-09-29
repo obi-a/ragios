@@ -51,6 +51,7 @@ run_in_fixed = lambda{
  describe Ragios::Controller do 
 
    it "should initialize all monitors and activate the scheduler" do 
+        Ragios::Controller.scheduler(Ragios::Schedulers::RagiosScheduler.new)
         monitors = Ragios::Controller.run_monitors(monitoring)
 
      monitors.each do |monitor|  

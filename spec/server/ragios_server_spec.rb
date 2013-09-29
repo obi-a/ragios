@@ -1,8 +1,7 @@
 require 'spec_base.rb'
 require 'set_server_test_values.rb'
 
-options = {server_scheduler: Ragios::Schedulers::Server.new}
-Ragios::Controller.init(options)
+Ragios::Controller.scheduler(Ragios::Schedulers::Server.new)
 
 
 describe "monitors" do
@@ -188,7 +187,7 @@ describe Ragios::Controller do
  end
 
   it "should restart monitoring objects" do
-    Ragios::Controller.restart [Monitor1.new, Monitor2.new]
+    Ragios::Controller.add_monitors([Monitor1.new, Monitor2.new])
     sch = Ragios::Controller.get_monitors('runtime_id')
     sch[0].class.should ==  Rufus::Scheduler::EveryJob
     sch[0].t.should == "87m"

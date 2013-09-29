@@ -22,13 +22,12 @@ end
 
 class Controller
 
-  def self.init(args)
-    @server_scheduler = args[:server_scheduler] unless args[:server_scheduler].nil?
-    @core_scheduler = args[:core_scheduler] unless args[:core_scheduler].nil?
+  def self.scheduler(sch = nil)    
+    @scheduler ||= sch
   end
 
   def self.stop_monitor(id)
-    @server_scheduler.stop_monitor(id)
+    scheduler.stop_monitor(id)
   end
 
   def self.delete_monitor(id)
@@ -38,7 +37,7 @@ class Controller
       stop_monitor(id) if(monitor["state"] == "active")
       Couchdb.delete_doc({:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)
     rescue CouchdbException => e
-       e.error
+      e.error
     end
   end
 
@@ -79,14 +78,14 @@ class Controller
    end
 
   def self.get_monitors(tag = nil)
-    @server_scheduler.get_monitors(tag)
+    scheduler.get_monitors(tag)
   end
 
   def self.get_monitors_frm_scheduler(tag = nil)
     if (tag.nil?)
-      @server_scheduler.get_monitors
+      scheduler.get_monitors
     else
-      @server_scheduler.get_monitors(tag)
+      scheduler.get_monitors(tag)
     end
   end
 
@@ -172,18 +171,19 @@ private
   end
 
   def self.restart_monitors_on_server(monitors)
-    @server_scheduler.restart monitors 
+    scheduler.restart monitors 
   end
 
   def self.start_monitors_on_server(monitors) 
-    @server_scheduler.create monitors
-    @server_scheduler.start 
+    scheduler.create monitors
+    scheduler.start 
   end
 
-  def self.start_monitors_on_core(monitoring)
-    @core_scheduler.init
-    @core_scheduler.start 
-    @core_scheduler.get_monitors    
+  def self.start_monitors_on_core(monitors)
+    scheduler.create monitors
+    scheduler.init
+    scheduler.start 
+    scheduler.get_monitors    
   end
  end
 end

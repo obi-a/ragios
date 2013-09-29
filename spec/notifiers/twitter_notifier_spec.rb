@@ -10,7 +10,7 @@ describe Ragios::Notifier::TwitterNotifier do
 
   describe Ragios::Controller do
    it "should create a generic monitor and tweet notification messages for (FAILED/FIXED)" do
-       monitoring = [{ tag: 'test',
+       monitors = [{ tag: 'test',
                    monitor: 'url',
                    every: '1m',
                    test: 'Generic monitor test notification',
@@ -19,10 +19,9 @@ describe Ragios::Notifier::TwitterNotifier do
                    notify_interval: '6h'
                     }]
 
-     options = {server_scheduler: Ragios::Schedulers::Server.new}
-     Ragios::Controller.init(options)
+     Ragios::Controller.scheduler(Ragios::Schedulers::Server.new)
 
-     monitors =  Ragios::Controller.add_monitors(monitoring)
+     monitors =  Ragios::Controller.add_monitors(monitors)
      #verify that the generic monitor was properly created
      monitors[0].class.should == Ragios::GenericMonitor
      monitors[0].notify

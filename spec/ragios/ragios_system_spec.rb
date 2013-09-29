@@ -25,7 +25,7 @@ describe Ragios::Controller do
                   }
 
      #options = {core_scheduler: Ragios::Schedulers::RagiosScheduler.new}
-     #Ragios::Controller.init(options)
+     Ragios::Controller.scheduler(Ragios::Schedulers::RagiosScheduler.new)
 
      @monitors = Ragios::Controller.run_monitors(list_of_monitors)
      @monitors.each do |monitor|  

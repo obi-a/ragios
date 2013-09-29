@@ -98,11 +98,12 @@ describe Ragios::Schedulers::RagiosScheduler do
 
     it "should display stats on each active monitor" do
 
-     @ragios = Ragios::Schedulers::RagiosScheduler.new [Monitor1.new, Monitor2.new,Monitor3.new]
+      scheduler = Ragios::Schedulers::RagiosScheduler.new
+      scheduler.create [Monitor1.new, Monitor2.new,Monitor3.new]
        
-      @ragios.init
-      @ragios.start
-      monitors = @ragios.get_monitors  
+      scheduler.init
+      scheduler.start
+      monitors = scheduler.get_monitors  
       monitors.each do |monitor|  
          puts monitor.test_description 
          puts monitor.creation_date
@@ -111,7 +112,8 @@ describe Ragios::Schedulers::RagiosScheduler do
     end
   
     it "should throw an exception during init() when  a monitor's test_command() generates an error" do 
-       badlycoded = Ragios::Schedulers::RagiosScheduler.new [ BadCodeMonitor.new]
+       badlycoded = Ragios::Schedulers::RagiosScheduler.new
+       badlycoded.create [ BadCodeMonitor.new]
        #scheduler catches exceptions generated the monitor's test_command() during init() 
        #and raises the exception again after passing it to a handler if one is implemented  
        lambda {badlycoded.init}.should raise_error(RuntimeError,"something is wrong")     

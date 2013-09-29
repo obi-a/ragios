@@ -38,11 +38,11 @@ end
 
 #create dataStore object
 #create scheduler object
-#Ragios::Controller.init(data_store: couchdb_store)
-
-options = {server_scheduler: Ragios::Schedulers::Server.new}
+#controller.data_store(couchdb_store)
 controller = Ragios::Controller
-controller.init(options)
+server_scheduler =  Ragios::Schedulers::Server.new
+controller.scheduler(server_scheduler)
+
 begin
 controller.restart_monitors
 rescue Ragios::MonitorNotFound

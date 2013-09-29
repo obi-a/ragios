@@ -6,9 +6,7 @@ class Object
  end
 end
 
-
-options = {server_scheduler: Ragios::Schedulers::Server.new}
-Ragios::Controller.init(options)
+Ragios::Controller.scheduler(Ragios::Schedulers::Server.new)
 
 describe Ragios::GenericMonitor do
 

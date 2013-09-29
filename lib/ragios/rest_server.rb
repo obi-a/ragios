@@ -34,6 +34,9 @@ helpers do
   def valid_token?
     Ragios::Admin.valid_token?(request.cookies["AuthSession"]) 
   end
+  def controller
+    @controller ||= Ragios::Controller
+  end
 end
 
 get '/' do
@@ -55,7 +58,7 @@ end
 post '/monitors*', :check => :valid_token? do
  begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
-  Ragios::Controller.add_monitors(monitors)
+  controller.add_monitors(monitors)
   content_type('application/json')
   Yajl::Encoder.encode({ok:"true"})
  rescue 
@@ -69,7 +72,7 @@ get '/monitors*', :check => :valid_token? do
     pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
     key = params.keys[0]
     value = params[key]
-    monitors = Ragios::Controller.find_monitors(key.to_sym => value)
+    monitors = controller.find_monitors(key.to_sym => value)
     m = Yajl::Encoder.encode(monitors)
     content_type('application/json')
     if m.to_s == '[]'
@@ -82,7 +85,7 @@ end
 
 delete '/monitors/:id*', :check => :valid_token? do
    id = params[:id]
-   hash = Ragios::Controller.delete_monitor(id)
+   hash = controller.delete_monitor(id)
    content_type('application/json')
    if hash.to_s == "not_found"  
     status 404
@@ -101,7 +104,7 @@ put  '/monitors/:id*', :check => :valid_token? do
     pass unless request.media_type == 'application/json'
     data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
     id = params[:id]
-    Ragios::Controller.update_monitor(id,data)
+    controller.update_monitor(id,data)
     content_type('application/json')
     Yajl::Encoder.encode({ "ok" => "true"})
   rescue 
@@ -115,7 +118,7 @@ end
 put '/monitors/:id*', :check => :valid_token? do
    pass unless params["state"] == "stopped"
    id = params[:id]
-   hash = Ragios::Controller.stop_monitor(id)
+   hash = controller.stop_monitor(id)
    content_type('application/json')
    if hash.to_s == "not_found"  
     status 404
@@ -133,7 +136,7 @@ put '/monitors/:id*', :check => :valid_token? do
   pass unless params["state"] == "active"
   begin 
     id = params[:id]
-    m = Ragios::Controller.restart_monitor(id)
+    m = controller.restart_monitor(id)
     content_type('application/json')
     status 200
     Yajl::Encoder.encode({ok: 'true'})
@@ -146,7 +149,7 @@ end
 get '/scheduler/monitors/:id*', :check => :valid_token? do
   begin
      id = params[:id]
-     sch = Ragios::Controller.get_monitors_frm_scheduler(id)
+     sch = controller.get_monitors_frm_scheduler(id)
      content_type('application/json')
      sch.inspect
   rescue CouchdbException => e
@@ -158,7 +161,7 @@ end
 
 get '/scheduler/monitors*', :check => :valid_token? do
   begin
-     sch = Ragios::Controller.get_monitors_frm_scheduler
+     sch = controller.get_monitors_frm_scheduler
      content_type('application/json')
      sch.inspect
   rescue CouchdbException => e
@@ -171,7 +174,7 @@ end
 get '/monitors/:id*', :check => :valid_token? do
   begin
    id = params[:id]
-   monitor = Ragios::Controller.get_monitor(id)
+   monitor = controller.get_monitor(id)
    content_type('application/json')
    Yajl::Encoder.encode(monitor) 
  rescue CouchdbException => e
@@ -186,7 +189,7 @@ get '/monitors/:id*', :check => :valid_token? do
 end
 
 get '/monitors*', :check => :valid_token? do
-  monitors =  Ragios::Controller.get_all_monitors
+  monitors =  controller.get_all_monitors
   content_type('application/json')
   m = Yajl::Encoder.encode(monitors)
   if m.to_s == '[]'
