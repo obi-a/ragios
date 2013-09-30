@@ -9,7 +9,7 @@ module Ragios
      Couchdb.address = database_config[:couchdb][:bind_address]
      Couchdb.port = database_config[:couchdb][:port]
     end
-
+    
     def self.monitors
       @monitors
     end
@@ -32,5 +32,42 @@ module Ragios
       hash = Couchdb.login(@username,@password) 
       hash["AuthSession"]
     end
+    
+    def self.create_database
+      #create the database if they don't already exist
+      begin
+        database_admin = {username: @username,
+                 password: @password}
+        Couchdb.create monitors,session
+        data = { :admins => {"names" => [database_admin[:username]], "roles" => ["admin"]},
+                   :readers => {"names" => [database_admin[:username]],"roles"  => ["admin"]}
+                  }
+
+       Couchdb.set_security(monitors,data,session)
+      rescue CouchdbException  => e
+        #raise error unless the database have already been creates
+        raise e unless e.to_s == "CouchDB: Error - file_exists. Reason - The database could not be created, the file already exists."
+      end
+
+      begin
+        Couchdb.create activity_log,session
+        data = { :admins => {"names" => [database_admin[:username]], "roles" => ["admin"]},
+                   :readers => {"names" => [database_admin[:username]],"roles"  => ["admin"]}}
+        Couchdb.set_security(activity_log,data,session)
+      rescue CouchdbException  => e
+        #raise error unless the database have already been creates
+        raise e unless e.to_s == "CouchDB: Error - file_exists. Reason - The database could not be created, the file already exists."
+      end
+
+      begin
+        Couchdb.create auth_session,session
+        data = { :admins => {"names" => [database_admin[:username]], "roles" => ["admin"]},
+                   :readers => {"names" => [database_admin[:username]],"roles"  => ["admin"]}}
+        Couchdb.set_security(auth_session,data,session)
+      rescue CouchdbException  => e
+         #raise error unless the database have already been creates
+         raise e unless e.to_s == "CouchDB: Error - file_exists. Reason - The database could not be created, the file already exists."
+      end
+    end    
   end
 end
