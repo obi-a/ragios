@@ -7,6 +7,7 @@ class Object
 end
 
 Ragios::Controller.scheduler(Ragios::Schedulers::Server.new)
+Ragios::Controller.model(Ragios::Model::CouchdbModel)
 
 describe Ragios::GenericMonitor do
 
