@@ -46,7 +46,7 @@ module Ragios
       def self.stop
       end
       
-      def stats(tag = nil)
+      def self.stats(tag = nil)
         auth_session = Ragios::DatabaseAdmin.session
         if(tag.nil?)
           view = {:database => Ragios::DatabaseAdmin.monitors,
