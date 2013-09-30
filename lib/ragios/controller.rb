@@ -25,27 +25,24 @@ class Controller
   def self.scheduler(sch = nil)    
     @scheduler ||= sch
   end
+  
+  def self.model(m = nil)    
+    @model ||= m
+  end
 
   def self.stop_monitor(id)
     scheduler.stop_monitor(id)
   end
 
   def self.delete_monitor(id)
-    begin 
-      auth_session = Ragios::DatabaseAdmin.session
-      monitor = Couchdb.view({:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)    
-      stop_monitor(id) if(monitor["state"] == "active")
-      Couchdb.delete_doc({:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)
-    rescue CouchdbException => e
-      e.error
-    end
+    monitor = model.find(id)
+    stop_monitor(id) if(monitor["state"] == "active")
+    model.delete(id)
   end
 
   def self.update_monitor(id, options)
-    auth_session = Ragios::DatabaseAdmin.session
-    doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => options}   
-    Couchdb.update_doc doc,auth_session
-    monitor = Couchdb.view( {:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},auth_session)
+    model.update(id,options)
+    monitor = model.find(id)
     if(monitor["state"] == "active")
       stop_monitor(id)
       restart_monitor(id)
@@ -54,27 +51,17 @@ class Controller
 
   #returns a list of all active monitors in the database
    def self.get_active_monitors
-     view = {:database => Ragios::DatabaseAdmin.monitors,
-                :design_doc => 'monitors',
-                   :view => 'get_active_monitors',
-                         :json_doc => $path_to_json + '/get_monitors.json'}
-     monitors = Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
+     monitors = model.active_monitors
      raise Ragios::MonitorNotFound.new(error: "No active monitor found"), "No active monitor found" if monitors.empty?
      return monitors
    end
 
    def self.get_monitor(id)
-     doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => id}
-     Couchdb.view doc, Ragios::DatabaseAdmin.session
+     model.find(id)
    end
 
    def self.get_all_monitors
-     view = {:database => Ragios::DatabaseAdmin.monitors,
-        :design_doc => 'monitors',
-         :view => 'get_monitors',
-          :json_doc => $path_to_json + '/get_monitors.json'}
-
-     Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
+     model.all
    end
 
   def self.get_monitors(tag = nil)
@@ -90,20 +77,7 @@ class Controller
   end
 
   def self.get_stats(tag = nil)
-    auth_session = Ragios::DatabaseAdmin.session
-    if(tag.nil?)
-      view = {:database => Ragios::DatabaseAdmin.monitors,
-        		:design_doc => 'get_stats',
-         		:view => 'get_stats',
-          		:json_doc => $path_to_json + '/get_stats.json'}
-      Couchdb.find_on_fly(view,auth_session)  
-     else
-       view = {:database => Ragios::DatabaseAdmin.monitors,
-        		:design_doc => 'get_stats',
-         		:view => 'get_tag_and_mature_stats',
-          		:json_doc => $path_to_json + '/get_stats.json'}
-       Couchdb.find_on_fly(view, auth_session, key = tag)
-     end
+    model.stats(tag)
   end
 
   def self.restart_monitor(id)
@@ -115,7 +89,7 @@ class Controller
   end
 
   def self.find_monitors(options) 
-    Couchdb.find_by({:database => Ragios::DatabaseAdmin.monitors, options.keys[0] => options.values[0]},Ragios::DatabaseAdmin.session) 
+    model.where(options)
   end
   
   def self.restart_monitors
@@ -165,9 +139,7 @@ private
   end 
 
   def self.set_active(id)
-    data = {:state => "active"}
-    doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
-    Couchdb.update_doc doc, Ragios::DatabaseAdmin.session
+    model.set_active(id)
   end
 
   def self.restart_monitors_on_server(monitors)
