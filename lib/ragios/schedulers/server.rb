@@ -3,30 +3,12 @@ module Schedulers
 
 class Server
 
-    attr :monitors #list of long running monitors 
+    attr_accessor :monitors #list of long running monitors 
     attr :scheduler
 
     def initialize()
      @scheduler = Rufus::Scheduler.start_new 
     end 
-
-    #create the monitors and add them to the database
-    def create(monitors)
-         auth_session = Ragios::CouchdbAdmin.session
-         database_admin = Ragios::CouchdbAdmin.admin
-         @monitors = monitors 
-         begin
-           Couchdb.create Ragios::CouchdbAdmin.monitors,auth_session
-         rescue CouchdbException 
-         end
-         @monitors.each do |monitor|
-           monitor.creation_date = Time.now.to_s(:long) 
-           monitor.id = UUIDTools::UUID.random_create.to_s
-           options = monitor.options.merge({:creation_date => monitor.creation_date, :state => 'active'})
-           doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => monitor.id, :data => options}
-           Couchdb.create_doc doc,auth_session
-         end
-    end
     
   #returns a list of all active monitors managed by this scheduler
    def get_monitors(tag = nil)
