@@ -1,25 +1,4 @@
 module Ragios
-module InitValues
- def ragios_init_values(options)
-  #translate values of the DSL to a Ragios::Monitors::System object
-  @time_interval = options[:every]
-  
-  options[:notify_interval] = '6h' if options[:notify_interval].nil?
-
-  @notification_interval = options[:notify_interval]
-  @contact = options[:contact]
-  @test_description = options[:test]
-  #@notifier = options[:via]
-
-   #if tag exists assign it
-  @tag = options[:tag] unless options[:tag].nil?
-   
-  #assumes that options[:fixed] and options[failed] are code lambdas when available
-  @fixed =  options[:fixed] unless options[:fixed].nil?
-  @failed = options[:failed] unless options[:failed].nil?
- end 
-end
-
 class Controller
 
   def self.scheduler(sch = nil)    
@@ -101,6 +80,7 @@ class Controller
   def self.add_monitors(monitors_hash)
     monitors  = objectify_monitors(monitors_hash)
     start_monitors_on_server(monitors)
+    model.save(monitors_hash)
   end
 
   def self.run_monitors(monitors_hash)
@@ -111,23 +91,12 @@ class Controller
 private
 
   def self.objectify_monitors(monitoring)
-    monitors = []
+    @monitors = []
     monitoring.each do|options|   
-      module_name = "Monitors"  
-      plugin_name = options[:monitor] 
-      plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize)
-      plugin_class.class_eval do |options|
-        include InitValues 
-      end     
-      plugin = plugin_class.new
-      plugin.init(options)
-      GenericMonitor.class_eval do |options|
-        include InitValues
-      end
-      ragios_monitor = GenericMonitor.new(plugin,options) 
-      monitors << ragios_monitor
+      ragios_monitor = GenericMonitor.new(options) 
+      @monitors << ragios_monitor
     end 
-    monitors
+    @monitors
   end
 
   def self.set_active(id)
@@ -139,12 +108,12 @@ private
   end
 
   def self.start_monitors_on_server(monitors) 
-    scheduler.create monitors
+    scheduler.monitors = monitors
     scheduler.start 
   end
 
   def self.start_monitors_on_core(monitors)
-    scheduler.create monitors
+    scheduler.monitors = monitors
     scheduler.init
     scheduler.start 
     scheduler.get_monitors    
