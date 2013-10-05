@@ -2,12 +2,25 @@ module Ragios
   module Model
     class CouchdbMonitorModel
     
+      def self.save(monitors_list) 
+    		begin
+      		Couchdb.create monitors,auth_session
+    		rescue CouchdbException 
+    		end
+    		monitors_list.each do |monitor|
+      		id = UUIDTools::UUID.random_create.to_s
+      		monitor.merge!({:_created_at => Time.now.to_s(:long) , :_state => 'active'})
+      		doc = {:database => monitors, :doc_id => id, :data => monitor}
+      		Couchdb.create_doc doc,auth_session
+    		end
+      end
+    
       def self.delete(id)
-          Couchdb.delete_doc({:database => monitors, :doc_id => id},auth_session)
+        Couchdb.delete_doc({:database => monitors, :doc_id => id},auth_session)
       end
       
       def self.find(id)
-          monitor = Couchdb.view({:database => monitors, :doc_id => id},auth_session) 
+        monitor = Couchdb.view({:database => monitors, :doc_id => id},auth_session) 
      end
       
       def self.update(id,options)
