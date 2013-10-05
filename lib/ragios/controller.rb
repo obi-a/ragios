@@ -85,7 +85,7 @@ class Controller
     raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
     return monitors[0] if monitors[0]["state"] == "active"
     set_active(id)
-    start_monitors(monitors.transform_keys_to_symbols,server='restart')
+    restart_monitors_on_server(objectify_monitors(monitors.transform_keys_to_symbols))
   end
 
   def self.find_monitors(options) 
@@ -93,21 +93,24 @@ class Controller
   end
   
   def self.restart_monitors
-    monitors = get_active_monitors
-    start_monitors(monitors.transform_keys_to_symbols,server='restart')
+    monitors_hash = get_active_monitors
+    monitors = objectify_monitors(monitors_hash.transform_keys_to_symbols)
+    restart_monitors_on_server(monitors)
   end
 
-  def self.add_monitors(monitors)
-    start_monitors(monitors,server= "start")
+  def self.add_monitors(monitors_hash)
+    monitors  = objectify_monitors(monitors_hash)
+    start_monitors_on_server(monitors)
   end
 
-  def self.run_monitors(monitors)
-    start_monitors(monitors)
+  def self.run_monitors(monitors_hash)
+    monitors = objectify_monitors(monitors_hash)
+    start_monitors_on_core(monitors)
   end
 
 private
 
-  def self.create_monitors(monitoring)
+  def self.objectify_monitors(monitoring)
     monitors = []
     monitoring.each do|options|   
       module_name = "Monitors"  
@@ -126,17 +129,6 @@ private
     end 
     monitors
   end
-
-  def self.start_monitors(monitoring, server = nil)
-    monitors = create_monitors(monitoring) 
-    if server == 'start'
-      start_monitors_on_server(monitors)
-    elsif server == 'restart'
-      restart_monitors_on_server(monitors)
-    else
-      start_monitors_on_core(monitors) 
-    end
-  end 
 
   def self.set_active(id)
     model.set_active(id)
