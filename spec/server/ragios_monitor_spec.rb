@@ -98,10 +98,10 @@ describe Ragios::Controller do
                    state: "stopped"
                   }
 
-      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'monitor_monitor', :data => data}
+      doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'monitor_monitor', :data => data}
      
      begin
-      Couchdb.create_doc doc,Ragios::DatabaseAdmin.session
+      Couchdb.create_doc doc,Ragios::CouchdbAdmin.session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 

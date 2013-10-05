@@ -21,8 +21,8 @@ module Ragios
               }
       data.merge(:tag => monitor.tag) if defined? monitor.tag
 
-       doc = { :database => Ragios::DatabaseAdmin.activity_log, :doc_id => UUIDTools::UUID.random_create.to_s, :data => data}   
-       Couchdb.create_doc doc,Ragios::DatabaseAdmin.session    
+       doc = { :database => Ragios::CouchdbAdmin.activity_log, :doc_id => UUIDTools::UUID.random_create.to_s, :data => data}   
+       Couchdb.create_doc doc,Ragios::CouchdbAdmin.session    
   end 
 
   def self.activity_log

@@ -12,18 +12,18 @@ class Server
 
     #create the monitors and add them to the database
     def create(monitors)
-         auth_session = Ragios::DatabaseAdmin.session
-         database_admin = Ragios::DatabaseAdmin.admin
+         auth_session = Ragios::CouchdbAdmin.session
+         database_admin = Ragios::CouchdbAdmin.admin
          @monitors = monitors 
          begin
-           Couchdb.create Ragios::DatabaseAdmin.monitors,auth_session
+           Couchdb.create Ragios::CouchdbAdmin.monitors,auth_session
          rescue CouchdbException 
          end
          @monitors.each do |monitor|
            monitor.creation_date = Time.now.to_s(:long) 
            monitor.id = UUIDTools::UUID.random_create.to_s
            options = monitor.options.merge({:creation_date => monitor.creation_date, :state => 'active'})
-           doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => monitor.id, :data => options}
+           doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => monitor.id, :data => options}
            Couchdb.create_doc doc,auth_session
          end
     end
@@ -48,8 +48,8 @@ class Server
    end
    begin
      data = {:state => "stopped"}
-     doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
-     Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
+     doc = { :database => Ragios::CouchdbAdmin.monitors, :doc_id => id, :data => data}   
+     Couchdb.update_doc doc,Ragios::CouchdbAdmin.session
     rescue CouchdbException => e
       e.error
     end      
@@ -112,8 +112,8 @@ class Server
          :last_test_result => monitor.test_result.to_s,  
          :status => monitor.status,
          :state => "active" }
-     doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => monitor.id, :data => data}   
-     Couchdb.update_doc doc,Ragios::DatabaseAdmin.session
+     doc = { :database => Ragios::CouchdbAdmin.monitors, :doc_id => monitor.id, :data => data}   
+     Couchdb.update_doc doc,Ragios::CouchdbAdmin.session
   end #end of do_task
  end # end of class
  end

@@ -1,5 +1,5 @@
 module Ragios
-  class DatabaseAdmin
+  class CouchdbAdmin
     def self.config(database_config)
      @username = database_config[:login][:username]
      @password = database_config[:login][:password]

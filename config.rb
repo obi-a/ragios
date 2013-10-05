@@ -41,4 +41,4 @@ database_admin = {login:     {username: ENV['COUCHDB_ADMIN_USERNAME'],
                              port:'5984'}
                  } 
 
-Ragios::DatabaseAdmin.config(database_admin)
+Ragios::CouchdbAdmin.config(database_admin)

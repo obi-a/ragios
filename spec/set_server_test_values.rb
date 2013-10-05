@@ -1,11 +1,11 @@
 #prepare database for testing the server
-database_admin = Ragios::DatabaseAdmin.admin
+database_admin = Ragios::CouchdbAdmin.admin
 
 hash = Couchdb.login(username = database_admin[:username], password = database_admin[:password]) 
 auth_session =  hash["AuthSession"]
 
 begin
- Couchdb.create Ragios::DatabaseAdmin.monitors,auth_session
+ Couchdb.create Ragios::CouchdbAdmin.monitors,auth_session
 rescue CouchdbException => e
 end
 
@@ -20,7 +20,7 @@ end
                    notify_interval:'3h'
                   }
 
-      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'trial_monitor', :data => data}
+      doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'trial_monitor', :data => data}
      begin
       Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
@@ -46,7 +46,7 @@ end
                    state: "stopped"
                   }
 
-      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'active_monitor', :data => data}
+      doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'active_monitor', :data => data}
      begin
       Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e
@@ -64,7 +64,7 @@ end
                    notify_interval:'3h'
                   }
 
-      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'to_be_deleted', :data => data}
+      doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'to_be_deleted', :data => data}
      begin
       Couchdb.create_doc doc,auth_session
      rescue CouchdbException => e

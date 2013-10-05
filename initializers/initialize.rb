@@ -1,5 +1,5 @@
 #create database if it doesn't already exisit
-Ragios::DatabaseAdmin.create_database
+Ragios::CouchdbAdmin.create_database
 
 controller = Ragios::Controller
 controller.scheduler(Ragios::Schedulers::Server.new)

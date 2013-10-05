@@ -3,59 +3,57 @@ module Ragios
     class CouchdbModel
     
       def self.delete(id)
-          Couchdb.delete_doc({:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},Ragios::DatabaseAdmin.session)
+          Couchdb.delete_doc({:database => monitors, :doc_id => id},auth_session)
       end
       
       def self.find(id)
-          monitor = Couchdb.view({:database => Ragios::DatabaseAdmin.monitors, :doc_id => id},Ragios::DatabaseAdmin.session) 
+          monitor = Couchdb.view({:database => monitors, :doc_id => id},auth_session) 
      end
       
       def self.update(id,options)
-        auth_session = Ragios::DatabaseAdmin.session
-        doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => options}   
+        doc = { :database => monitors, :doc_id => id, :data => options}   
         Couchdb.update_doc doc,auth_session
       end
       
       def self.active_monitors
-        view = {:database => Ragios::DatabaseAdmin.monitors,
+        view = {:database => monitors,
                 :design_doc => 'monitors',
                    :view => 'get_active_monitors',
                          :json_doc => $path_to_json + '/get_monitors.json'}
-        Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
+        Couchdb.find_on_fly(view,auth_session)
       end
       
       def self.all
-        view = {:database => Ragios::DatabaseAdmin.monitors,
+        view = {:database => monitors,
         						:design_doc => 'monitors',
          								:view => 'get_monitors',
           								:json_doc => $path_to_json + '/get_monitors.json'}
 
-        Couchdb.find_on_fly(view,Ragios::DatabaseAdmin.session)
+        Couchdb.find_on_fly(view,auth_session)
       end
       
       def self.where(options)
-        Couchdb.find_by({:database => Ragios::DatabaseAdmin.monitors, options.keys[0] => options.values[0]},Ragios::DatabaseAdmin.session) 
+        Couchdb.find_by({:database => monitors, options.keys[0] => options.values[0]},auth_session) 
       end
       
       def self.set_active(id)
         data = {:state => "active"}
-        doc = { :database => Ragios::DatabaseAdmin.monitors, :doc_id => id, :data => data}   
-        Couchdb.update_doc doc, Ragios::DatabaseAdmin.session
+        doc = { :database => monitors, :doc_id => id, :data => data}   
+        Couchdb.update_doc doc, auth_session
       end
       
       def self.stop
       end
       
       def self.stats(tag = nil)
-        auth_session = Ragios::DatabaseAdmin.session
         if(tag.nil?)
-          view = {:database => Ragios::DatabaseAdmin.monitors,
+          view = {:database => monitors,
         		:design_doc => 'get_stats',
          		:view => 'get_stats',
           		:json_doc => $path_to_json + '/get_stats.json'}
           Couchdb.find_on_fly(view,auth_session)  
         else
-          view = {:database => Ragios::DatabaseAdmin.monitors,
+          view = {:database => monitors,
         		:design_doc => 'get_stats',
          		:view => 'get_tag_and_mature_stats',
           		:json_doc => $path_to_json + '/get_stats.json'}
@@ -65,8 +63,12 @@ module Ragios
       
       private 
       
+      def self.monitors
+        Ragios::CouchdbAdmin.monitors
+      end
+      
       def self.auth_session
-        Ragios::DatabaseAdmin.session
+        Ragios::CouchdbAdmin.session
       end
     
     end

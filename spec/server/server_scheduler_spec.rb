@@ -132,9 +132,9 @@ describe Ragios::Schedulers::Server do
                    notify_interval:'3h'
                   }
 
-      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'test_monitor', :data => data}
+      doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'test_monitor', :data => data}
      begin
-      Couchdb.create_doc doc,Ragios::DatabaseAdmin.session
+      Couchdb.create_doc doc,Ragios::CouchdbAdmin.session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -162,9 +162,9 @@ describe Ragios::Schedulers::Server do
                    notify_interval:'3h'
                   }
 
-      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'test-2-somewhere', :data => data}
+      doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'test-2-somewhere', :data => data}
      begin
-      Couchdb.create_doc doc,Ragios::DatabaseAdmin.session
+      Couchdb.create_doc doc,Ragios::CouchdbAdmin.session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end 
@@ -173,11 +173,11 @@ describe Ragios::Schedulers::Server do
       @ragios.do_task(Monitor4.new)
 
       #The running monitor should match the logged activity information
-      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'test-2-somewhere'}
-      hash = Couchdb.view doc,Ragios::DatabaseAdmin.session
+      doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'test-2-somewhere'}
+      hash = Couchdb.view doc,Ragios::CouchdbAdmin.session
 
       keys = {:time_of_test => hash["time_of_last_test"],:monitor_id => 'test-2-somewhere'}
-      activities = Couchdb.find_by_keys({:database => Ragios::DatabaseAdmin.activity_log, :keys => keys},Ragios::DatabaseAdmin.session)
+      activities = Couchdb.find_by_keys({:database => Ragios::CouchdbAdmin.activity_log, :keys => keys},Ragios::CouchdbAdmin.session)
       activity = activities[0]
 
       #proof that the task was excuted
@@ -191,7 +191,7 @@ describe Ragios::Schedulers::Server do
       hash["_id"].should == activity["monitor_id"]
       
       #clean up
-      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'test-2-somewhere'}
-      Couchdb.delete_doc doc,Ragios::DatabaseAdmin.session
+      doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'test-2-somewhere'}
+      Couchdb.delete_doc doc,Ragios::CouchdbAdmin.session
     end
 end

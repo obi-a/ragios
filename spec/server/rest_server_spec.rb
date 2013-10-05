@@ -91,9 +91,9 @@ it "should restart a stopped monitor" do
                    state: "stopped"
                   }
 
-      doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'rest_monitor', :data => data}
+      doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'rest_monitor', :data => data}
      begin
-      Couchdb.create_doc doc,Ragios::DatabaseAdmin.session
+      Couchdb.create_doc doc,Ragios::CouchdbAdmin.session
      rescue CouchdbException => e
        #puts "Error message: " + e.to_s
      end  
@@ -168,8 +168,8 @@ it "should update a running monitor" do
   response.code.should == 200
   response.should include('{"ok":"true"}')
 
-  doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'rest_monitor'}
-  hash = Couchdb.view doc,Ragios::DatabaseAdmin.session
+  doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'rest_monitor'}
+  hash = Couchdb.view doc,Ragios::CouchdbAdmin.session
   hash["_id"].should == 'rest_monitor'
   hash["contact"].should == 'admin@aol.com'
   hash["every"].should == '55h'
@@ -196,8 +196,8 @@ it "should update a stopped monitor and remain stopped" do
   response.code.should == 200
   response.should include('{"ok":"true"}')
 
-  doc = {:database => Ragios::DatabaseAdmin.monitors, :doc_id => 'rest_monitor'}
-  hash = Couchdb.view doc,Ragios::DatabaseAdmin.session
+  doc = {:database => Ragios::CouchdbAdmin.monitors, :doc_id => 'rest_monitor'}
+  hash = Couchdb.view doc,Ragios::CouchdbAdmin.session
   hash["_id"].should == 'rest_monitor'
   hash["contact"].should == 'bill@java.com'
   hash["every"].should == '43d'
