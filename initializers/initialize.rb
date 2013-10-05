@@ -3,7 +3,7 @@ Ragios::CouchdbAdmin.create_database
 
 controller = Ragios::Controller
 controller.scheduler(Ragios::Schedulers::Server.new)
-controller.model(Ragios::Model::CouchdbModel)
+controller.model(Ragios::Model::CouchdbMonitorModel)
 
 begin
   controller.restart_monitors

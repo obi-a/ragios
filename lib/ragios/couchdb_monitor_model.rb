@@ -1,6 +1,6 @@
 module Ragios
   module Model
-    class CouchdbModel
+    class CouchdbMonitorModel
     
       def self.delete(id)
           Couchdb.delete_doc({:database => monitors, :doc_id => id},auth_session)

@@ -3,7 +3,7 @@ require 'rest_client'
 require 'yajl'
 
 Ragios::Controller.scheduler(Ragios::Schedulers::Server.new)
-Ragios::Controller.model(Ragios::Model::CouchdbModel)
+Ragios::Controller.model(Ragios::Model::CouchdbMonitorModel)
 
 describe "REST interface to Ragios Monitor" do
 

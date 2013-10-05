@@ -2,7 +2,7 @@ require 'spec_base.rb'
 require 'set_server_test_values.rb'
 
 Ragios::Controller.scheduler(Ragios::Schedulers::Server.new)
-Ragios::Controller.model(Ragios::Model::CouchdbModel)
+Ragios::Controller.model(Ragios::Model::CouchdbMonitorModel)
 
 
 describe "monitors" do
