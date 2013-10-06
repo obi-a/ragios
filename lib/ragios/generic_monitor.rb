@@ -53,11 +53,11 @@ private
    end
    
    def create_plugin
-     raise Ragios::PluginNotFound.new(error: "No Plugin Found"), "No Notifier Found" unless @options.has_key?(:monitor)
+     raise Ragios::PluginNotFound.new(error: "No Plugin Found"), "No Plugin Found" unless @options.has_key?(:monitor)
      module_name = "Monitors"  
      plugin_name = @options[:monitor] 
      plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize) 
-     plugin_class.new
+     plugin = plugin_class.new
      plugin.init(@options)
      @plugin  = plugin
    end
