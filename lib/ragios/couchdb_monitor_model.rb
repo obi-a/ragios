@@ -11,8 +11,10 @@ module Ragios
       		id = UUIDTools::UUID.random_create.to_s
       		monitor.merge!({:_created_at => Time.now.to_s(:long) , :_state => 'active'})
       		doc = {:database => monitors, :doc_id => id, :data => monitor}
-      		Couchdb.create_doc doc,auth_session
+      		hash = Couchdb.create_doc doc,auth_session
+      		monitor.merge!(:_id => id)
     		end
+    		return monitors_list
       end
     
       def self.delete(id)
@@ -47,32 +49,7 @@ module Ragios
       
       def self.where(options)
         Couchdb.find_by({:database => monitors, options.keys[0] => options.values[0]},auth_session) 
-      end
-      
-      def self.set_active(id)
-        data = {:state => "active"}
-        doc = { :database => monitors, :doc_id => id, :data => data}   
-        Couchdb.update_doc doc, auth_session
-      end
-      
-      def self.stop
-      end
-      
-      def self.stats(tag = nil)
-        if(tag.nil?)
-          view = {:database => monitors,
-        		:design_doc => 'get_stats',
-         		:view => 'get_stats',
-          		:json_doc => $path_to_json + '/get_stats.json'}
-          Couchdb.find_on_fly(view,auth_session)  
-        else
-          view = {:database => monitors,
-        		:design_doc => 'get_stats',
-         		:view => 'get_tag_and_mature_stats',
-          		:json_doc => $path_to_json + '/get_stats.json'}
-          Couchdb.find_on_fly(view, auth_session, key = tag)
-        end
-      end
+      end      
       
       private 
       
@@ -87,4 +64,3 @@ module Ragios
     end
   end
 end  
-
