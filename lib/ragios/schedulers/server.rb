@@ -27,14 +27,7 @@ class Server
    jobs = @scheduler.find_by_tag(id)
    jobs.each do |job| 
      job.unschedule
-   end
-   begin
-     data = {:state => "stopped"}
-     doc = { :database => Ragios::CouchdbAdmin.monitors, :doc_id => id, :data => data}   
-     Couchdb.update_doc doc,Ragios::CouchdbAdmin.session
-    rescue CouchdbException => e
-      e.error
-    end      
+   end 
  end
 
 

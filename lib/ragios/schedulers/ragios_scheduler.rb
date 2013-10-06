@@ -4,7 +4,7 @@ module Schedulers
 
 class RagiosScheduler
     
-    attr :monitors #list of long running monitors
+    attr_accessor :monitors #list of long running monitors
 
     def create(monitors)
          @monitors = monitors 
