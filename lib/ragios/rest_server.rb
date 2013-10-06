@@ -146,31 +146,6 @@ put '/monitors/:id*', :check => :valid_token? do
   end
 end
 
-get '/scheduler/monitors/:id*', :check => :valid_token? do
-  begin
-     id = params[:id]
-     sch = controller.get_monitors_frm_scheduler(id)
-     content_type('application/json')
-     sch.inspect
-  rescue CouchdbException => e
-     content_type('application/json')
-     status 500
-     body  Yajl::Encoder.encode({error: "something went wrong"})
-  end
-end
-
-get '/scheduler/monitors*', :check => :valid_token? do
-  begin
-     sch = controller.get_monitors_frm_scheduler
-     content_type('application/json')
-     sch.inspect
-  rescue CouchdbException => e
-     content_type('application/json')
-     status 500
-     body  Yajl::Encoder.encode({error: "something went wrong"})
-  end
-end
-
 get '/monitors/:id*', :check => :valid_token? do
   begin
    id = params[:id]
