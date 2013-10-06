@@ -9,62 +9,47 @@ class Controller
     @model ||= m
   end
 
-  def self.stop_monitor(id)
-    scheduler.stop_monitor(id)
+  def self.stop_monitor(monitor_id)
+    scheduler.stop(monitor_id)
+    set_stopped(monitor_id)
   end
 
-  def self.delete_monitor(id)
-    monitor = model.find(id)
-    stop_monitor(id) if(monitor["state"] == "active")
-    model.delete(id)
+  def self.delete_monitor(monitor_id)
+    monitor = model.find(monitor_id)
+    stop_monitor(monitor_id) if is_active?(monitor)
+    model.delete(monitor_id)
   end
 
-  def self.update_monitor(id, options)
-    model.update(id,options)
-    monitor = model.find(id)
-    if(monitor["state"] == "active")
-      stop_monitor(id)
-      restart_monitor(id)
+  def self.update_monitor(monitor_id, options)
+    model.update(monitor_id,options)
+    monitor = model.find(monitor_id)
+    if is_active?(monitor)
+      stop_monitor(monitor_id)
+      restart_monitor(monitor_id)
     end
   end
 
-  #returns a list of all active monitors in the database
-   def self.get_active_monitors
-     monitors = model.active_monitors
-     raise Ragios::MonitorNotFound.new(error: "No active monitor found"), "No active monitor found" if monitors.empty?
-     return monitors
-   end
-
-   def self.get_monitor(id)
-     model.find(id)
+   def self.get_monitor(monitor_id)
+     model.find(monitor_id)
    end
 
    def self.get_all_monitors
      model.all
    end
 
-  def self.get_monitors(tag = nil)
-    scheduler.get_monitors(tag)
-  end
-
-  def self.get_monitors_frm_scheduler(tag = nil)
-    if (tag.nil?)
-      scheduler.get_monitors
-    else
-      scheduler.get_monitors(tag)
-    end
-  end
-
-  def self.get_stats(tag = nil)
-    model.stats(tag)
-  end
-
-  def self.restart_monitor(id)
-    monitors = find_monitors(:_id => id)
+  def self.restart_monitor(monitor_id)
+    monitors = find_monitors(:_id => monitor_id)
     raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
-    return monitors[0] if monitors[0]["state"] == "active"
-    set_active(id)
-    restart_monitors_on_server(objectify_monitors(monitors.transform_keys_to_symbols))
+    return monitors[0] if is_active?(monitors[0])
+    set_active(monitor_id)
+    generic_monitors = objectify_monitors(monitors.transform_keys_to_symbols)
+    add_to_Scheduler(generic_monitors)
+  end
+  
+  def self.test_now(monitor_id)
+    monitor = model.find(monitor_id)
+    generic_monitor = objectify(monitor)
+    perform(generic_monitor)
   end
 
   def self.find_monitors(options) 
@@ -72,44 +57,69 @@ class Controller
   end
   
   def self.restart_monitors
-    monitors_hash = get_active_monitors
-    monitors = objectify_monitors(monitors_hash.transform_keys_to_symbols)
-    restart_monitors_on_server(monitors)
+    monitors = get_active_monitors_from_database
+    generic_monitors = objectify_monitors(monitors.transform_keys_to_symbols)
+    add_to_scheduler(generic_monitors)
   end
 
-  def self.add_monitors(monitors_hash)
-    monitors  = objectify_monitors(monitors_hash)
-    start_monitors_on_server(monitors)
-    model.save(monitors_hash)
+  def self.add_monitors(monitors)
+    monitors =  model.save(monitors)
+    generic_monitors  = objectify_monitors(monitors)
+    add_to_scheduler(generic_monitors)
   end
 
-  def self.run_monitors(monitors_hash)
-    monitors = objectify_monitors(monitors_hash)
-    start_monitors_on_core(monitors)
+  def self.run_monitors(monitors)
+    generic_monitors = objectify_monitors(monitors)
+    start_monitors_on_core(generic_monitors)
   end
+  
+  def self.perform(generic_monitor)
+    puts "we outchea"
+  end
+  
 
 private
 
-  def self.objectify_monitors(monitoring)
-    @monitors = []
-    monitoring.each do|options|   
-      ragios_monitor = GenericMonitor.new(options) 
-      @monitors << ragios_monitor
+  def self.get_active_monitors_from_database
+    monitors = model.active_monitors
+    raise Ragios::MonitorNotFound.new(error: "No active monitor found"), "No active monitor found" if monitors.empty?
+    return monitors
+  end
+  
+  def self.objectify(options)
+  	GenericMonitor.new(options) 
+  end
+
+  def self.objectify_monitors(monitors)
+    generic_monitors = []
+    monitors.each do|options|   
+			generic_monitors << objectify(options)
     end 
-    @monitors
+    generic_monitors
+  end
+  
+  def self.is_active?(monitor)
+  	monitor["state"] == "active"
   end
 
-  def self.set_active(id)
-    model.set_active(id)
+  def self.set_active(monitor_id)
+    state = {:state => "active"}
+    model.update(monitor_id,state)
+  end
+  
+  def self.set_stopped(monitor_id)
+  	state = {:state => "stopped"}
+    model.update(monitor_id,state)
   end
 
-  def self.restart_monitors_on_server(monitors)
-    scheduler.restart monitors 
-  end
-
-  def self.start_monitors_on_server(monitors) 
-    scheduler.monitors = monitors
-    scheduler.start 
+  def self.add_to_scheduler(generic_monitors)
+    scheduler.restart generic_monitors 
+    generic_monitors.each do |monitor|
+    	args = {time_interval: monitor.options[:every],
+              tags: monitor.options[:_id],
+              object: self }
+    	scheduler.schedule(args)
+    end
   end
 
   def self.start_monitors_on_core(monitors)
