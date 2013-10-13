@@ -11,6 +11,7 @@ gem "rspec"
 gem "rake"
 gem "aws-ses"
 gem 'pry'
+gem 'state_machine'
 
 #uncomment this for ragios server
 gem "sinatra"
