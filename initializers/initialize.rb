@@ -2,7 +2,7 @@
 Ragios::CouchdbAdmin.create_database
 
 controller = Ragios::Controller
-controller.scheduler(Ragios::Schedulers::Server.new)
+controller.scheduler(Ragios::Scheduler.new(controller))
 controller.model(Ragios::Model::CouchdbMonitorModel)
 
 begin
