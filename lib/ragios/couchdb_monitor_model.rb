@@ -8,13 +8,9 @@ module Ragios
     		rescue CouchdbException 
     		end
     		monitors_list.each do |monitor|
-      		id = UUIDTools::UUID.random_create.to_s
-      		monitor.merge!({:_created_at => Time.now.to_s(:long) , :_state => 'active'})
-      		doc = {:database => monitors, :doc_id => id, :data => monitor}
+      		doc = {:database => monitors, :doc_id => monitor[:_id], :data => monitor}
       		hash = Couchdb.create_doc doc,auth_session
-      		monitor.merge!(:_id => id)
     		end
-    		return monitors_list
       end
     
       def self.delete(id)

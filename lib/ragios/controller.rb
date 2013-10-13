@@ -43,7 +43,7 @@ class Controller
     return monitors[0] if is_active?(monitors[0])
     set_active(monitor_id)
     generic_monitors = objectify_monitors(monitors.transform_keys_to_symbols)
-    add_to_Scheduler(generic_monitors)
+    add_to_scheduler(generic_monitors)
   end
   
   def self.test_now(monitor_id)
@@ -63,7 +63,11 @@ class Controller
   end
 
   def self.add_monitors(monitors)
-    monitors =  model.save(monitors)
+    monitors.each do |monitor|
+      id = UUIDTools::UUID.random_create.to_s
+      monitor.merge!({:created_at_ => Time.now.to_s(:long) , :status_ => 'active', :_id => id})
+    end
+    model.save(monitors)
     generic_monitors  = objectify_monitors(monitors)
     add_to_scheduler(generic_monitors)
   end
@@ -99,21 +103,20 @@ private
   end
   
   def self.is_active?(monitor)
-  	monitor["state"] == "active"
+  	monitor["status_"] == "active"
   end
 
   def self.set_active(monitor_id)
-    state = {:state => "active"}
-    model.update(monitor_id,state)
+    status = {:status_ => "active"}
+    model.update(monitor_id,status)
   end
   
   def self.set_stopped(monitor_id)
-  	state = {:state => "stopped"}
-    model.update(monitor_id,state)
+  	status = {:status_ => "stopped"}
+    model.update(monitor_id,status)
   end
 
   def self.add_to_scheduler(generic_monitors)
-    scheduler.restart generic_monitors 
     generic_monitors.each do |monitor|
     	args = {time_interval: monitor.options[:every],
               tags: monitor.options[:_id],
