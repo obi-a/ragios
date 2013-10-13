@@ -78,11 +78,21 @@ class Controller
   end
   
   def self.perform(generic_monitor)
-    puts "we outchea"
+    generic_monitor.test_command
+    update_state(generic_monitor)
+    #log_results(generic_monitor)
   end
   
 
 private
+
+	def update_state(generic_monitor)
+		options = {:time_of_last_test_ => generic_monitor.time_of_last_test.to_s, 
+         		:test_result_ => generic_monitor.test_result.to_s,  
+        		:state_ => generic_monitor.state,
+            :status_ => "active" }
+    model.update(generic_monitor.options[:_id],options)
+	end
 
   def self.get_active_monitors_from_database
     monitors = model.active_monitors
