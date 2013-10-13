@@ -9,4 +9,6 @@ module Ragios
   class MonitorNotFound < StandardError; end
   class NotifierNotFound < StandardError; end
   class PluginNotFound < StandardError; end
+  class PluginTestCommandNotFound < StandardError; end
+  class PluginTestResultNotFound < StandardError; end
 end
