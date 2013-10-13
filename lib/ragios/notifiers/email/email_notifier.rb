@@ -6,7 +6,7 @@ module Ragios
     def message template
       message_template = ERB.new(File.new("#{$path_to_messages}/#{template}").read)
       @body = message_template.result(binding)
-      @message = {:to => @monitor[:contact],
+      @message = {:to => @monitor.options[:contact],
                   :subject => @subject, 
                   :body => @body}
     end 
