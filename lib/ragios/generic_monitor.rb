@@ -4,10 +4,9 @@ module Ragios
   	attr_reader :plugin
   	attr_reader :options
   	attr_reader :id
-  	#attr_accessor :tag
-  	attr_accessor :status
-  	attr_accessor :was_down
+  	attr_reader :test_result
   	attr_accessor :state
+  	attr_reader :time_of_last_test
   	
   	state_machine :state, :initial => :pending do
   	
@@ -33,15 +32,14 @@ module Ragios
     end
     
     def test_command
-      if @plugin.respond_to?('test_command')
-        status =  @plugin.test_command 
-        if defined?(@plugin.test_result)
-          @test_result = @plugin.test_result
-        else
-          raise '@test_result must be defined in ' + @plugin.to_s
-        end
-     end
-     return status
+      raise Ragios::PluginTestCommandNotFound.new(error: "No test_command found for #{@plugin.class} plugin"), "No test_command found for #{@plugin.class} plugin" unless @plugin.respond_to?('test_command')
+      @time_of_last_test = Time.now.to_s(:long)
+     	state =  @plugin.test_command 
+     	raise Ragios::PluginTestResultNotFound.new(error: "No test_result found for #{@plugin.class} plugin"), "No test_result found for #{@plugin.class} plugin" unless defined?(@plugin.test_result)
+      @test_result = @plugin.test_result
+      fire_state_event(:success) if state == true
+      fire_state_event(:failure) if state == false
+      return state
    end
 
    def failed
