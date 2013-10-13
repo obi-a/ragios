@@ -8,12 +8,28 @@ module Ragios
   	attr_accessor :status
   	attr_accessor :was_down
   	attr_accessor :state
-
+  	
+  	state_machine :state, :initial => :pending do
+  	
+  	  before_transition :from => :pending, :to => :failed, :do => :notify
+  	  before_transition :from => :failed, :to => :passed, :do => :fixed
+  	  before_transition :from => :passed, :to => :failed, :do => :notify
+  	
+  		event :success do 
+  	  	transition all => :passed
+  		end
+  	
+  		event :failure do
+  	 		transition :passed => :failed
+  		end
+		end
       
     def initialize(options)
       @options = options
+      set_previous_state
       create_plugin 
-      create_notifier    
+      create_notifier  
+      super()  
     end
     
     def test_command
@@ -36,17 +52,27 @@ module Ragios
    end
      
    def notify
-     @notifier.notify if @notifier.respond_to?('notify')
+     puts "Notify: hey What's up"
+     #@notifier.notify if @notifier.respond_to?('notify')
+     failed
    end
 
    def fixed
-     @notifier.resolved
+     puts "Resolved: fist bump token"
+     #@notifier.resolved
      unless @fixed.nil?
        @fixed.call if @fixed.lambda?
      end
   end
 
 private
+   def set_previous_state
+     if @options[:state_]
+       @state = @options[:state_]
+       @options.delete(:state_) 
+     end   
+   end
+   
    def create_notifier
      raise Ragios::NotifierNotFound.new(error: "No Notifier Found"), "No Notifier Found" unless @options.has_key?(:via)
      @notifier = (Module.const_get("Ragios").const_get("Notifier").const_get(@options[:via].camelize)).new(self)
