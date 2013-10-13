@@ -20,7 +20,7 @@ module Ragios
   		end
   	
   		event :failure do
-  	 		transition :passed => :failed
+  	 		transition :passed => :failed, :pending => :failed
   		end
 		end
       
@@ -52,14 +52,12 @@ module Ragios
    end
      
    def notify
-     puts "Notify: hey What's up"
-     #@notifier.notify if @notifier.respond_to?('notify')
+     @notifier.notify if @notifier.respond_to?('notify')
      failed
    end
 
    def fixed
-     puts "Resolved: fist bump token"
-     #@notifier.resolved
+     @notifier.resolved
      unless @fixed.nil?
        @fixed.call if @fixed.lambda?
      end
