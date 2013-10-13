@@ -1,8 +1,8 @@
-<% @subject = "#{@monitor.test_description} FAILED" %>
+<% @subject = "#{@monitor[:test_description]} FAILED" %>
 
-<%= @monitor.test_description %> FAILED
+<%= @monitor[:test_description] %> FAILED
 
-<%= @monitor.describe_test_result %> = <%= @monitor.test_result.to_s %>
+<%= @monitor[:describe_test_result] %> = <%= @monitor[:test_result].to_s %>
 
 This message was created at <%= Time.now.to_s(:long) %>
 
