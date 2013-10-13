@@ -7,6 +7,9 @@
   require 'yajl'
 
  #Add your code here
+ 
+ 
+ m = { monitor:'url', every:'5m', test:'video datafeed test', url:'http://www.datafeed.com/resources/videos/1', contact:'admin@mail.com', via:'gmail_notifier', notify_interval:'6h'}
 
   monitoring = { tag: 'admin',
                  monitor: 'url',
