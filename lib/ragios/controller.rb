@@ -130,7 +130,7 @@ private
     generic_monitors.each do |monitor|
     	args = {time_interval: monitor.options[:every],
               tags: monitor.options[:_id],
-              object: self }
+              object: monitor }
     	scheduler.schedule(args)
     end
   end
