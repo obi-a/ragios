@@ -86,7 +86,7 @@ class Controller
 
 private
 
-	def update_state(generic_monitor)
+	def self.update_state(generic_monitor)
 		options = {:time_of_last_test_ => generic_monitor.time_of_last_test.to_s, 
          		:test_result_ => generic_monitor.test_result.to_s,  
         		:state_ => generic_monitor.state,
