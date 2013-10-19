@@ -25,11 +25,6 @@ require_all '/ragios/notifiers'
 
 require_all '/ragios/plugins'
 
-#schedulers
-require dir + 'ragios/schedulers/ragios_scheduler'
-require dir + 'ragios/schedulers/notification_scheduler'
-require dir + 'ragios/schedulers/server'
-
 #system
 require_all '/ragios'
 
