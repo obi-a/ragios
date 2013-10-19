@@ -23,10 +23,6 @@ end
 require dir + 'ragios/notifiers/email/email_notifier'
 require_all '/ragios/notifiers'
 
-
-
-#monitors and plugins 
-require dir + 'ragios/monitors/system'
 require_all '/ragios/plugins'
 
 #schedulers
