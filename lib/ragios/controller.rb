@@ -38,7 +38,7 @@ class Controller
    end
 
   def self.restart_monitor(monitor_id)
-    monitors = find_monitors(:_id => monitor_id)
+    monitors = find_by(:_id => monitor_id)
     raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
     return monitors[0] if is_active?(monitors[0])
     set_active(monitor_id)
@@ -52,7 +52,7 @@ class Controller
     perform(generic_monitor)
   end
 
-  def self.find_monitors(options) 
+  def self.find_by(options) 
     model.where(options)
   end
   
