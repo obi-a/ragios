@@ -9,35 +9,35 @@ class Controller
     @model ||= m
   end
 
-  def self.stop_monitor(monitor_id)
+  def self.stop(monitor_id)
     scheduler.stop(monitor_id)
     set_stopped(monitor_id)
   end
 
-  def self.delete_monitor(monitor_id)
+  def self.delete(monitor_id)
     monitor = model.find(monitor_id)
-    stop_monitor(monitor_id) if is_active?(monitor)
+    stop(monitor_id) if is_active?(monitor)
     model.delete(monitor_id)
   end
 
-  def self.update_monitor(monitor_id, options)
+  def self.update(monitor_id, options)
     model.update(monitor_id,options)
     monitor = model.find(monitor_id)
     if is_active?(monitor)
-      stop_monitor(monitor_id)
-      restart_monitor(monitor_id)
+      stop(monitor_id)
+      restart(monitor_id)
     end
   end
 
-   def self.get_monitor(monitor_id)
+   def self.get(monitor_id)
      model.find(monitor_id)
    end
 
-   def self.get_all_monitors
+   def self.get_all
      model.all
    end
 
-  def self.restart_monitor(monitor_id)
+  def self.restart(monitor_id)
     monitors = find_by(:_id => monitor_id)
     raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
     return monitors[0] if is_active?(monitors[0])
@@ -56,13 +56,13 @@ class Controller
     model.where(options)
   end
   
-  def self.restart_monitors
+  def self.restart_all
     monitors = get_active_monitors_from_database
     generic_monitors = objectify_monitors(monitors.transform_keys_to_symbols)
     add_to_scheduler(generic_monitors)
   end
 
-  def self.add_monitors(monitors)
+  def self.add(monitors)
     monitors.each do |monitor|
       id = UUIDTools::UUID.random_create.to_s
       monitor.merge!({:created_at_ => Time.now.to_s(:long) , :status_ => 'active', :_id => id})
@@ -72,9 +72,9 @@ class Controller
     add_to_scheduler(generic_monitors)
   end
 
-  def self.run_monitors(monitors)
+  def self.run(monitors)
 		@dont_save = true
-		add_monitors(monitors)
+		add(monitors)
   end
   
   def self.perform(generic_monitor)

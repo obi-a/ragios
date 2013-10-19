@@ -6,6 +6,6 @@ controller.scheduler(Ragios::Scheduler.new(controller))
 controller.model(Ragios::Model::CouchdbMonitorModel)
 
 begin
-  controller.restart_monitors
+  controller.restart_all
 rescue Ragios::MonitorNotFound
 end

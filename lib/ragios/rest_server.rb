@@ -58,7 +58,7 @@ end
 post '/monitors*', :check => :valid_token? do
  begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
-  controller.add_monitors(monitors)
+  controller.add(monitors)
   content_type('application/json')
   Yajl::Encoder.encode({ok:"true"})
  rescue 
@@ -72,7 +72,7 @@ get '/monitors*', :check => :valid_token? do
     pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
     key = params.keys[0]
     value = params[key]
-    monitors = controller.find_monitors(key.to_sym => value)
+    monitors = controller.find_by(key.to_sym => value)
     m = Yajl::Encoder.encode(monitors)
     content_type('application/json')
     if m.to_s == '[]'
@@ -84,8 +84,8 @@ get '/monitors*', :check => :valid_token? do
 end
 
 delete '/monitors/:id*', :check => :valid_token? do
-   id = params[:id]
-   hash = controller.delete_monitor(id)
+   monitor_id = params[:id]
+   hash = controller.delete(monitor_id)
    content_type('application/json')
    if hash.to_s == "not_found"  
     status 404
@@ -103,8 +103,8 @@ put  '/monitors/:id*', :check => :valid_token? do
   begin
     pass unless request.media_type == 'application/json'
     data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
-    id = params[:id]
-    controller.update_monitor(id,data)
+    monitor_id = params[:id]
+    controller.update(monitor_id,data)
     content_type('application/json')
     Yajl::Encoder.encode({ "ok" => "true"})
   rescue 
@@ -118,7 +118,7 @@ end
 put '/monitors/:id*', :check => :valid_token? do
    pass unless params["state"] == "stopped"
    id = params[:id]
-   hash = controller.stop_monitor(id)
+   hash = controller.stop(monitor_id)
    content_type('application/json')
    if hash.to_s == "not_found"  
     status 404
@@ -136,7 +136,7 @@ put '/monitors/:id*', :check => :valid_token? do
   pass unless params["state"] == "active"
   begin 
     id = params[:id]
-    m = controller.restart_monitor(id)
+    m = controller.restart(monitor_id)
     content_type('application/json')
     status 200
     Yajl::Encoder.encode({ok: 'true'})
@@ -149,7 +149,7 @@ end
 get '/monitors/:id*', :check => :valid_token? do
   begin
    id = params[:id]
-   monitor = controller.get_monitor(id)
+   monitor = controller.get(monitor_id)
    content_type('application/json')
    Yajl::Encoder.encode(monitor) 
  rescue CouchdbException => e
@@ -164,7 +164,7 @@ get '/monitors/:id*', :check => :valid_token? do
 end
 
 get '/monitors*', :check => :valid_token? do
-  monitors =  controller.get_all_monitors
+  monitors =  controller.get_all
   content_type('application/json')
   m = Yajl::Encoder.encode(monitors)
   if m.to_s == '[]'
