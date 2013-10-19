@@ -27,7 +27,7 @@ require_all '/ragios/notifiers'
 
 #monitors and plugins 
 require dir + 'ragios/monitors/system'
-require_all '/ragios/monitors/plugins'
+require_all '/ragios/plugins'
 
 #schedulers
 require dir + 'ragios/schedulers/ragios_scheduler'
