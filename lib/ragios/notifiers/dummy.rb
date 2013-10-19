@@ -1,9 +1,8 @@
 module Ragios
   module Notifier
     class Dummy  
-      def notify
+      def failed
       end
-
       def resolved
       end
     end

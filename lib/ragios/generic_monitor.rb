@@ -10,9 +10,9 @@ module Ragios
   	
   	state_machine :state, :initial => :pending do
   	
-  	  before_transition :from => :pending, :to => :failed, :do => :notify
-  	  before_transition :from => :failed, :to => :passed, :do => :fixed
-  	  before_transition :from => :passed, :to => :failed, :do => :notify
+  	  before_transition :from => :pending, :to => :failed, :do => :has_failed
+  	  before_transition :from => :failed, :to => :passed, :do => :is_fixed
+  	  before_transition :from => :passed, :to => :failed, :do => :has_failed
   	
   		event :success do 
   	  	transition all => :passed
@@ -42,23 +42,20 @@ module Ragios
       return state
    end
 
-   def failed
+   def has_failed
+     @notifier.failed if @notifier.respond_to?('failed')
      unless @failed.nil?
        @failed.call if @failed.lambda?
      end
      @plugin.failed if @plugin.respond_to?('failed')
    end
-     
-   def notify
-     @notifier.notify if @notifier.respond_to?('notify')
-     failed
-   end
 
-   def fixed
+   def is_fixed
      @notifier.resolved
      unless @fixed.nil?
        @fixed.call if @fixed.lambda?
      end
+    @plugin.resolved if @plugin.respond_to?('resolved')     
   end
 
 private

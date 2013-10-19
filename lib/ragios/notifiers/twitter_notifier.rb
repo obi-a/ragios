@@ -30,8 +30,8 @@ module Ragios
         tweet(message("tweet_resolved.erb"))
       end
 
-      def notify
-        tweet(message("tweet_notify.erb"))
+      def failed
+        tweet(message("tweet_failed.erb"))
       end
     end
   end

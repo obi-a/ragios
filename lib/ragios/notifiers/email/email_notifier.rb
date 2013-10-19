@@ -10,8 +10,8 @@ module Ragios
                   :subject => @subject, 
                   :body => @body}
     end 
-    def notify
-      deliver(message("email_notify.erb"))
+    def failed
+      deliver(message("email_failed.erb"))
     end 
 
     def resolved
