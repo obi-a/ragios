@@ -1,6 +1,6 @@
-<% @subject = "ISSUE RESOLVED #{@monitor.options[:test]} PASSED" %>
+<% @subject = "ISSUE RESOLVED #{@monitor.options[:monitor]} PASSED" %>
 
-<%= @monitor.options[:test] %> PASSED 
+<%= @monitor.options[:monitor] %> PASSED 
 
 <%= @monitor.options[:describe_test_result] %> =  <%= @monitor.options[:test_result].to_s %>
 
