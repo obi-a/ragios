@@ -67,20 +67,20 @@ class Controller
       id = UUIDTools::UUID.random_create.to_s
       monitor.merge!({:created_at_ => Time.now.to_s(:long) , :status_ => 'active', :_id => id})
     end
-    model.save(monitors)
+    model.save(monitors) unless @dont_save == true
     generic_monitors  = objectify_monitors(monitors)
     add_to_scheduler(generic_monitors)
   end
 
   def self.run_monitors(monitors)
-    generic_monitors = objectify_monitors(monitors)
-    start_monitors_on_core(generic_monitors)
+		@dont_save = true
+		add_monitors(monitors)
   end
   
   def self.perform(generic_monitor)
     generic_monitor.test_command
-    update_state(generic_monitor)
-    #log_results(generic_monitor)
+    update_state(generic_monitor) unless @dont_save == true
+    #log_results(generic_monitor) unless @dont_save == true
   end
   
 
@@ -132,15 +132,9 @@ private
               tags: monitor.options[:_id],
               object: monitor }
     	scheduler.schedule(args)
-    end
-  end
-
-  def self.start_monitors_on_core(monitors)
-    scheduler.monitors = monitors
-    scheduler.init
-    scheduler.start 
-    scheduler.get_monitors    
-  end
+   end
+	end
+	
  end
 end
 
