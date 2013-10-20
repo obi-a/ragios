@@ -22,7 +22,7 @@ module Ragios
           return true 
          rescue Exception
           @test_result =  {"HTTP Connection to #{@domain}" => $!} # $! global variable reference to the Exception object
-          return true  
+          return false
          end      
        end   
     end
