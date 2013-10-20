@@ -12,6 +12,7 @@ gem "rake"
 gem "aws-ses"
 gem 'pry'
 gem 'state_machine'
+gem 'sucker_punch', '~> 1.0'
 
 #uncomment this for ragios server
 gem "sinatra"

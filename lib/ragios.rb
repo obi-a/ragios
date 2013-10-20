@@ -8,6 +8,7 @@ require 'leanback'
 require 'uuidtools'
 require 'aws/ses'
 require 'state_machine'
+require 'sucker_punch'
 
 
 dir = Pathname(__FILE__).dirname.expand_path

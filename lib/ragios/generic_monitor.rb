@@ -43,7 +43,7 @@ module Ragios
    end
 
    def has_failed
-     @notifier.failed if @notifier.respond_to?('failed')
+     NotifyJob.new.async.failed(@notifier)
      unless @failed.nil?
        @failed.call if @failed.lambda?
      end
@@ -51,7 +51,7 @@ module Ragios
    end
 
    def is_fixed
-     @notifier.resolved
+     NotifyJob.new.async.resolved(@notifier)
      unless @fixed.nil?
        @fixed.call if @fixed.lambda?
      end
