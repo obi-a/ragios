@@ -1,9 +1,47 @@
 ==Ragios v0.6.0 
+
+10-20-2013
+* Notifications are now sent asynchronously with sucker_punch
+
+10-19-2013
+* Plugins now return a hashmap as their test result, leads to the ability to send more detailed results.
+* Notifiers now respond to a failed and resolved method call, to notify users on test failure and resolution respectively.
+
+10-18-2013
+* Changed the DSL for monitors to be more intuitive, see example below:
+ {monitor: "My Website",
+  url: "http://mysite.com",
+  every: "5m",
+  contact: "admin@mail.com",
+  via: "gmail_notifier",
+  plugin: "url_monitor" }
+  
+* Email Notifiers will notify multiple contacts when an email list is added as value of :contacts example below
+ {monitor: "My Website",
+  url: "http://mysite.com",
+  every: "5m",
+  contact: ["admin@mail.com", "manager@mail.com", "webmaster@mail.com", "siteowner@mail.com"]
+  via: "gmail_notifier",
+  plugin: "url_monitor" }
+
+10-13-2013
+* Monitors are now state machines that manage their own plugins, notifiers and state. This simplifies their execution and design.
+
+09-29-2013
+* Schedulers are now a pluggable component of the controller
+* Datastore for Ragios is now pluggable, currently implemented with couchDB but could be easily plugged and replaced with another datastore.
+
 09-21-2013
 * Removed Status Reports - no longer necessary for Ragios v0.6.0
 
+09-08-2013
+* Notifiers are now pluggable components in the system, any ruby class can respond to the right methods can be a notifier.
+
 08-31-2013
 * Added Ragios console - Pry REPL loaded with Ragios environment and configuration - great for development and testing.
+
+08-25-2013
+* Ragios can now run on any PAAS with Rack support like Heroku. Ragios CouchDB store could be located on any server or on a service like Cloudant.
 
 08-11-2013
 The following changes were made:
