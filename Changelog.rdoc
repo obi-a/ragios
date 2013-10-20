@@ -5,10 +5,10 @@
 
 10-19-2013
 * Plugins now return a hashmap as their test result, leads to the ability to send more detailed results.
-* Notifiers now respond to a failed and resolved method call, to notify users on test failure and resolution respectively.
+* Notifiers now respond to a failed and resolved method call, to notify users on test failure and resolution respectively, instead of the notify() and failed() method.
 
 10-18-2013
-* Changed the DSL for monitors to be more intuitive, see example below:
+* Changed the DSL for defining monitors, now more intuitive, see example below:
  {monitor: "My Website",
   url: "http://mysite.com",
   every: "5m",
@@ -29,7 +29,7 @@
 
 09-29-2013
 * Schedulers are now a pluggable component of the controller
-* Datastore for Ragios is now pluggable, currently implemented with couchDB but could be easily plugged and replaced with another datastore.
+* Datastore for Ragios is now pluggable, currently implemented with couchDB but any other datastore could be easily plugged in, inplace of couchDB.
 
 09-21-2013
 * Removed Status Reports - no longer necessary for Ragios v0.6.0
