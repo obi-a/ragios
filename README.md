@@ -1,12 +1,12 @@
 ###Ragios (Saint Ruby) 
 
-While reading the book “Nagios: system and Network Monitoring” by Wolfgang Barth, I thought it will be a good idea to write a Ruby based System and Network Monitoring tool similar to Nagios. 
+While reading the book “Nagios: system and Network Monitoring” by Wolfgang Barth, I thought it will be a good idea to write a Ruby based System Monitoring tool similar to Nagios. 
 
 So I started writing such a tool. Since it was inspired by Nagios, I will call it Ragios (Ruby Agios) aka Saint Ruby since Agios is Saint in Greek.
 
-This is all just for fun and educational purposes. Ruby makes programmers more productive, a longterm goal of this project is to make system administration fun and more productive.
+This is all just for fun and educational purposes. Ruby makes programmers more productive, a longterm goal of this project is to make system monitoring fun and more productive.
 
-Ragios could be used to monitor any type of system including servers, workstations, switches, routers, system services and applications, locally or over a network. The system admin can define the tests he wants to run on the system or re-use tests written by other developers. The tests run periodically on the system. When a test fails the admin receives an email or SMS alert from Ragios.
+Ragios could be used to monitor any type of system including servers, workstations, switches, routers, system services and applications, locally or over a network. The system admin can define the tests he wants to run on the system or re-use tests written by other developers. The tests run periodically on the system. When a test fails the admin receives an email or SMS alert.
 
 (Update 10-20-13:) master branch is v0.6.0, which is a complete rewrite, the documentation below is v0.5.1 currently on the release branch. v0.6.0 is not yet documented. See Changelog for details on v0.6.0 rolling release. 
 
