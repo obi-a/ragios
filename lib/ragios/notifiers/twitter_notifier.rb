@@ -13,10 +13,10 @@ module Ragios
 
       def tweet message
         Twitter.configure do |config|
-  	  config.consumer_key = @@twitter_consumer_key
-  	  config.consumer_secret =  @@twitter_consumer_secret
-  	  config.oauth_token = @@twitter_access_token
-  	  config.oauth_token_secret = @@twitter_access_secret
+      config.consumer_key = @@twitter_consumer_key
+      config.consumer_secret =  @@twitter_consumer_secret
+      config.oauth_token = @@twitter_access_token
+      config.oauth_token_secret = @@twitter_access_secret
         end 
         Twitter.update message.slice!(0..138) #140 character limit on twitter  
       end

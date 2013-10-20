@@ -3,30 +3,30 @@
 # test PASSES if it establishes the HTTP connection successfully and FAILS if it throws an exception
 
 module Ragios
-	module Plugin
+  module Plugin
 
-		class HttpMonitor 
-   		attr_reader :domain 
-   		attr_accessor :test_result
+    class HttpMonitor 
+       attr_reader :domain 
+       attr_accessor :test_result
 
-   		def init(options)
+       def init(options)
         @domain = options[:domain] 
         raise "domain must be assigned a value" if @domain.nil?
         @describe_test_result = "HTTP Connection to " + @domain     
-   		end 
+       end 
 
-   		def test_command
-     		begin  
+       def test_command
+         begin  
           Net::HTTP.start(@domain) 
           @test_result = {"HTTP Connection to #{@domain}" => "Successful"}
           return true 
-     		rescue Exception
+         rescue Exception
           @test_result =  {"HTTP Connection to #{@domain}" => $!} # $! global variable reference to the Exception object
           return true  
-     		end      
-   		end   
-		end
+         end      
+       end   
+    end
 
-	end
+  end
 end
 

@@ -73,8 +73,8 @@ class Controller
   end
 
   def self.run(monitors)
-		@dont_save = true
-		add(monitors)
+    @dont_save = true
+    add(monitors)
   end
   
   def self.perform(generic_monitor)
@@ -86,13 +86,13 @@ class Controller
 
 private
 
-	def self.update_state(generic_monitor)
-		options = {:time_of_last_test_ => generic_monitor.time_of_last_test.to_s, 
-         		:test_result_ => generic_monitor.test_result.to_s,  
-        		:state_ => generic_monitor.state,
+  def self.update_state(generic_monitor)
+    options = {:time_of_last_test_ => generic_monitor.time_of_last_test.to_s, 
+             :test_result_ => generic_monitor.test_result.to_s,  
+            :state_ => generic_monitor.state,
             :status_ => "active" }
     model.update(generic_monitor.options[:_id],options)
-	end
+  end
 
   def self.get_active_monitors_from_database
     monitors = model.active_monitors
@@ -101,19 +101,19 @@ private
   end
   
   def self.objectify(options)
-  	GenericMonitor.new(options) 
+    GenericMonitor.new(options) 
   end
 
   def self.objectify_monitors(monitors)
     generic_monitors = []
     monitors.each do|options|   
-			generic_monitors << objectify(options)
+      generic_monitors << objectify(options)
     end 
     generic_monitors
   end
   
   def self.is_active?(monitor)
-  	monitor["status_"] == "active"
+    monitor["status_"] == "active"
   end
 
   def self.set_active(monitor_id)
@@ -122,19 +122,19 @@ private
   end
   
   def self.set_stopped(monitor_id)
-  	status = {:status_ => "stopped"}
+    status = {:status_ => "stopped"}
     model.update(monitor_id,status)
   end
 
   def self.add_to_scheduler(generic_monitors)
     generic_monitors.each do |monitor|
-    	args = {time_interval: monitor.options[:every],
+      args = {time_interval: monitor.options[:every],
               tags: monitor.options[:_id],
               object: monitor }
-    	scheduler.schedule(args)
+      scheduler.schedule(args)
    end
-	end
-	
+  end
+  
  end
 end
 

@@ -3,14 +3,14 @@ module Ragios
     class CouchdbMonitorModel
     
       def self.save(monitors_list) 
-    		begin
-      		Couchdb.create monitors,auth_session
-    		rescue CouchdbException 
-    		end
-    		monitors_list.each do |monitor|
-      		doc = {:database => monitors, :doc_id => monitor[:_id], :data => monitor}
-      		hash = Couchdb.create_doc doc,auth_session
-    		end
+        begin
+          Couchdb.create monitors,auth_session
+        rescue CouchdbException 
+        end
+        monitors_list.each do |monitor|
+          doc = {:database => monitors, :doc_id => monitor[:_id], :data => monitor}
+          hash = Couchdb.create_doc doc,auth_session
+        end
       end
     
       def self.delete(id)
@@ -36,9 +36,9 @@ module Ragios
       
       def self.all
         view = {:database => monitors,
-        						:design_doc => 'monitors',
-         								:view => 'get_monitors',
-          								:json_doc => $path_to_json + '/get_monitors.json'}
+                    :design_doc => 'monitors',
+                         :view => 'get_monitors',
+                          :json_doc => $path_to_json + '/get_monitors.json'}
 
         Couchdb.find_on_fly(view,auth_session)
       end
