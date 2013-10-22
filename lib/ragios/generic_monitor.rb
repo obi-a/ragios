@@ -26,8 +26,8 @@ module Ragios
     def initialize(options)
       @options = options
       set_previous_state
-      create_plugin 
-      create_notifier  
+      create_plugin
+      create_notifiers
       super()  
     end
     
@@ -43,7 +43,9 @@ module Ragios
     end
 
     def has_failed
-      NotifyJob.new.async.failed(@notifier)
+      @notifiers.each do |notifier|
+        NotifyJob.new.async.failed(notifier)
+      end
       unless @failed.nil?
         @failed.call if @failed.lambda?
       end
@@ -51,7 +53,9 @@ module Ragios
     end
 
     def is_fixed
-      NotifyJob.new.async.resolved(@notifier)
+      @notifiers.each do |notifier|    
+        NotifyJob.new.async.resolved(notifier)
+      end
       unless @fixed.nil?
         @fixed.call if @fixed.lambda?
       end
@@ -65,10 +69,17 @@ private
         @options.delete(:state_) 
       end   
     end
-   
-    def create_notifier
+    
+    def create_notifiers
+      @notifiers = []
       raise Ragios::NotifierNotFound.new(error: "No Notifier Found"), "No Notifier Found" unless @options.has_key?(:via)
-      @notifier = (Module.const_get("Ragios").const_get("Notifier").const_get(@options[:via].camelize)).new(self)
+      @options[:via].each do |notifier|
+        @notifiers << create_notifier(notifier)
+      end
+    end
+   
+    def create_notifier(notifier)
+      (Module.const_get("Ragios").const_get("Notifier").const_get(notifier.camelize)).new(self)
     end
    
     def create_plugin
