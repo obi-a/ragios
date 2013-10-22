@@ -73,6 +73,7 @@ private
     def create_notifiers
       @notifiers = []
       raise Ragios::NotifierNotFound.new(error: "No Notifier Found"), "No Notifier Found" unless @options.has_key?(:via)
+      @options[:via] = [] << @options[:via] if @options[:via].is_a? String
       @options[:via].each do |notifier|
         @notifiers << create_notifier(notifier)
       end
