@@ -1,5 +1,16 @@
 ==Ragios v0.6.0 
 
+10-22-2013
+* Added support for multiple notifiers per monitor, example below will send an email to the contact and also send out a tweet when the monitor fails.
+ {monitor: "My Website",
+  url: "http://mysite.com",
+  every: "5m",
+  contact: "admin@mail.com",
+  via: ["gmail_notifier", "twitter_notifier"],
+  plugin: "url_monitor" }
+
+Single notifiers still work the same way
+
 10-20-2013
 * Notifications are now sent asynchronously with sucker_punch
 
