@@ -1,5 +1,10 @@
 ###Ragios (Saint Ruby) 
 
+>I imagine that Ragios cant be in harmony with the present moment because it has a goal. It wants to become a monitoring system. Maybe once it has reached maturity it will live in harmony with the present moment. Ragios doesnt want anything because it is at one with the totality. And the totality acts thru it.
+
+>We could say that the totality, life, wants Ragios to become a monitoring system but Ragios doesnt see itself as separate from life, and so wants nothing for itself, it is one with what life wants, thats why it isnt worried or stressed. And if has to die premaurely it dies with  ease.
+
+
 While reading the book “Nagios: system and Network Monitoring” by Wolfgang Barth, I thought it will be a good idea to write a Ruby based System Monitoring tool similar to Nagios. 
 
 So I started writing such a tool. Since it was inspired by Nagios, I will call it Ragios (Ruby Agios) aka Saint Ruby since Agios is Saint in Greek.
