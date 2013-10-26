@@ -116,7 +116,7 @@ end
 
 #stop a running monitor
 put '/monitors/:id*', :check => :valid_token? do
-   pass unless params["state"] == "stopped"
+   pass unless params["status"] == "stopped"
    id = params[:id]
    hash = controller.stop(monitor_id)
    content_type('application/json')
@@ -133,7 +133,7 @@ end
 
 #restart a running monitor
 put '/monitors/:id*', :check => :valid_token? do
-  pass unless params["state"] == "active"
+  pass unless params["status"] == "active"
   begin 
     id = params[:id]
     m = controller.restart(monitor_id)
