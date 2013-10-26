@@ -26,6 +26,7 @@ module Ragios
       
     def initialize(options)
       @options = options
+      @id = @options[:_id]
       set_previous_state
       create_plugin
       create_notifiers
