@@ -137,6 +137,7 @@ private
 
   def self.add_to_scheduler(generic_monitors)
     generic_monitors.each do |monitor|
+      perform(monitor)
       args = {time_interval: monitor.options[:every],
               tags: monitor.options[:_id],
               object: monitor }
