@@ -7,6 +7,7 @@ module Ragios
     attr_reader :test_result
     attr_accessor :state
     attr_reader :time_of_last_test
+    attr_reader :timestamp
     
     state_machine :state, :initial => :pending do
     
@@ -33,7 +34,8 @@ module Ragios
     
     def test_command
       raise Ragios::PluginTestCommandNotFound.new(error: "No test_command found for #{@plugin.class} plugin"), "No test_command found for #{@plugin.class} plugin" unless @plugin.respond_to?('test_command')
-      @time_of_last_test = Time.now.to_s(:long)
+      @timestamp = Time.now.to_i
+      @time_of_last_test = Time.at(@timestamp)
       state =  @plugin.test_command 
       raise Ragios::PluginTestResultNotFound.new(error: "No test_result found for #{@plugin.class} plugin"), "No test_result found for #{@plugin.class} plugin" unless defined?(@plugin.test_result)
       @test_result = @plugin.test_result

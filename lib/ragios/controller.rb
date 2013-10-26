@@ -8,6 +8,10 @@ class Controller
   def self.model(m = nil)    
     @model ||= m
   end
+  
+  def self.logger(lgr = nil)
+    @logger ||= lgr
+  end
 
   def self.stop(monitor_id)
     scheduler.stop(monitor_id)
@@ -65,7 +69,7 @@ class Controller
   def self.add(monitors)
     monitors.each do |monitor|
       id = UUIDTools::UUID.random_create.to_s
-      monitor.merge!({:created_at_ => Time.now.to_s(:long) , :status_ => 'active', :_id => id})
+      monitor.merge!({:created_at_ => Time.now, :status_ => 'active', :_id => id})
     end
     model.save(monitors) unless @dont_save == true
     generic_monitors  = objectify_monitors(monitors)
@@ -87,11 +91,16 @@ class Controller
 private
 
   def self.update_state(generic_monitor)
-    options = {:time_of_last_test_ => generic_monitor.time_of_last_test.to_s, 
-             :test_result_ => generic_monitor.test_result.to_s,  
+    options = {:time_of_last_test_ => generic_monitor.time_of_last_test, 
+               :timestamp_ => Time.now.to_i,
+             :test_result_ => generic_monitor.test_result,  
             :state_ => generic_monitor.state,
             :status_ => "active" }
     model.update(generic_monitor.options[:_id],options)
+  end
+  
+  def self.log_results(generic_monitor)
+    logger.log(generic_monitor)
   end
 
   def self.get_active_monitors_from_database
