@@ -22,9 +22,6 @@ amazon_account = { access_key: ENV['AWS_ACCESS_KEY_ID'],
 
 Ragios::Notifier::Ses.config(amazon_account)
 
-#log activity of monitors, set true to log activity
-Ragios::Logger.config(log_activity = true)
-
 ragios_admin_user = {username: ENV['RAGIOS_ADMIN_USERNAME'],
                      password: ENV['RAGIOS_ADMIN_PASSWORD'],
                      auth_timeout: ENV['RAGIOS_ADMIN_AUTH_TIMEOUT'].to_i} 
