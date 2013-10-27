@@ -45,12 +45,14 @@ module Ragios
       return state
     end
 
+private
+
     def has_failed
       @notifiers.each do |notifier|
         NotifyJob.new.async.failed(notifier)
       end
-      unless @failed.nil?
-        @failed.call if @failed.lambda?
+      unless @options[:failed].nil?
+        @options[:failed].call if @options[:failed].lambda?
       end
       @plugin.failed if @plugin.respond_to?('failed')
     end
@@ -59,13 +61,12 @@ module Ragios
       @notifiers.each do |notifier|    
         NotifyJob.new.async.resolved(notifier)
       end
-      unless @fixed.nil?
-        @fixed.call if @fixed.lambda?
+      unless @options[:fixed].nil?
+        @options[:fixed].call if @options[:fixed].lambda?
       end
       @plugin.resolved if @plugin.respond_to?('resolved')     
     end
 
-private
     def set_previous_state
       if @options[:state_]
         @state = @options[:state_]
