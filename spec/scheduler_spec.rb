@@ -3,13 +3,15 @@ require 'spec_base.rb'
 describe Ragios::Scheduler do
 
   it "should schedule a controller to perform" do
-    args = {time_interval: '2m', object: 'object', tag: 'test'}
+    time_interval = '2m'
+    tag = 'test'
+    args = {:time_interval => time_interval, :object => 'object', :tag => tag}
     controller = double('controller')
     controller.stub(:perform)
     scheduler = Ragios::Scheduler.new(controller)
     job = scheduler.schedule(args)
-    job.params[:tags].should == ['test']
-    job.t.should == '2m'
+    job.params[:tags].should == [tag]
+    job.t.should == time_interval
     job.unschedule
   end
  
