@@ -6,7 +6,7 @@ module Ragios
     end
     
     def stop(tag)
-      jobs = @scheduler.find_by_tag(tag)
+      jobs = find(tag)
       jobs.each do |job| 
         job.unschedule
       end 
