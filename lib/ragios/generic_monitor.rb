@@ -2,6 +2,7 @@ module Ragios
   class GenericMonitor 
 
     attr_reader :plugin
+    attr_reader :notifiers
     attr_reader :options
     attr_reader :id
     attr_reader :test_result
