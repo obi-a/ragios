@@ -52,20 +52,12 @@ private
       @notifiers.each do |notifier|
         NotifyJob.new.async.failed(notifier)
       end
-      unless @options[:failed].nil?
-        @options[:failed].call if @options[:failed].lambda?
-      end
-      @plugin.failed if @plugin.respond_to?('failed')
     end
 
     def is_fixed
       @notifiers.each do |notifier|    
         NotifyJob.new.async.resolved(notifier)
-      end
-      unless @options[:fixed].nil?
-        @options[:fixed].call if @options[:fixed].lambda?
-      end
-      @plugin.resolved if @plugin.respond_to?('resolved')     
+      end   
     end
 
     def set_previous_state
