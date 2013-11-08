@@ -3,17 +3,11 @@ require 'spec_base.rb'
 module Ragios
   module Notifier
     class TestNotifier 
-      attr_reader :notify
       def initialize(monitor)
-        @monitor = monitor
-        @notify = :nothing
       end
-    
       def failed
-       @notify = :failed
       end
       def resolved
-       @notify = :resolved
       end
     end
  end
@@ -64,19 +58,68 @@ describe Ragios::GenericMonitor do
    generic_monitor.test_command.should == true
    generic_monitor.test_result.should == :test_passed
    generic_monitor.state.should == "passed"
-   notifiers = generic_monitor.notifiers
-   notifiers.first.notify.should == :nothing
-  end    
+   generic_monitor.passed?.should == true
+  end   
+  
+  it "should fail the test" do
+    options = {monitor: "something",
+               _id: "monitor_id",
+               via: "test_notifier",
+               plugin: "failing_plugin" }
+    generic_monitor = Ragios::GenericMonitor.new(options) 
+    generic_monitor.test_command.should == false
+    generic_monitor.test_result.should == :test_failed
+    generic_monitor.state.should == "failed"
+    generic_monitor.failed?.should == true    
+  end
+  
+  it "should throw exception if no plugin.test_command defined" do
+    options = {monitor: "something",
+               _id: "monitor_id",
+               via: "test_notifier",
+               plugin: "no_test_command_plugin" }
+    generic_monitor = Ragios::GenericMonitor.new(options) 
+    expect { generic_monitor.test_command }.to raise_error(Ragios::PluginTestCommandNotFound)  
+  end
+  
+  it "should throw exception if no plugin.test_result" do
+    options = {monitor: "something",
+               _id: "monitor_id",
+               via: "test_notifier",
+               plugin: "no_test_result_plugin" }
+    generic_monitor = Ragios::GenericMonitor.new(options) 
+    expect { generic_monitor.test_command }.to raise_error(Ragios::PluginTestResultNotFound)  
+  end
+  
 end
 
-
-describe "GenericMonitor transitions" do
-  it "should fail test and notify failed, fail again and not notify"
+describe "GenericMonitor initial states" do 
+  it "should set state passed" do
+    options = {monitor: "something",
+               _id: "monitor_id",
+               via: "test_notifier",
+               state_: "passed",
+               plugin: "failing_plugin" }
+    generic_monitor = Ragios::GenericMonitor.new(options) 
+    generic_monitor.passed?.should == true
+  end
   
-  it "should transition from pass to fail and notify failed"
+  it "should set state failed" do
+    options = {monitor: "something",
+               _id: "monitor_id",
+               via: "test_notifier",
+               state_: "failed",
+               plugin: "passing_plugin" }
+    generic_monitor = Ragios::GenericMonitor.new(options)  
+    generic_monitor.failed?.should == true
+  end   
   
-  it "should transition from fail to pass and notify resolved, pass again and not notify"
-  
-  
-
+  it "should set state pending" do
+    options = {monitor: "something",
+               _id: "monitor_id",
+               via: "test_notifier",
+               plugin: "passing_plugin" }
+    generic_monitor = Ragios::GenericMonitor.new(options) 
+    generic_monitor.pending?.should == true
+  end   
 end
