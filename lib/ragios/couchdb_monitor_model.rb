@@ -14,10 +14,12 @@ module Ragios
       end
     
       def self.delete(id)
+        #should raise appropriate exception when monitor is not found
         Couchdb.delete_doc({:database => monitors, :doc_id => id},auth_session)
       end
       
       def self.find(id)
+        #should raise appropriate exception when monitor id is not found
         monitor = Couchdb.view({:database => monitors, :doc_id => id},auth_session) 
      end
       
@@ -44,7 +46,7 @@ module Ragios
       end
       
       def self.where(options)
-        Couchdb.find_by({:database => monitors, options.keys[0] => options.values[0]},auth_session) 
+        Couchdb.find_by({:database => monitors, options.keys.first => options.values.first},auth_session) 
       end      
       
       private 
