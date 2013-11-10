@@ -43,16 +43,15 @@ class Controller
 
   def self.restart(monitor_id)
     monitors = find_by(:_id => monitor_id)
-    raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{id}" if monitors.empty?
+    raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{monitor_id}" if monitors.empty?
     return monitors[0] if is_active?(monitors[0])
-    set_active(monitor_id)
     generic_monitors = objectify_monitors(monitors.transform_keys_to_symbols)
     add_to_scheduler(generic_monitors)
   end
   
   def self.test_now(monitor_id)
     monitor = model.find(monitor_id)
-    generic_monitor = objectify(monitor)
+    generic_monitor = objectify(Hash.transform_keys_to_symbols(monitor))
     perform(generic_monitor)
   end
 
