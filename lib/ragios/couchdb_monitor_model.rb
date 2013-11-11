@@ -3,29 +3,35 @@ module Ragios
     class CouchdbMonitorModel
     
       def self.save(monitors_list) 
-        begin
-          Couchdb.create monitors,auth_session
-        rescue CouchdbException 
-        end
         monitors_list.each do |monitor|
           doc = {:database => monitors, :doc_id => monitor[:_id], :data => monitor}
           hash = Couchdb.create_doc doc,auth_session
         end
       end
     
-      def self.delete(id)
-        #should raise appropriate exception when monitor is not found
-        Couchdb.delete_doc({:database => monitors, :doc_id => id},auth_session)
+      def self.delete(monitor_id)
+        begin
+          Couchdb.delete_doc({:database => monitors, :doc_id => monitor_id},auth_session)
+        rescue CouchdbException => e
+          not_found(monitor_id, e)
+        end  
       end
       
-      def self.find(id)
-        #should raise appropriate exception when monitor id is not found
-        monitor = Couchdb.view({:database => monitors, :doc_id => id},auth_session) 
-     end
+      def self.find(monitor_id)
+        begin
+          monitor = Couchdb.view({:database => monitors, :doc_id => monitor_id},auth_session) 
+        rescue CouchdbException => e
+          not_found(monitor_id, e)
+        end           
+      end
       
-      def self.update(id,options)
-        doc = { :database => monitors, :doc_id => id, :data => options}   
-        Couchdb.update_doc doc,auth_session
+      def self.update(monitor_id,options)
+        begin
+          doc = { :database => monitors, :doc_id => monitor_id, :data => options}   
+          Couchdb.update_doc doc,auth_session
+        rescue CouchdbException => e
+          not_found(monitor_id, e)
+        end          
       end
       
       def self.active_monitors
@@ -49,7 +55,12 @@ module Ragios
         Couchdb.find_by({:database => monitors, options.keys.first => options.values.first},auth_session) 
       end      
       
-      private 
+    private
+      
+      def self.not_found(monitor_id, e)
+        raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{monitor_id}" if e.error == "not_found"
+        raise e       
+      end 
       
       def self.monitors
         Ragios::CouchdbAdmin.monitors
@@ -58,7 +69,7 @@ module Ragios
       def self.auth_session
         Ragios::CouchdbAdmin.session
       end
-    
+      
     end
   end
 end  
