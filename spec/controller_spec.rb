@@ -138,9 +138,9 @@ describe "controller behavior" do
   
   it "should not restart an already active monitor" do
     monitor = controller.restart(Active)   
-    monitor.should == MockModel.new.where(:_id => Active).first
+    monitor.should == MockModel.new.find(Active)
     
-    model.messages.should == [:where]
+    model.messages.should == [:find]
     scheduler.messages.should_not include(:schedule)
     logger.messages.should_not include(:log)
   end
@@ -149,15 +149,15 @@ describe "controller behavior" do
     generic_monitors = controller.restart(Inactive)  
     generic_monitors.first.id.should == Inactive.to_s
     
-    model.messages.should  == [:where,:update]
+    model.messages.should  == [:find,:update]
     scheduler.messages.should == [:schedule]
     logger.messages.should == [:log]  
   end
   
   it "cannot restart a monitor that doesn't exist" do
-    expect { controller.restart(Dont_exist) }.to raise_error(Ragios::MonitorNotFound)
+    expect { controller.restart(Dont_exist) }.to raise_error
     
-    model.messages.should == [:where]
+    model.messages.should == [:find]
     scheduler.messages.should_not include(:schedule)
     logger.messages.should_not include(:log)
   end
