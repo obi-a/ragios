@@ -52,7 +52,7 @@ module Ragios
       end
       
       def self.where(options)
-        Couchdb.find_by({:database => monitors, options.keys.first => options.values.first},auth_session) 
+        Couchdb.find_by_keys({:database => monitors, :keys => options}, auth_session) 
       end      
       
     private
