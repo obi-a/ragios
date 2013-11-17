@@ -19,7 +19,7 @@ module Ragios
       
       def self.find(monitor_id)
         begin
-          monitor = Couchdb.view({:database => monitors, :doc_id => monitor_id},auth_session) 
+          monitor = Couchdb.view({:database => monitors, :doc_id => monitor_id},auth_session,symbolize_keys: true) 
         rescue CouchdbException => e
           not_found(monitor_id, e)
         end           
@@ -39,7 +39,8 @@ module Ragios
                 :design_doc => 'monitors',
                    :view => 'get_active_monitors',
                          :json_doc => $path_to_json + '/get_monitors.json'}
-        Couchdb.find_on_fly(view,auth_session)
+        options = {symbolize_keys: true}                 
+        Couchdb.find_on_fly(view,auth_session,key=nil,options)
       end
       
       def self.all
@@ -47,12 +48,12 @@ module Ragios
                     :design_doc => 'monitors',
                          :view => 'get_monitors',
                           :json_doc => $path_to_json + '/get_monitors.json'}
-
-        Couchdb.find_on_fly(view,auth_session)
+        options = {symbolize_keys: true}
+        Couchdb.find_on_fly(view,auth_session, key=nil,options)
       end
       
       def self.where(options)
-        Couchdb.find_by_keys({:database => monitors, :keys => options}, auth_session) 
+        Couchdb.find_by_keys({:database => monitors, :keys => options}, auth_session, symbolize_keys: true) 
       end      
       
     private

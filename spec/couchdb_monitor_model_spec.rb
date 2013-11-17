@@ -29,14 +29,9 @@ describe "Ragios::Model::CouchdbMonitorModel" do
                  plugin: "mock_plugin" }]
     model.save(monitors)
     doc = {:database => database, :doc_id => monitor_id}
-    hash = Couchdb.view doc,auth_session
-    hash.should include(
-      "monitor"=> "something", 
-      "via"=> "mock_notifier",
-      "_id"=> monitor_id,
-      "plugin"=>"mock_plugin"
-      )    
-    hash.should include("_rev")
+    hash = Couchdb.view doc,auth_session,symbolize_keys: true
+    hash.should include(monitors.first)    
+    hash.should include(:_rev)
     Couchdb.delete_doc doc,auth_session
   end
   
@@ -69,12 +64,7 @@ describe "Ragios::Model::CouchdbMonitorModel" do
     Couchdb.create_doc doc,auth_session
     
     monitor = model.find(monitor_id)   
-    monitor.should include(
-      "monitor" => "something",
-      "_id" => monitor_id,
-      "via" => "mock_notifier",
-      "plugin" => "mock_plugin" 
-      )        
+    monitor.should include(data)        
     Couchdb.delete_doc doc,auth_session 
   end
   
@@ -90,18 +80,12 @@ describe "Ragios::Model::CouchdbMonitorModel" do
             plugin: "mock_plugin" }
     doc = {:database => database, :doc_id => monitor_id, :data => data}
     Couchdb.create_doc doc,auth_session
-    
-    model.update(monitor_id, {via: "new_notifier", plugin: "new_plugin"})
+    options = {via: "new_notifier", plugin: "new_plugin"}
+    model.update(monitor_id, options)
     
     doc = {:database => database, :doc_id => monitor_id}
-    hash = Couchdb.view doc,auth_session
-    hash.should include(
-      "monitor"=> "something", 
-      "via"=> "new_notifier",
-      "_id"=> monitor_id,
-      "plugin"=>"new_plugin"
-      )    
-    hash.should include("_rev")
+    hash = Couchdb.view doc,auth_session, symbolize_keys: true
+    hash.should include(options)    
     Couchdb.delete_doc doc,auth_session      
   end
   
@@ -120,13 +104,7 @@ describe "Ragios::Model::CouchdbMonitorModel" do
     Couchdb.create_doc doc,auth_session
     
     monitors = model.where(plugin: "mock_plugin", tag: "my monitors")  
-    monitors.first.should include(
-      "monitor"=> "something", 
-      "via"=> "mock_notifier",
-      "_id"=> monitor_id,
-      "plugin"=>"mock_plugin",
-      "tag" => "my monitors"
-      )    
+    monitors.first.should include(data)    
     monitors.length.should == 1   
     Couchdb.delete_doc doc,auth_session 
   end
@@ -148,13 +126,7 @@ describe "Ragios::Model::CouchdbMonitorModel" do
   
     monitors = model.active_monitors
     monitors.length.should == 1
-    monitors.first.should include(
-      "monitor" => "something",
-      "_id" => monitor_id,
-      "via" => "mock_notifier",
-      "plugin" => "mock_plugin",
-      "status_" => "active"
-      )   
+    monitors.first.should include(data)   
     Couchdb.delete_doc doc,auth_session    
   end
   
@@ -174,12 +146,7 @@ describe "Ragios::Model::CouchdbMonitorModel" do
     
     monitors = model.all
     monitors.length.should == 1
-    monitors.first.should include(
-      "monitor" => "something",
-      "_id" => monitor_id,
-      "via" => "mock_notifier",
-      "plugin" => "mock_plugin"
-      )
+    monitors.first.should include(data)
     Couchdb.delete_doc doc,auth_session    
   end
   
