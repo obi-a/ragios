@@ -43,18 +43,18 @@ class MockModel
   
   def active_monitors
     @messages << :active_monitors
-    [{'monitor' => 'something','via' => 'mock_notifier', 'plugin' => 'mock_plugin', 'every' => '5m', '_id' => 'monitor_id'}]
+    [{:monitor => 'something', :via => 'mock_notifier', :plugin => 'mock_plugin', :every => '5m', :_id => 'monitor_id'}]
   end
   
   def where(options)
     @messages << :where
-    data = [[{'monitor' => 'website 1','via' => 'mock_notifier', 'plugin' => 'mock_plugin', 'every' => '5m', '_id' => '0', 'status_' => 'active'}], [{'monitor' => 'website 1','via' => 'mock_notifier', 'plugin' => 'mock_plugin', 'every' => '5m', '_id' => '1', 'status_' => 'stopped'}],[] ]
+    data = [[{:monitor => 'website 1',:via => 'mock_notifier', :plugin => 'mock_plugin', :every => '5m', :_id => '0', :status_ => 'active'}], [{:monitor => 'website 1',:via => 'mock_notifier', :plugin => 'mock_plugin', :every => '5m', :_id => '1', :status_ => 'stopped'}],[] ]
     return data[options[:_id]] 
   end
   
   def find(monitor_id)
     @messages << :find
-    data = [{'monitor' => 'website 1','via' => 'mock_notifier', 'plugin' => 'mock_plugin', 'every' => '5m', '_id' => '0', 'status_' => 'active'}, {'monitor' => 'website 1','via' => 'mock_notifier', 'plugin' => 'mock_plugin', 'every' => '5m', '_id' => '1', 'status_' => 'stopped'}]
+    data = [{:monitor => 'website 1',:via => 'mock_notifier', :plugin => 'mock_plugin', :every => '5m', :_id => '0', :status_ => 'active'}, {:monitor => 'website 1',:via => 'mock_notifier', :plugin => 'mock_plugin', :every => '5m', :_id => '1', :status_ => 'stopped'}]
     return data[monitor_id]
   end
   
@@ -130,7 +130,6 @@ describe "controller behavior" do
     generic_monitors = controller.restart_all
     generic_monitors.first.id.should == 'monitor_id'
     generic_monitors.length.should == 1
-    
     model.messages.should == [:active_monitors,:update]
     scheduler.messages.should == [:schedule]
     logger.messages.should == [:log]

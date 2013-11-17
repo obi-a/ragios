@@ -44,13 +44,13 @@ class Controller
   def self.restart(monitor_id)
     monitor = model.find(monitor_id)
     return monitor if is_active?(monitor)
-    generic_monitor = objectify(Hash.transform_keys_to_symbols(monitor))
+    generic_monitor = objectify(monitor)
     add_to_scheduler([generic_monitor])
   end
   
   def self.test_now(monitor_id)
     monitor = model.find(monitor_id)
-    generic_monitor = objectify(Hash.transform_keys_to_symbols(monitor))
+    generic_monitor = objectify(monitor)
     perform(generic_monitor)
   end
 
@@ -60,7 +60,7 @@ class Controller
   
   def self.restart_all
     monitors = get_active_monitors_from_database
-    generic_monitors = objectify_monitors(monitors.transform_keys_to_symbols)
+    generic_monitors = objectify_monitors(monitors)
     add_to_scheduler(generic_monitors)
   end
 
@@ -120,7 +120,7 @@ private
   end
   
   def self.is_active?(monitor)
-    monitor["status_"] == "active"
+    monitor[:status_] == "active"
   end
 
   def self.set_active(monitor_id)
@@ -144,25 +144,4 @@ private
   end
   
  end
-end
-
-class Hash
-  #take keys of hash and transform those to a symbols
-  def self.transform_keys_to_symbols(value)
-    return value if not value.is_a?(Hash)
-    hash = value.inject({}){|memo,(k,v)| memo[k.to_sym] = Hash.transform_keys_to_symbols(v); memo}
-    return hash
-  end
-end
-
-class Array
-  def transform_keys_to_symbols
-    count = 0
-    self.each do |hash|
-      hash = Hash.transform_keys_to_symbols(hash)
-      self[count] = hash
-      count +=  1
-    end
-    self
-  end
 end
