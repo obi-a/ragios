@@ -55,7 +55,6 @@ database_admin = {login:     {username: ENV['COUCHDB_ADMIN_USERNAME'],
                  } 
 
 Ragios::CouchdbAdmin.config(database_admin)
-database = Ragios::CouchdbAdmin.monitors
 auth_session = Ragios::CouchdbAdmin.session 
 
 
@@ -210,8 +209,58 @@ describe "Ragios" do
     controller.update(monitor_id, plugin: "passing_plugin")
     controller.delete(monitor_id)      
  end
+ 
+ it "returns a monitor by id" do
+   monitor = {monitor: "Something",
+      every: "5m",
+      via: "mock_notifier",
+      plugin: "passing_plugin" }     
+    
+   monitor_id = controller.add([monitor]).first.id   
+    
+   returned_monitor = controller.get(monitor_id)
+   returned_monitor[:_id].should == monitor_id
+   controller.delete(monitor_id) 
+ end
+ 
+ it "cannot return a monitor that doesn't exist" do
+    expect { controller.get("dont_exist") }.to raise_error Ragios::MonitorNotFound 
+ end
+ 
+ it "finds monitors by multiple keys" do
+   unique_name = "Something unique #{Time.now.to_i}"
+   monitor = {monitor: unique_name,
+      every: "5m",
+      via: "mock_notifier",
+      plugin: "passing_plugin" }     
+    
+    monitor_id = controller.add([monitor]).first.id 
+   
+    results = controller.find_by(monitor: unique_name, every: "5m")
+    results.first[:_id].should == monitor_id
+  end
+ 
+  it "cannot find a monitor that doesn't exist by multiple keys" do 
+    unique_name = "Something unique #{Time.now.to_i}"
+    controller.find_by(monitor: unique_name, tag: "xyz").should == []
+  end
+  
+  it "runs a monitor without database persistence or logging" do
+    monitor = {monitor: "Something",
+      every: "5m",
+      via: "mock_notifier",
+      plugin: "passing_plugin"}     
+    
+    generic_monitor = controller.run([monitor]).first  
+    monitor_id = generic_monitor.id
+    expect { controller.get(monitor_id) }.to raise_error Ragios::MonitorNotFound  
+    generic_monitor.state.should == "passed"
+    generic_monitor.passed? == true    
+  end
   
   after(:all) do
-    Couchdb.delete database, auth_session
+    Couchdb.delete Ragios::CouchdbAdmin.monitors, auth_session
+    Couchdb.delete Ragios::CouchdbAdmin.activity_log, auth_session
+    Couchdb.delete Ragios::CouchdbAdmin.auth_session, auth_session    
   end
 end
