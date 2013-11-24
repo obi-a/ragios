@@ -37,7 +37,7 @@ module Ragios
       def init(options)
       end
       def test_command
-        @test_result = :test_passed
+        @test_result = :test_failed
         return false
       end
     end
@@ -113,11 +113,13 @@ describe "Ragios" do
     
     monitor_id = controller.add([monitor]).first.id
     update_data = {every: "1h", monitor: "New name"}
+    #setup ends
     
     updated_monitor = controller.update(monitor_id,update_data).first
     
     updated_monitor.id.should == monitor_id
     updated_monitor.options.should include(update_data)
+    
     controller.delete(monitor_id)   
   end
   
@@ -181,7 +183,7 @@ describe "Ragios" do
     monitor = controller.get(monitor_id)
     monitor[:status_].should == "active"
     
-    #controller.restart is idempotent 
+    #controller.restart(monitor_id) is idempotent 
     controller.restart(monitor_id)  
     monitor = controller.get(monitor_id)
     monitor[:status_].should == "active"  
@@ -201,11 +203,11 @@ describe "Ragios" do
     
     monitor_id = controller.add([failing_monitor]).first.id
     
-    #test should fail and display a failed message 
+    #test should fail and display a failed message via mock_notifier
     controller.test_now(monitor_id) 
     
-    #update automatically restarts monitor
-    #test should pass this time and displays a resolved
+    #controller.update automatically restarts and tests monitor
+    #test should pass this time and displays a resolved via mock_notifier
     controller.update(monitor_id, plugin: "passing_plugin")
     controller.delete(monitor_id)      
  end
