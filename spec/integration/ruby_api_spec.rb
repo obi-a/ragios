@@ -7,10 +7,10 @@ module Ragios
         @monitor = monitor
       end
       def failed
-        puts "#{monitor.options[:monitor]} FAILED"
+        puts "#{@monitor.options[:_id]} FAILED"
       end
       def resolved
-        puts "#{monitor.options[:monitor]} RESOLVED"      
+        puts "#{@monitor.options[:_id]} RESOLVED"      
       end
     end
  end
@@ -30,6 +30,19 @@ module Ragios
   end
 end
 
+module Ragios
+  module Plugin
+    class FailingPlugin 
+      attr_accessor :test_result
+      def init(options)
+      end
+      def test_command
+        @test_result = :test_passed
+        return false
+      end
+    end
+  end
+end
 
 #database configuration
 database_admin = {login:     {username: ENV['COUCHDB_ADMIN_USERNAME'],
@@ -120,13 +133,18 @@ describe "Ragios" do
       via: "mock_notifier",
       plugin: "passing_plugin" }  
     generic_monitor = controller.add([monitor]).first 
+    monitor_id = generic_monitor.id
     
-    hash =  controller.stop(generic_monitor.id)
-    hash.should include("id" => generic_monitor.id, "ok" => true) 
+    hash =  controller.stop(monitor_id)
+    hash.should include("id" => monitor_id, "ok" => true) 
+    monitor = controller.get(monitor_id)
+    monitor[:status_].should == "stopped"
 
     #controller.stop is idempotent 
-    hash =  controller.stop(generic_monitor.id)       
-    hash.should include("id" => generic_monitor.id, "ok" => true)
+    hash =  controller.stop(monitor_id)       
+    hash.should include("id" => monitor_id, "ok" => true)
+       
+    controller.delete(monitor_id)
   end
   
   it "cannot stop a monitor that doesn't exist" do
@@ -139,11 +157,59 @@ describe "Ragios" do
       via: "mock_notifier",
       plugin: "passing_plugin" }   
     generic_monitor = controller.add([monitor]).first 
-    controller.delete(generic_monitor.id)   
-    expect { controller.get(generic_monitor.id) }.to raise_error Ragios::MonitorNotFound
+    monitor_id = generic_monitor.id
+    
+    controller.delete(monitor_id)   
+    expect { controller.get(monitor_id) }.to raise_error Ragios::MonitorNotFound
   end
   
-  it "cannot delete a monitor that doesn't exist"
+  it "cannot delete a monitor that doesn't exist" do
+    expect { controller.delete("dont_exist") }.to raise_error Ragios::MonitorNotFound 
+  end
+  
+  it "restarts a monitor by id" do
+    monitor = {monitor: "Something",
+      every: "5m",
+      via: "mock_notifier",
+      plugin: "passing_plugin" }  
+    generic_monitor = controller.add([monitor]).first 
+    controller.stop(generic_monitor.id) 
+    monitor_id = generic_monitor.id
+    monitor = controller.get(monitor_id)
+    monitor[:status_].should == "stopped"    
+    
+    controller.restart(monitor_id)  
+    monitor = controller.get(monitor_id)
+    monitor[:status_].should == "active"
+    
+    #controller.restart is idempotent 
+    controller.restart(monitor_id)  
+    monitor = controller.get(monitor_id)
+    monitor[:status_].should == "active"  
+    
+    controller.delete(monitor_id)  
+  end
+  
+  it "cannot restart a monitor that doesn't exist" do
+    expect { controller.restart("dont_exist") }.to raise_error Ragios::MonitorNotFound 
+  end
+  
+ it "tests a monitor" do
+    failing_monitor = {monitor: "Something",
+      every: "5m",
+      via: "mock_notifier",
+      plugin: "failing_plugin" }     
+    
+    monitor_id = controller.add([failing_monitor]).first.id
+    
+    #test should fail and display a failed message 
+    controller.test_now(monitor_id) 
+    
+    #update automatically restarts monitor
+    #test should pass this time and displays a resolved
+    controller.update(monitor_id, plugin: "passing_plugin")
+    controller.delete(monitor_id)      
+ end
   
   after(:all) do
     Couchdb.delete database, auth_session
