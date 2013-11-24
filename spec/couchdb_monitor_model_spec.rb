@@ -50,7 +50,7 @@ describe "Ragios::Model::CouchdbMonitorModel" do
     expect { Couchdb.view doc,auth_session }.to raise_error(CouchdbException, "CouchDB: Error - not_found. Reason - deleted")
   end
   
-  it "should raise error when attempting to delete a monitor that doesn't exist" do
+  it "cannot to delete a monitor that doesn't exist" do
     expect { model.delete("dont_exist") }.to raise_error(Ragios::MonitorNotFound)
   end
   
@@ -68,7 +68,7 @@ describe "Ragios::Model::CouchdbMonitorModel" do
     Couchdb.delete_doc doc,auth_session 
   end
   
-  it "should raise error when attempting to find a monitor that dosen't exist" do
+  it "cannot find a monitor that dosen't exist" do
     expect { model.find("dont_exist") }.to raise_error(Ragios::MonitorNotFound)  
   end
   
@@ -89,7 +89,7 @@ describe "Ragios::Model::CouchdbMonitorModel" do
     Couchdb.delete_doc doc,auth_session      
   end
   
-  it "should raise error when attempting to update a monitor that dosen't exist" do
+  it "cannot update a monitor that dosen't exist" do
     expect { model.update("dont_exist",{via: "new_notifier", plugin: "new_plugin"} ) }.to raise_error(Ragios::MonitorNotFound)  
   end  
   
