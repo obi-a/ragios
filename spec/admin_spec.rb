@@ -42,11 +42,7 @@ describe Ragios::Admin do
   end
 
   it "should invalidate an expired token and validate a non-expired token" do 
-    ragios_admin_user = {username: 'test',
-                          password: '1234',
-                           auth_timeout: 900} 
-    admin.config(ragios_admin_user)
-    token =admin.session
+    token = admin.session
     admin.valid_token?(token).should == true
 
     #expire the token with old timestamp
