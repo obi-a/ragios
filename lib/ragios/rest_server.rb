@@ -19,6 +19,9 @@ require 'yajl'
 #TODO add sinatra last_modified reduce computation and save bandwidth
 
 class App < Sinatra::Base
+before do
+  content_type('application/json')
+end
 
 register do
   def check (name)
@@ -40,13 +43,12 @@ helpers do
 end
 
 get '/' do
-  content_type('application/json')
+
   Yajl::Encoder.encode({ "Ragios Server" => "welcome"})
 end
 
 post '/session*' do
   if Ragios::Admin.authenticate?(params[:username],params[:password])
-    content_type('application/json')   
     Yajl::Encoder.encode({ AuthSession: Ragios::Admin.session })
   else
    status 401
@@ -59,12 +61,10 @@ post '/monitors*', :check => :valid_token? do
  begin
   monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
   controller.add(monitors)
-  content_type('application/json')
-  Yajl::Encoder.encode({ok:"true"})
- rescue 
-  content_type('application/json')
+  Yajl::Encoder.encode(monitors)
+ rescue Exception => e   
   status 500
-  body  Yajl::Encoder.encode({error: "something went wrong"})
+  body  Yajl::Encoder.encode({error: e.message})
  end
 end
 
