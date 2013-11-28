@@ -91,6 +91,12 @@ describe Ragios::GenericMonitor do
     expect { generic_monitor.test_command }.to raise_error(Ragios::PluginTestResultNotFound)  
   end
   
+  it "cannot create a monitor with no notifier"
+  
+  it "cannot create a monitor with no plugin"
+  
+  it "can create a monitor with multiple notifiers"
+  
 end
 
 describe "GenericMonitor initial states" do 
