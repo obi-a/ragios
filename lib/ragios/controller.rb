@@ -69,8 +69,8 @@ class Controller
       id = UUIDTools::UUID.random_create.to_s
       monitor.merge!({:created_at_ => Time.now, :status_ => 'active', :_id => id})
     end
-    model.save(monitors) unless @dont_save == true
     generic_monitors  = objectify_monitors(monitors)
+    model.save(monitors) unless @dont_save == true
     add_to_scheduler(generic_monitors)
   end
 
