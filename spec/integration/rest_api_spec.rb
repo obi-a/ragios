@@ -59,7 +59,7 @@ describe "Ragios REST API" do
     begin
       response = RestClient.post "http://127.0.0.1:5041/monitors/", str, @options  
     rescue => e
-      e.response.should == '{"error":"No Notifier Found"}'
+      e.response.should include('{"error":"No Notifier Found')
     end
   end
 end

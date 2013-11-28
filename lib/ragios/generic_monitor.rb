@@ -69,7 +69,7 @@ private
     
     def create_notifiers
       @notifiers = []
-      raise Ragios::NotifierNotFound.new(error: "No Notifier Found"), "No Notifier Found" unless @options.has_key?(:via)
+      raise Ragios::NotifierNotFound.new(error: "No Notifier Found in #{@options}"), "No Notifier Found in #{@options}" unless @options.has_key?(:via)
       @options[:via] = [] << @options[:via] if @options[:via].is_a? String
       @options[:via].each do |notifier|
         @notifiers << create_notifier(notifier)
@@ -81,7 +81,7 @@ private
     end
    
     def create_plugin
-      raise Ragios::PluginNotFound.new(error: "No Plugin Found"), "No Plugin Found" unless @options.has_key?(:plugin)
+      raise Ragios::PluginNotFound.new(error: "No Plugin Found in #{@options}"), "No Plugin Found in #{@options}" unless @options.has_key?(:plugin)
       module_name = "Plugin"  
       plugin_name = @options[:plugin] 
       plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize) 
