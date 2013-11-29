@@ -68,13 +68,13 @@ post '/monitors*', :check => :valid_token? do
  end
 end
 
+#get monitors that match multiple keys
 get '/monitors*', :check => :valid_token? do
     pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
     key = params.keys[0]
     value = params[key]
     monitors = controller.find_by(key.to_sym => value)
     m = Yajl::Encoder.encode(monitors)
-    content_type('application/json')
     if m.to_s == '[]'
      status 404
      Yajl::Encoder.encode({ error: "not_found"})
@@ -148,9 +148,8 @@ end
 
 get '/monitors/:id*', :check => :valid_token? do
   begin
-   id = params[:id]
+   monitor_id = params[:id]
    monitor = controller.get(monitor_id)
-   content_type('application/json')
    Yajl::Encoder.encode(monitor) 
  rescue CouchdbException => e
    if e.to_s == 'CouchDB: Error - not_found. Reason - missing'
@@ -158,7 +157,7 @@ get '/monitors/:id*', :check => :valid_token? do
      status 404
      Yajl::Encoder.encode({ "error" => e.error, check: 'monitor_id'})
    else
-    raise
+    raise e
    end
  end 
 end
