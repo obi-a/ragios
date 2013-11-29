@@ -44,6 +44,38 @@ module Ragios
   end
 end
 
+module Ragios
+  module Notifier
+    class FirstNotifier 
+      def initialize(monitor)
+        @monitor = monitor
+      end
+      def failed
+        puts "First Notifier FAILED for #{@monitor.options[:_id]}"
+      end
+      def resolved
+        puts "First Notifier RESOLVED for #{@monitor.options[:_id]}"      
+      end
+    end
+ end
+end
+
+module Ragios
+  module Notifier
+    class SecondNotifier 
+      def initialize(monitor)
+        @monitor = monitor
+      end
+      def failed
+        puts "Second Notifier FAILED for #{@monitor.options[:_id]}"
+      end
+      def resolved
+        puts "Second Notifier RESOLVED for #{@monitor.options[:_id]}"      
+      end
+    end
+ end
+end
+
 #database configuration
 database_admin = {login:     {username: ENV['COUCHDB_ADMIN_USERNAME'],
                               password: ENV['COUCHDB_ADMIN_PASSWORD'] },
@@ -210,6 +242,23 @@ describe "Ragios" do
     #test should pass this time and displays a resolved via mock_notifier
     controller.update(monitor_id, plugin: "passing_plugin")
     controller.delete(monitor_id)      
+ end
+ 
+ it "tests a monitor with multiple notifiers" do 
+    failing_monitor = {monitor: "Something",
+      every: "5m",
+      via: ["first_notifier", "second_notifier"],
+      plugin: "failing_plugin" }     
+    
+    monitor_id = controller.add([failing_monitor]).first.id
+    
+    #test should fail and display a failed message via first_notifier and second_notifier
+    controller.test_now(monitor_id) 
+    
+    #controller.update automatically restarts and tests monitor
+    #test should pass this time and displays a resolved via first_notifier and second_notifier
+    controller.update(monitor_id, plugin: "passing_plugin")
+    controller.delete(monitor_id)  
  end
  
  it "returns a monitor by id" do
