@@ -24,7 +24,8 @@ describe "Ragios REST API" do
     
     response.code.should == 200      
     returned_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
-    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{returned_monitors.first[:_id]}",{:cookies => {:AuthSession => @auth_session}}
+    monitor_id = returned_monitors.first[:_id]
+    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}",{:cookies => {:AuthSession => @auth_session}}
     response.code.should == 200
   end
   
@@ -83,6 +84,7 @@ describe "Ragios REST API" do
       RestClient.post "http://127.0.0.1:5041/monitors/", "bad data", @options
     rescue => e
       e.should be_an_instance_of RestClient::InternalServerError
+      e.response.code.should == 500
     end    
   end
   
@@ -99,18 +101,97 @@ describe "Ragios REST API" do
     
     response = RestClient.post "http://127.0.0.1:5041/monitors/", str, @options  
     returned_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    monitor_id = returned_monitors.first[:_id]
    #setup ends
    
-    response = RestClient.get "http://127.0.0.1:5041/monitors/#{returned_monitors.first[:_id]}",{:cookies => {:AuthSession => @auth_session}}
+    response = RestClient.get "http://127.0.0.1:5041/monitors/#{monitor_id}",{:cookies => {:AuthSession => @auth_session}}
     response.code.should == 200
     get_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)
     get_monitor.should include(monitors.first)
     
     #teardown
-    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{returned_monitors.first[:_id]}",{:cookies => {:AuthSession => @auth_session}}
+    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}",{:cookies => {:AuthSession => @auth_session}}
     response.code.should == 200  
   end
   
   it "should find monitors by multiple keys"
+  
+  it "should update a monitor"  do
+    #setup starts
+    monitors = [{monitor: "My Website",
+      url: "http://mysite.com",
+      every: "5m",
+      contact: "admin@mail.com",
+      via: ["gmail_notifier"],
+      plugin: "url_monitor" }]  
+
+    str = Yajl::Encoder.encode(monitors)
+    
+    response = RestClient.post "http://127.0.0.1:5041/monitors/", str, @options  
+    returned_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    monitor_id = returned_monitors.first[:_id]
+    #setup ends  
+    
+    update_options = {every: "10m", via: ["twitter_notifier"]}
+    
+    str = Yajl::Encoder.encode(update_options)
+    
+    response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",str, @options
+    response.code.should == 200   
+    updated_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    updated_monitor.should include(update_options)
+    updated_monitor[:status_].should == "active"
+    
+    #monitor update is idempotent
+    response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",str, @options
+    response.code.should == 200   
+    updated_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    updated_monitor.should include(update_options)
+    updated_monitor[:status_].should == "active"    
+    
+    #teardown
+    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}",{:cookies => {:AuthSession => @auth_session}}
+    response.code.should == 200      
+  end
+  
+  it "cannot update a monitor with bad data" do
+    #setup starts
+    monitors = [{monitor: "My Website",
+      url: "http://mysite.com",
+      every: "5m",
+      contact: "admin@mail.com",
+      via: ["gmail_notifier"],
+      plugin: "url_monitor" }]  
+
+    str = Yajl::Encoder.encode(monitors)
+    
+    response = RestClient.post "http://127.0.0.1:5041/monitors/", str, @options  
+    returned_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    monitor_id = returned_monitors.first[:_id]
+    #setup ends  
+    begin
+      response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}","bad data", @options  
+    rescue => e
+      e.should be_an_instance_of RestClient::InternalServerError    
+      e.response.code.should == 500
+    end  
+    
+    #teardown
+    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}",{:cookies => {:AuthSession => @auth_session}}
+    response.code.should == 200         
+  end
+  
+  it "cannot update a monitor that don't exist" do
+    update_options = {every: "5m", via: ["twitter_notifier"]}
+    str = Yajl::Encoder.encode(update_options)
+    monitor_id = "dont_exist"
+    begin
+      response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",str, @options
+    rescue => e
+      e.response.should include('{"error":"No monitor found with id = dont_exist"}')
+    end
+  end
+  
+  it "deletes a monitor"
   
 end
