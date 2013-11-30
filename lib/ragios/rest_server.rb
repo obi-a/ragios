@@ -98,20 +98,18 @@ delete '/monitors/:id*', :check => :valid_token? do
    end
 end
 
-#edit an already existing monitor
+#update an already existing monitor
 put  '/monitors/:id*', :check => :valid_token? do
   begin
     pass unless request.media_type == 'application/json'
     data = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
     monitor_id = params[:id]
-    controller.update(monitor_id,data)
-    content_type('application/json')
-    Yajl::Encoder.encode({ "ok" => "true"})
-  rescue 
-  content_type('application/json')
-  status 500
-  body  Yajl::Encoder.encode({error: "something went wrong"})
- end
+    updated_monitor = controller.update(monitor_id,data)
+    Yajl::Encoder.encode(updated_monitor.options)
+  rescue Exception => e 
+    status 500
+    body  Yajl::Encoder.encode({error: e.message})
+  end
 end
 
 #stop a running monitor

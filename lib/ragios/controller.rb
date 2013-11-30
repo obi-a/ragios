@@ -29,7 +29,8 @@ class Controller
     monitor = model.find(monitor_id)
     if is_active?(monitor)
       stop(monitor_id)
-      restart(monitor_id)
+      generic_monitors = restart(monitor_id)
+      monitor = generic_monitors.first
     end
   end
 
@@ -94,6 +95,7 @@ private
              :test_result_ => generic_monitor.test_result,  
             :state_ => generic_monitor.state,
             :status_ => "active" }
+    generic_monitor.options.merge!(options)        
     model.update(generic_monitor.options[:_id],options)
   end
   

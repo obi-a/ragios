@@ -147,8 +147,8 @@ describe "Ragios" do
     update_data = {every: "1h", monitor: "New name"}
     #setup ends
     
-    updated_monitor = controller.update(monitor_id,update_data).first
-    
+    updated_monitor = controller.update(monitor_id,update_data)
+    puts updated_monitor.options.inspect
     updated_monitor.id.should == monitor_id
     updated_monitor.options.should include(update_data)
     
