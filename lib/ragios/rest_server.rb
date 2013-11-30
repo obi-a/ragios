@@ -84,18 +84,17 @@ get '/monitors*', :check => :valid_token? do
 end
 
 delete '/monitors/:id*', :check => :valid_token? do
+  begin
    monitor_id = params[:id]
    hash = controller.delete(monitor_id)
-   content_type('application/json')
-   if hash.to_s == "not_found"  
+   Yajl::Encoder.encode(hash)
+  rescue Ragios::MonitorNotFound => e
     status 404
-    body  Yajl::Encoder.encode({error: 'not_found', check: 'monitor_id'})
-   elsif hash.include?("id") && hash.include?("ok") 
-    Yajl::Encoder.encode({ok:'true'})
-   else
+    Yajl::Encoder.encode({error: e.message})
+  rescue Exception => e
     status 500
-    body  Yajl::Encoder.encode({error: 'unknown'})
-   end
+    Yajl::Encoder.encode({error: e.message})
+  end 
 end
 
 #update an already existing monitor
@@ -144,32 +143,29 @@ put '/monitors/:id*', :check => :valid_token? do
   end
 end
 
+#get monitor by id
 get '/monitors/:id*', :check => :valid_token? do
   begin
-   monitor_id = params[:id]
-   monitor = controller.get(monitor_id)
-   Yajl::Encoder.encode(monitor) 
- rescue CouchdbException => e
-   if e.to_s == 'CouchDB: Error - not_found. Reason - missing'
-     content_type('application/json')
-     status 404
-     Yajl::Encoder.encode({ "error" => e.error, check: 'monitor_id'})
-   else
-    raise e
-   end
- end 
+    monitor_id = params[:id]
+    monitor = controller.get(monitor_id)
+    Yajl::Encoder.encode(monitor) 
+  rescue Ragios::MonitorNotFound => e
+    status 404
+    Yajl::Encoder.encode({error: e.message})
+  rescue Exception => e
+    status 500
+    Yajl::Encoder.encode({error: e.message})
+  end 
 end
 
 get '/monitors*', :check => :valid_token? do
-  monitors =  controller.get_all
-  content_type('application/json')
-  m = Yajl::Encoder.encode(monitors)
-  if m.to_s == '[]'
-     status 404
-     Yajl::Encoder.encode({ "error" => "not_found"})
-  else 
-    m
-  end
+  begin
+    monitors =  controller.get_all
+    Yajl::Encoder.encode(monitors)
+  rescue Exception => e
+    status 500
+    Yajl::Encoder.encode({error: e.message})
+  end   
 end
 
 
