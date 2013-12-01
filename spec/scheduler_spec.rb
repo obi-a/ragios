@@ -4,7 +4,7 @@ describe Ragios::Scheduler do
   before(:each) do
     @time_interval = '2m'
     @tag = 'test'
-    @args = {:time_interval => @time_interval, :object => 'object', :tag => @tag}   
+    @args = {:time_interval => @time_interval, :object => 'object', :tags => @tag}   
   end
 
   it "should schedule a job" do
