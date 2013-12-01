@@ -14,8 +14,6 @@ require 'yajl'
     
 # end
 
-
-#TODO set Content-Type and other header attributes for each request
 #TODO add sinatra last_modified reduce computation and save bandwidth
 
 class App < Sinatra::Base
@@ -70,24 +68,19 @@ end
 
 #get monitors that match multiple keys
 get '/monitors*', :check => :valid_token? do
-    pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
-    key = params.keys[0]
-    value = params[key]
-    monitors = controller.find_by(key.to_sym => value)
-    m = Yajl::Encoder.encode(monitors)
-    if m.to_s == '[]'
-     status 404
-     Yajl::Encoder.encode({ error: "not_found"})
-    else 
-      m
-    end
+  pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
+  options = params
+  options.delete("splat")
+  options.delete("captures")
+  monitors = controller.find_by(options)
+  Yajl::Encoder.encode(monitors)
 end
 
 delete '/monitors/:id*', :check => :valid_token? do
   begin
-   monitor_id = params[:id]
-   hash = controller.delete(monitor_id)
-   Yajl::Encoder.encode(hash)
+    monitor_id = params[:id]
+    hash = controller.delete(monitor_id)
+    Yajl::Encoder.encode(hash)
   rescue Ragios::MonitorNotFound => e
     status 404
     Yajl::Encoder.encode({error: e.message})
@@ -113,34 +106,34 @@ end
 
 #stop a running monitor
 put '/monitors/:id*', :check => :valid_token? do
-   pass unless params["status"] == "stopped"
-   id = params[:id]
-   hash = controller.stop(monitor_id)
-   content_type('application/json')
-   if hash.to_s == "not_found"  
+  pass unless params["status"] == "stopped"
+  monitor_id = params[:id]
+  begin 
+    controller.stop(monitor_id)
+    Yajl::Encoder.encode({ ok: true})
+  rescue Ragios::MonitorNotFound => e
     status 404
-    body  Yajl::Encoder.encode({error: 'not_found', check: 'monitor_id'})
-   elsif hash.include?("id") && hash.include?("ok") 
-    Yajl::Encoder.encode({ok:'true'})
-   else
+    Yajl::Encoder.encode({error: e.message})
+  rescue Exception => e
     status 500
-    body  Yajl::Encoder.encode({error: 'unknown'})
-  end
+    Yajl::Encoder.encode({error: e.message})
+  end 
 end
 
 #restart a running monitor
 put '/monitors/:id*', :check => :valid_token? do
   pass unless params["status"] == "active"
   begin 
-    id = params[:id]
-    m = controller.restart(monitor_id)
-    content_type('application/json')
-    status 200
-    Yajl::Encoder.encode({ok: 'true'})
-  rescue Ragios::MonitorNotFound
+    monitor_id = params[:id]
+    controller.restart(monitor_id)
+    Yajl::Encoder.encode({ ok: true})
+  rescue Ragios::MonitorNotFound => e
     status 404
-    body  Yajl::Encoder.encode({error: "No monitor found with id = #{id}"}) 
-  end
+    Yajl::Encoder.encode({error: e.message})
+  rescue Exception => e
+    status 500
+    Yajl::Encoder.encode({error: e.message})
+  end 
 end
 
 #get monitor by id
@@ -172,25 +165,21 @@ end
 
 get '/*' do 
   status 400
-  content_type('application/json')
   Yajl::Encoder.encode({ error: "bad_request"})
 end
 
 put '/*' do 
   status 400
-  content_type('application/json')
   Yajl::Encoder.encode({ error: "bad_request"})
 end
 
 post '/*' do 
   status 400
-  content_type('application/json')
   Yajl::Encoder.encode({ error: "bad_request"})
 end
 
 delete '/*' do 
   status 400
-  content_type('application/json')
   Yajl::Encoder.encode({ error: "bad_request"})
 end
 

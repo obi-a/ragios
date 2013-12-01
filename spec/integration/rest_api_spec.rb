@@ -90,7 +90,7 @@ describe "Ragios REST API" do
     end    
   end
   
-  it "should get a monitor" do
+  it "should retrieve a monitor by id" do
     #setup starts
     unique_name = "Google #{Time.now.to_i}"
     monitors = [{monitor: unique_name,
@@ -107,7 +107,7 @@ describe "Ragios REST API" do
     monitor_id = returned_monitors.first[:_id]
    #setup ends
    
-    response = RestClient.get "http://127.0.0.1:5041/monitors/#{monitor_id}",@auth_cookie
+    response = RestClient.get "http://127.0.0.1:5041/monitors/#{monitor_id}/",@auth_cookie
     response.code.should == 200
     retrieved_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)
     retrieved_monitor.should include(monitors.first)
@@ -116,8 +116,8 @@ describe "Ragios REST API" do
     response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}",@auth_cookie
     response.code.should == 200  
   end
-  
-  it "gets all monitors" do
+   
+  it "should find monitors that match multiple key/value pairs"  do
     #setup starts
     unique_name = "Google #{Time.now.to_i}"
     monitors = [{monitor: unique_name,
@@ -125,32 +125,31 @@ describe "Ragios REST API" do
       every: "5m",
       contact: "admin@mail.com",
       via: ["gmail_notifier"],
-      plugin: "url_monitor" }]  
+      plugin: "url_monitor",
+      tag: "test" }]  
 
     str = Yajl::Encoder.encode(monitors)
     
     response = RestClient.post "http://127.0.0.1:5041/monitors/", str, @options  
     returned_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
     monitor_id = returned_monitors.first[:_id]
-    #setup ends 
-   
-    response = RestClient.get "http://127.0.0.1:5041/monitors/",@auth_cookie
+    #setup ends   
+    
+    response = RestClient.get "http://127.0.0.1:5041/monitors?tag=test&every=5m&monitor=#{CGI.escape unique_name}", @auth_cookie
     response.code.should == 200
-    retrieved_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
-    retrieved_monitors.first.should include(monitors.first)
-   
+    found_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    found_monitors.first.should include(monitors.first)
+    
     #teardown
-    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}",@auth_cookie
-    response.code.should == 200   
-  end  
+    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}", @auth_cookie
+    response.code.should == 200    
+  end
   
-  it "returns an empty array when there is no monitor" do
-    response = RestClient.get "http://127.0.0.1:5041/monitors",@auth_cookie
+  it "returns an empty array when no monitor matches multiple key/value pairs" do
+    response = RestClient.get "http://127.0.0.1:5041/monitors?something=dont_exist&every=5m&monitor=dont_exist", @auth_cookie
     response.code.should == 200
     response.body.should == '[]'
   end
-  
-  it "should find monitors by multiple keys"
   
   it "should update a monitor"  do
     #setup starts
@@ -268,9 +267,144 @@ describe "Ragios REST API" do
   end
   
   
-  it "stops a monitor"
-  
-  it "restarts a monitor"
+  it "stops an active monitor" do
+    #setup starts
+    unique_name = "Google #{Time.now.to_i}"
+    monitors = [{monitor: unique_name,
+      url: "http://google.com",
+      every: "5m",
+      contact: "admin@mail.com",
+      via: ["gmail_notifier"],
+      plugin: "url_monitor" }]  
 
+    str = Yajl::Encoder.encode(monitors)
+    
+    response = RestClient.post "http://127.0.0.1:5041/monitors/", str, @options  
+    returned_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    monitor_id = returned_monitors.first[:_id]
+    #setup ends 
+    
+    response = RestClient.get "http://127.0.0.1:5041/monitors/#{monitor_id}",@auth_cookie
+    active_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)  
+    active_monitor[:status_].should == "active"    
+    
+    response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",{:status => "stopped"},@options
+    response.code.should == 200
+    
+    response = RestClient.get "http://127.0.0.1:5041/monitors/#{monitor_id}",@auth_cookie
+    stopped_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)  
+    stopped_monitor[:status_].should == "stopped"
+    
+    #stopping a monitor is idempotent
+    response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",{:status => "stopped"},@options
+    response.code.should == 200    
+    
+    #teardown
+    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}", @auth_cookie
+    response.code.should == 200       
+  end
   
+  it "cannot stop a monitor that don't exist" do
+    monitor_id = "dont_exist"
+    begin  
+      RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",{:status => "stopped"},@options 
+    rescue => e
+      e.response.code.should == 404
+      e.response.should include('{"error":"No monitor found with id = dont_exist"}')
+    end     
+  end
+  
+  it "restarts a stopped monitor" do
+    #setup starts
+    unique_name = "Google #{Time.now.to_i}"
+    monitors = [{monitor: unique_name,
+      url: "http://google.com",
+      every: "5m",
+      contact: "admin@mail.com",
+      via: ["gmail_notifier"],
+      plugin: "url_monitor" }]  
+
+    str = Yajl::Encoder.encode(monitors)
+    
+    response = RestClient.post "http://127.0.0.1:5041/monitors/", str, @options  
+    returned_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    monitor_id = returned_monitors.first[:_id]
+    #setup ends 
+    
+    response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",{:status => "stopped"},@options
+    response.code.should == 200 
+    
+    response = RestClient.get "http://127.0.0.1:5041/monitors/#{monitor_id}",@auth_cookie
+    stopped_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)  
+    stopped_monitor[:status_].should == "stopped"      
+    
+    
+    response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",{:status => "active"},@options
+    response.code.should == 200 
+    
+    
+    response = RestClient.get "http://127.0.0.1:5041/monitors/#{monitor_id}",@auth_cookie
+    stopped_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)  
+    stopped_monitor[:status_].should == "active" 
+    
+    #monitor restart is idempotent
+    response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",{:status => "active"},@options
+    response.code.should == 200  
+    
+    #teardown
+    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}", @auth_cookie
+    response.code.should == 200      
+  end
+  
+  it "cannot restart a monitor that don't exist" do
+    monitor_id = "dont_exist"
+    begin  
+      RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",{:status => "active"},@options 
+    rescue => e
+      e.response.code.should == 404
+      e.response.should include('{"error":"No monitor found with id = dont_exist"}')
+    end     
+  end  
+  
+  it "rejects bad requests" do
+    expect{ RestClient.get "http://127.0.0.1:5041/xyz" }.to raise_error(RestClient::BadRequest)
+    expect{ RestClient.put "http://127.0.0.1:5041/xyz",{status: "stopped"} }.to raise_error(RestClient::BadRequest)
+    expect{ RestClient.delete "http://127.0.0.1:5041/xyz" }.to raise_error(RestClient::BadRequest)
+    expect{ RestClient.post "http://127.0.0.1:5041/xyz", '{"monitor":"something"}'}.to raise_error(RestClient::BadRequest)
+    expect{ RestClient.put "http://127.0.0.1:5041/xyz","update_data"}.to raise_error(RestClient::BadRequest)
+  end
+  
+  it "will reject incorrect admin credentials" do
+    begin
+      RestClient.post 'http://localhost:5041/session', { :username=> 'wrong_username', :password => 'wrong_password'}
+    rescue => e
+      e.response.code.should == 401
+      e.response.should == '{"error":"You are not authorized to access this resource"}'
+    end
+  end
+  
+  
+  it "will reject unauthorized requests" do
+    begin
+      RestClient.get "http://127.0.0.1:5041/monitors/some_monitor"
+    rescue => e
+      e.response.code.should == 401
+      e.response.should == '{"error":"You are not authorized to access this resource"}'
+    end   
+    
+    begin
+      RestClient.put "http://127.0.0.1:5041/monitors/some_monitor",{status: "active"}
+    rescue => e
+      e.response.code.should == 401
+      e.response.should == '{"error":"You are not authorized to access this resource"}'
+    end  
+    
+    expect{ RestClient.get "http://127.0.0.1:5041/monitors" }.to raise_error(RestClient::Unauthorized)
+    expect{ RestClient.put "http://127.0.0.1:5041/monitors/some_monitor",{status: "stopped"} }.to raise_error(RestClient::Unauthorized)
+    expect{ RestClient.delete "http://127.0.0.1:5041/monitors/some_monitor" }.to raise_error(RestClient::Unauthorized)
+    expect{ RestClient.post "http://127.0.0.1:5041/monitors/", '{"monitor":"something"}'}.to raise_error(RestClient::Unauthorized)
+    expect{ RestClient.put "http://127.0.0.1:5041/monitors/monitor_id","update_data"}.to raise_error(RestClient::Unauthorized)
+    
+  end
+   
 end
