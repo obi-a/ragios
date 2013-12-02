@@ -224,7 +224,7 @@ describe "Ragios REST API" do
       response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",str, @options
     rescue => e
       e.response.should include('{"error":"No monitor found with id = dont_exist"}')
-      e.response.code.should == 500
+      e.response.code.should == 404
     end
   end
   

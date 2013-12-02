@@ -98,10 +98,13 @@ put  '/monitors/:id*', :check => :valid_token? do
     monitor_id = params[:id]
     updated_monitor = controller.update(monitor_id,data)
     Yajl::Encoder.encode(updated_monitor.options)
-  rescue Exception => e 
+  rescue Ragios::MonitorNotFound => e
+    status 404
+    Yajl::Encoder.encode({error: e.message})
+  rescue Exception => e
     status 500
-    body  Yajl::Encoder.encode({error: e.message})
-  end
+    Yajl::Encoder.encode({error: e.message})
+  end 
 end
 
 #stop a running monitor
