@@ -37,7 +37,12 @@ task :integration do
   sh 'rspec -fs spec/integration'
 end
 
+task :security do
+  sh 'rspec -fs spec/security'
+end
+
 task :c => :console
+task :test_security => :security
 task :test_notifiers => :notifiers
 task :test_plugins => :plugins
 task :test_unit => :unit
