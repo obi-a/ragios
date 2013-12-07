@@ -227,6 +227,29 @@ describe "Ragios REST API" do
       e.response.code.should == 404
     end
   end
+
+  it "tests a monitor" do
+    #setup starts
+    unique_name = "Google #{Time.now.to_i}"
+    monitors = [{monitor: unique_name,
+      url: "http://google.com",
+      every: "5m",
+      contact: "admin@mail.com",
+      via: "gmail_notifier",
+      plugin: "url_monitor" }]  
+
+    str = Yajl::Encoder.encode(monitors)
+    
+    response = RestClient.post "http://127.0.0.1:5041/monitors/", str, @options  
+    returned_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    monitor_id = returned_monitors.first[:_id]
+    #setup ends 
+    response = RestClient.post 'http://localhost:5041/tests', {:id => monitor_id}, @options
+    response.code.should == 200 
+    #teardown
+    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}", @auth_cookie
+    response.code.should == 200         
+  end
   
   it "deletes a monitor" do
     #setup starts
@@ -382,7 +405,6 @@ describe "Ragios REST API" do
       e.response.should == '{"error":"You are not authorized to access this resource"}'
     end
   end
-  
   
   it "will reject unauthorized requests" do
     begin

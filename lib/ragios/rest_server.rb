@@ -66,6 +66,21 @@ post '/monitors*', :check => :valid_token? do
  end
 end
 
+#tests a monitor
+post '/tests*', :check => :valid_token? do
+  begin
+    monitor_id = params[:id]
+    controller.test_now(monitor_id)
+    Yajl::Encoder.encode({ ok: true})    
+  rescue Ragios::MonitorNotFound => e
+    status 404
+    Yajl::Encoder.encode({error: e.message})
+  rescue Exception => e
+    status 500
+    Yajl::Encoder.encode({error: e.message})   
+  end
+end
+
 #get monitors that match multiple keys
 get '/monitors*', :check => :valid_token? do
   pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
