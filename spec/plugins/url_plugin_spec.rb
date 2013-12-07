@@ -1,53 +1,37 @@
 require 'spec_base.rb'
 
 #testing a https url
-https_options = { monitor: 'url',
-             every: '30s',
-             test: 'github repo a http test',
-             url: 'https://github.com/obi-a/Ragios',
-             contact: 'obi.akubue@mail.com',
-             via: 'gmail_notifier',  
-             notify_interval:'6h'   
-            }
+https_url = { url: 'https://github.com/obi-a/Ragios'}
 
 #testing a regular url 
-regular_url_options =  { monitor: 'url',
-              every: '5m',
-              test: 'google site test',
-              url: 'http://www.google.com',
-              contact: 'admin@mail.com',
-              via: 'gmail_notifier',
-              notify_interval: '6h'
-            }
+regular_url =  { url: 'http://www.google.com'}
 
-#testing a fake url
-fake_url_options  = { monitor: 'url',
-              every: '2m',
-              test: 'fake url test',
-              url: 'http://www.google.com/fail/',
-              contact: 'obi.akubue@mail.com',
-              via: 'gmail_notifier',  
-              notify_interval: '6h'
-             }
+#testing a failing url
+failing_url  = { url: 'http://www.google.com/fail/'}
 
-describe Ragios::Monitors::Url do
+#testing with no url
+no_url = {}
 
- it "should send a http GET request to the url in options and pass" do
-    r = Ragios::Monitors::Url.new
-    r.init(regular_url_options)
-    r.test_command.should == TRUE
- end
+describe Ragios::Plugin::UrlMonitor do
+  it "should send a http GET request to the url and pass" do
+    regular_url_plugin = Ragios::Plugin::UrlMonitor.new
+    regular_url_plugin.init(regular_url)
+    regular_url_plugin.test_command.should == true
+  end
 
- it "should send a http GET request to the url in options and fail" do 
-    f = Ragios::Monitors::Url.new
-    f.init(fake_url_options)
-    f.test_command.should ==  FALSE
- end 
+  it "should send a http GET request to the url and fail" do 
+    failing_plugin = Ragios::Plugin::UrlMonitor.new
+    failing_plugin.init(failing_url)
+    failing_plugin.test_command.should ==  false
+  end 
 
- it "should send a https GET request to the url in options and pass" do 
-    s = Ragios::Monitors::Url.new
-    s.init(https_options)
-    s.test_command.should == TRUE
- end
-
+  it "should send a https GET request to the url and pass" do 
+    https_url_plugin = Ragios::Plugin::UrlMonitor.new
+    https_url_plugin.init(https_url)
+    https_url_plugin.test_command.should == true
+  end
+  
+  it "should raise error when no url is provided" do
+    expect { Ragios::Plugin::UrlMonitor.new.init(no_url) }.to raise_error
+  end  
 end
