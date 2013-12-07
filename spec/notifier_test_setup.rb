@@ -46,6 +46,7 @@ module Ragios
       #test should pass this time and send a PASSED notification message
       controller.update(monitor_id, plugin: "passing_plugin")
       controller.delete(monitor_id)   
+      sleep 1 #delay for background processing to complete
     end
   end
 end
