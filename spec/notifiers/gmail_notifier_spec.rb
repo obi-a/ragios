@@ -8,7 +8,7 @@ describe Ragios::Notifier::GmailNotifier do
   end
 
   it "should send a notification message via gmail" do
-    message = {:to => "obi.akubue@gmail.com",
+    message = {:to => ENV['RAGIOS_CONTACT'],
                :subject =>"Test notification message from Ragios via gmail", 
                :body => "stuff"}
     Ragios::Notifier::GmailNotifier.new.deliver message

@@ -6,7 +6,7 @@ describe Ragios::Notifier::Ses do
     Ragios::NotifierTest::failed_resolved('SES test','ses')     
   end
   it "should send a notification message via ses" do
-    message = {:to => "obi.akubue@gmail.com",
+    message = {:to => ENV['RAGIOS_CONTACT'],
                :subject =>"Test notification message from Ragios via ses", 
                :body => "stuff"}
     Ragios::Notifier::Ses.new.deliver message

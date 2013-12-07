@@ -29,19 +29,19 @@ task :plugins do
   sh 'rspec -fs spec/plugins'
 end
 
-task :core do
-  sh 'rspec -fs spec/ragios'
+task :unit do
+  sh 'rspec -fs spec/unit_tests'
 end
 
-task :server do
-  sh 'rspec -fs spec/server'
+task :integration do
+  sh 'rspec -fs spec/integration'
 end
 
 task :c => :console
 task :test_notifiers => :notifiers
 task :test_plugins => :plugins
-task :test_core => :core
-task :test_server => :server
+task :test_unit => :unit
+task :test_integration => :integration
 
-task :test => :server
-task :default => :server
+task :test => :integration
+task :default => :integration

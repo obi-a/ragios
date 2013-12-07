@@ -36,7 +36,7 @@ module Ragios
       failing_monitor = {monitor: monitor,
         every: "5m",
         via: notifier,
-        contact: 'obi.akubue@gmail.com',
+        contact: ENV['RAGIOS_CONTACT'],
         plugin: "failing_plugin" }     
     
       #test should fail and send a FAILED notification message
