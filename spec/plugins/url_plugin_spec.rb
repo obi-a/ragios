@@ -30,7 +30,7 @@ describe Ragios::Plugin::UrlMonitor do
     https_url_plugin.init(https_url)
     https_url_plugin.test_command.should == true
   end
-  
+
   it "should raise error when no url is provided" do
     expect { Ragios::Plugin::UrlMonitor.new.init(no_url) }.to raise_error
   end  
