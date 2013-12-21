@@ -15,9 +15,10 @@ gem 'state_machine'
 gem 'sucker_punch', '~> 1.0'
 gem "sinatra"
 gem "yajl-ruby"
-gem "thin" 
+gem "thin"
 #gem "puma"
 gem "leanback"
 gem "uuidtools"
+gem "thor"
 
 
