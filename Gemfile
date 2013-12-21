@@ -20,5 +20,6 @@ gem "thin"
 gem "leanback"
 gem "uuidtools"
 gem "thor"
+gem "ragios-client"
 
 
