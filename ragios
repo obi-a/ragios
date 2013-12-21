@@ -1,13 +1,25 @@
-#!/bin/bash
+#!/usr/bin/env ruby
+require "thor"
 
-if [ "$1" = "start" ]; then
-   bundle exec thin start -R config.ru  -C server.yml
-elif [ "$1" = "stop" ]; then
-    bundle exec thin stop -R config.ru  -C server.yml
-elif [ "$1" = "restart" ]; then
-   bundle exec thin restart -R config.ru  -C server.yml
-else 
- echo "Use one of the options start | restart | stop "
-fi
+class RagiosCLI < Thor
 
+  desc "console", "Open Ragios Interactive Shell"
+  def console
+  	ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios'))
+    config = ragios_dir + '/config'
+    console = ragios_dir + '/initializers/console'
+    irb = "bundle exec pry -r #{config}  -r #{console}"
+    exec(irb)
+  end
 
+  desc "server start | restart | stop", "Run Ragios Server"
+  def server(option=nil)
+    exec('bundle exec thin start -R config.ru  -C server.yml') if option == 'start'
+    exec('bundle exec thin restart -R config.ru  -C server.yml') if option == 'restart'
+    exec('bundle exec thin stop -R config.ru  -C server.yml') if option == 'stop'
+    puts "Usage: ragios server start | restart | stop"
+  end
+
+end
+
+RagiosCLI.start(ARGV)
