@@ -18,7 +18,7 @@ Ragios::Notifier::TwitterNotifier.config(twitter_cred)
 #Replace with amazon credientials for Amazon Simple Email Service Notifier
 amazon_account = { access_key: ENV['AWS_ACCESS_KEY_ID'],
                    secret_key: ENV['AWS_SECRET_ACCESS_KEY'],
-                   send_from: "Ragios Alert <alerts@southmunn.com>" }
+                   send_from: ENV['AWS_SES_SEND_FROM']}
 
 Ragios::Notifier::Ses.config(amazon_account)
 
