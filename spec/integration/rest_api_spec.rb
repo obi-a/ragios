@@ -156,7 +156,7 @@ describe "Ragios REST API" do
     response.body.should == '[]'
   end
 
-  it "should update a monitor"  do
+  it "should update an active monitor"  do
     #setup starts
     monitors = [{monitor: "Google",
       url: "http://google.com",
@@ -188,6 +188,40 @@ describe "Ragios REST API" do
     updated_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)
     updated_monitor.should include(update_options)
     updated_monitor[:status_].should == "active"
+
+    #teardown
+    response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}", @auth_cookie
+    response.code.should == 200
+  end
+
+  it "updates a stopped monitor" do
+    #setup starts
+    monitors = [{monitor: "Google",
+      url: "http://google.com",
+      every: "5m",
+      contact: "admin@mail.com",
+      via: ["gmail_notifier"],
+      plugin: plugin }]
+
+    str = Yajl::Encoder.encode(monitors)
+
+    response = RestClient.post "http://127.0.0.1:5041/monitors/", str, @options
+    returned_monitors = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    monitor_id = returned_monitors.first[:_id]
+    #setup ends
+
+    response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",{:status => "stopped"},@options
+    response.code.should == 200
+
+    update_options = {every: "10m", via: ["twitter_notifier"]}
+
+    str = Yajl::Encoder.encode(update_options)
+
+    response = RestClient.put "http://127.0.0.1:5041/monitors/#{monitor_id}",str, @options
+    response.code.should == 200
+    updated_monitor = Yajl::Parser.parse(response.body, :symbolize_keys => true)
+    updated_monitor.should include(update_options)
+    updated_monitor[:status_].should == "stopped"
 
     #teardown
     response = RestClient.delete "http://127.0.0.1:5041/monitors/#{monitor_id}", @auth_cookie

@@ -29,9 +29,9 @@ class Controller
     monitor = model.find(monitor_id)
     if is_active?(monitor)
       stop(monitor_id)
-      generic_monitors = restart(monitor_id)
-      monitor = generic_monitors.first
+      monitor = restart(monitor_id)
     end
+    return monitor
   end
 
    def self.get(monitor_id)
@@ -46,7 +46,8 @@ class Controller
     monitor = model.find(monitor_id)
     return monitor if is_active?(monitor)
     generic_monitor = objectify(monitor)
-    add_to_scheduler([generic_monitor])
+    generic_monitors = add_to_scheduler([generic_monitor])
+    generic_monitors.first.options
   end
 
   def self.test_now(monitor_id)
