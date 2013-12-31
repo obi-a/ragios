@@ -1,14 +1,14 @@
 module Ragios
 class Controller
 
-  def self.scheduler(sch = nil)    
+  def self.scheduler(sch = nil)
     @scheduler ||= sch
   end
-  
-  def self.model(m = nil)    
+
+  def self.model(m = nil)
     @model ||= m
   end
-  
+
   def self.logger(lgr = nil)
     @logger ||= lgr
   end
@@ -48,17 +48,17 @@ class Controller
     generic_monitor = objectify(monitor)
     add_to_scheduler([generic_monitor])
   end
-  
+
   def self.test_now(monitor_id)
     monitor = model.find(monitor_id)
     generic_monitor = objectify(monitor)
     perform(generic_monitor)
   end
 
-  def self.find_by(options) 
+  def self.find_by(options)
     model.where(options)
   end
-  
+
   def self.restart_all
     monitors = get_active_monitors_from_database
     generic_monitors = objectify_monitors(monitors)
@@ -79,26 +79,26 @@ class Controller
     @dont_save = true
     add(monitors)
   end
-  
+
   def self.perform(generic_monitor)
     generic_monitor.test_command
     update_state(generic_monitor) unless @dont_save == true
     log_results(generic_monitor) unless @dont_save == true
   end
-  
+
 
 private
 
   def self.update_state(generic_monitor)
-    options = {:time_of_last_test_ => generic_monitor.time_of_last_test, 
+    options = {:time_of_last_test_ => generic_monitor.time_of_last_test,
                :timestamp_ => Time.now.to_i,
-             :test_result_ => generic_monitor.test_result,  
+             :test_result_ => generic_monitor.test_result,
             :state_ => generic_monitor.state,
             :status_ => "active" }
-    generic_monitor.options.merge!(options)        
+    generic_monitor.options.merge!(options)
     model.update(generic_monitor.options[:_id],options)
   end
-  
+
   def self.log_results(generic_monitor)
     logger.log(generic_monitor)
   end
@@ -108,19 +108,15 @@ private
     raise Ragios::MonitorNotFound.new(error: "No active monitor found"), "No active monitor found" if monitors.empty?
     return monitors
   end
-  
-  def self.objectify(options)
-    GenericMonitor.new(options) 
+
+  def self.objectify(monitor)
+    GenericMonitor.new(monitor)
   end
 
   def self.objectify_monitors(monitors)
-    generic_monitors = []
-    monitors.each do|options|   
-      generic_monitors << objectify(options)
-    end 
-    generic_monitors
+    monitors.map { |monitor| objectify(monitor) }
   end
-  
+
   def self.is_active?(monitor)
     monitor[:status_] == "active"
   end
@@ -129,7 +125,7 @@ private
     status = {:status_ => "active"}
     model.update(monitor_id,status)
   end
-  
+
   def self.set_stopped(monitor_id)
     status = {:status_ => "stopped"}
     model.update(monitor_id,status)
@@ -142,8 +138,8 @@ private
               tags: monitor.options[:_id],
               object: monitor }
       scheduler.schedule(args)
-   end
+    end
   end
-  
+
  end
 end
