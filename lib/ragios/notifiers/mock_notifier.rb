@@ -5,12 +5,12 @@ module Ragios
         @monitor = monitor
       end
       def failed
-        puts "#{@monitor.options[:monitor]} FAILED"
-        puts "#{@monitor.test_result.inspect}"
+        puts "#{@monitor[:monitor]} FAILED"
+        puts "#{@monitor[:test_result_].inspect}"
       end
       def resolved
-        puts "#{@monitor.options[:monitor]} RESOLVED"
-        puts "#{@monitor.test_result.inspect}"
+        puts "#{@monitor[:monitor]} RESOLVED"
+        puts "#{@monitor[:test_result_].inspect}"
       end
     end
  end
