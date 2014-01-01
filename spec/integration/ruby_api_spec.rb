@@ -7,10 +7,10 @@ module Ragios
         @monitor = monitor
       end
       def failed
-        puts "#{@monitor.options[:_id]} FAILED"
+        puts "#{@monitor[:_id]} FAILED"
       end
       def resolved
-        puts "#{@monitor.options[:_id]} RESOLVED"
+        puts "#{@monitor[:_id]} RESOLVED"
       end
     end
  end
@@ -51,10 +51,10 @@ module Ragios
         @monitor = monitor
       end
       def failed
-        puts "First Notifier FAILED for #{@monitor.options[:_id]}"
+        puts "First Notifier FAILED for #{@monitor[:_id]}"
       end
       def resolved
-        puts "First Notifier RESOLVED for #{@monitor.options[:_id]}"
+        puts "First Notifier RESOLVED for #{@monitor[:_id]}"
       end
     end
  end
@@ -67,10 +67,10 @@ module Ragios
         @monitor = monitor
       end
       def failed
-        puts "Second Notifier FAILED for #{@monitor.options[:_id]}"
+        puts "Second Notifier FAILED for #{@monitor[:_id]}"
       end
       def resolved
-        puts "Second Notifier RESOLVED for #{@monitor.options[:_id]}"
+        puts "Second Notifier RESOLVED for #{@monitor[:_id]}"
       end
     end
  end

@@ -6,17 +6,17 @@ module Ragios
     def message template
       message_template = ERB.new(File.new("#{$path_to_messages}/#{template}").read)
       @body = message_template.result(binding)
-      @message = {:to => @monitor.options[:contact],
-                  :subject => @subject, 
+      @message = {:to => @monitor[:contact],
+                  :subject => @subject,
                   :body => @body}
-    end 
+    end
     def failed
       deliver(message("email_failed.erb"))
-    end 
+    end
 
     def resolved
       deliver(message("email_resolved.erb"))
-    end 
+    end
     def error
     end
   end

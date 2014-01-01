@@ -1,8 +1,8 @@
-<% @subject = "ISSUE RESOLVED #{@monitor.options[:monitor]} PASSED" %>
+<% @subject = "ISSUE RESOLVED #{@monitor[:monitor]} PASSED" %>
 
-<%= @monitor.options[:monitor] %> PASSED 
+<%= @monitor[:monitor] %> PASSED
 
-<% @monitor.test_result.each do |key,value| %>
+<% @monitor[:test_result_].each do |key,value| %>
 <%= key %>: <%= value %>
 <% end %>
 

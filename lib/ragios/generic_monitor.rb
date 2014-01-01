@@ -74,7 +74,7 @@ private
     end
 
     def create_notifier(notifier_name)
-      (Module.const_get("Ragios").const_get("Notifier").const_get(notifier_name.camelize)).new(self)
+      (Module.const_get("Ragios").const_get("Notifier").const_get(notifier_name.camelize)).new(@options)
     end
 
     def create_plugin
