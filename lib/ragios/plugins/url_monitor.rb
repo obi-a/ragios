@@ -4,23 +4,21 @@ module Ragios
   module Plugin
 
     class UrlMonitor
-      attr_accessor :test_result
+      attr_reader :test_result
       attr_reader :url
 
       def init(monitor)
         @url = monitor[:url]
-        raise "A url to test must be specified, url must be assigned a value" if @url.nil?
+        raise "A url must be provided for url_monitor in #{monitor[:monitor]} monitor" if @url.nil?
       end
 
       def test_command
-        begin
-           response = RestClient.get @url, {"User-Agent" => "Ragios (Saint-Ruby)"}
-           @test_result = {"HTTP GET Request to #{@url}" => response.code}
-           return true
-         rescue => e
-           @test_result = {"HTTP GET Request to #{@url}" => e.message }
-           return false
-         end
+        response = RestClient.get @url, {"User-Agent" => "Ragios (Saint-Ruby)"}
+        @test_result = {"HTTP GET Request to #{@url}" => response.code}
+        return true
+      rescue => e
+        @test_result = {"HTTP GET Request to #{@url}" => e.message }
+        return false
       end
     end
 
