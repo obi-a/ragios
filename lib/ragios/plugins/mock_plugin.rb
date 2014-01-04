@@ -2,7 +2,7 @@ module Ragios
   module Plugin
 
     class MockPlugin
-      attr_accessor :test_result
+      attr_reader :test_result
 
       def init(monitor)
       end
