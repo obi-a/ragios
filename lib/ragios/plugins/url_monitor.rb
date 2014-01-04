@@ -2,16 +2,16 @@
 #the test PASSES if it gets a HTTP 200,301 or 302 Response status code from the http request
 module Ragios
   module Plugin
-  
+
     class UrlMonitor
       attr_accessor :test_result
-      attr_reader :url 
-  
-      def init(options)
-        @url = options[:url] 
-        raise "A url to test must be specified, url must be assigned a value" if @url.nil?    
+      attr_reader :url
+
+      def init(monitor)
+        @url = monitor[:url]
+        raise "A url to test must be specified, url must be assigned a value" if @url.nil?
       end
-  
+
       def test_command
         begin
            response = RestClient.get @url, {"User-Agent" => "Ragios (Saint-Ruby)"}

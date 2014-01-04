@@ -4,7 +4,7 @@ module Ragios
     class MockPlugin
       attr_accessor :test_result
 
-      def init(options)
+      def init(monitor)
       end
 
       def test_command
