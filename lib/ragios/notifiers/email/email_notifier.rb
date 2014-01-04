@@ -2,6 +2,7 @@ module Ragios
   module EmailNotifier
     def initialize(monitor=nil)
       @monitor = monitor
+      raise "A contact must be provided for the email notifier in #{@monitor[:monitor]} monitor" if @monitor[:contact].nil?
     end
     def message template
       message_template = ERB.new(File.new("#{$path_to_messages}/#{template}").read)
