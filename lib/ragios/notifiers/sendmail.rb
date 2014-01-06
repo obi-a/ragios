@@ -13,6 +13,6 @@ module Ragios
         Pony.mail message
       end
     end
- end
+  end
 end
 
