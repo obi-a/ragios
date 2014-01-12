@@ -22,7 +22,7 @@ module Ragios
       attr_accessor :test_result
       def init(options)
       end
-      def test_command
+      def test_command?
         @test_result = :test_passed
         return true
       end
@@ -36,7 +36,7 @@ module Ragios
       attr_accessor :test_result
       def init(options)
       end
-      def test_command
+      def test_command?
         @test_result = :test_failed
         return false
       end

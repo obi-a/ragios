@@ -12,7 +12,7 @@ module Ragios
         raise "A url must be provided for url_monitor in #{monitor[:monitor]} monitor" if @url.nil?
       end
 
-      def test_command
+      def test_command?
         response = RestClient.get @url, {"User-Agent" => "Ragios (Saint-Ruby)"}
         @test_result = {"HTTP GET Request to #{@url}" => response.code}
         return true

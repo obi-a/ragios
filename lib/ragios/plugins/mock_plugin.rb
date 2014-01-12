@@ -7,7 +7,7 @@ module Ragios
       def init(monitor)
       end
 
-      def test_command
+      def test_command?
         @test_result = {"This test" => "does nothing"}
         return true
       end

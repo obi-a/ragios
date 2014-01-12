@@ -82,7 +82,7 @@ class Controller
   end
 
   def self.perform(generic_monitor)
-    generic_monitor.test_command
+    generic_monitor.test_command?
     update_state(generic_monitor) unless @dont_save == true
     log_results(generic_monitor) unless @dont_save == true
   end
