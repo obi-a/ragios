@@ -8,27 +8,22 @@ This is all just for fun and educational purposes. Ruby makes programmers more p
 
 Ragios could be used to monitor any type of system including servers, workstations, switches, routers, system services and applications, locally or over a network. The system admin can define the tests he wants to run on the system or re-use tests written by other developers. The tests run periodically on the system. When a test fails the admin receives an email or SMS alert.
 
-(Update 12-31-13:) master branch is v0.6.0, which is a complete rewrite from the last version 0.5.1, I am currently documenting v0.6.0. See [Changelog](https://github.com/obi-a/Ragios/blob/master/Changelog.rdoc) for details on v0.6.0 rolling release.
 
 * [Ragios (Saint Ruby)](http://www.whisperservers.com/ragios/ragios-saint-ruby/)
 
    + [Installation](http://www.whisperservers.com/ragios/ragios-saint-ruby/installation/)
 
+   + [Setup](http://www.whisperservers.com/ragios/setup/)
+
+   + [Start/Stop the server](http://www.whisperservers.com/ragios/running-ragios/)
+
    + [Using Ragios](http://www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)
 
    + [Notifications](http://www.whisperservers.com/ragios/ragios-saint-ruby/notifications/)
 
-   + [Status Reports](http://www.whisperservers.com/ragios/ragios-saint-ruby/status-reports/)
+   + [Creating Notifiers](http://www.whisperservers.com/ragios/notifiers/)
 
-   + [Failure Recovery](http://www.whisperservers.com/ragios/ragios-saint-ruby/adding-failure-recovery-code-to-monitors/)
-
-* [Ragios Plugin System](http://www.whisperservers.com/ragios/ragios-plugin-system/)
-
-* [Ragios Server](http://www.whisperservers.com/ragios/ragios-server/)
-
-   + [Server Setup](http://www.whisperservers.com/ragios/server-setup/)
-
-   + [Using Ragios Server](http://www.whisperservers.com/ragios/usage/)
+   + [Creating Plugins](http://www.whisperservers.com/ragios/plugins/)
 
    + [REST API](http://www.whisperservers.com/ragios/ragios-rest-api/)
 
@@ -37,4 +32,5 @@ Ragios could be used to monitor any type of system including servers, workstatio
      * [Monitors API](http://www.whisperservers.com/ragios/monitors-api/)
 
      * [Status Updates API](http://www.whisperservers.com/ragios/status-updates-api/)
+   + [Analytics & Reporting](http://www.whisperservers.com/ragios/analytics-reporting/)
 
