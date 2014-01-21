@@ -1,6 +1,26 @@
 ==TODO
 
-===Priority
+
+=Goals for versions 0.6.0
+* Add a web UI admin dashboard for using Ragios Server.
+
+===Nice to have
+* Document the feature: Grouping monitors by tag
+
+* Add validation for the REST api input data
+
+*Ragios URL plugin should allow users to set the timeout
+
+*Ragios URL plugin should allow users to set the type of http request they choose either a GET or POST and include body  data for a POST
+
+
+
+=Goals for versions 0.5.2
+
+==TODO
+* Add a web UI admin dashboard for using Ragios Server.
+
+==DONE
 * Rename specs to reflect classes and code being tested eg ragios_server_spec to controller.spec
 * fix failing tests on the current new refactor - refactor schedulers
 * Ragios Controller shouldn't know anything about plugins -  generic monitor should handle that internally
@@ -14,28 +34,6 @@
 * Clean up return values from Ragios::Server for REST & APIs
 * Make Ragios server bind address & port to be configurable (the server.xml can be updated or make it 0.0.0.0 by default), or just document the current way to change it
 
-
-=Goals for versions 0.6.0
-* Add a web UI admin dashboard for using Ragios Server.
-
-===Nice to have
-* When a monitor is deleted, also delete all its activity from the activity log 
-* Document the feature: Grouping monitors by tag
-
-* Add validation for the REST api input data
-
-*Ragios URL plugin should allow users to set the timeout 
-
-*Ragios URL plugin should allow users to set the type of http request they choose either a GET or POST and include body  data for a POST
-
-
-
-=Goals for versions 0.5.2
-
-==TODO
-* Add a web UI admin dashboard for using Ragios Server.
-
-==DONE
 * send notifications asynchronously with sucker_punch
 * Allow email notifiers to support multiple contacts eg { contact: ['xyz@mail.com','foo@mail.com'] }
 * Notification scheduler should be tagged so that it could be controlled (start/stopped)
@@ -43,14 +41,14 @@
 *Plugins should be able to override all methods of the Ragios::Monitors::System class. Making plugins firstclass Monitors
 * inheritance dependence of the Ragios::Monitors::System class and all the required variables - evantually delete that class
 * Ragios::Server may need to should have an exception class to allow clients like the RESTserver know exactly what a problem is with specific details.
-* update plugin testing documentation 
+* update plugin testing documentation
 * Add a ragios console similar to rails console or irb.
 * Switch from thin to unicorn if conditions are appropriate - no need to switch
 * make the ragios server bind address/port to be configurable - no necessary
 * make it part of the config to choose the name of databases that will be used to store monitors, logs, sessions and status updates
 * rename server.ru to config.ru - move items to an initializer file
 * move all configuration to environment variables
-* add tests for 
+* add tests for
   GET /monitors
   GET /monitors/:id
 * change GET /monitors/every/1m to GET /monitors?every=1m
