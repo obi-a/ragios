@@ -34,7 +34,7 @@ database_admin = {login:     {username: ENV['COUCHDB_ADMIN_USERNAME'],
                   databases: { monitors: 'ragios_monitors',
                                activity_log: 'ragios_activity_log',
                                auth_session: 'ragios_auth_session'},
-                  couchdb:  {bind_address: 'http://localhost',
+                  couchdb:  {address: 'http://localhost',
                              port:'5984'}
                  }
 
