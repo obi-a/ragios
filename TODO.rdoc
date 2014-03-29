@@ -1,5 +1,11 @@
 ==TODO
 
+* write about directly testing a plugin by calling generic_monitor
+ generic_monitor = Ragios::GenericMonitor.new monitor
+ generic_monitor.test_command?
+
+Document fail_tolerance feature
+
 
 =Goals for versions 0.6.0
 * Add a web UI admin dashboard for using Ragios Server.

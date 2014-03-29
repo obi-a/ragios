@@ -13,7 +13,7 @@ module Ragios
     end
 
     def schedule(args)
-      @scheduler.every args[:time_interval], :tags => args[:tags] do
+      @scheduler.interval args[:time_interval], :tags => args[:tags] do
         controller.perform(args[:object])
       end
     end

@@ -9,19 +9,23 @@ module Ragios
     attr_accessor :state
     attr_reader :time_of_last_test
     attr_reader :timestamp
+    attr_reader :fail_tolerance
+    attr_reader :failures
+    attr_reader :failure_notified
 
     state_machine :state, :initial => :pending do
 
       before_transition :from => :pending, :to => :failed, :do => :has_failed
       before_transition :from => :failed, :to => :passed, :do => :is_fixed
       before_transition :from => :passed, :to => :failed, :do => :has_failed
+      before_transition :from => :failed, :to => :failed, :do => :has_failed
 
       event :success do
         transition all => :passed
       end
 
       event :failure do
-        transition :passed => :failed, :pending => :failed
+        transition :passed => :failed, :pending => :failed, :failed => :failed
       end
     end
 
@@ -29,6 +33,9 @@ module Ragios
       @options = options
       @id = @options[:_id]
       set_previous_state
+      @failures  = 0
+      @fail_tolerance = @options[:fail_tolerance].to_i
+      @failure_notified = false
       create_plugin
       create_notifiers
       super()
@@ -47,14 +54,30 @@ module Ragios
     end
 
 private
-
+    def increment_failure_count!
+      @failures +=  1
+    end
+    def reset_failure_count!
+      @failures = 0
+      @failure_notified = false
+    end
+    def exceed_failure_tolerance
+      @failures > fail_tolerance
+    end
     def has_failed
-      @notifiers.each do |notifier|
-        NotifyJob.new.async.failed(notifier)
+      increment_failure_count!
+      if exceed_failure_tolerance
+        unless @failure_notified
+          @notifiers.each do |notifier|
+            NotifyJob.new.async.failed(notifier)
+            @failure_notified = true
+          end
+        end
       end
     end
 
     def is_fixed
+      reset_failure_count!
       @notifiers.each do |notifier|
         NotifyJob.new.async.resolved(notifier)
       end
