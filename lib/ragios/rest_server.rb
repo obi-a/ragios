@@ -1,19 +1,3 @@
-#require 'rubygems'
-#require "bundler/setup"
-#dir = Pathname(__FILE__).dirname.expand_path
-#require dir + 'lib/ragios'
-#require dir + 'config'
-require 'sinatra/base'
-require 'yajl'
-
-#using config.yml with thin instead
-#configure do
-#    set :bind, 'localhost'
-#    set :port, '5041'
-#    set :server, %w[thin mongrel webrick]
-
-# end
-
 #TODO add sinatra last_modified reduce computation and save bandwidth
 
 class App < Sinatra::Base

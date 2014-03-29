@@ -13,13 +13,10 @@ gem "aws-ses"
 gem 'pry'
 gem 'state_machine'
 gem 'sucker_punch', '~> 1.0'
-gem "sinatra"
-gem "yajl-ruby"
+gem "sinatra", :require => "sinatra/base"
+gem "yajl-ruby", :require => "yajl"
 gem "thin"
-#gem "puma"
 gem "leanback"
 gem "uuidtools"
 gem "thor"
 gem "ragios-client"
-
-

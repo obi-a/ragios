@@ -1,14 +1,9 @@
-require 'rufus/scheduler'
-require 'twitter'
+require 'rubygems'
+require 'bundler/setup'
 require 'net/http'
 require 'net/https'
-require 'gmail'
-require 'leanback'
-require 'uuidtools'
-require 'aws/ses'
-require 'state_machine'
-require 'sucker_punch'
 
+Bundler.require
 
 dir = Pathname(__FILE__).dirname.expand_path
 
