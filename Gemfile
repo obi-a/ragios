@@ -3,7 +3,7 @@ source "http://gemcutter.org"
 
 gem "pony"
 gem "twitter"
-gem "rufus-scheduler", :require => "rufus/scheduler"
+gem "rufus-scheduler", '~> 3.0.7', :require => "rufus/scheduler"
 gem "daemons"
 gem "i18n"
 gem "gmail"

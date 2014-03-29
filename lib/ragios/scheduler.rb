@@ -1,33 +1,33 @@
-module Ragios 
+module Ragios
   class Scheduler
     def initialize(ctr)
-      @scheduler = Rufus::Scheduler.start_new 
+      @scheduler = Rufus::Scheduler.new
       @controller = ctr
     end
-    
+
     def stop(tag)
       jobs = find(tag)
-      jobs.each do |job| 
+      jobs.each do |job|
         job.unschedule
-      end 
+      end
     end
-    
+
     def schedule(args)
-      @scheduler.every args[:time_interval], :tags => args[:tags] do          
+      @scheduler.every args[:time_interval], :tags => args[:tags] do
         controller.perform(args[:object])
-      end  
+      end
     end
-    
+
     def find(tag)
-      @scheduler.find_by_tag(tag)
+      @scheduler.jobs(tag: tag)
     end
-    
+
     def all
       @scheduler.jobs
     end
-    
+
     def controller
       @controller
     end
   end
-end 
+end
