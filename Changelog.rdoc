@@ -1,4 +1,19 @@
-==Ragios v0.6.0 
+==Ragios v0.6.0
+
+03-29-2014
+* Added support for failure tolerance. A monitor will not send out a notification until it's number of consecutive failures exceeds it's failure tolerance number.
+Example:
+  {monitor: "My Website",
+    url: "http://mysite.com",
+    every: "5m",
+    contact: "admin@mail.com",
+    via: "gmail_notifier",
+    plugin: "url_monitor",
+    fail_tolerance: 4
+  }
+The above example has fail_tolerance of 4, this means that the monitor will not send out a failure notification until it's test consecutively fails more than 4 times. If the monitor passes it's test before it consecutively fails more than it's fail_tolerance then no failure notification message will be sent out.
+
+When there is no fail_tolerance set on a monitor, it defaults to zero failure tolerance, which means that the monitor will send out a failure notification as soon a test fails.
 
 10-22-2013
 * Added support for multiple notifiers per monitor, example below will send an email to the contact and also send out a tweet when the monitor fails.
@@ -26,7 +41,7 @@ Single notifiers still work the same way
   contact: "admin@mail.com",
   via: "gmail_notifier",
   plugin: "url_monitor" }
-  
+
 * Email Notifiers will notify multiple contacts when an email list is added as value of :contacts example below
  {monitor: "My Website",
   url: "http://mysite.com",
@@ -79,11 +94,11 @@ The following changes were made:
 5-9-2011
 * Twitter and Gmail notifiers are now configured in the Ragios/config.rb file.
 
-* Added a plugin architecture. Developers can now write plugins to monitor different types of systems. All monitoring done by Ragios is now defined in plugins. 
+* Added a plugin architecture. Developers can now write plugins to monitor different types of systems. All monitoring done by Ragios is now defined in plugins.
 Ragios ships with 2 plugins:
    * http plugin - monitors http
    * url plugin  - montiors urls
-Developers can easily write and deploy more plugins to meet their needs. 
+Developers can easily write and deploy more plugins to meet their needs.
 
 5-3-2011
 * With code changes in the new system Ragios version 0.5+ now requires Ruby 1.9.2 or above.
@@ -98,21 +113,21 @@ The following changes were made:
 * rolling release is complete for v0.4.1. work begins on v0.5.0
 
 2-27-2011
-* Status Reports now displays the percentage of uptime for all active monitors. This is called the Uptime value for each monitor. 
-For each monitor the uptime value is 
+* Status Reports now displays the percentage of uptime for all active monitors. This is called the Uptime value for each monitor.
+For each monitor the uptime value is
  @uptime =  (monitor.num_tests_passed.to_f / monitor.total_num_tests.to_f) * 100
 
 2-18-2011:
-* Yeti is born. Yeti is a Web UI for Ragios. It's a Rails app that runs Ragios as a Rails plugin. More on Yeti here: https://github.com/obi-a/yeti. 
+* Yeti is born. Yeti is a Web UI for Ragios. It's a Rails app that runs Ragios as a Rails plugin. More on Yeti here: https://github.com/obi-a/yeti.
 
-* In addition to running Ragios as a Unix/Linux top program, Ragios can now run as a Plugin for Ruby on Rails applications. This gives developers the ability to build web UIs for it, and visualize their active monitors from Rails Applications.  
+* In addition to running Ragios as a Unix/Linux top program, Ragios can now run as a Plugin for Ruby on Rails applications. This gives developers the ability to build web UIs for it, and visualize their active monitors from Rails Applications.
 
 2-7-2011:
 * The system admin can now configure Ragios to regularly send out a Status Report on all the active monitors running on the system.
 This Status Report includes:
    * The number of monitors running on the system
-   * How long the monitors have been running 
-Also includes a summary of each active monitor  
+   * How long the monitors have been running
+Also includes a summary of each active monitor
    * how many times the monitor has been tested
    * how many tests passed it passed
    * how many tests failed
@@ -123,11 +138,11 @@ To configure Ragios to send Status Reports
   Ragios::Monitor.start monitoring
   Ragios::Monitor.update_status({:every => '1d',
 			:contact => 'admin@mail.com',
-			:via => 'gmail'}) 
+			:via => 'gmail'})
 
 The above sample means that Ragios will send a Status Report every day '1d' to the email address 'admin@mail.com' via gmail.
 * The Status Report is stored in an ERB template file, this makes it completely customizable by system admins and developers.
- 
+
 
 2-5-2011:
 * Moved all notification and issue resolved messages to ERB templates in the /lib/ragios/messages folder. The ERB templates can be edited by the system admin to change the format of email messages sent by the Ragios system. The template has access to all the attributes of the Monitor base class (Ragios::Monitors::System class), so it can be edited to include or exclude attributes that appear on messages.
@@ -136,14 +151,14 @@ The above sample means that Ragios will send a Status Report every day '1d' to t
 * Ragios::Monitor & Ragios::System now returns a list of all active monitors with their real time stats
 Example:
    monitors = Ragios::Monitor.start monitoring
-   monitors.each do |monitor|  
-         puts "monitor: " + monitor.test_description 
+   monitors.each do |monitor|
+         puts "monitor: " + monitor.test_description
          puts "Number of tests failed: " + monitor.num_tests_failed.to_s
          puts "Number of tests passed: " + monitor.num_tests_passed.to_s
          puts "Total number of tests: " + monitor.total_num_tests.to_s
          puts "Creation date: " + monitor.creation_date.to_s
          puts "Last test was performed on " + monitor.time_of_last_test.to_s
-     end  
+     end
 
 1-10-2011:
 Changes to Ragios URL monitor:
@@ -157,17 +172,17 @@ Changes to Ragios URL monitor:
 12-15-2010:
 * Added a monitoring object to the system that monitors processes on unix/linux systems and restarts a process when it stops running.
 
-* Added new methods to the Ragios::Monitors::System that informs the System Admin that an issue has been fixed via email,gmail or twitter. 
+* Added new methods to the Ragios::Monitors::System that informs the System Admin that an issue has been fixed via email,gmail or twitter.
 
 12-8-2010:
 * Deployment of Ragios is now done by cloning the github repo and switching to the Release branch. No need to download the tarball anymore.
 
 12-6-2010:
 * Removed the concept of Test objects - replaced them with Monitoring Objects that run tests periodically on the system. This makes the system easier to understand and provides a more uniform design structure.
- 
+
 * Simplified the interface to the system by introducing the Ragios::System object, which means the monitoring system can be activated using the easier to understand code below:
- 
+
  monitoring = [MonitoringObject1.new, MonitoringObject2.new]
  Ragios::System.start monitoring
- 
+
 

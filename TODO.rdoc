@@ -4,9 +4,6 @@
  generic_monitor = Ragios::GenericMonitor.new monitor
  generic_monitor.test_command?
 
-Document fail_tolerance feature
-
-
 =Goals for versions 0.6.0
 * Add a web UI admin dashboard for using Ragios Server.
 
@@ -27,6 +24,7 @@ Document fail_tolerance feature
 * Add a web UI admin dashboard for using Ragios Server.
 
 ==DONE
+* Document fail_tolerance feature
 * Rename specs to reflect classes and code being tested eg ragios_server_spec to controller.spec
 * fix failing tests on the current new refactor - refactor schedulers
 * Ragios Controller shouldn't know anything about plugins -  generic monitor should handle that internally
