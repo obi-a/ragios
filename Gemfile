@@ -20,3 +20,4 @@ gem "leanback"
 gem "uuidtools"
 gem "thor"
 gem "ragios-client"
+gem "eventmachine", '~> 1.0.3'

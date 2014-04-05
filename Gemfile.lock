@@ -16,8 +16,8 @@ GEM
     coderay (1.0.9)
     daemons (1.1.0)
     diff-lcs (1.1.2)
-    eventmachine (1.0.0)
-    eventmachine (1.0.0-java)
+    eventmachine (1.0.3)
+    eventmachine (1.0.3-java)
     faraday (0.8.7)
       multipart-post (~> 1.1)
     ffi (1.9.0-java)
@@ -109,6 +109,7 @@ PLATFORMS
 DEPENDENCIES
   aws-ses
   daemons
+  eventmachine (~> 1.0.3)
   gmail
   i18n
   leanback
