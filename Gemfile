@@ -19,5 +19,5 @@ gem "thin"
 gem "leanback"
 gem "uuidtools"
 gem "thor"
-gem "ragios-client"
+gem "ragios-client", '~> 0.0.3'
 gem "eventmachine", '~> 1.0.3'
