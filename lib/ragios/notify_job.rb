@@ -2,12 +2,12 @@ module Ragios
   class NotifyJob
     include SuckerPunch::Job
 
-    def failed(monitor, notifier)
-      notifier.failed(monitor) if notifier.respond_to?('failed')
+    def failed(test_result, notifier)
+      notifier.failed(test_result) if notifier.respond_to?('failed')
     end
 
-    def resolved(monitor, notifier)
-      notifier.resolved(monitor) if notifier.respond_to?('resolved')
+    def resolved(test_result, notifier)
+      notifier.resolved(test_result) if notifier.respond_to?('resolved')
     end
   end
 end

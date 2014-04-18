@@ -1,15 +1,15 @@
 ==Ragios v0.6.0
 
 04-18-2014
-* The monitor in its current state is now passed to the notifiers failed() and resolved() methods when they are invoked by Ragios. This ensures that notifiers have the ability to always have access to the most current of the monitor, ensures that test_results on notifiers are accurate.
+* The test_result is now explicitly passed to the notifier's failed() and resolved() methods are argument. This is an overall better design and ensures that notifiers report accurate results.
 
 New Specification for notifers
   module Ragios
     module Notifier
       class Dummy
         def initialize(monitor); end
-        def failed(monitor); end
-        def resolved(monitor); end
+        def failed(test_result); end
+        def resolved(test_result); end
       end
    end
   end

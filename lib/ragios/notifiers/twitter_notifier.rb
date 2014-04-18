@@ -26,13 +26,11 @@ module Ragios
         message_template.result(binding)
       end
 
-      def resolved(monitor)
-        @monitor = monitor
+      def resolved(test_result)
         tweet(message("tweet_resolved.erb"))
       end
 
-      def failed(monitor)
-        @monitor = monitor
+      def failed(test_result)
         tweet(message("tweet_failed.erb"))
       end
     end

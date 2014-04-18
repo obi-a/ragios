@@ -11,13 +11,13 @@ module Ragios
                   :subject => @subject,
                   :body => @body}
     end
-    def failed(monitor)
-      @monitor = monitor
+    def failed(test_result)
+      @test_result = test_result
       deliver(message("email_failed.erb"))
     end
 
-    def resolved(monitor)
-      @monitor = monitor
+    def resolved(test_result)
+      @test_result = test_result
       deliver(message("email_resolved.erb"))
     end
     def error

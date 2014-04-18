@@ -5,9 +5,9 @@ module Ragios
     class TestNotifier
       def initialize(monitor)
       end
-      def failed(monitor)
+      def failed(test_result)
       end
-      def resolved(monitor)
+      def resolved(test_result)
       end
     end
  end

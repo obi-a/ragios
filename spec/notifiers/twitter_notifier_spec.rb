@@ -3,7 +3,7 @@ require 'notifier_test_setup.rb'
 
 describe Ragios::Notifier::TwitterNotifier do
   it "tests a monitor" do
-    Ragios::NotifierTest::failed_resolved('Twitter test','twitter_notifier')     
+    Ragios::NotifierTest::failed_resolved('Twitter test','twitter_notifier')
   end
 
   it "should send a tweet a notification message " do

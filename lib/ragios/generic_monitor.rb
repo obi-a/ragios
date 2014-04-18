@@ -69,7 +69,7 @@ private
       if exceed_failure_tolerance
         unless @failure_notified
           @notifiers.each do |notifier|
-            NotifyJob.new.async.failed(@options, notifier)
+            NotifyJob.new.async.failed(@test_result, notifier)
             @failure_notified = true
           end
         end
@@ -79,7 +79,7 @@ private
     def is_fixed
       reset_failure_count!
       @notifiers.each do |notifier|
-        NotifyJob.new.async.resolved(@options, notifier)
+        NotifyJob.new.async.resolved(@test_result, notifier)
       end
     end
 
