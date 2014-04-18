@@ -1,5 +1,20 @@
 ==Ragios v0.6.0
 
+04-18-2014
+* The monitor in its current state is now passed to the notifiers failed() and resolved() methods when they are invoked by Ragios. This ensures that notifiers have the ability to always have access to the most current of the monitor, ensures that test_results on notifiers are accurate.
+
+New Specification for notifers
+  module Ragios
+    module Notifier
+      class Dummy
+        def initialize(monitor); end
+        def failed(monitor); end
+        def resolved(monitor); end
+      end
+   end
+  end
+See documentation, Creating Notifiers section for details.
+
 03-29-2014
 * Added support for failure tolerance. A monitor will not send out a notification until it's number of consecutive failures exceeds it's failure tolerance number.
 Example:
