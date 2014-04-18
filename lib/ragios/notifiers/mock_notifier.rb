@@ -4,15 +4,13 @@ module Ragios
       def initialize(monitor)
         @monitor = monitor
       end
-      def failed(monitor)
-        @monitor = monitor
+      def failed(test_result)
         puts "#{@monitor[:monitor]} FAILED"
-        puts "#{@monitor[:test_result_].inspect}"
+        puts "#{test_result.inspect}"
       end
-      def resolved(monitor)
-        @monitor = monitor
+      def resolved(test_result)
         puts "#{@monitor[:monitor]} RESOLVED"
-        puts "#{@monitor[:test_result_].inspect}"
+        puts "#{test_result.inspect}"
       end
     end
  end

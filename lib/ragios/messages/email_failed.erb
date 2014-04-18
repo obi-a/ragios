@@ -2,7 +2,7 @@
 
 <%= @monitor[:monitor] %> FAILED
 
-<% @monitor[:test_result_].each do |key,value| %>
+<% @test_result.each do |key,value| %>
 <%= key %>: <%= value %>
 <% end %>
 

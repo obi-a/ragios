@@ -6,12 +6,10 @@ module Ragios
       def initialize(monitor)
         @monitor = monitor
       end
-      def failed(monitor)
-        @monitor = monitor
+      def failed(test_result)
         puts "#{@monitor[:_id]} FAILED"
       end
-      def resolved(monitor)
-        @monitor = monitor
+      def resolved(test_result)
         puts "#{@monitor[:_id]} RESOLVED"
       end
     end
@@ -52,12 +50,10 @@ module Ragios
       def initialize(monitor)
         @monitor = monitor
       end
-      def failed(monitor)
-        @monitor = monitor
+      def failed(test_result)
         puts "First Notifier FAILED for #{@monitor[:_id]}"
       end
-      def resolved(monitor)
-        @monitor = monitor
+      def resolved(test_result)
         puts "First Notifier RESOLVED for #{@monitor[:_id]}"
       end
     end
@@ -70,12 +66,10 @@ module Ragios
       def initialize(monitor)
         @monitor = monitor
       end
-      def failed(monitor)
-        @monitor = monitor
+      def failed(test_result)
         puts "Second Notifier FAILED for #{@monitor[:_id]}"
       end
-      def resolved(monitor)
-        @monitor = monitor
+      def resolved(test_result)
         puts "Second Notifier RESOLVED for #{@monitor[:_id]}"
       end
     end

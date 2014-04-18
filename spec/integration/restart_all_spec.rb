@@ -7,10 +7,10 @@ module Ragios
       def initialize(monitor)
         @monitor = monitor
       end
-      def failed
+      def failed(test_result)
         puts "#{@monitor.options[:_id]} FAILED"
       end
-      def resolved
+      def resolved(test_result)
         puts "#{@monitor.options[:_id]} RESOLVED"
       end
     end
