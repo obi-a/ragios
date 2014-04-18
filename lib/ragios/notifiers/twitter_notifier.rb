@@ -8,7 +8,7 @@ module Ragios
         @@twitter_consumer_key = twitter_cred[:consumer_key]
         @@twitter_consumer_secret = twitter_cred[:consumer_secret]
         @@twitter_access_token = twitter_cred[:access_token]
-        @@twitter_access_secret = twitter_cred[:access_secret]  
+        @@twitter_access_secret = twitter_cred[:access_secret]
       end
 
       def tweet message
@@ -17,8 +17,8 @@ module Ragios
       config.consumer_secret =  @@twitter_consumer_secret
       config.oauth_token = @@twitter_access_token
       config.oauth_token_secret = @@twitter_access_secret
-        end 
-        Twitter.update message.slice!(0..138) #140 character limit on twitter  
+        end
+        Twitter.update message.slice!(0..138) #140 character limit on twitter
       end
 
       def message template
@@ -26,11 +26,13 @@ module Ragios
         message_template.result(binding)
       end
 
-      def resolved
+      def resolved(monitor)
+        @monitor = monitor
         tweet(message("tweet_resolved.erb"))
       end
 
-      def failed
+      def failed(monitor)
+        @monitor = monitor
         tweet(message("tweet_failed.erb"))
       end
     end

@@ -1,6 +1,6 @@
  task :create_db_admin do
     require 'leanback'
-    hash = Couchdb.login("current_admin_username","current_admin_password") 
+    hash = Couchdb.login("current_admin_username","current_admin_password")
     auth_session =  hash["AuthSession"]
 
     data = {:section => "admins",
@@ -9,12 +9,12 @@
     Couchdb.set_config data,auth_session
  end
 
-task :console do 
+task :console do
   ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios'))
   config = ragios_dir + '/config'
   console = ragios_dir + '/initializers/console'
   irb = "bundle exec pry -r #{config}  -r #{console}"
-  sh irb 
+  sh irb
 end
 
 task :spec do
@@ -22,7 +22,7 @@ task :spec do
 end
 
 task :notifiers do
-  sh 'rspec spec/notifiers'
+  sh 'rspec -fs spec/notifiers'
 end
 
 task :plugins do
