@@ -36,7 +36,7 @@ A small and minimal extensible design:
 
 * Ragios includes a Ruby client library that makes it easy to interact with Ragios directly with ruby code.
 
-* A Ragios instance running on a remote server and controlled it from anywhere using the Ruby client library or the REST API.
+* A Ragios instance running on a remote server can be controlled from anywhere using the Ruby client library or the REST API.
 
 
 I'm doing this just for fun and educational purposes.
