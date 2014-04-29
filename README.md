@@ -24,7 +24,8 @@ A small and minimal extensible design:
   + Ragios relies on plugins to perform tests on different types of systems. The plugins are plain old ruby objects, any test that could be performed in ruby code could be performed by Ragios. Developers can create plugins to meet their specific needs.
 
 * Notifications & Notifiers
-  + Notifications are sent out when a test fails and when the test passes again
+  + Notifications are sent out when a test fails and when the test passes again.
+  + Failure tolerance is available to set how many consecutive failures is acceptable before a notification is sent out.
   + Notification messages are generated from ERB templates which developers can easily customize.
   + Multiple email addresses could be added to a monitor, so that when a test fails it notifies all the email addresses simultaneously.
   + Ragios relies on Notifiers to send out notifications. The notifiers are pluggable plain old ruby objects. Any type of notification that could be implemented in Ruby code can be sent by Ragios, notifications by email, SMS, twitter etc. Developers can create notifiers to meet their specific needs.
