@@ -143,3 +143,5 @@ ragios client Object initilization request and receives an auth token, disconnec
 ragios = Ragios::Client.new(username: 'admin', password: 'password')
 ragios.disconnect
 ```
+##Failure tolerance
+Removed failure tolerance

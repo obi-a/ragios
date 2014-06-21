@@ -9,26 +9,32 @@ module Ragios
     attr_accessor :state
     attr_reader :time_of_last_test
     attr_reader :timestamp
-    attr_reader :fail_tolerance
-    attr_reader :failures
-    attr_reader :failure_notified
+    #attr_reader :fail_tolerance
+    #attr_reader :failures
+    #attr_reader :failure_notified
 
     state_machine :state, :initial => :pending do
 
       before_transition :from => :pending, :to => :failed, :do => :has_failed
       before_transition :from => :failed, :to => :passed, :do => :is_fixed
       before_transition :from => :passed, :to => :failed, :do => :has_failed
-      before_transition :from => :failed, :to => :failed, :do => :has_failed
 
       event :success do
         transition all => :passed
       end
 
       event :failure do
-        transition :passed => :failed, :pending => :failed, :failed => :failed
+        transition :passed => :failed, :pending => :failed
       end
     end
-
+    def initialize(options)
+      @options = options
+      @id = @options[:_id]
+      create_plugin
+      create_notifiers
+      super()
+    end
+=begin
     def initialize(options)
       @options = options
       @id = @options[:_id]
@@ -40,6 +46,7 @@ module Ragios
       create_notifiers
       super()
     end
+=end
 
     def test_command?
       raise Ragios::PluginTestCommandNotFound.new(error: "No test_command? found for #{@plugin.class} plugin"), "No test_command? found for #{@plugin.class} plugin" unless @plugin.respond_to?('test_command?')
@@ -54,6 +61,17 @@ module Ragios
     end
 
 private
+    def has_failed
+      @notifiers.each do |notifier|
+        NotifyJob.new.async.failed(@test_result, notifier)
+      end
+    end
+    def is_fixed
+      @notifiers.each do |notifier|
+        NotifyJob.new.async.resolved(@test_result, notifier)
+      end
+    end
+=begin
     def increment_failure_count!
       @failures +=  1
     end
@@ -89,7 +107,7 @@ private
         @options.delete(:state_)
       end
     end
-
+=end
     def create_notifiers
       raise Ragios::NotifierNotFound.new(error: "No Notifier Found in #{@options}"), "No Notifier Found in #{@options}" unless @options.has_key?(:via)
       @options[:via] = [] << @options[:via] if @options[:via].is_a? String
