@@ -131,3 +131,15 @@ ragios_db.view("_design/monitor_state", "monitor_state",
       include_docs: true,
       descending: true)
 ```
+
+
+##Ragios Admin
+ragios client Object initilization request and receives an auth token, disconnect invalidates the auth token
+
+```ruby
+#ragios client
+
+#initialization creates a connection
+ragios = Ragios::Client.new(username: 'admin', password: 'password')
+ragios.disconnect
+```
