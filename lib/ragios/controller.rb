@@ -112,9 +112,9 @@ module Ragios
     #  @dont_save = true
     #  add(monitors)
     #end
-    def self.perform(generic_monitor)
-      generic_monitor.test_command?
-      model.log_results(generic_monitor)
+    def self.perform(this_generic_monitor)
+      this_generic_monitor.test_command?
+      model.log_results(this_generic_monitor)
     end
     def self.failed(test_result)
     end
