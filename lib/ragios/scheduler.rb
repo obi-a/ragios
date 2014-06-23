@@ -4,14 +4,20 @@ module Ragios
       @scheduler = Rufus::Scheduler.new
       @controller = ctr
     end
-
+    def unschedule(tag)
+      jobs = find(tag)
+      jobs.each do |job|
+        job.unschedule
+      end
+    end
+=begin
     def stop(tag)
       jobs = find(tag)
       jobs.each do |job|
         job.unschedule
       end
     end
-
+=end
     def schedule(args)
       @scheduler.interval args[:time_interval], :tags => args[:tags] do
         controller.perform(args[:object])

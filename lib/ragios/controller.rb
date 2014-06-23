@@ -1,5 +1,6 @@
 module Ragios
   class Controller
+=begin
     def self.scheduler(sch = nil)
       @scheduler ||= sch
     end
@@ -11,18 +12,34 @@ module Ragios
     def self.logger(lgr = nil)
       @logger ||= lgr
     end
-
-    def self.stop(monitor_id)
-      scheduler.stop(monitor_id)
-      set_stopped(monitor_id)
+=end
+    def self.scheduler
+      @scheduler ||= Ragios::Scheduler.new(self)
     end
-
+    def self.model
+      @model ||= Ragios::Model::CouchdbMonitorModel
+    end
+    def self.stop(monitor_id)
+      scheduler.unschedule(monitor_id)
+      !!model.update(monitor_id, status_: "stopped")
+    end
     def self.delete(monitor_id)
       monitor = model.find(monitor_id)
-      stop(monitor_id) if is_active?(monitor)
+      scheduler.unschedule(monitor_id) if is_active?(monitor)
       model.delete(monitor_id)
     end
 
+    def self.update(monitor_id, options)
+      raise "Cannot update system settings" if options.keys.to_set.superset? [:type, :status_, :created_at_, :creation_timestamp_]
+      model.update(monitor_id,options)
+      monitor = model.find(monitor_id)
+      !!restarted =
+      if is_active?(monitor)
+        scheduler.unschedule(monitor_id)
+        add_to_scheduler(generic_monitor(monitor))
+      end
+    end
+=begin
     def self.update(monitor_id, options)
       model.update(monitor_id,options)
       monitor = model.find(monitor_id)
@@ -32,15 +49,20 @@ module Ragios
       end
       return monitor
     end
-
-     def self.get(monitor_id)
-       model.find(monitor_id)
-     end
-
-     def self.get_all
-       model.all
-     end
-
+=end
+    def self.get(monitor_id)
+      model.find(monitor_id)
+    end
+    def self.get_all
+      model.all
+    end
+    def self.restart(monitor_id)
+      monitor = model.find(monitor_id)
+      return true if is_active?(monitor)
+      add_to_scheduler(generic_monitor(monitor))
+      !!model.update(monitor_id, status: "active")
+    end
+=begin
     def self.restart(monitor_id)
       monitor = model.find(monitor_id)
       return monitor if is_active?(monitor)
@@ -48,11 +70,10 @@ module Ragios
       generic_monitors = add_to_scheduler([generic_monitor])
       generic_monitors.first.options
     end
-
+=end
     def self.test_now(monitor_id)
       monitor = model.find(monitor_id)
-      generic_monitor = objectify(monitor)
-      perform(generic_monitor)
+      perform(generic_monitor(monitor))
     end
 
     def self.find_by(options)
@@ -60,16 +81,18 @@ module Ragios
     end
 
     def self.restart_all
-      monitors = get_active_monitors_from_database
-      generic_monitors = objectify_monitors(monitors)
-      add_to_scheduler(generic_monitors)
+      monitors = model.active_monitors
+      unless monitors.empty?
+        monitors.each do |monitor|
+          add_to_scheduler(generic_monitor(monitor))
+        end
+      end
     end
 
     def self.add(monitor)
       id = UUIDTools::UUID.random_create.to_s
-      monitor.merge!({:created_at_ => Time.now, :status_ => 'active', :_id => id})
-      generic_monitor = objectify(monitor)
-      add_to_scheduler(generic_monitor)
+      monitor.merge!({created_at_: Time.now, status_: 'active', _id: id})
+      add_to_scheduler(generic_monitor(monitor))
       model.save(generic_monitor.options)
       return generic_monitor.options
     end
@@ -106,6 +129,7 @@ module Ragios
 =end
 
   private
+=begin
     def self.update_state(generic_monitor)
       options = {:time_of_last_test_ => generic_monitor.time_of_last_test,
                  :timestamp_ => Time.now.to_i,
@@ -125,19 +149,23 @@ module Ragios
       raise Ragios::MonitorNotFound.new(error: "No active monitor found"), "No active monitor found" if monitors.empty?
       return monitors
     end
-
-    def self.objectify(monitor)
+=end
+    def generic_monitor(monitor)
       GenericMonitor.new(monitor)
     end
+    #def self.objectify(monitor)
+    #  GenericMonitor.new(monitor)
+    #end
 
-    def self.objectify_monitors(monitors)
-      monitors.map { |monitor| objectify(monitor) }
-    end
+    #def self.objectify_monitors(monitors)
+    #  monitors.map { |monitor| objectify(monitor) }
+    #end
 
     def self.is_active?(monitor)
       monitor[:status_] == "active"
     end
 
+=begin
     def self.set_active(monitor_id)
       status = {:status_ => "active"}
       model.update(monitor_id,status)
@@ -147,13 +175,6 @@ module Ragios
       status = {:status_ => "stopped"}
       model.update(monitor_id,status)
     end
-    def self.add_to_scheduler(generic_monitor)
-      args = {time_interval: generic_monitor.options[:every],
-                tags: generic_monitor.options[:_id],
-                object: generic_monitor }
-      scheduler.schedule(args)
-    end
-=begin
     def self.add_to_scheduler(generic_monitors)
       generic_monitors.each do |monitor|
         perform(monitor)
@@ -164,5 +185,11 @@ module Ragios
       end
     end
 =end
+    def self.add_to_scheduler(generic_monitor)
+      args = {time_interval: generic_monitor.options[:every],
+                tags: generic_monitor.options[:_id],
+                object: generic_monitor }
+      scheduler.schedule(args)
+    end
   end
 end
