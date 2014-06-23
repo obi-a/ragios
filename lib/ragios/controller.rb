@@ -91,8 +91,8 @@ module Ragios
 
     def self.add(monitor)
       id = UUIDTools::UUID.random_create.to_s
-      monitor.merge!({created_at_: Time.now, status_: 'active', _id: id})
-      add_to_scheduler(generic_monitor(monitor))
+      monitor_with_id = monitor.merge({created_at_: Time.now, status_: 'active', _id: id})
+      add_to_scheduler(generic_monitor(monitor_with_id))
       model.save(generic_monitor.options)
       return generic_monitor.options
     end
