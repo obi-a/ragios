@@ -161,6 +161,7 @@ module Ragios
         time_of_test: this_generic_monitor.time_of_test,
         timestamp_of_test: this_generic_monitor.timestamp_of_test,
         monitor: this_generic_monitor.options,
+        tag: this_generic_monitor.options[:tag],
         type: "test_result"
       }
       model.save(unique_id, test_result)

@@ -52,11 +52,10 @@ module Ragios
       raise Ragios::PluginTestCommandNotFound.new(error: "No test_command? found for #{@plugin.class} plugin"), "No test_command? found for #{@plugin.class} plugin" unless @plugin.respond_to?('test_command?')
       @timestamp_of_test = Time.now.to_i
       @time_of_test = Time.at(@timestamp)
-      passed_or_failed = @plugin.test_command?
+      passed_or_failed = !!@plugin.test_command?
       raise Ragios::PluginTestResultNotFound.new(error: "No test_result found for #{@plugin.class} plugin"), "No test_result found for #{@plugin.class} plugin" unless defined?(@plugin.test_result)
       @test_result = @plugin.test_result
-      fire_state_event(:success) if passed_or_failed == true
-      fire_state_event(:failure) if passed_or_failed == false
+      passed_or_failed ? fire_state_event(:success) : fire_state_event(:failure)
       return passed_or_failed
     end
 
