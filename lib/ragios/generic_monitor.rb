@@ -7,8 +7,8 @@ module Ragios
     attr_reader :id
     attr_reader :test_result
     attr_accessor :state
-    attr_reader :time_of_last_test
-    attr_reader :timestamp
+    attr_reader :time_of_test
+    attr_reader :timestamp_of_test
     #attr_reader :fail_tolerance
     #attr_reader :failures
     #attr_reader :failure_notified
@@ -50,14 +50,14 @@ module Ragios
 
     def test_command?
       raise Ragios::PluginTestCommandNotFound.new(error: "No test_command? found for #{@plugin.class} plugin"), "No test_command? found for #{@plugin.class} plugin" unless @plugin.respond_to?('test_command?')
-      @timestamp = Time.now.to_i
-      @time_of_last_test = Time.at(@timestamp)
-      state =  @plugin.test_command?
+      @timestamp_of_test = Time.now.to_i
+      @time_of_test = Time.at(@timestamp)
+      passed_or_failed = @plugin.test_command?
       raise Ragios::PluginTestResultNotFound.new(error: "No test_result found for #{@plugin.class} plugin"), "No test_result found for #{@plugin.class} plugin" unless defined?(@plugin.test_result)
       @test_result = @plugin.test_result
-      fire_state_event(:success) if state == true
-      fire_state_event(:failure) if state == false
-      return state
+      fire_state_event(:success) if passed_or_failed == true
+      fire_state_event(:failure) if passed_or_failed == false
+      return passed_or_failed
     end
 
 private

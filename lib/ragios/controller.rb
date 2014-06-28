@@ -17,7 +17,7 @@ module Ragios
       @scheduler ||= Ragios::Scheduler.new(self)
     end
     def self.model
-      @model ||= Ragios::Model::CouchdbMonitorModel
+      @model ||= Ragios::Database::Model.new
     end
     def self.stop(monitor_id)
       scheduler.unschedule(monitor_id)
@@ -31,7 +31,7 @@ module Ragios
 
     def self.update(monitor_id, options)
       raise "Cannot update system settings" if options.keys.to_set.superset? [:type, :status_, :created_at_, :creation_timestamp_]
-      model.update(monitor_id,options)
+      model.update(monitor_id, options)
       monitor = model.find(monitor_id)
       !!restarted =
       if is_active?(monitor)
@@ -54,7 +54,7 @@ module Ragios
       model.find(monitor_id)
     end
     def self.get_all
-      model.all
+      model.all_monitors
     end
     def self.restart(monitor_id)
       monitor = model.find(monitor_id)
@@ -77,7 +77,7 @@ module Ragios
     end
 
     def self.find_by(options)
-      model.where(options)
+      model.monitors_where(options)
     end
 
     def self.restart_all
@@ -90,11 +90,11 @@ module Ragios
     end
 
     def self.add(monitor)
-      id = UUIDTools::UUID.random_create.to_s
-      monitor_with_id = monitor.merge({created_at_: Time.now, status_: 'active', _id: id})
-      add_to_scheduler(generic_monitor(monitor_with_id))
-      model.save(generic_monitor.options)
-      return generic_monitor.options
+      monitor_with_id = monitor.merge({created_at_: Time.now, status_: 'active', _id: unique_id})
+      this_generic_monitor = generic_monitor(monitor_with_id)
+      add_to_scheduler(this_generic_monitor)
+      model.save(this_generic_monitor.id, this_generic_monitor.options)
+      return this_generic_monitor.options
     end
 =begin
     def self.add(monitors)
@@ -114,7 +114,7 @@ module Ragios
     #end
     def self.perform(this_generic_monitor)
       this_generic_monitor.test_command?
-      model.log_results(this_generic_monitor)
+      log_results(this_generic_monitor)
     end
     def self.failed(test_result)
     end
@@ -129,6 +129,9 @@ module Ragios
 =end
 
   private
+    def unique_id
+      UUIDTools::UUID.random_create.to_s
+    end
 =begin
     def self.update_state(generic_monitor)
       options = {:time_of_last_test_ => generic_monitor.time_of_last_test,
@@ -150,6 +153,18 @@ module Ragios
       return monitors
     end
 =end
+    def log_results(this_generic_monitor)
+      test_result = {
+        monitor_id: this_generic_monitor.id,
+        state: this_generic_monitor.state,
+        test_result: this_generic_monitor.test_result,
+        time_of_test: this_generic_monitor.time_of_test,
+        timestamp_of_test: this_generic_monitor.timestamp_of_test,
+        monitor: this_generic_monitor.options,
+        type: "test_result"
+      }
+      model.save(unique_id, test_result)
+    end
     def generic_monitor(monitor)
       GenericMonitor.new(monitor)
     end
@@ -187,7 +202,7 @@ module Ragios
 =end
     def self.add_to_scheduler(generic_monitor)
       args = {time_interval: generic_monitor.options[:every],
-                tags: generic_monitor.options[:_id],
+                tags: generic_monitor.id,
                 object: generic_monitor }
       scheduler.schedule(args)
     end
