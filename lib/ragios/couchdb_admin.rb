@@ -1,6 +1,21 @@
 module Ragios
   class CouchdbAdmin
     def self.config(database_config)
+      @database_config = database_config
+      @database = Leanback::Couchdb.new(database: @database_config[:database],
+                      username: @database_config[:login][:username],
+                      password: @database_config[:login][:password],
+                      address: @database_config[:couchdb][:address],
+                      port: @database_config[:couchdb][:port])
+    end
+    def self.setup_database
+
+    end
+    def self.get_database
+      @database
+    end
+=begin
+    def self.config(database_config)
      @username = database_config[:login][:username]
      @password = database_config[:login][:password]
      @monitors = database_config[:databases][:monitors]
@@ -9,7 +24,6 @@ module Ragios
      Couchdb.address = database_config[:couchdb][:address]
      Couchdb.port = database_config[:couchdb][:port]
     end
-
     def self.monitors
       @monitors
     end
@@ -55,5 +69,6 @@ module Ragios
         #raise error unless the database have already been creates
         raise e unless e.to_s == "CouchDB: Error - file_exists. Reason - The database could not be created, the file already exists."
     end
+=end
   end
 end

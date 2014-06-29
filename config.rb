@@ -29,13 +29,9 @@ ragios_admin_user = {username: ENV['RAGIOS_ADMIN_USERNAME'],
 Ragios::Admin.config(ragios_admin_user)
 
 #database configuration
-database_admin = {login:     {username: ENV['COUCHDB_ADMIN_USERNAME'],
-                              password: ENV['COUCHDB_ADMIN_PASSWORD'] },
-                  databases: { monitors: 'ragios_monitors',
-                               activity_log: 'ragios_activity_log',
-                               auth_session: 'ragios_auth_session'},
-                  couchdb:  {address: 'http://localhost',
-                             port:'5984'}
+database_admin = {login: {username: ENV['COUCHDB_ADMIN_USERNAME'], password: ENV['COUCHDB_ADMIN_PASSWORD'] },
+                    database: 'ragios_database',
+                    couchdb:  {address: 'http://localhost', port:'5984'}
                  }
 
 Ragios::CouchdbAdmin.config(database_admin)

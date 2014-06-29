@@ -16,7 +16,7 @@ gem 'sucker_punch', '~> 1.0'
 gem "sinatra", :require => "sinatra/base"
 gem "yajl-ruby", :require => "yajl"
 gem "thin"
-gem "leanback"
+gem 'leanback', '~> 0.5.0'
 gem "uuidtools"
 gem "thor"
 gem "ragios-client", '~> 0.0.4'
