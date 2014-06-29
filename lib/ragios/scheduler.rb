@@ -10,28 +10,17 @@ module Ragios
         job.unschedule
       end
     end
-=begin
-    def stop(tag)
-      jobs = find(tag)
-      jobs.each do |job|
-        job.unschedule
-      end
-    end
-=end
     def schedule(args)
       @scheduler.interval args[:time_interval], :tags => args[:tags] do
         controller.perform(args[:object])
       end
     end
-
     def find(tag)
       @scheduler.jobs(tag: tag)
     end
-
     def all
       @scheduler.jobs
     end
-
     def controller
       @controller
     end

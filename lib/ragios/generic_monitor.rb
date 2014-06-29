@@ -62,12 +62,12 @@ module Ragios
 private
     def has_failed
       @notifiers.each do |notifier|
-        NotifyJob.new.async.failed(@test_result, notifier)
+        NotifyJob.new.async.failed(@options, @test_result, notifier)
       end
     end
     def is_fixed
       @notifiers.each do |notifier|
-        NotifyJob.new.async.resolved(@test_result, notifier)
+        NotifyJob.new.async.resolved(@options, @test_result, notifier)
       end
     end
 =begin
