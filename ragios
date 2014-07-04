@@ -7,8 +7,7 @@ class RagiosCLI < Thor
   def console
   	ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios'))
     config = ragios_dir + '/config'
-    console = ragios_dir + '/initializers/console'
-    irb = "bundle exec pry -r #{config}  -r #{console}"
+    irb = "bundle exec pry -r #{config}"
     exec(irb)
   end
 

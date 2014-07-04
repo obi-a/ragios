@@ -9,9 +9,6 @@ module Ragios
     attr_accessor :state
     attr_reader :time_of_test
     attr_reader :timestamp_of_test
-    #attr_reader :fail_tolerance
-    #attr_reader :failures
-    #attr_reader :failure_notified
 
     state_machine :state, :initial => :pending do
 
@@ -34,20 +31,6 @@ module Ragios
       create_notifiers
       super()
     end
-=begin
-    def initialize(options)
-      @options = options
-      @id = @options[:_id]
-      set_previous_state
-      @failures  = 0
-      @fail_tolerance = @options[:fail_tolerance].to_i
-      @failure_notified = false
-      create_plugin
-      create_notifiers
-      super()
-    end
-=end
-
     def test_command?
       raise Ragios::PluginTestCommandNotFound.new(error: "No test_command? found for #{@plugin.class} plugin"), "No test_command? found for #{@plugin.class} plugin" unless @plugin.respond_to?('test_command?')
       @timestamp_of_test = Time.now.to_i
@@ -70,43 +53,7 @@ private
         NotifyJob.new.async.resolved(@options, @test_result, notifier)
       end
     end
-=begin
-    def increment_failure_count!
-      @failures +=  1
-    end
-    def reset_failure_count!
-      @failures = 0
-      @failure_notified = false
-    end
-    def exceed_failure_tolerance
-      @failures > fail_tolerance
-    end
-    def has_failed
-      increment_failure_count!
-      if exceed_failure_tolerance
-        unless @failure_notified
-          @notifiers.each do |notifier|
-            NotifyJob.new.async.failed(@test_result, notifier)
-            @failure_notified = true
-          end
-        end
-      end
-    end
 
-    def is_fixed
-      reset_failure_count!
-      @notifiers.each do |notifier|
-        NotifyJob.new.async.resolved(@test_result, notifier)
-      end
-    end
-
-    def set_previous_state
-      if @options[:state_]
-        @state = @options[:state_]
-        @options.delete(:state_)
-      end
-    end
-=end
     def create_notifiers
       raise Ragios::NotifierNotFound.new(error: "No Notifier Found in #{@options}"), "No Notifier Found in #{@options}" unless @options.has_key?(:via)
       @options[:via] = [] << @options[:via] if @options[:via].is_a? String
