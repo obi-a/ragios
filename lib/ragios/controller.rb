@@ -72,9 +72,9 @@ module Ragios
       this_generic_monitor.test_command?
       log_results(this_generic_monitor)
     end
-    def self.failed(monitor, test_result, notifier)
+    def self.failed(monitor, test_result)
     end
-    def self.resolved(monitor, test_result, notifier)
+    def self.resolved(monitor, test_result)
     end
 
   private
