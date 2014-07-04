@@ -73,11 +73,22 @@ module Ragios
       log_results(this_generic_monitor)
     end
     def self.failed(monitor, test_result)
+      save_notification("failed", monitor, test_result)
     end
     def self.resolved(monitor, test_result)
+      save_notification("resolved", monitor, test_result)
     end
 
   private
+    def save_notification(event, monitor, test_result)
+      model.save(unique_id, monitor_id: monitor[:_id],
+                            monitor: monitor,
+                            test_result: test_result,
+                            type: "notification",
+                            notifier: monitor[:via],
+                            tag: monitor[:tag],
+                            event: event)
+    end
     def unique_id
       UUIDTools::UUID.random_create.to_s
     end
