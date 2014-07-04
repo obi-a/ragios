@@ -13,12 +13,12 @@ module Ragios
     def self.admin
        admin = {username: @username,
                  password: @password,
-                  auth_timeout: @auth_timeout} 
+                  auth_timeout: @auth_timeout}
     end
-  
+
     def self.authenticate?(username,password)
-      (username == @username) && (password == @password) ? true : false
-    end 
+      (username == @username) && (password == @password)
+    end
 
     def self.valid_token?(token)
       begin
@@ -31,7 +31,7 @@ module Ragios
         false
       end
     end
-    
+
     def self.session
       auth_session_token = UUIDTools::UUID.random_create.to_s
       data = {:timeout => @auth_timeout, :timestamp => Time.now.to_i}

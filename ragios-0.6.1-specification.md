@@ -30,6 +30,17 @@ monitor = {
 
 ragios_db.create_doc  "monitor_2", monitor
 
+#notification
+
+
+#auth_session document
+auth_session = {
+   timeout: 900,
+   timestamp: 1398528619
+   monitor_id: xxxxx
+   type: auth_session
+}
+
 
 #test_result document
 time = Time.new(2014,06,26,5,30,0, "-05:00")
@@ -145,3 +156,5 @@ ragios.disconnect
 ```
 ##Failure tolerance
 Removed failure tolerance
+
+
