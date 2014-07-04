@@ -37,7 +37,6 @@ ragios_db.create_doc  "monitor_2", monitor
 auth_session = {
    timeout: 900,
    timestamp: 1398528619
-   monitor_id: xxxxx
    type: auth_session
 }
 
