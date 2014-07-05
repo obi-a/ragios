@@ -114,6 +114,7 @@ DEPENDENCIES
   eventmachine (~> 1.0.3)
   gmail
   i18n
+  json_pure
   leanback (~> 0.5.0)
   pony
   pry

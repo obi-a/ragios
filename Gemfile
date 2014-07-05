@@ -15,6 +15,7 @@ gem 'state_machine'
 gem 'sucker_punch', '~> 1.0'
 gem "sinatra", :require => "sinatra/base"
 gem "yajl-ruby", :require => "yajl"
+gem "json_pure", :require => "json/pure"
 gem "thin"
 gem 'leanback', '~> 0.5.0'
 gem "uuidtools"
