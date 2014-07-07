@@ -4,7 +4,7 @@ module Ragios
       @scheduler ||= Ragios::Scheduler.new(self)
     end
     def self.model
-      @model ||= Ragios::Database::Model.new
+      @model ||= Ragios::Database::Model.new(Ragios::CouchdbAdmin.get_database)
     end
     def self.stop(monitor_id)
       scheduler.unschedule(monitor_id)

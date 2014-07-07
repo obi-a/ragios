@@ -1,8 +1,8 @@
 module Ragios
   module Database
     class Model
-      def initialize
-        @database = Ragios::CouchdbAdmin.get_database
+      def initialize(database)
+        @database = database
       end
       def save(id, data)
         !!@database.create_doc(id, data)
@@ -14,7 +14,7 @@ module Ragios
         !!@database.edit_doc!(id, data)
       end
       def delete(id)
-        !!@database.delete!(id)
+        !!@database.delete_doc!(id)
       end
       def all_monitors
         @database.where(type: "monitor")
