@@ -68,7 +68,7 @@ describe "Ragios::Database::Model" do
           monitor = {
             monitor: "website #{count}",
             every:  "#{count}m",
-            type: "monitor"
+            type: "monitor",
             status_: "stopped",
           }
           @database.create_doc "monitor_#{count}", monitor
@@ -76,25 +76,73 @@ describe "Ragios::Database::Model" do
           other_monitor = {
             monitor: "website 3",
             every:  "3m",
-            type: "monitor"
+            type: "monitor",
             status_: "active",
           }
-          @database.create_doc "monitor_3", other_monitor
         end
+        @database.create_doc "monitor_3", other_monitor
       end
       describe "#all_monitors" do
         it "returns all monitors" do
-          @model.all_monitors.first.should include(_id: "monitor_1", every: "1m")
-          @model.all_monitors.last.should include(_id: "monitor_3", every: "3m")
+          @model.all_monitors.first.should include(_id: "monitor_1")
+          @model.all_monitors.last.should include(_id: "monitor_3")
         end
       end
       describe "#monitors_where" do
-        #it "returns monitors that match an array"
-
+        it "returns monitors that match provided attributes" do
+          @model.monitors_where(status_: "active").first.should include(_id: "monitor_3")
+        end
+        it "returns an empty array when no attributes match" do
+          @model.monitors_where(monitor: "doesn't exist").should == []
+        end
+        it "Returns an empty array when key doesnt exist" do
+          @model.monitors_where(dont_exist: "doesn't exist").should == []
+        end
       end
       after(:each) do
-        @database.delete_doc! "monitor_1"
-        @database.delete_doc! "monitor_2"
+        for count in 1..3 do
+          @database.delete_doc! "monitor_#{count}"
+        end
+      end
+    end
+    describe "#get_monitor_state" do
+      it "returns nil when monitor has no test_result" do
+        @model.get_monitor_state("no_test_result").should == nil
+      end
+      it "returns monitors current state" do
+        for count in 1..5 do
+          time = Time.now
+          timestamp = time.to_i
+          test_result = {
+            monitor_id: "my_monitor",
+            state: "failed",
+            test_result: {winner: "chicken dinner"},
+            time_of_test: time,
+            timestamp_of_test: timestamp,
+            monitor: {},
+            type: "test_result"
+          }
+          @database.create_doc  "activity#{count}", test_result
+        end
+        latest_time = Time.now
+        latest_timestamp = time.to_i
+        latest_test_result = {
+          monitor_id: "my_monitor",
+          state: "failed",
+          test_result: {winner: "chicken dinner"},
+          time_of_test: latest_time,
+          timestamp_of_test: latest_timestamp,
+          monitor: {},
+          type: "test_result"
+        }
+        @database.create_doc "latest_activity", latest_test_result
+
+        @model.get_monitor_state("my_monitor").should include(_id: "latest_activity", timestamp_of_test: latest_timestamp)
+
+        for count in 1..5 do
+          @database.delete_doc! "activity#{count}"
+        end
+        @database.delete_doc! "latest_activity"
       end
     end
     after(:each) do

@@ -48,7 +48,7 @@ module Ragios
     private
       def dynamic_view(design_doc_name, design_doc)
         yield
-      rescue CouchdbException
+      rescue Leanback::CouchdbException
         @database.create_doc design_doc_name, design_doc
         yield
       end
