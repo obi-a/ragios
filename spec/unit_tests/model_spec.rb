@@ -62,6 +62,41 @@ describe "Ragios::Database::Model" do
         expect{ @model.delete("dont_exist") }.to raise_error(Leanback::CouchdbException)
       end
     end
+    describe "monitors data" do
+      before(:each) do
+        for count in 1..2 do
+          monitor = {
+            monitor: "website #{count}",
+            every:  "#{count}m",
+            type: "monitor"
+            status_: "stopped",
+          }
+          @database.create_doc "monitor_#{count}", monitor
+
+          other_monitor = {
+            monitor: "website 3",
+            every:  "3m",
+            type: "monitor"
+            status_: "active",
+          }
+          @database.create_doc "monitor_3", other_monitor
+        end
+      end
+      describe "#all_monitors" do
+        it "returns all monitors" do
+          @model.all_monitors.first.should include(_id: "monitor_1", every: "1m")
+          @model.all_monitors.last.should include(_id: "monitor_3", every: "3m")
+        end
+      end
+      describe "#monitors_where" do
+        #it "returns monitors that match an array"
+
+      end
+      after(:each) do
+        @database.delete_doc! "monitor_1"
+        @database.delete_doc! "monitor_2"
+      end
+    end
     after(:each) do
       @database.delete_doc!("exists")
     end
