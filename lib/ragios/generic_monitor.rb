@@ -33,8 +33,8 @@ module Ragios
     end
     def test_command?
       raise Ragios::PluginTestCommandNotFound.new(error: "No test_command? found for #{@plugin.class} plugin"), "No test_command? found for #{@plugin.class} plugin" unless @plugin.respond_to?('test_command?')
-      @timestamp_of_test = Time.now.to_i
-      @time_of_test = Time.at(@timestamp)
+      @time_of_test = Time.now
+      @timestamp_of_test =  @time_of_test.to_i
       passed_or_failed = !!@plugin.test_command?
       raise Ragios::PluginTestResultNotFound.new(error: "No test_result found for #{@plugin.class} plugin"), "No test_result found for #{@plugin.class} plugin" unless defined?(@plugin.test_result)
       @test_result = @plugin.test_result

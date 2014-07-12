@@ -73,10 +73,10 @@ module Ragios
       log_results(this_generic_monitor)
     end
     def self.failed(monitor, test_result)
-      save_notification("failed", monitor, test_result)
+      #save_notification("failed", monitor, test_result)
     end
     def self.resolved(monitor, test_result)
-      save_notification("resolved", monitor, test_result)
+      #save_notification("resolved", monitor, test_result)
     end
 
   private
