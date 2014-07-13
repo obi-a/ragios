@@ -1,13 +1,5 @@
 require 'spec_base.rb'
 
-#database configuration
-database_admin = {login: {username: ENV['COUCHDB_ADMIN_USERNAME'], password: ENV['COUCHDB_ADMIN_PASSWORD'] },
-                    database: 'ragios_test_model_database',
-                    couchdb:  {address: 'http://localhost', port:'5984'}
-                 }
-
-Ragios::CouchdbAdmin.config(database_admin)
-
 describe "Ragios::Database::Model" do
   before(:all) do
     @database = Leanback::Couchdb.new(database: "ragios_test_model_database#{Time.now.to_i}",

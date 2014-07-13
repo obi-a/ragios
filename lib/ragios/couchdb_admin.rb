@@ -13,10 +13,12 @@ module Ragios
     end
     def self.setup_database
       @database.create
-      security_settings = {:admins => {"names" => [@database_config[:login][:username]], "roles" => ["admin"]},
-                              :readers => {"names" => [@database_config[:login][:username]],"roles"  => ["admin"]}
-                           }
-      @database.security_object = security_settings
+      if [@database_config[:login][:username], @database_config[:login][:username]].all?
+        security_settings = {:admins => {"names" => [@database_config[:login][:username]], "roles" => ["admin"]},
+                                :readers => {"names" => [@database_config[:login][:username]],"roles"  => ["admin"]}
+                             }
+        @database.security_object = security_settings
+    end
     end
   end
 end

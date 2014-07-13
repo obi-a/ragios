@@ -48,6 +48,16 @@ module Ragios
 end
 
 describe Ragios::GenericMonitor do
+  before(:all) do
+    #database configuration
+    database_admin = {login: {username: ENV['COUCHDB_ADMIN_USERNAME'], password: ENV['COUCHDB_ADMIN_PASSWORD'] },
+                        database: 'ragios_test_generic_monitor_database',
+                        couchdb:  {address: 'http://localhost', port:'5984'}
+                     }
+
+    Ragios::CouchdbAdmin.config(database_admin)
+    Ragios::CouchdbAdmin.setup_database
+  end
 
   it "should pass the test" do
     options = {monitor: "something",
@@ -103,5 +113,9 @@ describe Ragios::GenericMonitor do
                _id: "monitor_id",
                via: "test_notifier"}
     expect { Ragios::GenericMonitor.new(options) }.to raise_error(Ragios::PluginNotFound)
+  end
+  after(:all) do
+    sleep 2
+    Ragios::CouchdbAdmin.get_database.delete
   end
 end
