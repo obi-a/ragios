@@ -1,31 +1,51 @@
 module Ragios
   module Database
     class Model
+      include Contracts
+
+      Doc_id = String
+
       def initialize(database)
         @database = database
       end
+
+      Contract Doc_id, Hash => Bool
       def save(id, data)
         !!@database.create_doc(id, data)
       end
+
+      Contract Doc_id => Hash
       def find(id)
         @database.get_doc(id)
       end
+
+      Contract Doc_id, Hash => Bool
       def update(id, data)
         !!@database.edit_doc!(id, data)
       end
+
+      Contract Doc_id => Bool
       def delete(id)
         !!@database.delete_doc!(id)
       end
+
+      Contract None => ArrayOf[Hash]
       def all_monitors
         @database.where(type: "monitor")
       end
+
+      Contract None => ArrayOf[Hash]
       def active_monitors
         @database.where(type: "monitor", status_: "active")
       end
+
+      Contract Hash => ArrayOf[Hash]
       def monitors_where(attributes_hash)
         hash_with_type = attributes_hash.merge(type: "monitor")
         @database.where(hash_with_type)
       end
+
+      Contract Doc_id => Or[nil, Hash]
       def get_monitor_state(id)
         design_doc = {
          language: 'javascript',

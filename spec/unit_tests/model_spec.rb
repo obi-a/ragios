@@ -23,10 +23,6 @@ describe "Ragios::Database::Model" do
       it "cannot save a document with an id that already exists" do
         expect { @model.save("exists", something: "something") }.to raise_error(Leanback::CouchdbException)
       end
-      it "document id must be a string" do
-        expect { @model.save(1, something: "something") }.to raise_error(Leanback::InvalidDocumentID)
-        expect { @model.save(:test, something: "something") }.to raise_error(Leanback::InvalidDocumentID)
-      end
     end
     describe "#find" do
       it "returns a document by id" do
