@@ -22,3 +22,4 @@ gem "uuidtools"
 gem "thor"
 gem "ragios-client", '~> 0.0.4'
 gem "eventmachine", '~> 1.0.3'
+gem "contracts"

@@ -14,6 +14,7 @@ GEM
     celluloid (0.14.1)
       timers (>= 1.0.0)
     coderay (1.0.9)
+    contracts (0.4)
     daemons (1.1.0)
     diff-lcs (1.1.2)
     eventmachine (1.0.3)
@@ -110,6 +111,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-ses
+  contracts
   daemons
   eventmachine (~> 1.0.3)
   gmail
