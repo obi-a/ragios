@@ -2,7 +2,9 @@ module Ragios
   class Controller
     #see contracts: https://github.com/egonSchiele/contracts.ruby
     include Contracts
+    #types
     Monitor = Hash
+    Monitor_id = String
 
     def self.scheduler
       @scheduler ||= Ragios::Scheduler.new(self)
@@ -10,38 +12,56 @@ module Ragios
     def self.model
       @model ||= Ragios::Database::Model.new(Ragios::CouchdbAdmin.get_database)
     end
+
+    Contract Monitor_id => Bool
     def self.stop(monitor_id)
       scheduler.unschedule(monitor_id)
       !!model.update(monitor_id, status_: "stopped")
+    rescue Leanback::CouchdbException => e
+      handle_error(monitor_id, e)
     end
+
+    Contract Monitor_id => Bool
     def self.delete(monitor_id)
       monitor = model.find(monitor_id)
       scheduler.unschedule(monitor_id) if is_active?(monitor)
-      model.delete(monitor_id)
+      !!model.delete(monitor_id)
+    rescue Leanback::CouchdbException => e
+      handle_error(monitor_id, e)
     end
 
+    Contract Monitor_id, Hash => Bool
     def self.update(monitor_id, options)
-      message = "Cannot update system settings"
-      raise message if options.keys.to_set.superset? [:type, :status_, :created_at_, :creation_timestamp_]
+      message = "Cannot edit system settings"
+      unless options.keys.to_set.disjoint? [:type, :status_, :created_at_, :creation_timestamp_].to_set
+        raise Ragios::CannotEditSystemSettings.new(error: message), message
+      end
       model.update(monitor_id, options)
       monitor = model.find(monitor_id)
-      !!restarted =
       if is_active?(monitor)
         scheduler.unschedule(monitor_id)
         add_to_scheduler(generic_monitor(monitor))
       end
+      true
+    rescue Leanback::CouchdbException => e
+      handle_error(monitor_id, e)
     end
+
     def self.get(monitor_id)
       model.find(monitor_id)
     end
     def self.get_all
       model.all_monitors
     end
+
+    Contract Monitor_id => Bool
     def self.restart(monitor_id)
       monitor = model.find(monitor_id)
       return true if is_active?(monitor)
       add_to_scheduler(generic_monitor(monitor))
-      !!model.update(monitor_id, status: "active")
+      !!model.update(monitor_id, status_: "active")
+    rescue Leanback::CouchdbException => e
+      handle_error(monitor_id, e)
     end
     def self.test_now(monitor_id)
       monitor = model.find(monitor_id)
@@ -85,6 +105,13 @@ module Ragios
     end
 
   private
+    def self.handle_error(monitor_id, e)
+      if e.response[:error] == "not_found"
+        raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{monitor_id}"
+      else
+        raise e
+      end
+    end
     def self.save_notification(event, monitor, test_result)
       model.save(unique_id,
         monitor_id: monitor[:_id],

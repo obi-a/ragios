@@ -11,4 +11,5 @@ module Ragios
   class PluginNotFound < StandardError; end
   class PluginTestCommandNotFound < StandardError; end
   class PluginTestResultNotFound < StandardError; end
+  class CannotEditSystemSettings < StandardError; end
 end
