@@ -2,11 +2,12 @@ module Ragios
   class CouchdbAdmin
     def self.config(database_config)
       @database_config = database_config
-      @database = Leanback::Couchdb.new(database: @database_config[:database],
-                      username: @database_config[:login][:username],
-                      password: @database_config[:login][:password],
-                      address: @database_config[:couchdb][:address],
-                      port: @database_config[:couchdb][:port])
+      @database = Leanback::Couchdb.new(
+        database: @database_config[:database],
+        username: @database_config[:login][:username],
+        password: @database_config[:login][:password],
+        address: @database_config[:couchdb][:address],
+        port: @database_config[:couchdb][:port])
     end
     def self.get_database
       @database
@@ -18,7 +19,9 @@ module Ragios
                                 :readers => {"names" => [@database_config[:login][:username]],"roles"  => ["admin"]}
                              }
         @database.security_object = security_settings
-    end
+      end
+      true
+    rescue Leanback::CouchdbException
     end
   end
 end

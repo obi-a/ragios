@@ -30,14 +30,13 @@ module Ragios
   module NotifierTest
     def self.failed_resolved(monitor, notifier)
       controller = Ragios::Controller
-      controller.scheduler(Ragios::Scheduler.new(Ragios::Controller))
-      controller.model(Ragios::Model::CouchdbMonitorModel)
-      controller.logger(Ragios::CouchdbLogger.new)
-      failing_monitor = {monitor: monitor,
+      failing_monitor = {
+        monitor: monitor,
         every: "5m",
         via: notifier,
         contact: ENV['RAGIOS_CONTACT'],
-        plugin: "failing_plugin" }
+        plugin: "failing_plugin"
+      }
 
       #test should fail and send a FAILED notification message
       monitor_id = controller.add([failing_monitor]).first.id
