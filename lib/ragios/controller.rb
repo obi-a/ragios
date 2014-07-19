@@ -1,5 +1,9 @@
 module Ragios
   class Controller
+    #see contracts: https://github.com/egonSchiele/contracts.ruby
+    include Contracts
+    Monitor = Hash
+
     def self.scheduler
       @scheduler ||= Ragios::Scheduler.new(self)
     end
@@ -61,6 +65,7 @@ module Ragios
       model.get_monitor_state(monitor_id)
     end
 
+    Contract Hash => Monitor
     def self.add(monitor)
       monitor_with_id = monitor.merge({created_at_: Time.now, status_: 'active', _id: unique_id})
       this_generic_monitor = generic_monitor(monitor_with_id)
