@@ -51,10 +51,10 @@ module Ragios
         @monitor = monitor
       end
       def failed(test_result)
-        puts "First Notifier FAILED for #{@monitor[:_id]}"
+        puts "First Notifier FAILED for #{@monitor[:_id]}\n"
       end
       def resolved(test_result)
-        puts "First Notifier RESOLVED for #{@monitor[:_id]}"
+        puts "First Notifier RESOLVED for #{@monitor[:_id]}\n"
       end
     end
   end
@@ -282,6 +282,50 @@ describe Ragios::Controller do
 
     it "cannot restart a monitor that doesn't exist" do
       expect { controller.restart("dont_exist") }.to raise_error Ragios::MonitorNotFound
+    end
+  end
+  describe "#test_now" do
+    it "tests a monitor" do
+      failing_monitor = {
+        monitor: "Something",
+        every: "5m",
+        via: "mock_notifier",
+        plugin: "failing_plugin"
+      }
+
+      monitor_id = controller.add(failing_monitor)[:_id]
+
+      #test should fail and display a failed message via mock_notifier
+      controller.test_now(monitor_id).should == true
+
+      #verify that the notification event was written to the database
+      @database.where(monitor_id: monitor_id, type: "notification", test_result: "test_failed", notifier: "mock_notifier").count == 1
+
+      #verify that the test result was written to the database
+      @database.where(monitor_id: monitor_id, type: "test_result", test_result: "test_failed", state: "failed").count == 1
+
+      controller.delete(monitor_id)
+    end
+    it "tests a monitor with multiple notifiers" do
+      failing_monitor = {monitor: "Something",
+        every: "5m",
+        via: ["first_notifier", "second_notifier"],
+        plugin: "failing_plugin"
+      }
+
+      monitor_id = controller.add(failing_monitor)[:_id]
+
+      #test should fail and display a failed message via first_notifier and second_notifier
+      controller.test_now(monitor_id).should == true
+
+      #verify that both notifiers events are logged to the database
+      @database.where(monitor_id: monitor_id, type: "notification", test_result: "test_failed", notifier: "first_notifier").count == 1
+      @database.where(monitor_id: monitor_id, type: "notification", test_result: "test_failed", notifier: "second_notifier").count == 1
+
+      #verify that the test result was written to the database
+      @database.where(monitor_id: monitor_id, type: "test_result", test_result: "test_failed", state: "failed").count == 1
+
+      controller.delete(monitor_id)
     end
   end
   after(:all) do

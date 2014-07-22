@@ -63,9 +63,11 @@ module Ragios
     rescue Leanback::CouchdbException => e
       handle_error(monitor_id, e)
     end
+
+    Contract Monitor_id => Bool
     def self.test_now(monitor_id)
       monitor = model.find(monitor_id)
-      perform(generic_monitor(monitor))
+      !!perform(generic_monitor(monitor))
     end
 
     def self.where(options)
@@ -97,11 +99,11 @@ module Ragios
       this_generic_monitor.test_command?
       log_results(this_generic_monitor)
     end
-    def self.failed(monitor, test_result)
-      save_notification("failed", monitor, test_result)
+    def self.failed(monitor, test_result, notifier)
+      save_notification("failed", monitor, test_result, notifier)
     end
-    def self.resolved(monitor, test_result)
-      save_notification("resolved", monitor, test_result)
+    def self.resolved(monitor, test_result, notifier)
+      save_notification("resolved", monitor, test_result, notifier)
     end
 
   private
@@ -112,13 +114,13 @@ module Ragios
         raise e
       end
     end
-    def self.save_notification(event, monitor, test_result)
+    def self.save_notification(event, monitor, test_result, notifier)
       model.save(unique_id,
         monitor_id: monitor[:_id],
         monitor: monitor,
         test_result: test_result,
         type: "notification",
-        notifier: monitor[:via],
+        notifier: notifier,
         tag: monitor[:tag],
         event: event)
     end
