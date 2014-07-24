@@ -328,6 +328,27 @@ describe Ragios::Controller do
       controller.delete(monitor_id)
     end
   end
+  describe "#get" do
+    it "returns a monitor by id" do
+     monitor = {
+      monitor: "Something",
+      every: "5m",
+      via: "mock_notifier",
+      plugin: "passing_plugin"
+    }
+
+     monitor_id = controller.add(monitor)[:_id]
+
+     returned_monitor = controller.get(monitor_id)
+     returned_monitor[:_id].should == monitor_id
+
+     controller.delete(monitor_id)
+    end
+
+    it "cannot return a monitor that doesn't exist" do
+      expect { controller.get("dont_exist") }.to raise_error Ragios::MonitorNotFound
+    end
+  end
   after(:all) do
     @database.delete
   end
