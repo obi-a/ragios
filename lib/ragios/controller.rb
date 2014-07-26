@@ -9,6 +9,7 @@ module Ragios
     def self.scheduler
       @scheduler ||= Ragios::Scheduler.new(self)
     end
+
     def self.model
       @model ||= Ragios::Database::Model.new(Ragios::CouchdbAdmin.get_database)
     end
@@ -99,9 +100,7 @@ module Ragios
 
     Contract Monitor_id => Or[nil, Hash]
     def self.get_current_state(monitor_id)
-      try_monitor(monitor_id) do
-        model.get_monitor_state(monitor_id)
-      end
+      model.get_monitor_state(monitor_id)
     end
 
     Contract Hash => Monitor
@@ -112,32 +111,34 @@ module Ragios
       model.save(this_generic_monitor.id, this_generic_monitor.options)
       return this_generic_monitor.options
     end
+
     def self.perform(this_generic_monitor)
       this_generic_monitor.test_command?
       log_results(this_generic_monitor)
     end
 
-
     def self.failed(monitor, test_result, notifier)
       save_notification("failed", monitor, test_result, notifier)
     end
+
     def self.resolved(monitor, test_result, notifier)
       save_notification("resolved", monitor, test_result, notifier)
     end
 
   private
-    #updates the monitors previous state before it got restarted
     def self.update_previous_state(monitor)
       monitor_id = monitor[:_id]
       this_generic_monitor = generic_monitor(monitor)
       this_generic_monitor.state = get_current_state(monitor_id)[:state] if get_current_state(monitor_id)
       return this_generic_monitor
     end
+
     def self.try_monitor(monitor_id)
       yield
     rescue Leanback::CouchdbException => e
       handle_error(monitor_id, e)
     end
+
     def self.handle_error(monitor_id, e)
       if e.response[:error] == "not_found"
         raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{monitor_id}"
@@ -145,6 +146,7 @@ module Ragios
         raise e
       end
     end
+
     def self.save_notification(event, monitor, test_result, notifier)
       model.save(unique_id,
         monitor_id: monitor[:_id],
@@ -156,9 +158,11 @@ module Ragios
         created_at: Time.now,
         event: event)
     end
+
     def self.unique_id
       UUIDTools::UUID.random_create.to_s
     end
+
     def self.log_results(this_generic_monitor)
       test_result = {
         monitor_id: this_generic_monitor.id,
@@ -173,12 +177,15 @@ module Ragios
       }
       model.save(unique_id, test_result)
     end
+
     def self.generic_monitor(monitor)
       GenericMonitor.new(monitor)
     end
+
     def self.is_active?(monitor)
       monitor[:status_] == "active"
     end
+
     def self.add_to_scheduler(generic_monitor)
       args = {
         time_interval: generic_monitor.options[:every],

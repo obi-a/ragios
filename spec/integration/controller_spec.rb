@@ -481,6 +481,33 @@ describe Ragios::Controller do
       controller.delete(monitor_id)
     end
   end
+  describe "#get_current_state" do
+    it "returns a monitors current state" do
+      monitor = {
+        monitor: "Something",
+        every: "15m",
+        via: "mock_notifier",
+        plugin: "failing_plugin"
+      }
+
+      monitor_id = controller.add(monitor)[:_id]
+      controller.stop(monitor_id)
+
+      controller.test_now(monitor_id)
+
+      sleep 1
+      controller.update(monitor_id, plugin: "passing_plugin")
+      controller.test_now(monitor_id)
+      sleep 1
+
+      controller.get_current_state(monitor_id)[:state].should == "passed"
+
+      controller.delete(monitor_id)
+    end
+    it "returns nil when monitor doesn't have a any state stored in the database" do
+      controller.get_current_state("dont_exist").should == nil
+    end
+  end
   after(:all) do
     @database.delete
   end
