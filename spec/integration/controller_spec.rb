@@ -327,6 +327,9 @@ describe Ragios::Controller do
 
       controller.delete(monitor_id)
     end
+    it "raises an exception when the monitor doesnt exist" do
+      expect { controller.test_now("dont_exist") }.to raise_error Ragios::MonitorNotFound
+    end
   end
   describe "#get" do
     it "returns a monitor by id" do
@@ -345,8 +348,85 @@ describe Ragios::Controller do
      controller.delete(monitor_id)
     end
 
-    it "cannot return a monitor that doesn't exist" do
+    it "raises an exception if monitor doesn't exist" do
       expect { controller.get("dont_exist") }.to raise_error Ragios::MonitorNotFound
+    end
+  end
+  describe "#where" do
+    it "returns monitors that match the provided attributes" do
+      unique_name = "Something unique #{Time.now.to_i}"
+      monitor = {
+        monitor: unique_name,
+        every: "5m",
+        via: "mock_notifier",
+        plugin: "passing_plugin"
+      }
+
+      monitor_id = controller.add(monitor)[:_id]
+      results = controller.where(monitor: unique_name, every: "5m")
+      results.first[:_id].should == monitor_id
+
+      controller.delete(monitor_id)
+    end
+
+    it "returns an empty array when no monitor matches the provided attributes" do
+      unique_name = "Something unique #{Time.now.to_i}"
+      controller.where(monitor: unique_name, tag: "xyz").should == []
+    end
+  end
+  it "get_all returns an empty array when there is no monitor" do
+    controller.get_all.should == []
+  end
+
+  it "will not restart when there is no active monitor" do
+    controller.restart_all_active.should == nil
+  end
+
+  describe "all monitors" do
+    before(:each) do
+      monitor_1 = {
+        monitor: "Something",
+        every: "15m",
+        via: "mock_notifier",
+        plugin: "passing_plugin"
+      }
+
+      monitor_2 = {
+        monitor: "Something else",
+        every: "30m",
+        via: "mock_notifier",
+        plugin: "passing_plugin"
+      }
+
+      @first_monitor = controller.add(monitor_1)[:_id]
+      @second_monitor = controller.add(monitor_1)[:_id]
+    end
+    describe "#get_all" do
+      it "fetches all monitors" do
+        all_monitors = controller.get_all
+        all_monitors.count.should == 2
+        [all_monitors[0][:_id], all_monitors[1][:_id]].should include(@first_monitor, @second_monitor)
+      end
+    end
+    describe "#restart_all_active" do
+      it "restarts all active monitors" do
+        controller.stop(@first_monitor)
+        controller.stop(@second_monitor)
+        #set stopped monitors as active in database
+        #so they can be restarted by restart_all
+        status = {status_: "active"}
+        @database.edit_doc!(@first_monitor, status)
+        @database.edit_doc!(@second_monitor, status)
+
+        controller.restart_all_active.count.should == 2
+
+        controller.scheduler.find(@first_monitor).first.tags.first.should == @first_monitor
+        controller.scheduler.find(@second_monitor).first.tags.first.should == @second_monitor
+      end
+    end
+    after(:each) do
+      controller.delete(@first_monitor)
+      controller.delete(@second_monitor)
     end
   end
   after(:all) do

@@ -54,6 +54,7 @@ module Ragios
       end
     end
 
+    Contract None => ArrayOf[Monitor]
     def self.get_all
       model.all_monitors
     end
@@ -70,15 +71,21 @@ module Ragios
 
     Contract Monitor_id => Bool
     def self.test_now(monitor_id)
-      monitor = model.find(monitor_id)
-      !!perform(generic_monitor(monitor))
+      try_monitor(monitor_id) do
+        monitor = model.find(monitor_id)
+        !!perform(generic_monitor(monitor))
+      end
     end
 
+    Contract Hash => ArrayOf[Monitor]
     def self.where(options)
       model.monitors_where(options)
     end
 
-    def self.restart_all
+    #only called when first starting the application
+    #to restart all active monitors from database to scheduler
+    Contract None => Or[ArrayOf[Monitor], nil]
+    def self.restart_all_active
       monitors = model.active_monitors
       unless monitors.empty?
         monitors.each do |monitor|
@@ -87,13 +94,14 @@ module Ragios
       end
     end
 
+    Contract None => Or[nil, Hash]
     def self.get_current_state(monitor_id)
       model.get_monitor_state(monitor_id)
     end
 
     Contract Hash => Monitor
     def self.add(monitor)
-      monitor_with_id = monitor.merge({created_at_: Time.now, status_: 'active', _id: unique_id})
+      monitor_with_id = monitor.merge({created_at_: Time.now, status_: 'active', _id: unique_id, type: "monitor"})
       this_generic_monitor = generic_monitor(monitor_with_id)
       add_to_scheduler(this_generic_monitor)
       model.save(this_generic_monitor.id, this_generic_monitor.options)
@@ -103,6 +111,8 @@ module Ragios
       this_generic_monitor.test_command?
       log_results(this_generic_monitor)
     end
+
+
     def self.failed(monitor, test_result, notifier)
       save_notification("failed", monitor, test_result, notifier)
     end
@@ -131,6 +141,7 @@ module Ragios
         type: "notification",
         notifier: notifier,
         tag: monitor[:tag],
+        created_at: Time.now,
         event: event)
     end
     def self.unique_id
@@ -145,7 +156,8 @@ module Ragios
         timestamp_of_test: this_generic_monitor.timestamp_of_test,
         monitor: this_generic_monitor.options,
         tag: this_generic_monitor.options[:tag],
-        type: "test_result"
+        type: "test_result",
+        created_at: Time.now
       }
       model.save(unique_id, test_result)
     end
