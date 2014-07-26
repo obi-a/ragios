@@ -41,7 +41,8 @@ module Ragios
         monitor = model.find(monitor_id)
         if is_active?(monitor)
           scheduler.unschedule(monitor_id)
-          add_to_scheduler(generic_monitor(monitor))
+          updated_generic_monitor = update_previous_state(monitor)
+          add_to_scheduler(updated_generic_monitor)
         end
         true
       end
@@ -64,7 +65,8 @@ module Ragios
       try_monitor(monitor_id) do
         monitor = model.find(monitor_id)
         return true if is_active?(monitor)
-        add_to_scheduler(generic_monitor(monitor))
+        updated_generic_monitor = update_previous_state(monitor)
+        add_to_scheduler(updated_generic_monitor)
         !!model.update(monitor_id, status_: "active")
       end
     end
@@ -89,14 +91,17 @@ module Ragios
       monitors = model.active_monitors
       unless monitors.empty?
         monitors.each do |monitor|
-          add_to_scheduler(generic_monitor(monitor))
+          updated_generic_monitor = update_previous_state(monitor)
+          add_to_scheduler(updated_generic_monitor)
         end
       end
     end
 
-    Contract None => Or[nil, Hash]
+    Contract Monitor_id => Or[nil, Hash]
     def self.get_current_state(monitor_id)
-      model.get_monitor_state(monitor_id)
+      try_monitor(monitor_id) do
+        model.get_monitor_state(monitor_id)
+      end
     end
 
     Contract Hash => Monitor
@@ -121,6 +126,13 @@ module Ragios
     end
 
   private
+    #updates the monitors previous state before it got restarted
+    def self.update_previous_state(monitor)
+      monitor_id = monitor[:_id]
+      this_generic_monitor = generic_monitor(monitor)
+      this_generic_monitor.state = get_current_state(monitor_id)[:state] if get_current_state(monitor_id)
+      return this_generic_monitor
+    end
     def self.try_monitor(monitor_id)
       yield
     rescue Leanback::CouchdbException => e

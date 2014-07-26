@@ -429,6 +429,58 @@ describe Ragios::Controller do
       controller.delete(@second_monitor)
     end
   end
+  describe "Log Notifications" do
+    it "logs notifications for events failed and resolved" do
+      #in this case the previous state is maintained after a monitor update
+      monitor = {
+        monitor: "Something",
+        every: "15m",
+        via: "mock_notifier",
+        plugin: "failing_plugin"
+      }
+
+      monitor_id = controller.add(monitor)[:_id]
+
+      sleep 1
+
+      @database.where(type: "notification", monitor_id: monitor_id, event: "failed", notifier: "mock_notifier").count.should_not == 0
+
+      controller.update(monitor_id, plugin: "passing_plugin")
+
+      sleep 1
+
+      @database.where(type: "notification", monitor_id: monitor_id, event: "resolved").inspect
+
+      controller.delete(monitor_id)
+    end
+    it "logs notifications for events failed and resolved monitor restart" do
+      monitor = {
+        monitor: "Something",
+        every: "15m",
+        via: "mock_notifier",
+        plugin: "failing_plugin"
+      }
+
+      monitor_id = controller.add(monitor)[:_id]
+
+      sleep 1
+
+      @database.where(type: "notification", monitor_id: monitor_id, event: "failed", notifier: "mock_notifier").count.should_not == 0
+
+      controller.stop(monitor_id)
+      #stopped monitors are not restarted after an update
+      controller.update(monitor_id, plugin: "passing_plugin")
+
+      #manually restart this monitor
+      controller.restart(monitor_id)
+
+      sleep 1
+
+      @database.where(type: "notification", monitor_id: monitor_id, event: "resolved").inspect
+
+      controller.delete(monitor_id)
+    end
+  end
   after(:all) do
     @database.delete
   end
