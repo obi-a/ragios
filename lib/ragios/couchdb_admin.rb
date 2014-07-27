@@ -13,15 +13,22 @@ module Ragios
       @database
     end
     def self.setup_database
-      @database.create
+      begin
+        @database.create
+      rescue Leanback::CouchdbException => e
+        raise e if e.response[:error] == "unauthorized"
+      end
+
       if [@database_config[:login][:username], @database_config[:login][:username]].all?
         security_settings = {:admins => {"names" => [@database_config[:login][:username]], "roles" => ["admin"]},
                                 :readers => {"names" => [@database_config[:login][:username]],"roles"  => ["admin"]}
                              }
-        @database.security_object = security_settings
+        begin
+          @database.security_object = security_settings
+        rescue Leanback::CouchdbException
+        end
       end
       true
-    rescue Leanback::CouchdbException
     end
   end
 end
