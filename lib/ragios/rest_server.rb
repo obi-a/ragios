@@ -25,8 +25,7 @@ class App < Sinatra::Base
   end
 
   get '/' do
-
-    Yajl::Encoder.encode({ "Ragios Server" => "welcome"})
+    generate_json("Ragios Server" => "welcome")
   end
 
   post '/session*' do

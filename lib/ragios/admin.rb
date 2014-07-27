@@ -8,20 +8,16 @@ module Ragios
       @username = ragios_admin[:username]
       @password = ragios_admin[:password]
       @auth_timeout = ragios_admin[:auth_timeout]
+      @authentication = ragios_admin[:authentication]
       @database = Ragios::CouchdbAdmin.get_database
     end
-=begin
-    def self.admin
-      {username: @username,
-       password: @password,
-       auth_timeout: @auth_timeout}
-    end
-=end
+
     def self.authenticate?(username,password)
       (username == @username) && (password == @password)
     end
 
     def self.valid_token?(token)
+      return true unless @authentication
       return false if token.blank?
       auth_session = @database.get_doc(token)
       time_elapsed = (Time.now.to_f - Time.at(auth_session[:timestamp]).to_f).to_i
@@ -32,7 +28,7 @@ module Ragios
         @database.delete_doc(token)
         false
       end
-    rescue CouchdbException
+    rescue Leanback::CouchdbException
       false
     end
     def self.session
