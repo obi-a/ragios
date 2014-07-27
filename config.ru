@@ -7,6 +7,10 @@ require dir + 'lib/ragios/rest_server'
 
 run App
 
-require dir + 'initializers/initialize'
+def require_all(path)
+  Dir.glob(File.dirname(__FILE__) + path + '/*.rb') do |file|
+    require File.dirname(__FILE__)  + path + '/' + File.basename(file, File.extname(file))
+  end
+end
 
-
+require_all '/initializers'

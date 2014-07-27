@@ -25,4 +25,3 @@ require_all '/ragios'
 
 #global variable path to the folder with erb message files
 $path_to_messages =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/messages/'))
-$path_to_json =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/json/'))
