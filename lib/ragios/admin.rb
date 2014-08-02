@@ -22,21 +22,30 @@ module Ragios
       auth_session = @database.get_doc(token)
       time_elapsed = (Time.now.to_f - Time.at(auth_session[:timestamp]).to_f).to_i
       is_valid_token =
-      if auth_session[:timeout] > time_elapsed
+      if auth_session[:auth_timeout].to_i > time_elapsed
         true
       else
-        @database.delete_doc(token)
+        @database.delete_doc!(token)
         false
       end
     rescue Leanback::CouchdbException
       false
     end
+
+    def self.invalidate_token(token)
+      @database.delete_doc!(token)
+    rescue Leanback::CouchdbException
+      false
+    end
+
     def self.session
       auth_session_token = UUIDTools::UUID.random_create.to_s
-      @database.create_doc(auth_session_token,
-                            timeout: @auth_timeout,
-                            timestamp: Time.now.to_i,
-                            type: auth_session)
+      @database.create_doc(
+        auth_session_token,
+        auth_timeout: @auth_timeout,
+        timestamp: Time.now.to_i,
+        type: "auth_session"
+      )
       return auth_session_token
     end
   end

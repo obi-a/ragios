@@ -18,6 +18,11 @@ describe "CouchDBAdmin" do
     #setup_database is idempotent
     Ragios::CouchdbAdmin.setup_database.should == true
     username = database_admin[:username]
+
+    #a security object is only created if a database username is provided
+    #otherwise no security object is created,
+    #this conditional is provided so that same test will pass when run in couchdb admin party
+    #and also pass when run in non-admin party
     if username
       database.security_object.should == {
                                             admins: {names: [username], roles: ["admin"]},
