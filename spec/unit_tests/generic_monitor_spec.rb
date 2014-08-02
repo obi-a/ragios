@@ -50,11 +50,13 @@ end
 describe Ragios::GenericMonitor do
   before(:all) do
     #database configuration
-    database_admin = {login: {username: ENV['COUCHDB_ADMIN_USERNAME'], password: ENV['COUCHDB_ADMIN_PASSWORD'] },
-                        database: 'ragios_test_generic_monitor_database',
-                        couchdb:  {address: 'http://localhost', port:'5984'}
-                     }
-
+    database_admin = {
+      username: ENV['COUCHDB_ADMIN_USERNAME'],
+      password: ENV['COUCHDB_ADMIN_PASSWORD'],
+      database: 'ragios_test_generic_monitor_database',
+      address: 'http://localhost',
+      port: '5984'
+    }
     Ragios::CouchdbAdmin.config(database_admin)
     Ragios::CouchdbAdmin.setup_database
   end

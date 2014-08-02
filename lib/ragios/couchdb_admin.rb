@@ -2,12 +2,7 @@ module Ragios
   class CouchdbAdmin
     def self.config(database_config)
       @database_config = database_config
-      @database = Leanback::Couchdb.new(
-        database: @database_config[:database],
-        username: @database_config[:login][:username],
-        password: @database_config[:login][:password],
-        address: @database_config[:couchdb][:address],
-        port: @database_config[:couchdb][:port])
+      @database = Leanback::Couchdb.new(@database_config)
     end
     def self.get_database
       @database
@@ -19,10 +14,11 @@ module Ragios
         raise e if e.response[:error] == "unauthorized"
       end
 
-      if [@database_config[:login][:username], @database_config[:login][:username]].all?
-        security_settings = {:admins => {"names" => [@database_config[:login][:username]], "roles" => ["admin"]},
-                                :readers => {"names" => [@database_config[:login][:username]],"roles"  => ["admin"]}
-                             }
+      if @database_config[:username]
+        security_settings = {
+          admins: {"names" => [@database_config[:username]], "roles" => ["admin"]},
+          readers: {"names" => [@database_config[:username]],"roles"  => ["admin"]}
+        }
         begin
           @database.security_object = security_settings
         rescue Leanback::CouchdbException

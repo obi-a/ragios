@@ -81,13 +81,16 @@ controller = Ragios::Controller
 describe Ragios::Controller do
   before(:all) do
     database_name = "test_ragios_controller_#{Time.now.to_i}"
-    database_admin = {login: {username: ENV['COUCHDB_ADMIN_USERNAME'], password: ENV['COUCHDB_ADMIN_PASSWORD'] },
-                        database: database_name,
-                        couchdb:  {address: 'http://localhost', port:'5984'}
-                     }
+    database_admin = {
+      username: ENV['COUCHDB_ADMIN_USERNAME'],
+      password: ENV['COUCHDB_ADMIN_PASSWORD'],
+      database: database_name,
+      address: 'http://localhost',
+      port: '5984'
+    }
 
     Ragios::CouchdbAdmin.config(database_admin)
-    Ragios::CouchdbAdmin.setup_database.should == true
+    Ragios::CouchdbAdmin.setup_database
     @database = Ragios::CouchdbAdmin.get_database
   end
 
