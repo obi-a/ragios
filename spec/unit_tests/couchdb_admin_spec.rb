@@ -13,9 +13,19 @@ describe "CouchDBAdmin" do
 
     Ragios::CouchdbAdmin.config(database_admin)
     Ragios::CouchdbAdmin.setup_database.should == true
-    Ragios::CouchdbAdmin.get_database.class.should == Leanback::Couchdb
+    database = Ragios::CouchdbAdmin.get_database
+    database.class.should == Leanback::Couchdb
     #setup_database is idempotent
     Ragios::CouchdbAdmin.setup_database.should == true
+    username = database_admin[:username]
+    if username
+      database.security_object.should == {
+                                            admins: {names: [username], roles: ["admin"]},
+                                            readers: {names: [username],roles: ["admin"]}
+                                          }
+    else
+      database.security_object.should == {}
+    end
     #teardown
     Ragios::CouchdbAdmin.get_database.delete
   end
