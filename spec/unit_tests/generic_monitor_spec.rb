@@ -47,6 +47,14 @@ module Ragios
   end
 end
 
+module Ragios
+  class Controller
+    def self.failed(*args)
+    end
+  end
+end
+
+
 describe Ragios::GenericMonitor do
   before(:all) do
     #database configuration
@@ -62,10 +70,12 @@ describe Ragios::GenericMonitor do
   end
 
   it "should pass the test" do
-    options = {monitor: "something",
-               _id: "monitor_id",
-               via: "test_notifier",
-               plugin: "passing_plugin" }
+    options = {
+      monitor: "something",
+      _id: "monitor_id",
+      via: "test_notifier",
+      plugin: "passing_plugin"
+    }
    generic_monitor = Ragios::GenericMonitor.new(options)
    generic_monitor.test_command?.should == true
    generic_monitor.test_result.should == :test_passed
@@ -74,10 +84,12 @@ describe Ragios::GenericMonitor do
   end
 
   it "should fail the test" do
-    options = {monitor: "something",
-               _id: "monitor_id",
-               via: "test_notifier",
-               plugin: "failing_plugin" }
+    options = {
+      monitor: "something",
+      _id: "monitor_id",
+      via: "test_notifier",
+      plugin: "failing_plugin"
+    }
     generic_monitor = Ragios::GenericMonitor.new(options)
     generic_monitor.test_command?.should == false
     generic_monitor.test_result.should == :test_failed
@@ -86,38 +98,45 @@ describe Ragios::GenericMonitor do
   end
 
   it "should throw exception if no plugin.test_command? defined" do
-    options = {monitor: "something",
-               _id: "monitor_id",
-               via: "test_notifier",
-               plugin: "no_test_command_plugin" }
+    options = {
+      monitor: "something",
+      _id: "monitor_id",
+      via: "test_notifier",
+      plugin: "no_test_command_plugin"
+    }
     generic_monitor = Ragios::GenericMonitor.new(options)
     expect { generic_monitor.test_command? }.to raise_error(Ragios::PluginTestCommandNotFound)
   end
 
   it "should throw exception if no plugin.test_result" do
-    options = {monitor: "something",
-               _id: "monitor_id",
-               via: "test_notifier",
-               plugin: "no_test_result_plugin" }
+    options = {
+      monitor: "something",
+      _id: "monitor_id",
+      via: "test_notifier",
+      plugin: "no_test_result_plugin"
+    }
     generic_monitor = Ragios::GenericMonitor.new(options)
     expect { generic_monitor.test_command? }.to raise_error(Ragios::PluginTestResultNotFound)
   end
 
   it "cannot create a monitor with no notifier" do
-    options = {monitor: "something",
-               _id: "monitor_id",
-               plugin: "passing_plugin" }
+    options = {
+      monitor: "something",
+      _id: "monitor_id",
+      plugin: "passing_plugin"
+    }
     expect { Ragios::GenericMonitor.new(options) }.to raise_error(Ragios::NotifierNotFound)
   end
 
   it "cannot create a monitor with no plugin" do
-    options = {monitor: "something",
-               _id: "monitor_id",
-               via: "test_notifier"}
+    options = {
+      monitor: "something",
+      _id: "monitor_id",
+      via: "test_notifier"
+    }
     expect { Ragios::GenericMonitor.new(options) }.to raise_error(Ragios::PluginNotFound)
   end
   after(:all) do
-    sleep 2
     Ragios::CouchdbAdmin.get_database.delete
   end
 end
