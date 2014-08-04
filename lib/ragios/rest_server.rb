@@ -37,16 +37,16 @@ class App < Sinatra::Base
     end
   end
 
-  #adds monitors to the system and starts monitoring them
+  #adds a monitor to the system and starts monitoring them
   post '/monitors*', :check => :valid_token? do
-   begin
-    monitors = Yajl::Parser.parse(request.body.read, :symbolize_keys => true)
-    controller.add(monitors)
-    Yajl::Encoder.encode(monitors)
-   rescue Exception => e
-    status 500
-    body  Yajl::Encoder.encode({error: e.message})
-   end
+    begin
+      monitor = parse_json(request.body.read)
+      monitor_with_id = controller.add(monitor)
+      generate_json(monitor_with_id)
+    rescue Exception => e
+      status 500
+      body  generate_json({error: e.message})
+    end
   end
 
   #tests a monitor
