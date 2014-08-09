@@ -12,7 +12,7 @@ end
 plugin = "mock_plugin"
 controller = Ragios::Controller
 
-describe "Ragios rest server" do
+describe "Ragios REST API" do
   before(:all) do
     Ragios::Admin.config(authentication: false)
 
@@ -92,9 +92,9 @@ describe "Ragios rest server" do
 
   describe "more API calls" do
     before(:each) do
-      unique_name = "Google #{Time.now.to_i}"
+      @unique_name = "Google #{Time.now.to_i}"
       @monitor = {
-        monitor:  unique_name,
+        monitor:  @unique_name,
         url: "http://google.com",
         every: "5m",
         contact: "admin@mail.com",
@@ -103,7 +103,7 @@ describe "Ragios rest server" do
       }
       @monitor_id = controller.add(@monitor)[:_id]
     end
-    describe "get /monitor/:id" do
+    describe "Fetch Monitors API: get /monitor/:id" do
       it "retrieves a monitor by id" do
         get '/monitors/' + @monitor_id
         last_response.should be_ok
@@ -114,6 +114,22 @@ describe "Ragios rest server" do
         last_response.status.should == 404
         parse_json(last_response.body).should include(error: "No monitor found with id = not_found")
       end
+    end
+    describe "query monitors that match attributes: get /monitors* " do
+      it "find monitors that match multiple key/value pairs" do
+        options = {monitor: @unique_name, every: '5m'}
+        get '/monitors*', options
+        results = parse_json(last_response.body)
+        results.count.should == 1
+        results.first.should include(options)
+      end
+      it "returns an empty array when no monitor matches multiple key/value pairs" do
+        get '/monitors*', monitor: "not_found", every: "5m", something: "dont_exist"
+      end
+    end
+    describe "Updates API" do
+
+
     end
     after(:each) do
       controller.delete(@monitor_id)
