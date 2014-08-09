@@ -70,8 +70,8 @@ class App < Sinatra::Base
     options = params
     options.delete("splat")
     options.delete("captures")
-    monitors = controller.find_by(options)
-    Yajl::Encoder.encode(monitors)
+    monitors = controller.where(options)
+    generate_json(monitors)
   end
 
   delete '/monitors/:id*', :check => :valid_token? do
@@ -142,13 +142,13 @@ class App < Sinatra::Base
     begin
       monitor_id = params[:id]
       monitor = controller.get(monitor_id)
-      Yajl::Encoder.encode(monitor)
+      generate_json(monitor)
     rescue Ragios::MonitorNotFound => e
       status 404
-      Yajl::Encoder.encode({error: e.message})
+      body  generate_json({error: e.message})
     rescue Exception => e
       status 500
-      Yajl::Encoder.encode({error: e.message})
+      body  generate_json({error: e.message})
     end
   end
 

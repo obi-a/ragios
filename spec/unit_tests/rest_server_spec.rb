@@ -9,6 +9,7 @@ def parse_json(json_str)
   JSON.parse(json_str, symbolize_names: true)
 end
 
+plugin = "mock_plugin"
 controller = Ragios::Controller
 
 describe "Ragios rest server" do
@@ -33,7 +34,7 @@ describe "Ragios rest server" do
       every: "5m",
       contact: "obi.akubue@gmail.com",
       via: ["gmail_notifier"],
-      plugin: "mock_plugin"
+      plugin: plugin
     }
     post '/monitors*', monitor.to_json
     monitor_with_id = parse_json(last_response.body)
@@ -41,6 +42,82 @@ describe "Ragios rest server" do
     monitor_with_id.should include(monitor)
     monitor_with_id.should include(:_id, type: "monitor")
     controller.delete(monitor_with_id[:_id])
+  end
+  it "adds a monitor with multiple notifiers" do
+    monitor = {
+      monitor: "Google",
+      url: "http://google.com",
+      every: "5m",
+      contact: "admin@mail.com",
+      via: ["gmail_notifier","twitter_notifier"],
+      plugin: plugin
+    }
+    post '/monitors*', monitor.to_json
+    monitor_with_id = parse_json(last_response.body)
+    last_response.should be_ok
+    monitor_with_id.should include(monitor)
+    monitor_with_id.should include(:_id, type: "monitor")
+    controller.delete(monitor_with_id[:_id])
+  end
+  it "cannot add a monitor with no plugin" do
+    monitor = {
+      monitor: "Google",
+      url: "http://google.com",
+      every: "5m",
+      contact: "admin@mail.com",
+      via: "gmail_notifier"
+    }
+
+    post '/monitors*', monitor.to_json
+    last_response.status.should == 500
+    last_response.body.should include("No Plugin Found")
+  end
+  it "cannot add a monitor with no notifier" do
+    monitor = {
+      monitor: "Google",
+      url: "http://google.com",
+      every: "5m",
+      contact: "admin@mail.com",
+      plugin: plugin
+    }
+
+    post '/monitors*', monitor.to_json
+    last_response.status.should == 500
+    last_response.body.should include("No Notifier Found")
+  end
+  it "cannot add a badly formed monitor" do
+    post '/monitors*',"bad data"
+    last_response.status.should == 500
+  end
+
+  describe "more API calls" do
+    before(:each) do
+      unique_name = "Google #{Time.now.to_i}"
+      @monitor = {
+        monitor:  unique_name,
+        url: "http://google.com",
+        every: "5m",
+        contact: "admin@mail.com",
+        via: ["gmail_notifier"],
+        plugin: plugin
+      }
+      @monitor_id = controller.add(@monitor)[:_id]
+    end
+    describe "get /monitor/:id" do
+      it "retrieves a monitor by id" do
+        get '/monitors/' + @monitor_id
+        last_response.should be_ok
+        parse_json(last_response.body).should include(@monitor)
+      end
+      it "returns a 404 status when monitor is not found" do
+        get '/monitors/' + "not_found"
+        last_response.status.should == 404
+        parse_json(last_response.body).should include(error: "No monitor found with id = not_found")
+      end
+    end
+    after(:each) do
+      controller.delete(@monitor_id)
+    end
   end
   after(:all) do
     Ragios::CouchdbAdmin.get_database.delete
