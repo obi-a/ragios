@@ -105,7 +105,6 @@ GEM
       thread_safe (~> 0.1)
     uuidtools (2.1.3)
     xml-simple (1.1.2)
-    yajl-ruby (1.1.0)
 
 PLATFORMS
   java
@@ -134,4 +133,3 @@ DEPENDENCIES
   thor
   twitter
   uuidtools
-  yajl-ruby
