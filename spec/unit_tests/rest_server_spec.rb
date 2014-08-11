@@ -128,8 +128,33 @@ describe "Ragios REST API" do
       end
     end
     describe "Updates API" do
+      it "updates an active monitor" do
+        update_options = {every: "10m", via: ["twitter_notifier"]}
+        put '/monitors/' + @monitor_id, update_options.to_json, {'CONTENT_TYPE'=>'application/json'}
+        last_response.should be_ok
+        controller.get(@monitor_id)[:status_].should == "active"
 
-
+        #monitor update is idempotent
+        put '/monitors/' + @monitor_id, update_options.to_json, {'CONTENT_TYPE'=>'application/json'}
+        last_response.should be_ok
+        controller.get(@monitor_id)[:status_].should == "active"
+      end
+      it "updates a stopped monitor" do
+        controller.stop(@monitor_id)
+        update_options = {every: "10m", via: ["twitter_notifier"]}
+        put '/monitors/' + @monitor_id, update_options.to_json, {'CONTENT_TYPE'=>'application/json'}
+        last_response.should be_ok
+        controller.get(@monitor_id)[:status_].should == "stopped"
+      end
+      it "cannot update a monitor with bad data" do
+        put '/monitors/' + @monitor_id, "bad data", {'CONTENT_TYPE'=>'application/json'}
+        last_response.status.should == 500
+      end
+      it "cannot update a monitor that doesn't exist" do
+        update_options = {every: "5m", via: ["twitter_notifier"]}
+        put '/monitors/' + "not_found", update_options.to_json, {'CONTENT_TYPE'=>'application/json'}
+        last_response.status.should == 404
+      end
     end
     after(:each) do
       controller.delete(@monitor_id)

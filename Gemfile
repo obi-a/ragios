@@ -15,7 +15,7 @@ gem 'sucker_punch', '~> 1.0'
 gem "sinatra", :require => "sinatra/base"
 gem "json_pure", :require => "json/pure"
 gem "thin"
-gem 'leanback', '~> 0.5.0'
+gem 'leanback', '~> 0.5.1'
 gem "uuidtools"
 gem "thor"
 gem "ragios-client", '~> 0.0.4'

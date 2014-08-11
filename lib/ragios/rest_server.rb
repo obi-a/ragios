@@ -75,10 +75,10 @@ class App < Sinatra::Base
   put  '/monitors/:id*', :check => :valid_token? do
     try_request do
       pass unless request.media_type == 'application/json'
-      data = generate_json(request.body.read)
+      data = parse_json(request.body.read)
       monitor_id = params[:id]
-      updated_monitor = controller.update(monitor_id,data)
-      parse_json(updated_monitor)
+      controller.update(monitor_id,data)
+      generate_json(ok: true)
     end
   end
 
@@ -88,7 +88,7 @@ class App < Sinatra::Base
     monitor_id = params[:id]
     try_request do
       controller.stop(monitor_id)
-      parse_json(ok: true)
+      generate_json(ok: true)
     end
   end
 
@@ -98,7 +98,7 @@ class App < Sinatra::Base
     try_request do
       monitor_id = params[:id]
       controller.restart(monitor_id)
-      parse_json(ok: true)
+      generate_json(ok: true)
     end
   end
 

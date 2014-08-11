@@ -27,7 +27,7 @@ GEM
       mime (>= 0.1)
     i18n (0.4.1)
     json_pure (1.8.1)
-    leanback (0.5.0)
+    leanback (0.5.1)
       activesupport
       json_pure
       rest-client
@@ -118,7 +118,7 @@ DEPENDENCIES
   gmail
   i18n
   json_pure
-  leanback (~> 0.5.0)
+  leanback (~> 0.5.1)
   pony
   pry
   rack-test
