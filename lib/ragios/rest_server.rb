@@ -66,8 +66,8 @@ class App < Sinatra::Base
   delete '/monitors/:id*', :check => :valid_token? do
     try_request do
       monitor_id = params[:id]
-      hash = controller.delete(monitor_id)
-      generate_json(hash)
+      controller.delete(monitor_id)
+      generate_json(ok: true)
     end
   end
 
