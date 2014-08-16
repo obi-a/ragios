@@ -35,7 +35,7 @@ module Ragios
     def self.update(monitor_id, options)
       try_monitor(monitor_id) do
         message = "Cannot edit system settings"
-        unless options.keys.to_set.disjoint? [:type, :status_, :created_at_, :creation_timestamp_].to_set
+        if options.keys.any? { |key| [:type, :status_, :created_at_, :creation_timestamp_].include?(key) }
           raise Ragios::CannotEditSystemSettings.new(error: message), message
         end
         model.update(monitor_id, options)
