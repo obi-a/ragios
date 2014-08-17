@@ -3,17 +3,18 @@
 Ragios can be used to monitor any type of system including websites, servers, system services and web applications.
 
 Sample usage to monitor a website for uptime in Ruby code:
-<pre lang="ruby">
-  monitor = {monitor: "My Website",
-               url: "http://mysite.com",
-               every: "5m",
-               contact: "admin@mail.com",
-               via: "email_notifier",
-               plugin: "uptime_monitor"
-             }
+```ruby
+monitor = {
+  monitor: "My Website",
+  url: "http://mysite.com",
+  every: "5m",
+  contact: "admin@mail.com",
+  via: "email_notifier",
+  plugin: "uptime_monitor"
+}
 
- ragios.add [monitor]
-</pre>
+ragios.add(monitor)
+```
 The above example adds a monitor to Ragios, the monitor uses an "uptime_monitor" plugin to monitor the website "http://mysite.com" for uptime. This monitor runs tests on the website every 5 minutes, if it detects the website is down, it sends an  alert email to "admin@mail.com" via an email notifier.
 
 ##Features:
@@ -25,7 +26,6 @@ A small and minimal extensible design:
 
 * Notifications & Notifiers
   + Notifications are sent out when a test fails and when the test passes again.
-  + Failure tolerance is available to set how many consecutive failures is acceptable before a notification is sent out.
   + Notification messages are generated from ERB templates which developers can easily customize.
   + Multiple email addresses could be added to a monitor, so that when a test fails it notifies all the email addresses simultaneously.
   + Ragios relies on Notifiers to send out notifications. The notifiers are pluggable plain old ruby objects. Any type of notification that could be implemented in Ruby code can be sent by Ragios, notifications by email, SMS, twitter etc. Developers can create notifiers to meet their specific needs.
