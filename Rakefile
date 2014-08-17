@@ -1,14 +1,3 @@
- task :create_db_admin do
-    require 'leanback'
-    hash = Couchdb.login("current_admin_username","current_admin_password")
-    auth_session =  hash["AuthSession"]
-
-    data = {:section => "admins",
-              :key => "ragios_server",
-                :value => "ragios"}
-    Couchdb.set_config data,auth_session
- end
-
 task :console do
   ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios'))
   config = ragios_dir + '/config'
@@ -37,16 +26,16 @@ task :integration do
   sh 'rspec -fs spec/integration'
 end
 
-task :security do
-  sh 'rspec -fs spec/security'
+task :test_ragios do
+  sh 'rspec -fs spec/unit_tests'
+  sh 'rspec -fs spec/integration'
 end
 
 task :c => :console
-task :test_security => :security
 task :test_notifiers => :notifiers
 task :test_plugins => :plugins
 task :test_unit => :unit
 task :test_integration => :integration
 
-task :test => :integration
-task :default => :integration
+task :test => :test_ragios
+task :default => :test_ragios

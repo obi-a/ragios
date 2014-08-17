@@ -12,4 +12,4 @@ matrix:
 services:
   - couchdb
 
-script: bundle exec rspec -fd spec/unit_tests/
+script: bundle exec rake test_ragios
