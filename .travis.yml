@@ -2,7 +2,12 @@ language: ruby
 rvm:
   - 2.1.1
   - 1.9.3
-  #- jruby-19mode # JRuby in 1.9 mode
+  - rbx
+  - jruby-19mode # JRuby in 1.9 mode
+
+matrix:
+  allow_failures:
+    - rvm: jruby-19mode # JRuby in 1.9 mode
 
 services:
   - couchdb
