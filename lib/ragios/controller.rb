@@ -35,7 +35,7 @@ module Ragios
     def self.update(monitor_id, options)
       try_monitor(monitor_id) do
         message = "Cannot edit system settings"
-        if options.keys.any? { |key| [:type, :status_, :created_at_, :creation_timestamp_].include?(key) }
+        if options.keys.any? { |key| [:type, :status_, :created_at_, :creation_timestamp_, :current_state_].include?(key) }
           raise Ragios::CannotEditSystemSettings.new(error: message), message
         end
         model.update(monitor_id, options)
@@ -49,10 +49,12 @@ module Ragios
       end
     end
 
-    Contract Monitor_id => Monitor
-    def self.get(monitor_id)
+    Contract Monitor_id, Bool => Monitor
+    def self.get(monitor_id, include_current_state = false)
       try_monitor(monitor_id) do
-        model.find(monitor_id)
+        monitor = model.find(monitor_id)
+        monitor[:current_state_] = get_current_state(monitor_id) if include_current_state
+        return monitor
       end
     end
 
@@ -98,7 +100,7 @@ module Ragios
       end
     end
 
-    Contract Monitor_id => Or[nil, Hash]
+    Contract Monitor_id => Hash
     def self.get_current_state(monitor_id)
       model.get_monitor_state(monitor_id)
     end

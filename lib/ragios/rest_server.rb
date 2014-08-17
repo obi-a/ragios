@@ -106,7 +106,7 @@ class App < Sinatra::Base
   get '/monitors/:id*', :check => :valid_token? do
     try_request do
       monitor_id = params[:id]
-      monitor = controller.get(monitor_id)
+      monitor = controller.get(monitor_id, include_current_state = true)
       generate_json(monitor)
     end
   end

@@ -108,6 +108,7 @@ describe "Ragios REST API" do
         get '/monitors/' + @monitor_id
         last_response.should be_ok
         parse_json(last_response.body).should include(@monitor)
+        parse_json(last_response.body)[:current_state_].should == {}
       end
       it "returns a 404 status when monitor is not found" do
         get '/monitors/' + "not_found"

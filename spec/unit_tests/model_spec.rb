@@ -95,7 +95,7 @@ describe "Ragios::Database::Model" do
     end
     describe "#get_monitor_state" do
       it "returns nil when monitor has no test_result" do
-        @model.get_monitor_state("no_test_result").should == nil
+        @model.get_monitor_state("no_test_result").should == {}
       end
       it "returns monitors current state" do
         for count in 1..5 do

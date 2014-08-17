@@ -63,7 +63,7 @@ module Ragios
             include_docs: true,
             descending: true)
         end
-        results[:rows].blank? ? nil : results[:rows].first[:doc]
+        results[:rows].blank? ? {} : results[:rows].first[:doc]
       end
     private
       def dynamic_view(design_doc_name, design_doc)

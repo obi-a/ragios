@@ -198,7 +198,7 @@ describe Ragios::Controller do
       monitor_id = controller.add(monitor)[:_id]
       #setup ends
 
-      [:type, :status_, :created_at_, :creation_timestamp_].each do |e|
+      [:type, :status_, :created_at_, :creation_timestamp_, :current_state_].each do |e|
         update_data = {every: "1h", monitor: "New name", e => "something"}
         expect { controller.update(monitor_id, update_data) }.to raise_error Ragios::CannotEditSystemSettings
       end
@@ -336,17 +336,23 @@ describe Ragios::Controller do
   end
   describe "#get" do
     it "returns a monitor by id" do
-     monitor = {
-      monitor: "Something",
-      every: "5m",
-      via: "mock_notifier",
-      plugin: "passing_plugin"
-    }
+      monitor = {
+        monitor: "Something",
+        every: "5m",
+        via: "mock_notifier",
+        plugin: "passing_plugin"
+      }
 
-     monitor_id = controller.add(monitor)[:_id]
+      monitor_id = controller.add(monitor)[:_id]
 
-     returned_monitor = controller.get(monitor_id)
-     returned_monitor[:_id].should == monitor_id
+      returned_monitor = controller.get(monitor_id)
+      #current_state is not included in the monitor
+      returned_monitor[:current_state_].should == nil
+      returned_monitor[:_id].should == monitor_id
+
+      #current state is included in monitor
+      returned_monitor = controller.get(monitor_id, include_current_state = true)
+      returned_monitor[:current_state_].should == {}
 
      controller.delete(monitor_id)
     end
@@ -508,7 +514,7 @@ describe Ragios::Controller do
       controller.delete(monitor_id)
     end
     it "returns nil when monitor doesn't have a any state stored in the database" do
-      controller.get_current_state("dont_exist").should == nil
+      controller.get_current_state("dont_exist").should == {}
     end
   end
   after(:all) do
