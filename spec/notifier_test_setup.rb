@@ -1,3 +1,5 @@
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'initializers/init_notifiers.rb'))
+
 module Ragios
   module Plugin
     class PassingPlugin
@@ -39,7 +41,7 @@ module Ragios
       }
 
       #test should fail and send a FAILED notification message
-      monitor_id = controller.add([failing_monitor]).first.id
+      monitor_id = controller.add(failing_monitor)[:_id]
 
       #controller.update automatically restarts and tests monitor
       #test should pass this time and send a PASSED notification message

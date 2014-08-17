@@ -1,7 +1,7 @@
 require 'spec_base.rb'
 
 #testing a https url
-https_url = { url: 'https://github.com/obi-a/Ragios'}
+https_url = { url: 'https://www.google.com/'}
 
 #testing a regular url
 regular_url =  { url: 'http://www.google.com'}
@@ -28,6 +28,7 @@ describe Ragios::Plugin::UrlMonitor do
   it "should send a https GET request to the url and pass" do
     https_url_plugin = Ragios::Plugin::UrlMonitor.new
     https_url_plugin.init(https_url)
+
     https_url_plugin.test_command?.should == true
   end
 
