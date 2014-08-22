@@ -28,6 +28,16 @@ module Ragios
   end
 end
 
+database_admin = {
+  username: ENV['COUCHDB_ADMIN_USERNAME'],
+  password: ENV['COUCHDB_ADMIN_PASSWORD'],
+  database: "ragios_test_notifiers_database",
+  address: 'http://localhost',
+  port: '5984'
+}
+Ragios::CouchdbAdmin.config(database_admin)
+Ragios::CouchdbAdmin.setup_database
+
 module Ragios
   module NotifierTest
     def self.failed_resolved(monitor, notifier)
@@ -42,12 +52,12 @@ module Ragios
 
       #test should fail and send a FAILED notification message
       monitor_id = controller.add(failing_monitor)[:_id]
-
+      sleep 1
       #controller.update automatically restarts and tests monitor
       #test should pass this time and send a PASSED notification message
       controller.update(monitor_id, plugin: "passing_plugin")
-      controller.delete(monitor_id)
       sleep 1 #delay for background processing to complete
+      controller.delete(monitor_id)
     end
   end
 end

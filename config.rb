@@ -4,7 +4,7 @@ require dir + 'lib/ragios'
 ragios_admin_user = {
   username: ENV['RAGIOS_ADMIN_USERNAME'],
   password: ENV['RAGIOS_ADMIN_PASSWORD'],
-  authentication: true,
+  authentication: false,
   auth_timeout: 900
 }
 

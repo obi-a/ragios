@@ -94,7 +94,7 @@ module Ragios
       monitors = model.active_monitors
       unless monitors.empty?
         monitors.each do |monitor|
-          updated_generic_monitor = update_previous_state(monitor)
+          updated_generic_monitor = update_previous_state(monitor) rescue next
           add_to_scheduler(updated_generic_monitor)
         end
       end
