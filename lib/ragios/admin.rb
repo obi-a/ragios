@@ -16,6 +16,10 @@ module Ragios
       (username == @username) && (password == @password)
     end
 
+    def self.database
+      @database ||= Ragios::CouchdbAdmin.get_database
+    end
+
     def self.valid_token?(token)
       return true unless @authentication
       return false if token.blank?
@@ -40,7 +44,7 @@ module Ragios
 
     def self.session
       auth_session_token = UUIDTools::UUID.random_create.to_s
-      @database.create_doc(
+      database.create_doc(
         auth_session_token,
         auth_timeout: @auth_timeout,
         timestamp: Time.now.to_i,
