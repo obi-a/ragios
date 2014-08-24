@@ -53,7 +53,15 @@ module Ragios
     def self.get(monitor_id, include_current_state = false)
       try_monitor(monitor_id) do
         monitor = model.find(monitor_id)
-        monitor[:current_state_] = get_current_state(monitor_id) if include_current_state
+        if include_current_state
+          current_state = get_current_state(monitor_id)
+          monitor[:current_state_] =  {
+            state: current_state[:state],
+            test_result: current_state[:test_result],
+            time_of_test: current_state[:time_of_test],
+            timestamp_of_test: current_state[:timestamp_of_test]
+          }
+        end
         return monitor
       end
     end
