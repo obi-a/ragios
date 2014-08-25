@@ -48,7 +48,8 @@ module Ragios
         auth_session_token,
         auth_timeout: @auth_timeout,
         timestamp: Time.now.to_i,
-        type: "auth_session"
+        type: "auth_session",
+        created_at: Time.now
       )
       return auth_session_token
     end

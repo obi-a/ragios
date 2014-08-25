@@ -48,8 +48,6 @@ I'm doing this just for fun and educational purposes.
 
    + [Installation](http://www.whisperservers.com/ragios/ragios-saint-ruby/installation/)
 
-   + [Setup](http://www.whisperservers.com/ragios/setup/)
-
    + [Start/Stop the server](http://www.whisperservers.com/ragios/running-ragios/)
 
    + [Using Ragios](http://www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)
@@ -59,6 +57,8 @@ I'm doing this just for fun and educational purposes.
    + [Creating Notifiers](http://www.whisperservers.com/ragios/notifiers/)
 
    + [Creating Plugins](http://www.whisperservers.com/ragios/plugins/)
+
+   + [Authentication](http://www.whisperservers.com/ragios/authentication/)
 
    + [REST API](http://www.whisperservers.com/ragios/ragios-rest-api/)
 
