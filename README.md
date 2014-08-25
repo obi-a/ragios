@@ -1,5 +1,7 @@
 ###Ragios (Saint Ruby)
 
+[![Build Status](https://travis-ci.org/obi-a/ragios.svg?branch=master)](https://travis-ci.org/obi-a/ragios)
+
 Ragios can be used to monitor any type of system including websites, servers, system services and web applications.
 
 Sample usage to monitor a website for uptime in Ruby code:

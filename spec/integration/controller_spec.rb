@@ -352,7 +352,7 @@ describe Ragios::Controller do
 
       #current state is included in monitor
       returned_monitor = controller.get(monitor_id, include_current_state = true)
-      returned_monitor[:current_state_].should == {}
+      returned_monitor[:current_state_].should == {state: nil, test_result: nil, time_of_test: nil, timestamp_of_test: nil}
 
      controller.delete(monitor_id)
     end
