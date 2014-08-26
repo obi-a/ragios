@@ -5,7 +5,7 @@ class RagiosCLI < Thor
 
   desc "console", "Open Ragios Interactive Shell"
   def console
-  	ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios'))
+  	ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'ragios'))
     config = ragios_dir + '/config'
     irb = "bundle exec pry -r #{config}"
     exec(irb)
