@@ -45,7 +45,7 @@ module Ragios
         @database.where(hash_with_type)
       end
 
-      Contract Doc_id => Or[nil, Hash]
+      Contract Doc_id => Hash
       def get_monitor_state(id)
         design_doc = {
          language: 'javascript',

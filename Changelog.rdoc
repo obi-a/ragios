@@ -1,5 +1,23 @@
 ==Ragios v0.6.1
-...
+* Complete code refactor to improve performance and maintenability
+* Slight API change monitors are now added to Ragios individually as a single JSON object or ruby hash. Monitors are no longer added in an array of multiple monitors.
+Example:
+  monitor = {
+    monitor: "My Website",
+    url: "http://mysite.com",
+    every: "5m",
+    contact: "admin@mail.com",
+    via: "email_notifier",
+    plugin: "uptime_monitor"
+  }
+
+  ragios.add(monitor)
+Add now takes a single monitor hash not an array.
+
+* By default Ragios can now run with no authentication for Ragios server and CouchDB. To use authentication it has to be enabled. This makes it easy to get started using Ragios with no configuration required and easier to test the system.
+* Ragios now stores all data in a single CouchDB database called ragios_database by default, this can be set to a different database from the config.rb file in the root directory.
+* The result of every test performed by monitors is stored as a time series in the database, this means that the performance of a monitor can be tracked and plotted over a date range.
+* All notifications are stored in the database
 
 ==Ragios v0.6.0
 
