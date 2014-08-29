@@ -14,7 +14,8 @@ gem 'state_machine'
 gem 'sucker_punch', '~> 1.0'
 gem "sinatra", :require => "sinatra/base"
 gem "json_pure", :require => "json/pure"
-gem "thin"
+gem "puma"
+#gem "thin"
 gem 'leanback', '~> 0.5.1'
 gem "uuidtools"
 gem "thor"
