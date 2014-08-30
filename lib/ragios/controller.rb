@@ -125,6 +125,10 @@ module Ragios
     def self.perform(this_generic_monitor)
       this_generic_monitor.test_command?
       log_results(this_generic_monitor)
+    rescue Leanback::CouchdbException => e
+      raise e
+    rescue Exception => e
+      log_error(this_generic_monitor, e)
     end
 
     def self.failed(monitor, test_result, notifier)
@@ -186,6 +190,26 @@ module Ragios
         created_at: Time.now
       }
       model.save(unique_id, test_result)
+    end
+
+    def self.log_error(this_generic_monitor, exception)
+      test_result = {
+        monitor_id: this_generic_monitor.id,
+        state: "error",
+        test_result: {error: exception.message},
+        time_of_test: Time.now,
+        timestamp_of_test: Time.now.to_i,
+        monitor: this_generic_monitor.options,
+        tag: this_generic_monitor.options[:tag],
+        type: "test_result",
+        created_at: Time.now
+      }
+      model.save(unique_id, test_result)
+
+      $stderr.puts '-' * 80
+      $stderr.puts exception.message
+      $stderr.puts exception.backtrace.join("\n")
+      $stderr.puts '-' * 80
     end
 
     def self.generic_monitor(monitor)

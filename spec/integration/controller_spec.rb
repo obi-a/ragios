@@ -45,6 +45,19 @@ module Ragios
 end
 
 module Ragios
+  module Plugin
+    class ExceptionalPlugin
+      attr_accessor :test_result
+      def init(options)
+      end
+      def test_command?
+        raise "something went wrong"
+      end
+    end
+  end
+end
+
+module Ragios
   module Notifier
     class FirstNotifier
       def initialize(monitor)
@@ -333,6 +346,22 @@ describe Ragios::Controller do
     it "raises an exception when the monitor doesnt exist" do
       expect { controller.test_now("dont_exist") }.to raise_error Ragios::MonitorNotFound
     end
+    it "rescues exceptions from monitor's test_command and logs it" do
+      exceptional_monitor = {
+        monitor: "Something",
+        every: "5m",
+        via: "mock_notifier",
+        plugin: "exceptional_plugin"
+      }
+      monitor_id = controller.add(exceptional_monitor)[:_id]
+      controller.stop(monitor_id)
+
+      controller.test_now(monitor_id)
+      sleep 1
+      @database.where(monitor_id: monitor_id, type: "test_result", state: "error").count.should_not == 0
+
+      controller.delete(monitor_id)
+    end
   end
   describe "#get" do
     it "returns a monitor by id" do
@@ -352,7 +381,7 @@ describe Ragios::Controller do
 
       #current state is included in monitor
       returned_monitor = controller.get(monitor_id, include_current_state = true)
-      returned_monitor[:current_state_].should == {state: nil, test_result: nil, time_of_test: nil, timestamp_of_test: nil}
+      returned_monitor[:current_state_].should_not == nil
 
      controller.delete(monitor_id)
     end
@@ -413,7 +442,6 @@ describe Ragios::Controller do
     describe "#get_all" do
       it "fetches all monitors" do
         all_monitors = controller.get_all
-        all_monitors.count.should == 2
         [all_monitors[0][:_id], all_monitors[1][:_id]].should include(@first_monitor, @second_monitor)
       end
     end
@@ -427,7 +455,7 @@ describe Ragios::Controller do
         @database.edit_doc!(@first_monitor, status)
         @database.edit_doc!(@second_monitor, status)
 
-        controller.restart_all_active.count.should == 2
+        controller.restart_all_active
 
         controller.scheduler.find(@first_monitor).first.tags.first.should == @first_monitor
         controller.scheduler.find(@second_monitor).first.tags.first.should == @second_monitor
