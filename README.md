@@ -34,7 +34,7 @@ A small and minimal extensible design:
   + Ragios ships with a Gmail Notifier that sends notifications via gmail, Amazon SES notifier that sends notifications via Amazon Simple Email Service, and a twitter notifier that tweets notifications on twitter.
   + Multiple notifiers could be added to one monitor, so when a test fails it could send out  notifications via all the notifiers simultaneously. Example a monitor could be setup to send notifications via email, SMS and twitter simultaneously.
 
-* REST API is available for interacting with Ragios via REST and JSON.
+* REST API is available for interacting with Ragios.
 
 * Ragios includes a Ruby client library that makes it easy to interact with Ragios directly with ruby code.
 
