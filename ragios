@@ -13,10 +13,18 @@ class RagiosCLI < Thor
 
   desc "server start | restart | stop", "Run Ragios Server"
   def server(option=nil)
-    exec('bundle exec thin start -R config.ru  -C server.yml') if option == 'start'
-    exec('bundle exec thin restart -R config.ru  -C server.yml') if option == 'restart'
-    exec('bundle exec thin stop -R config.ru  -C server.yml') if option == 'stop'
-    puts "Usage: ragios server start | restart | stop"
+    exec('bundle exec pumactl -F server.rb start') if option == 'start'
+    exec('bundle exec pumactl -F server.rb restart') if option == 'restart'
+    if option == 'stop'
+      puts "Stopping Ragios..."
+      exec('bundle exec pumactl -F server.rb stop')
+    end
+    if option == 'phased-restart'
+      puts "Ragios phased-restart in progress..."
+      exec('bundle exec pumactl -F server.rb phased-restart -p tmp/pids/puma.pid')
+    end
+
+    puts "Usage: ragios server start | stop | restart | phased-restart"
   end
 
 end
