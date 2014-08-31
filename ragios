@@ -14,7 +14,10 @@ class RagiosCLI < Thor
   desc "server start | restart | stop", "Run Ragios Server"
   def server(option=nil)
     exec('bundle exec pumactl -F server.rb start') if option == 'start'
-    exec('bundle exec pumactl -F server.rb restart') if option == 'restart'
+    if option == 'restart'
+      puts "Restarting Ragios..."
+      exec('bundle exec pumactl -F server.rb restart')
+    end
     if option == 'stop'
       puts "Stopping Ragios..."
       exec('bundle exec pumactl -F server.rb stop')

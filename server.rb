@@ -102,7 +102,7 @@ bind 'tcp://127.0.0.1:5041'
 #
 # The default is “0”.
 #
-workers 2
+workers 1
 
 # Code to run when a worker boots to setup the process before booting
 # the app.
