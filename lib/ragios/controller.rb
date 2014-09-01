@@ -126,8 +126,11 @@ module Ragios
       this_generic_monitor.test_command?
       log_results(this_generic_monitor)
     rescue Leanback::CouchdbException => e
+      stop_on_error(this_generic_monitor.id, this_generic_monitor.options)
       raise e
     rescue Exception => e
+
+      stop_on_error(this_generic_monitor.id, this_generic_monitor.options)
       log_error(this_generic_monitor, e)
     end
 
@@ -143,7 +146,9 @@ module Ragios
     def self.update_previous_state(monitor)
       monitor_id = monitor[:_id]
       this_generic_monitor = generic_monitor(monitor)
-      this_generic_monitor.state = get_current_state(monitor_id)[:state] if get_current_state(monitor_id)
+      if get_current_state(monitor_id) && get_current_state(monitor_id)[:state]
+        this_generic_monitor.state = get_current_state(monitor_id)[:state].to_sym
+      end
       return this_generic_monitor
     end
 
@@ -210,6 +215,14 @@ module Ragios
       $stderr.puts exception.message
       $stderr.puts exception.backtrace.join("\n")
       $stderr.puts '-' * 80
+    end
+
+    def self.stop_on_error(monitor_id, monitor_options)
+      $stderr.puts '-' * 80
+      $stderr.puts "Stopping  #{monitor_id} due to error."
+      $stderr.puts "Fix monitor and restart: #{monitor_options.inspect}"
+      $stderr.puts '-' * 80
+      stop(monitor_id)
     end
 
     def self.generic_monitor(monitor)

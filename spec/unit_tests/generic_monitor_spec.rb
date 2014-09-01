@@ -76,11 +76,11 @@ describe Ragios::GenericMonitor do
       via: "test_notifier",
       plugin: "passing_plugin"
     }
-   generic_monitor = Ragios::GenericMonitor.new(options)
-   generic_monitor.test_command?.should == true
-   generic_monitor.test_result.should == :test_passed
-   generic_monitor.state.should == "passed"
-   generic_monitor.passed?.should == true
+    generic_monitor = Ragios::GenericMonitor.new(options)
+    generic_monitor.test_command?.should == true
+    generic_monitor.test_result.should == :test_passed
+    generic_monitor.state.should == "passed"
+    generic_monitor.passed?.should == true
   end
 
   it "should fail the test" do

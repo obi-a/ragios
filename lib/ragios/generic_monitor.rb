@@ -23,6 +23,8 @@ module Ragios
       event :failure do
         transition :passed => :failed, :pending => :failed
       end
+
+      state :error
     end
     def initialize(options)
       @options = options
@@ -38,11 +40,15 @@ module Ragios
       result = @plugin.test_command?
       raise Ragios::PluginTestResultNotFound.new(error: "No test_result found for #{@plugin.class} plugin"), "No test_result found for #{@plugin.class} plugin" unless defined?(@plugin.test_result)
       @test_result = @plugin.test_result
-      result ? fire_state_event(:success) : fire_state_event(:failure)
+      boolean(result) ? fire_state_event(:success) : fire_state_event(:failure)
       return result
     end
 
 private
+    def boolean(value)
+      !!value
+    end
+
     def has_failed
       @notifiers.each do |notifier|
         NotifyJob.new.async.failed(@options, @test_result, notifier)

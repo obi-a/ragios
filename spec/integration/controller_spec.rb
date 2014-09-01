@@ -346,7 +346,7 @@ describe Ragios::Controller do
     it "raises an exception when the monitor doesnt exist" do
       expect { controller.test_now("dont_exist") }.to raise_error Ragios::MonitorNotFound
     end
-    it "rescues exceptions from monitor's test_command and logs it" do
+    it "rescues exceptions from monitor's test_command, stop the monitor and logs exceptions backtrace" do
       exceptional_monitor = {
         monitor: "Something",
         every: "5m",
@@ -359,6 +359,9 @@ describe Ragios::Controller do
       controller.test_now(monitor_id)
       sleep 1
       @database.where(monitor_id: monitor_id, type: "test_result", state: "error").count.should_not == 0
+
+      #the monitor is also stopped after an error
+      controller.get(monitor_id)[:status_].should == "stopped"
 
       controller.delete(monitor_id)
     end
