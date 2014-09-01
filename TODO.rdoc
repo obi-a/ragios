@@ -1,11 +1,13 @@
 ==TODO
 
+
+=Goals for versions 0.6.2
+* Add a web UI admin dashboard for Ragios.
+
+
 * write about directly testing a plugin by calling generic_monitor
  generic_monitor = Ragios::GenericMonitor.new monitor
  generic_monitor.test_command?
-
-=Goals for versions 0.6.0
-* Add a web UI admin dashboard for using Ragios Server.
 
 ===Nice to have
 * Document the feature: Grouping monitors by tag
@@ -15,8 +17,6 @@
 *Ragios URL plugin should allow users to set the timeout
 
 *Ragios URL plugin should allow users to set the type of http request they choose either a GET or POST and include body  data for a POST
-
-
 
 =Goals for versions 0.5.2
 

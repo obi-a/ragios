@@ -1,4 +1,10 @@
 ==Ragios v0.6.1
+08-31-2014
+* Switched from Thin web server to Puma
+* When a monitor's code raises an exception the monitor goes into an error state, the monitor is stopped and the backtrace of the exception with monitor's info is written to the log. The prevents Ragios from continously running a defective monitor.
+
+
+08-25-2014
 * Complete code refactor to improve performance and maintenability
 * Slight API change monitors are now added to Ragios individually as a single JSON object or ruby hash. Monitors are no longer added in an array of multiple monitors.
 Example:
