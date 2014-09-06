@@ -1,0 +1,53 @@
+<h2><%=@monitor[:monitor] %></h2>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>field</th>
+            <th>value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @monitor.each do |key, value| %>
+            <tr>
+                <td><%= key %></td>
+                <td><%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<h4>Current State</h4>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>field</th>
+            <th>value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @current_state.each do |key, value| %>
+            <tr>
+                <td><%= key %></td>
+                <td><%= value %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<h4>Latest Result</h4>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>field</th>
+            <th>value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @test_result.each do |key, value| %>
+            <tr>
+                <td><%= key %></td>
+                <td><%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>

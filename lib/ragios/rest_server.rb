@@ -118,6 +118,26 @@ class App < Sinatra::Base
     end
   end
 
+
+  get '/admin/index' do
+    @monitors = controller.get_all
+    content_type('text/html')
+    erb :index
+  end
+
+  get '/admin/monitors/:id*' do
+    @monitor = controller.get(params[:id])
+    test_result = controller.get_current_state(params[:id])
+    @current_state = {
+      state: test_result[:state],
+      time_of_test: test_result[:time_of_test],
+      timestamp_of_test: test_result[:timestamp_of_test]
+    }
+    @test_result = test_result[:test_result]
+    content_type('text/html')
+    erb :monitor
+  end
+
   get '/*' do
     status 400
     bad_request
