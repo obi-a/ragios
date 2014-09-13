@@ -15,9 +15,14 @@
   </head>
   <body>
       <div class="container">
-        <h1>Ragios Monitors</h1>
+        <h1><a href="/admin/index">Ragios Monitors</a></h1>
         <p>A tiny, nimble and hackable system monitoring framework </p>
-          <%= yield %>
+        <% unless @login_page %>
+          <p>
+              <a href="/admin/logout">logout</a>
+          </p>
+        <% end %>
+            <%= yield %>
       </div>
   </body>
 </html>

@@ -28,10 +28,10 @@ class App < Sinatra::Base
 
   post '/session*' do
     if Ragios::Admin.authenticate?(params[:username],params[:password])
-     generate_json(AuthSession: Ragios::Admin.session)
+      generate_json(AuthSession: Ragios::Admin.session)
     else
-     status 401
-     generate_json(error: "You are not authorized to access this resource")
+      status 401
+      generate_json(error: "You are not authorized to access this resource")
     end
   end
 
@@ -118,14 +118,13 @@ class App < Sinatra::Base
     end
   end
 
-
-  get '/admin/index' do
+  get '/admin/index', :check => :valid_token? do
     @monitors = controller.get_all
     content_type('text/html')
     erb :index
   end
 
-  get '/admin/monitors/:id*' do
+  get '/admin/monitors/:id*', :check => :valid_token? do
     @monitor = controller.get(params[:id])
     test_result = controller.get_current_state(params[:id])
     @current_state = {
@@ -136,6 +135,33 @@ class App < Sinatra::Base
     @test_result = test_result[:test_result]
     content_type('text/html')
     erb :monitor
+  end
+
+  get '/admin/login' do
+    @login_page = true
+    content_type('text/html')
+    erb :login
+  end
+
+  post '/admin_session*' do
+    @login_page = true
+    if Ragios::Admin.authenticate?(params[:username], params[:password])
+      response.set_cookie "AuthSession", Ragios::Admin.session
+      session[:authenticated] = true
+      redirect '/admin/index'
+    else
+      @error = "You are not authorized to access this resource"
+      content_type('text/html')
+      erb :login
+    end
+  end
+
+  get '/admin/logout' do
+    token = request.cookies['AuthSession']
+    response.delete_cookie "AuthSession"
+    session.clear
+    Ragios::Admin.invalidate_token(token)
+    redirect '/admin/login'
   end
 
   get '/*' do

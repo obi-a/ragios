@@ -23,13 +23,13 @@ module Ragios
     def self.valid_token?(token)
       return true unless @authentication
       return false if token.blank?
-      auth_session = @database.get_doc(token)
+      auth_session = database.get_doc(token)
       time_elapsed = (Time.now.to_f - Time.at(auth_session[:timestamp]).to_f).to_i
       is_valid_token =
       if auth_session[:auth_timeout].to_i > time_elapsed
         true
       else
-        @database.delete_doc!(token)
+        database.delete_doc!(token)
         false
       end
     rescue Leanback::CouchdbException
@@ -37,7 +37,7 @@ module Ragios
     end
 
     def self.invalidate_token(token)
-      @database.delete_doc!(token)
+      database.delete_doc!(token)
     rescue Leanback::CouchdbException
       false
     end
