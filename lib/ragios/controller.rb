@@ -67,8 +67,8 @@ module Ragios
     end
 
     Contract None => ArrayOf[Monitor]
-    def self.get_all
-      model.all_monitors
+    def self.get_all(take = nil, start_from_doc = nil)
+      model.all_monitors(take, start_from_doc)
     end
 
     Contract Monitor_id => Bool

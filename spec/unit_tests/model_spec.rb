@@ -58,6 +58,7 @@ describe "Ragios::Database::Model" do
             every:  "#{count}m",
             type: "monitor",
             status_: "stopped",
+            created_at_: Time.now
           }
           @database.create_doc "monitor_#{count}", monitor
 
@@ -66,14 +67,16 @@ describe "Ragios::Database::Model" do
             every:  "3m",
             type: "monitor",
             status_: "active",
+            created_at_: Time.now
           }
         end
         @database.create_doc "monitor_3", other_monitor
       end
       describe "#all_monitors" do
         it "returns all monitors" do
-          @model.all_monitors.first.should include(_id: "monitor_1")
-          @model.all_monitors.last.should include(_id: "monitor_3")
+          #all_monitors results are ordered by document_date monitor[:created_at_]
+          @model.all_monitors.first.should include(_id: "monitor_3")
+          @model.all_monitors.last.should include(_id: "monitor_1")
         end
       end
       describe "#monitors_where" do
