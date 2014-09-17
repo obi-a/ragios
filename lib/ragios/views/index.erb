@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th>id</th>
+            <th>Created at</th>
             <th>monitor</th>
             <th>every</th>
             <th>via</th>
@@ -14,6 +15,7 @@
             <tr>
                 <% id = monitor[:_id] %>
                 <td><a href="/admin/monitors/<%= id%>"><%= "#{id[0...8]}..."%></a></td>
+                <td><%= DateTime.parse(monitor[:created_at_]).strftime("%H:%M %m/%d/%Y") %></td>
                 <td><%= monitor[:monitor] %></td>
                 <td><%= monitor[:every] %></td>
                 <td><%= monitor[:via].join(", ") %></td>

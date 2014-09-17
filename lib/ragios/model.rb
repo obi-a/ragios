@@ -54,7 +54,7 @@ module Ragios
         results[:rows].blank? ? {} : results[:rows].first[:doc]
       end
 
-      def get_results_by_state(monitor_id, state, take = nil, start_from_doc = nil)
+      def results_by_state(monitor_id, state, take = nil, start_from_doc = nil)
         script = design_doc_script('function(doc){ if(doc.type == "test_result" && doc.time_of_test && doc.monitor_id && doc.state) emit([doc.monitor_id, doc.state, doc.time_of_test]); }')
 
         query_options = {
@@ -67,7 +67,7 @@ module Ragios
         query("_design/results_by_state", script, query_options, take, start_from_doc)
       end
 
-      def get_notifications(monitor_id, take = nil, start_from_doc = nil)
+      def notifications(monitor_id, take = nil, start_from_doc = nil)
         script = design_doc_script('function(doc){ if(doc.type == "notification" && doc.created_at && doc.monitor_id) emit([doc.monitor_id, doc.created_at]); }')
 
         query_options = {

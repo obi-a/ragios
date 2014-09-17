@@ -71,6 +71,16 @@ module Ragios
       model.all_monitors(take, start_from_doc)
     end
 
+    Contract Hash => ArrayOf[Hash]
+    def self.get_results_by_state(options)
+      model.results_by_state(options[:id], options[:state], options[:take], options[:start_from_doc])
+    end
+
+    Contract Hash => ArrayOf[Hash]
+    def self.get_notifications(options)
+      model.notifications(options[:id], options[:take], options[:start_from_doc])
+    end
+
     Contract Monitor_id => Bool
     def self.restart(monitor_id)
       try_monitor(monitor_id) do

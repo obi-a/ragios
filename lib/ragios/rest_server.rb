@@ -132,9 +132,11 @@ class App < Sinatra::Base
       time_of_test: test_result[:time_of_test],
       timestamp_of_test: test_result[:timestamp_of_test]
     }
-    @notifications = database.where({type: "notification", monitor_id: params[:id]}, limit: 20, descending: true)
-    @results = database.where({type: "test_result", monitor_id: params[:id], state: "failed"}, limit: 20, descending: true)
-    @errors = database.where({type: "test_result", monitor_id: params[:id], state: "error"}, limit: 20, descending: true)
+
+    @notifications = controller.get_notifications(id: params[:id], take: 20)
+    @results = controller.get_results_by_state(id: params[:id], state: "failed", take: 20)
+    @errors = controller.get_results_by_state(id: params[:id], state: "error", take: 20)
+
     @test_result = test_result[:test_result]
     content_type('text/html')
     erb :monitor
@@ -188,10 +190,6 @@ class App < Sinatra::Base
   end
 
 private
-  def database
-    @database ||= Ragios::CouchdbAdmin.get_database
-  end
-
   def bad_request
     generate_json(error: "bad_request")
   end
