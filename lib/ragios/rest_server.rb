@@ -23,7 +23,7 @@ class App < Sinatra::Base
   end
 
   get '/' do
-    generate_json("Ragios Server" => "welcome")
+    redirect '/admin/index'
   end
 
   post '/session*' do
@@ -54,7 +54,7 @@ class App < Sinatra::Base
   end
 
   #get monitors that match multiple keys
-  get '/monitors*', :check => :valid_token? do
+  get '/monitors/attributes', :check => :valid_token? do
     pass if (params.keys[0] == "splat") && (params[params.keys[0]].kind_of?(Array))
     options = params
     options.delete("splat")
@@ -100,6 +100,14 @@ class App < Sinatra::Base
       controller.restart(monitor_id)
       generate_json(ok: true)
     end
+  end
+
+  get '/monitors/:id/notifications' do
+    generate_json(ok: "notifications")
+  end
+
+  get '/monitors/:id/results/:state' do
+    generate_json(ok: "results")
   end
 
   #get monitor by id
