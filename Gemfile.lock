@@ -1,6 +1,5 @@
 GEM
   remote: http://rubygems.org/
-  remote: http://gemcutter.org/
   specs:
     activesupport (3.0.1)
     atomic (1.1.16)
