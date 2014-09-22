@@ -7,135 +7,154 @@
     <button id="stop-button" type="button" class="btn btn-default">Stop</button>
     <button id="test-button" type="button" class="btn btn-default">Test</button>
 </p>
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>field</th>
-            <th>value</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% @monitor.each do |key, value| %>
-            <tr>
-                <td><%= key %></td>
-                <td id="<%= key %>"><%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %></td>
-            </tr>
-        <% end %>
-    </tbody>
-</table>
 
-<h4>Current State</h4>
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>field</th>
-            <th>value</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% @current_state.each do |key, value| %>
-            <tr>
-                <td><%= key %></td>
-                <td><%= value %></td>
-            </tr>
-        <% end %>
-    </tbody>
-</table>
-
-<h4>Current Test Result</h4>
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>field</th>
-            <th>value</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% @test_result.each do |key, value| %>
-            <tr>
-                <td><%= key %></td>
-                <td><%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %></td>
-            </tr>
-        <% end %>
-    </tbody>
-</table>
-
-<% unless @notifications.blank? %>
-    <h4>Recent Notifications</h4>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>Time</th>
-                <th>Notifier</th>
-                <th>event</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% @notifications.each do |n| %>
+<ul class="nav nav-tabs" role="tablist">
+  <li class="active"><a href="#monitor" role="tab" data-toggle="tab">Monitor</a></li>
+  <li><a href="#current-state" role="tab" data-toggle="tab">Current State</a></li>
+  <li><a href="#notifications" role="tab" data-toggle="tab">Notifications</a></li>
+  <li><a href="#failures" role="tab" data-toggle="tab">Failures</a></li>
+  <li><a href="#errors" role="tab" data-toggle="tab">Errors</a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane active" id="monitor">
+        <table class="table table-striped table-bordered">
+            <thead>
                 <tr>
-                    <td><%= n[:_id][0...8] %></td>
-                    <td><%= DateTime.parse(n[:created_at]).strftime("%H:%M %m/%d/%Y") %></td>
-                    <td><%= n[:notifier] %></td>
-                    <td><%= n[:event] %></td>
+                    <th>field</th>
+                    <th>value</th>
                 </tr>
-            <% end %>
-        </tbody>
-    </table>
-<% end%>
-
-<% unless @results.blank? %>
-    <h4>Recent Failures</h4>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>Time</th>
-                <th>State</th>
-                <th>Result</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% @results.each do |r| %>
+            </thead>
+            <tbody>
+                <% @monitor.each do |key, value| %>
+                    <tr>
+                        <td><%= key %></td>
+                        <td id="<%= key %>"><%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %></td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="current-state">
+        <h4>Current State</h4>
+        <table class="table table-striped table-bordered">
+            <thead>
                 <tr>
-                    <td><%= r[:_id][0...8] %></td>
-                    <td><%= DateTime.parse(r[:time_of_test]).strftime("%H:%M %m/%d/%Y") %></td>
-                    <td><%= r[:state] %></td>
-                    <td>
-                      <% r[:test_result].each do |key, value | %>
-                         <%= key %>, <%= value %>
-                      <% end %>
-                    </td>
+                    <th>field</th>
+                    <th>value</th>
                 </tr>
-            <% end %>
-        </tbody>
-    </table>
-<% end%>
+            </thead>
+            <tbody>
+                <% @current_state.each do |key, value| %>
+                    <tr>
+                        <td><%= key %></td>
+                        <td><%= value %></td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
 
-<% unless @errors.blank? %>
-    <h4>Recent Errors</h4>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>Time</th>
-                <th>State</th>
-                <th>Result</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% @errors.each do |r| %>
+        <h4>Current Test Result</h4>
+        <table class="table table-striped table-bordered">
+            <thead>
                 <tr>
-                    <td><%= r[:_id][0...8] %></td>
-                    <td><%= DateTime.parse(r[:time_of_test]).strftime("%H:%M %m/%d/%Y") %></td>
-                    <td><%= r[:state] %></td>
-                    <td>
-                      <% r[:test_result].each do |key, value | %>
-                         <%= key %>, <%= value %>
-                      <% end %>
-                    </td>
+                    <th>field</th>
+                    <th>value</th>
                 </tr>
-            <% end %>
-        </tbody>
-    </table>
-<% end%>
+            </thead>
+            <tbody>
+                <% @test_result.each do |key, value| %>
+                    <tr>
+                        <td><%= key %></td>
+                        <td><%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %></td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab-pane" id="notifications">
+        <% unless @notifications.blank? %>
+            <h4>Recent Notifications</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Time</th>
+                        <th>Notifier</th>
+                        <th>event</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @notifications.each do |n| %>
+                        <tr>
+                            <td><%= n[:_id][0...8] %></td>
+                            <td><%= DateTime.parse(n[:created_at]).strftime("%H:%M %m/%d/%Y") %></td>
+                            <td><%= n[:notifier] %></td>
+                            <td><%= n[:event] %></td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        <% end%>
+    </div>
+
+    <div class="tab-pane" id="failures">
+        <% unless @results.blank? %>
+            <h4>Recent Failures</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Time</th>
+                        <th>State</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @results.each do |r| %>
+                        <tr>
+                            <td><%= r[:_id][0...8] %></td>
+                            <td><%= DateTime.parse(r[:time_of_test]).strftime("%H:%M %m/%d/%Y") %></td>
+                            <td><%= r[:state] %></td>
+                            <td>
+                              <% r[:test_result].each do |key, value | %>
+                                 <%= key %>, <%= value %>
+                              <% end %>
+                            </td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        <% end%>
+    </div>
+
+    <div class="tab-pane" id="errors">
+        <% unless @errors.blank? %>
+            <h4>Recent Errors</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Time</th>
+                        <th>State</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @errors.each do |r| %>
+                        <tr>
+                            <td><%= r[:_id][0...8] %></td>
+                            <td><%= DateTime.parse(r[:time_of_test]).strftime("%H:%M %m/%d/%Y") %></td>
+                            <td><%= r[:state] %></td>
+                            <td>
+                              <% r[:test_result].each do |key, value | %>
+                                 <%= key %>, <%= value %>
+                              <% end %>
+                            </td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        <% end%>
+    </div>
+</div>

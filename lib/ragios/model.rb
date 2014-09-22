@@ -59,9 +59,7 @@ module Ragios
 
         query_options = {
           endkey: [monitor_id, state, "1913-01-15 05:30:00 -0500"].to_s,
-          startkey: [monitor_id, state, "3015-01-15 05:30:00 -0500"].to_s,
-          include_docs: true,
-          descending: true
+          startkey: [monitor_id, state, "3015-01-15 05:30:00 -0500"].to_s
         }
 
         query("_design/results_by_state", script, query_options, take, start_from_doc)
@@ -72,9 +70,7 @@ module Ragios
 
         query_options = {
           endkey: [monitor_id, "1913-01-15 05:30:00 -0500"].to_s,
-          startkey: [monitor_id, "3015-01-15 05:30:00 -0500"].to_s,
-          include_docs: true,
-          descending: true
+          startkey: [monitor_id, "3015-01-15 05:30:00 -0500"].to_s
         }
 
         query("_design/notifications", script, query_options, take, start_from_doc)
@@ -85,9 +81,7 @@ module Ragios
 
         query_options = {
           endkey: ["1913-01-15 05:30:00 -0500"].to_s,
-          startkey: ["3015-01-15 05:30:00 -0500"].to_s,
-          include_docs: true,
-          descending: true
+          startkey: ["3015-01-15 05:30:00 -0500"].to_s
         }
 
         query("_design/all_monitors", script, query_options, take, start_from_doc)
@@ -96,6 +90,8 @@ module Ragios
     private
 
       def query(design_doc_name, script, query_options, take, start_from_doc)
+        query_options[:descending] = true
+        query_options[:include_docs] = true
         query_options[:limit] = take if take
         query_options[:startkey_docid] = start_from_doc if start_from_doc
 
