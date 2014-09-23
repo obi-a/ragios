@@ -102,11 +102,11 @@ class App < Sinatra::Base
     end
   end
 
-  get '/monitors/:id/notifications' do
+  get '/monitors/:id/notifications*' do
     generate_json(ok: "notifications")
   end
 
-  get '/monitors/:id/results/:state' do
+  get '/monitors/:id/results/:state*' do
     generate_json(ok: "results")
   end
 
