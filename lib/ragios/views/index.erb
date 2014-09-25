@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li class="active">Home</li>
+  <li class="active">All Monitors</li>
 </ol>
 
 <div class="row">
@@ -7,49 +7,53 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <button type="button" class="btn btn-default btn-sm">
-                    <span class="glyphicon glyphicon-plus"></span> Create Monitor
+                    <span class="glyphicon glyphicon-plus"></span> Add Monitor
                 </button>
             </div>
         </div>
 
         <div class="table-responsive">
-            <div class="panel panel-primary">
-              <!-- Default panel contents -->
-                <div class="panel-heading"><h3 class="panel-title">All Monitors</h3></div>
-                    <table id="monitors-table" class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>id</th>
-                                <th>Created at</th>
-                                <th>monitor</th>
-                                <th>every</th>
-                                <th>via</th>
-                                <th>plugin</th>
-                                <th>status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% @monitors.each do |monitor| %>
-                                <tr <% if monitor[:status_] == "stopped" %>class="danger" <% end %> >
-                                    <% id = monitor[:_id] %>
-                                    <td><a href="/admin/monitors/<%= id%>"><%= id %></a></td>
-                                    <td><%= DateTime.parse(monitor[:created_at_]).strftime("%H:%M %m/%d/%Y") %></td>
-                                    <td><%= monitor[:monitor] %></td>
-                                    <td><%= monitor[:every] %></td>
-                                    <td><%= monitor[:via].join(", ") %></td>
-                                    <td><%= monitor[:plugin] %></td>
-                                    <td><%= monitor[:status_] %></td>
-                                </tr>
-                            <% end %>
-                        </tbody>
-                    </table>
-                    <ul class="pager">
-                      <li class="disabled"><a href="#">Previous Page</a></li>
-                      <li><a href="#">Next Page</a></li>
-                    </ul>
-                </div>
-
-            </div>
+            <table id="monitors-table" class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Created at</th>
+                        <th>Monitor</th>
+                        <th>Every</th>
+                        <th>Via</th>
+                        <th>Plugin</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @monitors.each do |monitor| %>
+                        <tr <% if monitor[:status_] == "stopped" %>class="danger" <% end %> >
+                            <% id = monitor[:_id] %>
+                            <td><a href="/admin/monitors/<%= id%>"><%= id %></a></td>
+                            <td><%= DateTime.parse(monitor[:created_at_]).strftime("%H:%M %m/%d/%Y") %></td>
+                            <td><%= monitor[:monitor] %></td>
+                            <td><%= monitor[:every] %></td>
+                            <td><%= monitor[:via].join(", ") %></td>
+                            <td><%= monitor[:plugin] %></td>
+                            <td><%= monitor[:status_] %></td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+            <span class="pull-left">Showing 1-15 of 300 rows.</span>
+            <span class="pull-right">
+                Show
+                <select name="select">
+                    <option value="value1" selected>15</option>
+                    <option value="value2">35</option>
+                    <option value="value3">65</option>
+                    <option value="value3">100</option>
+                </select> Rows
+            </span>
+            <ul class="pager">
+              <li class="disabled"><a href="#">Previous Page</a></li>
+              <li><a href="#">Next Page</a></li>
+            </ul>
         </div>
     </div>
 </div>

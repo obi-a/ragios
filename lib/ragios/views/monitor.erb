@@ -1,13 +1,40 @@
+<style>
+.panel-spacing {
+  padding-top: 30px;
+}
+.editable-table-column:hover {
+  outline: dotted grey;
+  background: white;
+}
+.table-select-rows-spacing {
+  padding-bottom: 5px;
+}
+</style>
 <script src="/javascripts/monitor.js"></script>
-<h2><%=@monitor[:monitor] %></h2>
+<ol class="breadcrumb">
+  <li><a href="/admin/index">All Monitors</a></li>
+  <li class="active"><%= @monitor[:monitor] %></li>
+</ol>
 <div id="message"></div>
-
-<p>
-    <button id="restart-button" type="button" class="btn btn-default">Restart</button>
-    <button id="stop-button" type="button" class="btn btn-default">Stop</button>
-    <button id="test-button" type="button" class="btn btn-default">Test</button>
-</p>
-
+<div class="panel panel-default">
+    <div class="panel-body">
+        <button type="button" id="restart-button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-repeat"></span> Restart Monitor
+        </button>
+        <button type="button" id="stop-button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-stop"></span> Stop Monitor
+        </button>
+        <button type="button" id="test-button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-tasks"></span> Test Monitor
+        </button>
+        <button type="button" id="update-button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-floppy-disk"></span> Save Monitor
+        </button>
+        <button type="button" id="delete-button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-trash"></span> Delete Monitor
+        </button>
+    </div>
+</div>
 <ul class="nav nav-tabs" role="tablist">
   <li class="active"><a href="#monitor" role="tab" data-toggle="tab">Monitor</a></li>
   <li><a href="#current-state" role="tab" data-toggle="tab">Current State</a></li>
@@ -15,54 +42,56 @@
   <li><a href="#failures" role="tab" data-toggle="tab">Failures</a></li>
   <li><a href="#errors" role="tab" data-toggle="tab">Errors</a></li>
 </ul>
-<div class="tab-content">
+<div class="tab-content panel-spacing">
     <div class="tab-pane active" id="monitor">
-        <table class="table table-striped table-bordered">
+        <div>
+            <span class="table-select-rows-spacing pull-right">
+                <button type="button" id="restart-button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-refresh">
+                    </span> Refresh data
+                </button>
+            </span>
+        </div>
+        <table class="table table-striped table-bordered table-responsive table-hover">
             <thead>
                 <tr>
-                    <th>field</th>
-                    <th>value</th>
+                    <th>Field</th>
+                    <th>Value</th>
                 </tr>
             </thead>
             <tbody>
                 <% @monitor.each do |key, value| %>
                     <tr>
-                        <td><%= key %></td>
-                        <td id="<%= key %>"><%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %></td>
+                        <td><span class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="top" title="Delete field"></span> <%= key %></td>
+                        <td >
+                            <div id="<%= key %>" class="editable-table-column" contenteditable="true" data-toggle="tooltip" data-placement="top" title="Click to edit">
+                                <%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %>
+                            </div>
+                        </td>
                     </tr>
                 <% end %>
             </tbody>
         </table>
     </div>
+
     <div class="tab-pane" id="current-state">
-        <h4>Current State</h4>
-        <table class="table table-striped table-bordered">
+        <div>
+            <span class="table-select-rows-spacing pull-right">
+                <button type="button" id="restart-button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-refresh">
+                    </span> Refresh data
+                </button>
+            </span>
+        </div>
+        <table class="table table-striped table-bordered table-responsive table-hover">
             <thead>
                 <tr>
-                    <th>field</th>
-                    <th>value</th>
+                    <th>Field</th>
+                    <th>Value</th>
                 </tr>
             </thead>
             <tbody>
                 <% @current_state.each do |key, value| %>
-                    <tr>
-                        <td><%= key %></td>
-                        <td><%= value %></td>
-                    </tr>
-                <% end %>
-            </tbody>
-        </table>
-
-        <h4>Current Test Result</h4>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>field</th>
-                    <th>value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% @test_result.each do |key, value| %>
                     <tr>
                         <td><%= key %></td>
                         <td><%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %></td>
@@ -71,15 +100,23 @@
             </tbody>
         </table>
     </div>
-
     <div class="tab-pane" id="notifications">
-        <% unless @notifications.blank? %>
-            <h4>Recent Notifications</h4>
-            <table class="table table-striped table-bordered">
+        <% if @notifications.blank? %>
+            <div>No notifications to display</div>
+        <% else %>
+            <div class="">
+                <span class="table-select-rows-spacing pull-right">
+                    <button type="button" id="restart-button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-refresh">
+                        </span> Refresh data
+                    </button>
+                </span>
+            </div>
+            <table class="table table-striped table-bordered table-responsive table-hover">
                 <thead>
                     <tr>
-                        <th>id</th>
                         <th>Time</th>
+                        <th>id</th>
                         <th>Notifier</th>
                         <th>event</th>
                     </tr>
@@ -87,25 +124,48 @@
                 <tbody>
                     <% @notifications.each do |n| %>
                         <tr>
-                            <td><%= n[:_id][0...8] %></td>
                             <td><%= DateTime.parse(n[:created_at]).strftime("%H:%M %m/%d/%Y") %></td>
+                            <td><%= n[:_id][0...8] %></td>
                             <td><%= n[:notifier] %></td>
                             <td><%= n[:event] %></td>
                         </tr>
                     <% end %>
                 </tbody>
             </table>
+            <span class="pull-left">Showing 1-15 of 300 rows.</span>
+            <span class="pull-right">
+                Show
+                <select name="select">
+                    <option value="value1" selected>15</option>
+                    <option value="value2">35</option>
+                    <option value="value3">65</option>
+                    <option value="value3">100</option>
+                </select> Rows
+            </span>
+            <ul class="pager">
+                <li class="disabled"><a href="#">Previous Page</a></li>
+                <li class="disabled"><a href="#">Next Page</a></li>
+            </ul>
         <% end%>
     </div>
 
     <div class="tab-pane" id="failures">
-        <% unless @results.blank? %>
-            <h4>Recent Failures</h4>
+        <% if @results.blank? %>
+            <div>No failures to display</div>
+        <% else %>
+            <div class="">
+                <span class="table-select-rows-spacing pull-right">
+                    <button type="button" id="restart-button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-refresh">
+                        </span> Refresh data
+                    </button>
+                </span>
+            </div>
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th>id</th>
                         <th>Time</th>
+                        <th>id</th>
                         <th>State</th>
                         <th>Result</th>
                     </tr>
@@ -113,8 +173,8 @@
                 <tbody>
                     <% @results.each do |r| %>
                         <tr>
-                            <td><%= r[:_id][0...8] %></td>
                             <td><%= DateTime.parse(r[:time_of_test]).strftime("%H:%M %m/%d/%Y") %></td>
+                            <td><%= r[:_id][0...8] %></td>
                             <td><%= r[:state] %></td>
                             <td>
                               <% r[:test_result].each do |key, value | %>
@@ -125,17 +185,40 @@
                     <% end %>
                 </tbody>
             </table>
+            <span class="pull-left">Showing 1-15 of 300 rows.</span>
+            <span class="pull-right">
+                Show
+                <select name="select">
+                    <option value="value1" selected>15</option>
+                    <option value="value2">35</option>
+                    <option value="value3">65</option>
+                    <option value="value3">100</option>
+                </select> Rows
+            </span>
+            <ul class="pager">
+                <li class="disabled"><a href="#">Previous Page</a></li>
+                <li class="disabled"><a href="#">Next Page</a></li>
+            </ul>
         <% end%>
     </div>
 
     <div class="tab-pane" id="errors">
-        <% unless @errors.blank? %>
-            <h4>Recent Errors</h4>
+        <% if @errors.blank? %>
+            <div>No errors to display</div>
+        <% else %>
+            <div class="">
+                <span class="table-select-rows-spacing pull-right">
+                    <button type="button" id="restart-button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-refresh">
+                        </span> Refresh data
+                    </button>
+                </span>
+            </div>
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th>id</th>
                         <th>Time</th>
+                        <th>id</th>
                         <th>State</th>
                         <th>Result</th>
                     </tr>
@@ -155,6 +238,20 @@
                     <% end %>
                 </tbody>
             </table>
+            <span class="pull-left">Showing 1-15 of 300 rows.</span>
+            <span class="pull-right">
+                Show
+                <select name="select">
+                    <option value="value1" selected>15</option>
+                    <option value="value2">35</option>
+                    <option value="value3">65</option>
+                    <option value="value3">100</option>
+                </select> Rows
+            </span>
+            <ul class="pager">
+                <li class="disabled"><a href="#">Previous Page</a></li>
+                <li class="disabled"><a href="#">Next Page</a></li>
+            </ul>
         <% end%>
     </div>
 </div>

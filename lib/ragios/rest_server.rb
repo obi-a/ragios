@@ -138,14 +138,14 @@ class App < Sinatra::Base
     @current_state = {
       state: test_result[:state],
       time_of_test: test_result[:time_of_test],
-      timestamp_of_test: test_result[:timestamp_of_test]
+      timestamp_of_test: test_result[:timestamp_of_test],
+      test_result: test_result[:test_result]
     }
 
     @notifications = controller.get_notifications(id: params[:id], take: 20)
     @results = controller.get_results_by_state(id: params[:id], state: "failed", take: 20)
     @errors = controller.get_results_by_state(id: params[:id], state: "error", take: 20)
 
-    @test_result = test_result[:test_result]
     content_type('text/html')
     erb :monitor
   end
