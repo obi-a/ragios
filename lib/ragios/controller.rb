@@ -81,6 +81,11 @@ module Ragios
       model.notifications(options[:id], options[:take], options[:start_from_doc])
     end
 
+    Contract Hash => ArrayOf[Hash]
+    def self.get_all_results(options)
+      model.get_all_results(options[:id], options[:take], options[:start_from_doc])
+    end
+
     Contract Monitor_id => Bool
     def self.restart(monitor_id)
       try_monitor(monitor_id) do

@@ -106,7 +106,11 @@ class App < Sinatra::Base
     generate_json(ok: "notifications")
   end
 
-  get '/monitors/:id/results/:state*' do
+  get '/monitors/:id/results_by_state/:state*' do
+    generate_json(ok: "results_by_state")
+  end
+
+  get '/monitors/:id/results*' do
     generate_json(ok: "results")
   end
 
@@ -143,8 +147,9 @@ class App < Sinatra::Base
     }
 
     @notifications = controller.get_notifications(id: params[:id], take: 20)
-    @results = controller.get_results_by_state(id: params[:id], state: "failed", take: 20)
+    @failed_results = controller.get_results_by_state(id: params[:id], state: "failed", take: 20)
     @errors = controller.get_results_by_state(id: params[:id], state: "error", take: 20)
+    @all_results = controller.get_all_results(id: params[:id], take: 20)
 
     content_type('text/html')
     erb :monitor

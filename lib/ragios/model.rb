@@ -65,6 +65,17 @@ module Ragios
         query("_design/results_by_state", script, query_options, take, start_from_doc)
       end
 
+      def get_all_results(monitor_id, take = nil, start_from_doc = nil)
+        script = design_doc_script('function(doc){ if(doc.type == "test_result" && doc.time_of_test && doc.monitor_id) emit([doc.monitor_id, doc.time_of_test]); }')
+
+        query_options = {
+          endkey: [monitor_id, "1913-01-15 05:30:00 -0500"].to_s,
+          startkey: [monitor_id, "3015-01-15 05:30:00 -0500"].to_s
+        }
+
+        query("_design/get_all_results", script, query_options, take, start_from_doc)
+      end
+
       def notifications(monitor_id, take = nil, start_from_doc = nil)
         script = design_doc_script('function(doc){ if(doc.type == "notification" && doc.created_at && doc.monitor_id) emit([doc.monitor_id, doc.created_at]); }')
 

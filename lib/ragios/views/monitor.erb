@@ -39,6 +39,7 @@
   <li class="active"><a href="#monitor" role="tab" data-toggle="tab">Monitor</a></li>
   <li><a href="#current-state" role="tab" data-toggle="tab">Current State</a></li>
   <li><a href="#notifications" role="tab" data-toggle="tab">Notifications</a></li>
+  <li><a href="#all-results" role="tab" data-toggle="tab">All results</a></li>
   <li><a href="#failures" role="tab" data-toggle="tab">Failures</a></li>
   <li><a href="#errors" role="tab" data-toggle="tab">Errors</a></li>
 </ul>
@@ -149,9 +150,9 @@
         <% end%>
     </div>
 
-    <div class="tab-pane" id="failures">
-        <% if @results.blank? %>
-            <div>No failures to display</div>
+    <div class="tab-pane" id="all-results">
+        <% if @all_results.blank? %>
+            <div>No results to display</div>
         <% else %>
             <div class="">
                 <span class="table-select-rows-spacing pull-right">
@@ -171,7 +172,60 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% @results.each do |r| %>
+                    <% @all_results.each do |r| %>
+                        <tr>
+                            <td><%= DateTime.parse(r[:time_of_test]).strftime("%H:%M %m/%d/%Y") %></td>
+                            <td><%= r[:_id][0...8] %></td>
+                            <td><%= r[:state] %></td>
+                            <td>
+                              <% r[:test_result].each do |key, value | %>
+                                 <%= key %>, <%= value %>
+                              <% end %>
+                            </td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+            <span class="pull-left">Showing 1-15 of 300 rows.</span>
+            <span class="pull-right">
+                Show
+                <select name="select">
+                    <option value="value1" selected>15</option>
+                    <option value="value2">35</option>
+                    <option value="value3">65</option>
+                    <option value="value3">100</option>
+                </select> Rows
+            </span>
+            <ul class="pager">
+                <li class="disabled"><a href="#">Previous Page</a></li>
+                <li class="disabled"><a href="#">Next Page</a></li>
+            </ul>
+        <% end%>
+    </div>
+
+    <div class="tab-pane" id="failures">
+        <% if @failed_results.blank? %>
+            <div>No failures to display</div>
+        <% else %>
+            <div>
+                <span class="table-select-rows-spacing pull-right">
+                    <button type="button" id="restart-button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-refresh">
+                        </span> Refresh data
+                    </button>
+                </span>
+            </div>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>id</th>
+                        <th>State</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @failed_results.each do |r| %>
                         <tr>
                             <td><%= DateTime.parse(r[:time_of_test]).strftime("%H:%M %m/%d/%Y") %></td>
                             <td><%= r[:_id][0...8] %></td>
