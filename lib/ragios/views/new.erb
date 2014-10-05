@@ -1,0 +1,76 @@
+<script src="/javascripts/new.js"></script>
+<ol class="breadcrumb">
+  <li><a href="/admin/index">All Monitors</a></li>
+  <li class="active">Add Monitor</li>
+</ol>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <button type="button" id="update-button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-floppy-disk"></span> Save Monitor
+        </button>
+    </div>
+</div>
+<ul class="nav nav-tabs" role="tablist">
+  <li class="active"><a href="#fields" role="tab" data-toggle="tab">Fields</a></li>
+  <li><a href="#source" role="tab" data-toggle="tab">Source</a></li>
+</ul>
+<div class="tab-content panel-spacing">
+    <div class="tab-pane active" id="fields">
+        <div class="table-options-section">
+            <div class="table-select-rows-spacing pull-left">
+                <button type="button" id="add-field-button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-plus">
+                    </span> Add field
+                </button>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-responsive table-hover">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody id="new-monitor-table">
+                <tr>
+                    <td>monitor</td>
+                    <td>
+                        <input id="monitor" style="width: 100%;" type="text" name="input">
+                    </td>
+                </tr>
+                <tr>
+                    <td>every</td>
+                    <td>
+                        <input id="every" style="width: 100%;" type="text" name="input">
+                    </td>
+                </tr>
+                <tr>
+                    <td>via</td>
+                    <td>
+                        <input id="via" style="width: 100%;" type="text" name="input">
+                    </td>
+                </tr>
+                <tr>
+                    <td>plugin</td>
+                    <td>
+                        <input id="plugin" style="width: 100%;" type="text" name="input">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="top" title="Delete field"></span> <input id="monitor" style="width: 96%;" type="text"></td>
+                    <td >
+                        <input id="unamed" style="width: 100%;" type="text">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="source">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            JSON code of monitor
+          </div>
+        </div>
+    </div>
+</div>

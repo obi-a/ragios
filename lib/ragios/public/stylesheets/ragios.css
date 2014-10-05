@@ -1,1 +1,16 @@
 body { padding-top: 70px; }
+
+.panel-spacing {
+  padding-top: 30px;
+}
+.editable-table-column:hover {
+  outline: dotted grey;
+  background: white;
+}
+.table-select-rows-spacing {
+  margin-bottom: 5px;
+}
+.table-options-section {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

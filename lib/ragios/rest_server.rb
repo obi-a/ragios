@@ -136,6 +136,11 @@ class App < Sinatra::Base
     erb :index
   end
 
+  get '/admin/monitors/new', :check => :valid_token? do
+    content_type('text/html')
+    erb :new
+  end
+
   get '/admin/monitors/:id*', :check => :valid_token? do
     @monitor = controller.get(params[:id])
     test_result = controller.get_current_state(params[:id])
