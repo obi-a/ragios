@@ -1,8 +1,3 @@
-<style>
-.tiny-col {
-   width: 30px;
-}
-</style>
 <script src="/javascripts/new.js"></script>
 <ol class="breadcrumb">
   <li><a href="/admin/index">All Monitors</a></li>
@@ -68,6 +63,19 @@
                     </td>
                     <td></td>
                 </tr>
+                <script type="text/template" id="unnamed-field-template">
+                    <tr>
+                        <td>
+                            <textarea class="new-monitor-field" rows="1" style="width: 100%;"></textarea>
+                        </td>
+                        <td>
+                            <textarea class="new-monitor-value" rows="1" style="width: 100%;"></textarea>
+                        </td>
+                        <td>
+                            <span class="delete-field glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="top" title="Delete field"></span>
+                        </td>
+                    </tr>
+                </script>
             </tbody>
         </table>
     </div>

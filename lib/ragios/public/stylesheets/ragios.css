@@ -14,3 +14,6 @@ body { padding-top: 70px; }
   padding-top: 10px;
   padding-bottom: 10px;
 }
+.tiny-col {
+   width: 30px;
+}
