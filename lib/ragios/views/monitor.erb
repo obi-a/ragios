@@ -1,4 +1,5 @@
 <script src="/javascripts/monitor.js"></script>
+<span style="display:none" id="monitor-id"><%= @monitor[:_id] %></span>
 <ol class="breadcrumb">
   <li><a href="/admin/index">All Monitors</a></li>
   <li class="active"><%= @monitor[:monitor] %></li>
@@ -15,7 +16,7 @@
         <button type="button" id="test-button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-tasks"></span> Test Monitor
         </button>
-        <button type="button" id="update-button" class="btn btn-default btn-sm">
+        <button type="button" id="update-monitor-button" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-floppy-disk"></span> Save Monitor
         </button>
         <button type="button" id="delete-button" class="btn btn-default btn-sm">
@@ -23,7 +24,7 @@
         </button>
     </div>
 </div>
-<ul class="nav nav-tabs" role="tablist" id="monitorsTab">
+<ul class="nav nav-tabs" role="tablist">
   <li class="active"><a href="#monitor" role="tab" data-toggle="tab">Monitor</a></li>
   <li><a href="#current-state" role="tab" data-toggle="tab">Current State</a></li>
   <li><a href="#notifications" role="tab" data-toggle="tab">Notifications</a></li>
@@ -40,30 +41,53 @@
                     </span> Add field
                 </button>
             </div>
-            <div class="table-select-rows-spacing pull-right">
-                <button type="button" id="restart-button" class="btn btn-default btn-sm">
-                    <span class="glyphicon glyphicon-refresh">
-                    </span> Refresh data
-                </button>
-            </div>
         </div>
         <table class="table table-striped table-bordered table-responsive table-hover">
             <thead>
                 <tr>
                     <th>Field</th>
                     <th>Value</th>
+                    <th class="tiny-col"></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="new-monitor-table">
                 <% @monitor.each do |key, value| %>
                     <tr>
-                        <td><span class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="top" title="Delete field"></span> <%= key %></td>
-                        <td >
-                            <div id="<%= key %>" class="editable-table-column" contenteditable="true" data-toggle="tooltip" data-placement="top" title="Click to edit">
-                                <%= (value.is_a? Array) || (value.is_a? Hash) ? "<pre>#{JSON.pretty_generate(value)}</pre>" : value %>
-                            </div>
-                        </td>
+                        <% if [:_id,:_rev,:created_at_, :status_, :type].include?(key) %>
+                            <td><span class="monitor-field"><%= key %></span></td>
+                            <td><span class="monitor-value"><%= value %></span></td>
+                            <td></td>
+                        <% elsif [:monitor, :every, :via, :plugin].include?(key) %>
+                            <td><span class="monitor-field"><%= key %></span></td>
+                            <td>
+                                <textarea class="monitor-value" rows="1" style="width: 100%;"><%= value %></textarea>
+                            </td>
+                            <td></td>
+                        <% else %>
+                            <td>
+                                <textarea class="monitor-field" rows="1" style="width: 100%;"><%= key %></textarea>
+                            </td>
+                            <td>
+                                <textarea class="monitor-value" rows="1" style="width: 100%;"><%= value %></textarea>
+                            </td>
+                            <td>
+                                <span class="delete-field glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="top" title="Delete field"></span>
+                            </td>
+                        <% end %>
                     </tr>
+                    <script type="text/template" id="unnamed-field-template">
+                        <tr>
+                            <td>
+                                <textarea class="monitor-field" rows="1" style="width: 100%;"></textarea>
+                            </td>
+                            <td>
+                                <textarea class="monitor-value" rows="1" style="width: 100%;"></textarea>
+                            </td>
+                            <td>
+                                <span class="delete-field glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="top" title="Delete field"></span>
+                            </td>
+                        </tr>
+                    </script>
                 <% end %>
             </tbody>
         </table>
