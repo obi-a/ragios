@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="/jsoneditor/jsoneditor.min.css">
+<script type="text/javascript" src="/jsoneditor/jsoneditor.min.js"></script>
 <script src="/javascripts/monitor.js"></script>
 <span style="display:none" id="monitor-id"><%= @monitor[:_id] %></span>
 <ol class="breadcrumb">
@@ -33,6 +35,9 @@
   <li><a href="#errors" role="tab" data-toggle="tab">Errors</a></li>
 </ul>
 <div class="tab-content panel-spacing">
+
+    <div id="monitor-editor" style="width: 400px; height: 400px;"></div>
+
     <div class="tab-pane active" id="monitor">
         <div class="table-options-section">
             <div class="table-select-rows-spacing pull-left">
