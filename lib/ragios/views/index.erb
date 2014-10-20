@@ -33,7 +33,7 @@
                             <td><%= DateTime.parse(monitor[:created_at_]).strftime("%H:%M %m/%d/%Y") %></td>
                             <td><%= monitor[:monitor] %></td>
                             <td><%= monitor[:every] %></td>
-                            <td><%= monitor[:via].join(", ") rescue "" %></td>
+                            <td><%= monitor[:via].join(", ") rescue monitor[:via] %></td>
                             <td><%= monitor[:plugin] %></td>
                             <td><%= monitor[:status_] %></td>
                         </tr>
