@@ -66,7 +66,7 @@ module Ragios
       end
     end
 
-    Contract None => ArrayOf[Monitor]
+    Contract Any => ArrayOf[Monitor]
     def self.get_all(take = nil, start_from_doc = nil)
       model.all_monitors(take, start_from_doc)
     end

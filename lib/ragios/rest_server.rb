@@ -103,7 +103,10 @@ class App < Sinatra::Base
   end
 
   get '/monitors/:id/notifications*' do
-    generate_json(ok: "notifications")
+    try_request do
+      notifications = controller.get_notifications(params)
+      generate_json(notifications)
+    end
   end
 
   get '/monitors/:id/results_by_state/:state*' do
