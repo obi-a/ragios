@@ -73,17 +73,17 @@ module Ragios
 
     Contract Hash => ArrayOf[Hash]
     def self.get_results_by_state(options)
-      model.results_by_state(options[:id], options[:state], options[:take], options[:start_from_doc])
+      model.results_by_state(options)
     end
 
     Contract Hash => ArrayOf[Hash]
     def self.get_notifications(options)
-      model.notifications(options[:id], options[:take], options[:start_from_doc])
+      model.notifications(options)
     end
 
     Contract Hash => ArrayOf[Hash]
     def self.get_all_results(options)
-      model.get_all_results(options[:id], options[:take], options[:start_from_doc])
+      model.get_all_results(options)
     end
 
     Contract Monitor_id => Bool

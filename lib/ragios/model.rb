@@ -54,37 +54,45 @@ module Ragios
         results[:rows].blank? ? {} : results[:rows].first[:doc]
       end
 
-      def results_by_state(monitor_id, state, take = nil, start_from_doc = nil)
+      #def results_by_state(monitor_id, state, start_date, end_date, take = nil, start_from_doc = nil)
+      def results_by_state(options)
         script = design_doc_script('function(doc){ if(doc.type == "test_result" && doc.time_of_test && doc.monitor_id && doc.state) emit([doc.monitor_id, doc.state, doc.time_of_test]); }')
 
         query_options = {
-          endkey: [monitor_id, state, "1913-01-15 05:30:00 -0500"].to_s,
-          startkey: [monitor_id, state, "3015-01-15 05:30:00 -0500"].to_s
+          endkey: [options[:monitor_id], options[:state], options[:end_date]].to_s,
+          startkey: [options[:monitor_id], options[:state], options[:start_date]].to_s
         }
 
-        query("_design/results_by_state", script, query_options, take, start_from_doc)
+        results = query("_design/results_by_state", script, query_options, options[:take], options[:start_from_doc])
+        get_docs(results)
       end
 
-      def get_all_results(monitor_id, take = nil, start_from_doc = nil)
+      #def get_all_results(monitor_id, start_date, end_date, take = nil, start_from_doc = nil)
+      def get_all_results(options)
         script = design_doc_script('function(doc){ if(doc.type == "test_result" && doc.time_of_test && doc.monitor_id) emit([doc.monitor_id, doc.time_of_test]); }')
-
+        #example
+        #start_date: "3015-01-15 05:30:00 -0500"
+        #end_date: "1913-01-15 05:30:00 -0500"
         query_options = {
-          endkey: [monitor_id, "1913-01-15 05:30:00 -0500"].to_s,
-          startkey: [monitor_id, "3015-01-15 05:30:00 -0500"].to_s
+          endkey: [options[:monitor_id], options[:end_date]].to_s,
+          startkey: [options[:monitor_id], options[:start_date]].to_s
         }
 
-        query("_design/get_all_results", script, query_options, take, start_from_doc)
+        results = query("_design/get_all_results", script, query_options, options[:take], options[:start_from_doc])
+        get_docs(results)
       end
 
-      def notifications(monitor_id, take = nil, start_from_doc = nil)
+      #def notifications(monitor_id, take = nil, start_from_doc = nil)
+      def notifications(options)
         script = design_doc_script('function(doc){ if(doc.type == "notification" && doc.created_at && doc.monitor_id) emit([doc.monitor_id, doc.created_at]); }')
 
         query_options = {
-          endkey: [monitor_id, "1913-01-15 05:30:00 -0500"].to_s,
-          startkey: [monitor_id, "3015-01-15 05:30:00 -0500"].to_s
+          endkey: [options[:monitor_id], options[:end_date]].to_s,
+          startkey: [options[:monitor_id], options[:start_date]].to_s
         }
 
-        query("_design/notifications", script, query_options, take, start_from_doc)
+        results = query("_design/notifications", script, query_options, options[:take], options[:start_from_doc])
+        get_docs(results)
       end
 
       def all_monitors(take = nil, start_from_doc = nil)
@@ -95,7 +103,8 @@ module Ragios
           startkey: ["3015-01-15 05:30:00 -0500"].to_s
         }
 
-        query("_design/all_monitors", script, query_options, take, start_from_doc)
+         results = query("_design/all_monitors", script, query_options, take, start_from_doc)
+         get_docs(results)
       end
 
     private
@@ -109,7 +118,10 @@ module Ragios
         results = dynamic_view(design_doc_name, script) do
           @database.view(design_doc_name, "results", query_options)
         end
-        results[:rows].blank? ? [] : results[:rows].map { |e| e[:doc] }
+      end
+
+      def get_docs(result_set)
+        result_set[:rows].blank? ? [] : result_set[:rows].map { |e| e[:doc] }
       end
 
       def design_doc_script(map_fn)
