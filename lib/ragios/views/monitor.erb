@@ -66,6 +66,9 @@
         <% if @notifications.blank? %>
             <div>No notifications to display</div>
         <% else %>
+
+            <table id="notifications-datatable" class="table table-striped table-bordered"></table>
+
             <div class="table-options-section">
                 <span class="table-select-rows-spacing pull-right">
                     <button type="button" class="btn btn-default btn-sm">
@@ -112,6 +115,9 @@
     </div>
 
     <div class="tab-pane" id="all-results">
+
+        <table id="results-datatable" class="table table-striped table-bordered"></table>
+
         <% if @all_results.blank? %>
             <div>No results to display</div>
         <% else %>

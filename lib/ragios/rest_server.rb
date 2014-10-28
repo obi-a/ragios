@@ -104,7 +104,12 @@ class App < Sinatra::Base
 
   get '/monitors/:id/notifications*' do
     try_request do
-      notifications = controller.get_notifications(params)
+      notifications = controller.get_notifications(
+        monitor_id: params[:id],
+        start_date: "3015-01-15 05:30:00 -0500",
+        end_date: "1913-01-15 05:30:00 -0500",
+        take: 20
+      )
       generate_json(notifications)
     end
   end
@@ -114,7 +119,15 @@ class App < Sinatra::Base
   end
 
   get '/monitors/:id/results*' do
-    generate_json(ok: "results")
+    try_request do
+      all_results = controller.get_all_results(
+        monitor_id: params[:id],
+        start_date: "3015-01-15 05:30:00 -0500",
+        end_date: "1913-01-15 05:30:00 -0500",
+        take: 20
+      )
+      generate_json(all_results)
+    end
   end
 
   #get monitor by id
@@ -154,10 +167,35 @@ class App < Sinatra::Base
       test_result: test_result[:test_result]
     }
 
-    @notifications = controller.get_notifications(id: params[:id], take: 20)
-    @failed_results = controller.get_results_by_state(id: params[:id], state: "failed", take: 20)
-    @errors = controller.get_results_by_state(id: params[:id], state: "error", take: 20)
-    @all_results = controller.get_all_results(id: params[:id], take: 20)
+    @notifications = controller.get_notifications(
+      monitor_id: params[:id],
+      start_date: "3015-01-15 05:30:00 -0500",
+      end_date: "1913-01-15 05:30:00 -0500",
+      take: 20
+    )
+
+    @failed_results = controller.get_results_by_state(
+      monitor_id: params[:id],
+      state: "failed",
+      start_date: "3015-01-15 05:30:00 -0500",
+      end_date: "1913-01-15 05:30:00 -0500",
+      take: 20
+    )
+
+    @errors = controller.get_results_by_state(
+      monitor_id: params[:id],
+      state: "error",
+      start_date: "3015-01-15 05:30:00 -0500",
+      end_date: "1913-01-15 05:30:00 -0500",
+      take: 20
+    )
+
+    @all_results = controller.get_all_results(
+      monitor_id: params[:id],
+      start_date: "3015-01-15 05:30:00 -0500",
+      end_date: "1913-01-15 05:30:00 -0500",
+      take: 20
+    )
 
     content_type('text/html')
     erb :monitor
