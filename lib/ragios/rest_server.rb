@@ -167,13 +167,6 @@ class App < Sinatra::Base
       test_result: test_result[:test_result]
     }
 
-    @notifications = controller.get_notifications(
-      monitor_id: params[:id],
-      start_date: "3015-01-15 05:30:00 -0500",
-      end_date: "1913-01-15 05:30:00 -0500",
-      take: 20
-    )
-
     @failed_results = controller.get_results_by_state(
       monitor_id: params[:id],
       state: "failed",
