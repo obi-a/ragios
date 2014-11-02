@@ -67,12 +67,12 @@
             <div class="panel-body">
 
 
-                <div class="col-sm-6" style="height:75px;">
+                <div class="col-sm-8" style="height:100px;">
                    <div class='col-md-5'>
                         <div class="form-group">
                             Start Date
-                            <div class='input-group date' id='datetimepicker9'>
-                                <input type='text' class="form-control" />
+                            <div class='input-group date' id='notification-start-date'>
+                                <input type='text' class="form-control" id="notification-start-input" />
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                                 </span>
                             </div>
@@ -81,8 +81,8 @@
                     <div class='col-md-5'>
                         <div class="form-group">
                             End date
-                            <div class='input-group date' id='datetimepicker10'>
-                                <input type='text' class="form-control" />
+                            <div class='input-group date' id='notification-end-date'>
+                                <input type='text' class="form-control" id="notification-end-input" />
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                                 </span>
                             </div>
@@ -91,7 +91,7 @@
                     <div class='col-md-5'>
                         <div class="form-group">
                             <div class='input-group date'>
-                                <button type="button" class="btn btn-default btn-sm">
+                                <button type="button" id="refresh-notifications-button" class="btn btn-default btn-sm">
                                     <span class="glyphicon glyphicon-refresh">
                                     </span> Refresh data
                                 </button>

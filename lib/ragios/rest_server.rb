@@ -106,8 +106,8 @@ class App < Sinatra::Base
     try_request do
       notifications = controller.get_notifications(
         monitor_id: params[:id],
-        start_date: "3015-01-15 05:30:00 -0500",
-        end_date: "1913-01-15 05:30:00 -0500",
+        start_date: params[:end_date],
+        end_date: params[:start_date],
         take: 20
       )
       generate_json(notifications)
@@ -160,12 +160,6 @@ class App < Sinatra::Base
   get '/admin/monitors/:id*', :check => :valid_token? do
     @monitor = controller.get(params[:id])
     test_result = controller.get_current_state(params[:id])
-    @current_state = {
-      state: test_result[:state],
-      time_of_test: test_result[:time_of_test],
-      timestamp_of_test: test_result[:timestamp_of_test],
-      test_result: test_result[:test_result]
-    }
 
     @failed_results = controller.get_results_by_state(
       monitor_id: params[:id],
