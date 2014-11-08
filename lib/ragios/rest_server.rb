@@ -102,29 +102,35 @@ class App < Sinatra::Base
     end
   end
 
-  get '/monitors/:id/notifications*' do
+  get '/monitors/:id/notifications*', :check => :valid_token? do
     try_request do
       notifications = controller.get_notifications(
         monitor_id: params[:id],
         start_date: params[:end_date],
-        end_date: params[:start_date],
-        take: 20
+        end_date: params[:start_date]
       )
       generate_json(notifications)
     end
   end
 
-  get '/monitors/:id/results_by_state/:state*' do
-    generate_json(ok: "results_by_state")
+  get '/monitors/:id/results_by_state/:state*', :check => :valid_token? do
+    try_request do
+      results =  controller.get_results_by_state(
+        monitor_id: params[:id],
+        state: params[:state],
+        start_date: params[:end_date],
+        end_date: params[:start_date]
+      )
+      generate_json(results)
+    end
   end
 
-  get '/monitors/:id/results*' do
+  get '/monitors/:id/results*', :check => :valid_token? do
     try_request do
       all_results = controller.get_all_results(
         monitor_id: params[:id],
-        start_date: "3015-01-15 05:30:00 -0500",
-        end_date: "1913-01-15 05:30:00 -0500",
-        take: 20
+        start_date: params[:end_date],
+        end_date: params[:start_date]
       )
       generate_json(all_results)
     end
@@ -159,31 +165,6 @@ class App < Sinatra::Base
 
   get '/admin/monitors/:id*', :check => :valid_token? do
     @monitor = controller.get(params[:id])
-    test_result = controller.get_current_state(params[:id])
-
-    @failed_results = controller.get_results_by_state(
-      monitor_id: params[:id],
-      state: "failed",
-      start_date: "3015-01-15 05:30:00 -0500",
-      end_date: "1913-01-15 05:30:00 -0500",
-      take: 20
-    )
-
-    @errors = controller.get_results_by_state(
-      monitor_id: params[:id],
-      state: "error",
-      start_date: "3015-01-15 05:30:00 -0500",
-      end_date: "1913-01-15 05:30:00 -0500",
-      take: 20
-    )
-
-    @all_results = controller.get_all_results(
-      monitor_id: params[:id],
-      start_date: "3015-01-15 05:30:00 -0500",
-      end_date: "1913-01-15 05:30:00 -0500",
-      take: 20
-    )
-
     content_type('text/html')
     erb :monitor
   end
