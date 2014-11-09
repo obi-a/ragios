@@ -147,13 +147,12 @@ class App < Sinatra::Base
 
   get '/monitors*', :check => :valid_token? do
     try_request do
-      monitors =  controller.get_all
+      monitors =  controller.get_all(params[:take], params[:start_from_doc])
       generate_json(monitors)
     end
   end
 
   get '/admin/index', :check => :valid_token? do
-    @monitors = controller.get_all
     content_type('text/html')
     erb :index
   end

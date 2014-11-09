@@ -1,7 +1,7 @@
+<script src="/javascripts/index.js"></script>
 <ol class="breadcrumb">
-  <li class="active">All Monitors</li>
+    <li class="active">All Monitors</li>
 </ol>
-
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -11,13 +11,12 @@
                 </a>
             </div>
         </div>
-
         <div class="table-responsive">
-            <table id="monitors-table" class="table table-striped table-bordered table-hover">
+            <table id="monitors-list-datatable" class="table table-hover table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Created at</th>
+                        <th>Id</th>
                         <th>Monitor</th>
                         <th>Every</th>
                         <th>Via</th>
@@ -26,34 +25,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% @monitors.each do |monitor| %>
-                        <tr <% if monitor[:status_] == "stopped" %>class="danger" <% end %> >
-                            <% id = monitor[:_id] %>
-                            <td><a href="/admin/monitors/<%= id%>"><%= id %></a></td>
-                            <td><%= DateTime.parse(monitor[:created_at_]).strftime("%H:%M %m/%d/%Y") %></td>
-                            <td><%= monitor[:monitor] %></td>
-                            <td><%= monitor[:every] %></td>
-                            <td><%= monitor[:via].join(", ") rescue monitor[:via] %></td>
-                            <td><%= monitor[:plugin] %></td>
-                            <td><%= monitor[:status_] %></td>
-                        </tr>
-                    <% end %>
                 </tbody>
             </table>
-            <span class="pull-left">Showing 1-15 of 300 rows.</span>
-            <span class="pull-right">
-                Show
-                <select name="select">
-                    <option value="value1" selected>15</option>
-                    <option value="value2">35</option>
-                    <option value="value3">65</option>
-                    <option value="value3">100</option>
-                </select> Rows
-            </span>
-            <ul class="pager">
-              <li class="disabled"><a href="#">Previous Page</a></li>
-              <li><a href="#">Next Page</a></li>
-            </ul>
         </div>
     </div>
 </div>
