@@ -57,9 +57,9 @@ module Ragios
           current_state = get_current_state(monitor_id)
           monitor[:current_state_] =  {
             state: current_state[:state],
-            test_result: current_state[:test_result],
-            time_of_test: current_state[:time_of_test],
-            timestamp_of_test: current_state[:timestamp_of_test]
+            test_result: current_state[:event],
+            time_of_test: current_state[:time],
+            timestamp_of_test: current_state[:timestamp]
           }
         end
         return monitor
@@ -82,8 +82,8 @@ module Ragios
     end
 
     Contract Hash => ArrayOf[Hash]
-    def self.get_all_results(options)
-      model.get_all_results(options)
+    def self.get_all_events(options)
+      model.get_all_events(options)
     end
 
     Contract Monitor_id => Bool
@@ -182,49 +182,53 @@ module Ragios
     end
 
     def self.save_notification(event, monitor, test_result, notifier)
-      model.save(unique_id,
+      event_time = Time.now
+      event_timestamp = Time.now.to_i
+      log_event(
         monitor_id: monitor[:_id],
+        state: monitor[:state],
+        event: event,
+        time: event_time,
+        timestamp: event_timestamp,
         monitor: monitor,
+        type: "event",
+        event_type: "monitor.notification",
         test_result: test_result,
-        type: "notification",
         notifier: notifier,
-        tag: monitor[:tag],
-        created_at: Time.now,
-        event: event)
+        tag: monitor[:tag]
+      )
     end
 
     def self.unique_id
       UUIDTools::UUID.random_create.to_s
     end
 
-    def self.log_results(this_generic_monitor)
-      test_result = {
+    def self.create_result(result, state, this_generic_monitor)
+      {
         monitor_id: this_generic_monitor.id,
-        state: this_generic_monitor.state,
-        test_result: this_generic_monitor.test_result,
-        time_of_test: this_generic_monitor.time_of_test,
-        timestamp_of_test: this_generic_monitor.timestamp_of_test,
+        state: state,
+        event: result,
+        time: this_generic_monitor.time_of_test,
+        timestamp: this_generic_monitor.timestamp_of_test,
         monitor: this_generic_monitor.options,
         tag: this_generic_monitor.options[:tag],
-        type: "test_result",
-        created_at: Time.now
+        type: "event",
+        event_type: "monitor.test"
       }
-      model.save(unique_id, test_result)
+    end
+
+    def self.log_event(event)
+      model.save(unique_id, event)
+    end
+
+    def self.log_results(this_generic_monitor)
+      test_result = create_result(this_generic_monitor.test_result, this_generic_monitor.state, this_generic_monitor)
+      log_event(test_result)
     end
 
     def self.log_error(this_generic_monitor, exception)
-      test_result = {
-        monitor_id: this_generic_monitor.id,
-        state: "error",
-        test_result: {error: exception.message},
-        time_of_test: Time.now,
-        timestamp_of_test: Time.now.to_i,
-        monitor: this_generic_monitor.options,
-        tag: this_generic_monitor.options[:tag],
-        type: "test_result",
-        created_at: Time.now
-      }
-      model.save(unique_id, test_result)
+      test_result = create_result({error: exception.message}, "error", this_generic_monitor)
+      log_event(test_result)
 
       $stderr.puts '-' * 80
       $stderr.puts exception.message

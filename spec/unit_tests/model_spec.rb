@@ -107,11 +107,12 @@ describe "Ragios::Database::Model" do
           test_result = {
             monitor_id: "my_monitor",
             state: "failed",
-            test_result: {winner: "chicken dinner"},
-            time_of_test: time,
-            timestamp_of_test: timestamp,
+            event: {winner: "chicken dinner"},
+            time: time,
+            timestamp: timestamp,
             monitor: {},
-            type: "test_result"
+            event_type: "monitor.test",
+            type: "event"
           }
           @database.create_doc  "activity#{count}", test_result
         end
@@ -120,15 +121,16 @@ describe "Ragios::Database::Model" do
         latest_test_result = {
           monitor_id: "my_monitor",
           state: "failed",
-          test_result: {winner: "chicken dinner"},
-          time_of_test: latest_time,
-          timestamp_of_test: latest_timestamp,
+          event: {winner: "chicken dinner"},
+          time: latest_time,
+          timestamp: latest_timestamp,
           monitor: {},
-          type: "test_result"
+          event_type: "monitor.test",
+          type: "event"
         }
         @database.create_doc "latest_activity", latest_test_result
 
-        @model.get_monitor_state("my_monitor").should include(_id: "latest_activity", timestamp_of_test: latest_timestamp)
+        @model.get_monitor_state("my_monitor").should include(_id: "latest_activity", timestamp: latest_timestamp)
 
         for count in 1..5 do
           @database.delete_doc! "activity#{count}"

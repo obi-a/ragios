@@ -42,11 +42,11 @@ module Ragios
 
       Contract Doc_id => Hash
       def get_monitor_state(id)
-        script = design_doc_script('function(doc){ if(doc.type == "test_result" && doc.time_of_test && doc.monitor_id) emit([doc.monitor_id, doc.time_of_test]); }')
-        results = dynamic_view("_design/results", script) do
-          @database.view("_design/results", "results",
-            endkey: [id, "1913-01-15 05:30:00 -0500"].to_s,
-            startkey: [id, "3015-01-15 05:30:00 -0500"].to_s,
+        script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.event_type) emit([doc.monitor_id, doc.event_type, doc.time]); }')
+        results = dynamic_view("_design/events", script) do
+          @database.view("_design/events", "events",
+            endkey: [id, "monitor.test", "1913-01-15 05:30:00 -0500"].to_s,
+            startkey: [id, "monitor.test", "3015-01-15 05:30:00 -0500"].to_s,
             limit: 1,
             include_docs: true,
             descending: true)
@@ -56,11 +56,11 @@ module Ragios
 
       #def results_by_state(monitor_id, state, start_date, end_date, take = nil, start_from_doc = nil)
       def results_by_state(options)
-        script = design_doc_script('function(doc){ if(doc.type == "test_result" && doc.time_of_test && doc.monitor_id && doc.state) emit([doc.monitor_id, doc.state, doc.time_of_test]); }')
+        script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.state && doc.event_type) emit([doc.monitor_id, doc.state, doc.event_type, doc.time]); }')
 
         query_options = {
-          endkey: [options[:monitor_id], options[:state], options[:end_date]].to_s,
-          startkey: [options[:monitor_id], options[:state], options[:start_date]].to_s
+          endkey: [options[:monitor_id], options[:state], "monitor.test", options[:end_date]].to_s,
+          startkey: [options[:monitor_id], options[:state], "monitor.test", options[:start_date], "monitor.test"].to_s
         }
 
         results = query("_design/results_by_state", script, query_options, options[:take], options[:start_from_doc])
@@ -68,8 +68,8 @@ module Ragios
       end
 
       #def get_all_results(monitor_id, start_date, end_date, take = nil, start_from_doc = nil)
-      def get_all_results(options)
-        script = design_doc_script('function(doc){ if(doc.type == "test_result" && doc.time_of_test && doc.monitor_id) emit([doc.monitor_id, doc.time_of_test]); }')
+      def get_all_events(options)
+        script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id) emit([doc.monitor_id, doc.time]); }')
         #example
         #start_date: "3015-01-15 05:30:00 -0500"
         #end_date: "1913-01-15 05:30:00 -0500"
@@ -78,17 +78,17 @@ module Ragios
           startkey: [options[:monitor_id], options[:start_date]].to_s
         }
 
-        results = query("_design/get_all_results", script, query_options, options[:take], options[:start_from_doc])
+        results = query("_design/get_all_events", script, query_options, options[:take], options[:start_from_doc])
         get_docs(results)
       end
 
       #def notifications(monitor_id, take = nil, start_from_doc = nil)
       def notifications(options)
-        script = design_doc_script('function(doc){ if(doc.type == "notification" && doc.created_at && doc.monitor_id) emit([doc.monitor_id, doc.created_at]); }')
+        script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.event_type) emit([doc.monitor_id, doc.time, doc.event_type]); }')
 
         query_options = {
-          endkey: [options[:monitor_id], options[:end_date]].to_s,
-          startkey: [options[:monitor_id], options[:start_date]].to_s
+          endkey: [options[:monitor_id], "monitor.notification", options[:end_date]].to_s,
+          startkey: [options[:monitor_id], "monitor.notification", options[:start_date]].to_s
         }
 
         results = query("_design/notifications", script, query_options, options[:take], options[:start_from_doc])
@@ -116,7 +116,7 @@ module Ragios
         query_options[:startkey_docid] = start_from_doc if start_from_doc
 
         results = dynamic_view(design_doc_name, script) do
-          @database.view(design_doc_name, "results", query_options)
+          @database.view(design_doc_name, "events", query_options)
         end
       end
 
@@ -128,7 +128,7 @@ module Ragios
         {
           language: 'javascript',
           views: {
-            results: {
+            events: {
               map: map_fn
             }
          }
