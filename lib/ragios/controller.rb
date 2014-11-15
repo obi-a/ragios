@@ -207,10 +207,11 @@ module Ragios
     def self.save_notification(event, monitor, test_result, notifier)
       event_time = Time.now
       event_timestamp = event_time.to_i
+      notification = {notified: event, via: notifier}
       log_event(
         monitor_id: monitor[:_id],
-        state: monitor[:state],
-        event: event,
+        state: event,
+        event: notification,
         time: event_time,
         timestamp: event_timestamp,
         monitor: monitor,

@@ -84,7 +84,7 @@ module Ragios
 
       #def notifications(monitor_id, take = nil, start_from_doc = nil)
       def notifications(options)
-        script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.event_type) emit([doc.monitor_id, doc.time, doc.event_type]); }')
+        script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.event_type) emit([doc.monitor_id, doc.event_type, doc.time]); }')
 
         query_options = {
           endkey: [options[:monitor_id], "monitor.notification", options[:end_date]].to_s,
