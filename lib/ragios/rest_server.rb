@@ -125,7 +125,7 @@ class App < Sinatra::Base
     end
   end
 
-  get '/monitors/:id/results*', :check => :valid_token? do
+  get '/monitors/:id/events*', :check => :valid_token? do
     try_request do
       all_events = controller.get_all_events(
         monitor_id: params[:id],
