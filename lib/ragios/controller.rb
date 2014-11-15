@@ -18,6 +18,17 @@ module Ragios
     def self.stop(monitor_id)
       try_monitor(monitor_id) do
         scheduler.unschedule(monitor_id)
+        event_time = Time.now
+        event_timestamp = event_time.to_i
+        log_event(
+          monitor_id: monitor_id,
+          event: {"monitor status" => "stopped"},
+          state: "stopped",
+          time: event_time,
+          timestamp: event_timestamp,
+          type: "event",
+          event_type: "monitor.stop"
+        )
         !!model.update(monitor_id, status_: "stopped")
       end
     end
@@ -93,6 +104,18 @@ module Ragios
         return true if is_active?(monitor)
         updated_generic_monitor = update_previous_state(monitor)
         add_to_scheduler(updated_generic_monitor)
+        event_time = Time.now
+        event_timestamp = event_time.to_i
+        log_event(
+          monitor_id: monitor_id,
+          event: {"monitor status" => "restarted"},
+          state: "restarted",
+          time: event_time,
+          monitor: monitor,
+          timestamp: event_timestamp,
+          type: "event",
+          event_type: "monitor.restart"
+        )
         !!model.update(monitor_id, status_: "active")
       end
     end
@@ -183,7 +206,7 @@ module Ragios
 
     def self.save_notification(event, monitor, test_result, notifier)
       event_time = Time.now
-      event_timestamp = Time.now.to_i
+      event_timestamp = event_time.to_i
       log_event(
         monitor_id: monitor[:_id],
         state: monitor[:state],
