@@ -4,7 +4,14 @@
   <li><a href="/admin/index">All Monitors</a></li>
   <li class="active">Add Monitor</li>
 </ol>
-<div id="message"></div>
+<span id="message"></span>
+<script id="message-template" type="text/template">
+    <div class="alert alert-dismissable alert-{{ alert }}">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <h4>{{ message }}!</h4>
+        <p>{{ response }}</p>
+    </div>
+</script>
 <div class="panel panel-default">
     <div class="panel-body">
         <button type="button" id="update-button" class="btn btn-default btn-sm">
