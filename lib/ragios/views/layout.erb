@@ -40,7 +40,13 @@
           <ul class="nav navbar-nav navbar-right">
             <li><a href="http://www.whisperservers.com/ragios/" data-toggle="tooltip" data-placement="bottom" title="Documentation"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a></li>
             <li><a href="https://github.com/obi-a/ragios" data-toggle="tooltip" data-placement="bottom" title="Source code"><span class="glyphicon glyphicon-book" aria-hidden="true"></span></a></li>
-            <% unless @login_page %><li><a href="/admin/logout" data-toggle="tooltip" data-placement="bottom" title="Logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a></li><% end %>
+            <% if Ragios::Admin.do_authentication? && !@login_page%>
+                <% if session[:authenticated] %>
+                  <li><a href="/admin/logout" data-toggle="tooltip" data-placement="bottom" title="Logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a></li>
+                <% else %>
+                  <li><a href="/admin/login" data-toggle="tooltip" data-placement="bottom" title="Login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span></a></li>
+                <% end %>
+            <% end %>
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->

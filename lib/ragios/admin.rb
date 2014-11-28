@@ -20,6 +20,10 @@ module Ragios
       @database ||= Ragios::CouchdbAdmin.get_database
     end
 
+    def self.do_authentication?
+      @authentication
+    end
+
     def self.valid_token?(token)
       return true unless @authentication
       return false if token.blank?

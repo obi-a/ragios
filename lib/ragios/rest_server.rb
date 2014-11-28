@@ -3,6 +3,8 @@ class App < Sinatra::Base
     content_type('application/json')
   end
 
+  enable :sessions
+
   register do
     def check (name)
       condition do
@@ -152,17 +154,18 @@ class App < Sinatra::Base
     end
   end
 
-  get '/admin/index', :check => :valid_token? do
+  get '/admin/index' do
+    redirect '/admin/login' if !session[:authenticated] && Ragios::Admin.do_authentication?
     content_type('text/html')
     erb :index
   end
 
-  get '/admin/monitors/new', :check => :valid_token? do
+  get '/admin/monitors/new' do
     content_type('text/html')
     erb :new
   end
 
-  get '/admin/monitors/:id*', :check => :valid_token? do
+  get '/admin/monitors/:id*' do
     @monitor = controller.get(params[:id])
     content_type('text/html')
     erb :monitor
@@ -181,7 +184,7 @@ class App < Sinatra::Base
       session[:authenticated] = true
       redirect '/admin/index'
     else
-      @error = "Login to continue"
+      @error = "Invalid username and/or password"
       content_type('text/html')
       erb :login
     end
