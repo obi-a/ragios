@@ -181,7 +181,7 @@ class App < Sinatra::Base
       session[:authenticated] = true
       redirect '/admin/index'
     else
-      @error = "You are not authorized to access this resource"
+      @error = "Login to continue"
       content_type('text/html')
       erb :login
     end

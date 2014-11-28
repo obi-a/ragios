@@ -37,9 +37,8 @@ module Ragios
     end
 
     def self.invalidate_token(token)
-      database.delete_doc!(token)
-    rescue Leanback::CouchdbException
-      false
+      return false if token.blank?
+      !!database.delete_doc!(token) rescue false
     end
 
     def self.session

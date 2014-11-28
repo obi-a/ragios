@@ -1,11 +1,26 @@
+<% if @error %>
+    <div class="alert alert-dismissable alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <p><%= @error %></p>
+    </div>
+<% end %>
 
-<div class="text-danger"><%= @error %></div>
 
-
-<form class="navbar-form navbar-left" role="login" action="/admin_session" method="post">
-  <div class="form-group">
-    <input type="text" class="form-control" placeholder="username" name="username">
-    <input type="password" class="form-control" placeholder="password" name="password">
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form class="navbar-form navbar-left" role="login" action="/admin_session" method="post">
+      <div class="form-group">
+        <span>Login</span>
+        <input type="text" class="form-control" placeholder="username" name="username">
+        <input type="password" class="form-control" placeholder="password" name="password">
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
   </div>
-  <button type="submit" class="btn btn-default">Submit</button>
-</form>
+</div>
+
+<div class="jumbotron">
+  <h1>Ragios</h1>
+  <p>A tiny, nimble & hackable system monitoring framework.</p>
+  <p><a class="btn btn-primary btn-lg" href="http://www.whisperservers.com/ragios/" role="button">Learn more</a></p>
+</div>
