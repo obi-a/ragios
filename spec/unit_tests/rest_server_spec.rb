@@ -188,22 +188,22 @@ describe "Ragios REST API" do
         last_response.status.should == 404
       end
     end
-    describe "Restart monitor" do
+    describe "start monitor" do
       before(:each) do
         @status = "active"
       end
-      it "restarts a stopped monitor" do
+      it "starts a stopped monitor" do
         controller.stop(@monitor_id)
         put '/monitors/' + @monitor_id, status: @status
         last_response.should be_ok
         controller.get(@monitor_id)[:status_].should == @status
 
-        #restart monitor is idempotent
+        #start monitor is idempotent
         put '/monitors/' + @monitor_id, status: @status
         last_response.should be_ok
         controller.get(@monitor_id)[:status_].should == @status
       end
-      it "cannot restart a monitor that doesn't exist" do
+      it "cannot start a monitor that doesn't exist" do
         put '/monitors/' + "dont_exist", status: @status
         last_response.status.should == 404
       end

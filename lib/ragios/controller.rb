@@ -98,24 +98,13 @@ module Ragios
     end
 
     Contract Monitor_id => Bool
-    def self.restart(monitor_id)
+    def self.start(monitor_id)
       try_monitor(monitor_id) do
         monitor = model.find(monitor_id)
         return true if is_active?(monitor)
         updated_generic_monitor = update_previous_state(monitor)
         add_to_scheduler(updated_generic_monitor)
-        event_time = Time.now
-        event_timestamp = event_time.to_i
-        log_event(
-          monitor_id: monitor_id,
-          event: {"monitor status" => "restarted"},
-          state: "restarted",
-          time: event_time,
-          monitor: monitor,
-          timestamp: event_timestamp,
-          type: "event",
-          event_type: "monitor.restart"
-        )
+        log_monitor_start(monitor_id, monitor)
         !!model.update(monitor_id, status_: "active")
       end
     end
@@ -134,9 +123,9 @@ module Ragios
     end
 
     #only called when first starting the application
-    #to restart all active monitors from database to scheduler
+    #to start all active monitors from database to scheduler
     Contract None => Or[ArrayOf[Monitor], nil]
-    def self.restart_all_active
+    def self.start_all_active
       monitors = model.active_monitors
       unless monitors.empty?
         monitors.each do |monitor|
@@ -157,6 +146,7 @@ module Ragios
       this_generic_monitor = generic_monitor(monitor_with_id)
       add_to_scheduler(this_generic_monitor)
       model.save(this_generic_monitor.id, this_generic_monitor.options)
+      log_monitor_start(this_generic_monitor.id, this_generic_monitor.options)
       return this_generic_monitor.options
     end
 
@@ -167,7 +157,6 @@ module Ragios
       stop_on_error(this_generic_monitor.id, this_generic_monitor.options)
       raise e
     rescue Exception => e
-
       stop_on_error(this_generic_monitor.id, this_generic_monitor.options)
       log_error(this_generic_monitor, e)
     end
@@ -184,9 +173,8 @@ module Ragios
     def self.update_previous_state(monitor)
       monitor_id = monitor[:_id]
       this_generic_monitor = generic_monitor(monitor)
-      if get_current_state(monitor_id) && get_current_state(monitor_id)[:state]
-        this_generic_monitor.state = get_current_state(monitor_id)[:state].to_sym
-      end
+      current_state = get_current_state(monitor_id)
+      this_generic_monitor.state = current_state[:state].to_sym if current_state[:state]
       return this_generic_monitor
     end
 
@@ -243,6 +231,21 @@ module Ragios
 
     def self.log_event(event)
       model.save(unique_id, event)
+    end
+
+    def self.log_monitor_start(monitor_id, monitor)
+      event_time = Time.now
+      event_timestamp = event_time.to_i
+      log_event(
+        monitor_id: monitor_id,
+        event: {"monitor status" => "started"},
+        state: "started",
+        time: event_time,
+        monitor: monitor,
+        timestamp: event_timestamp,
+        type: "event",
+        event_type: "monitor.start"
+      )
     end
 
     def self.log_results(this_generic_monitor)

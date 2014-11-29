@@ -271,8 +271,8 @@ describe Ragios::Controller do
       expect { controller.delete("dont_exist") }.to raise_error Ragios::MonitorNotFound
     end
   end
-  describe "#restart" do
-    it "restarts a monitor by id" do
+  describe "#start" do
+    it "starts a monitor by id" do
       monitor = {
         monitor: "Something",
         every: "664m",
@@ -283,21 +283,21 @@ describe Ragios::Controller do
       monitor_id = controller.add(monitor)[:_id]
       controller.stop(monitor_id)
 
-      controller.restart(monitor_id).should == true
+      controller.start(monitor_id).should == true
       restarted_monitor = @database.get_doc(monitor_id)
       restarted_monitor[:status_].should == "active"
       controller.scheduler.find(monitor_id).first.original.should == "664m"
 
-      #controller.restart(monitor_id) is idempotent
-      controller.restart(monitor_id)
+      #controller.start(monitor_id) is idempotent
+      controller.start(monitor_id)
       restarted_monitor = @database.get_doc(monitor_id)
       restarted_monitor[:status_].should == "active"
 
       controller.delete(monitor_id)
     end
 
-    it "cannot restart a monitor that doesn't exist" do
-      expect { controller.restart("dont_exist") }.to raise_error Ragios::MonitorNotFound
+    it "cannot start a monitor that doesn't exist" do
+      expect { controller.start("dont_exist") }.to raise_error Ragios::MonitorNotFound
     end
   end
   describe "#test_now" do
@@ -419,8 +419,8 @@ describe Ragios::Controller do
     controller.get_all.should == []
   end
 
-  it "will not restart when there is no active monitor" do
-    controller.restart_all_active.should == nil
+  it "will not start when there is no active monitor" do
+    controller.start_all_active.should == nil
   end
 
   describe "all monitors" do
@@ -448,17 +448,17 @@ describe Ragios::Controller do
         [all_monitors[0][:_id], all_monitors[1][:_id]].should include(@first_monitor, @second_monitor)
       end
     end
-    describe "#restart_all_active" do
-      it "restarts all active monitors" do
+    describe "#start_all_active" do
+      it "starts all active monitors" do
         controller.stop(@first_monitor)
         controller.stop(@second_monitor)
         #set stopped monitors as active in database
-        #so they can be restarted by restart_all
+        #so they can be started by start_all
         status = {status_: "active"}
         @database.edit_doc!(@first_monitor, status)
         @database.edit_doc!(@second_monitor, status)
 
-        controller.restart_all_active
+        controller.start_all_active
 
         controller.scheduler.find(@first_monitor).first.tags.first.should == @first_monitor
         controller.scheduler.find(@second_monitor).first.tags.first.should == @second_monitor
@@ -511,8 +511,8 @@ describe Ragios::Controller do
       #stopped monitors are not restarted after an update
       controller.update(monitor_id, plugin: "passing_plugin")
 
-      #manually restart this monitor
-      controller.restart(monitor_id)
+      #manually start this monitor
+      controller.start(monitor_id)
 
       sleep 1
 

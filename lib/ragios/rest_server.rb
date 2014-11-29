@@ -94,12 +94,12 @@ class App < Sinatra::Base
     end
   end
 
-  #restart a running monitor
+  #start a stopped monitor
   put '/monitors/:id*', :check => :valid_token? do
     pass unless params["status"] == "active"
     try_request do
       monitor_id = params[:id]
-      controller.restart(monitor_id)
+      controller.start(monitor_id)
       generate_json(ok: true)
     end
   end
