@@ -155,17 +155,19 @@ class App < Sinatra::Base
   end
 
   get '/admin/index' do
-    redirect '/admin/login' if !session[:authenticated] && Ragios::Admin.do_authentication?
+    check_logout
     content_type('text/html')
     erb :index
   end
 
   get '/admin/monitors/new' do
+    check_logout
     content_type('text/html')
     erb :new
   end
 
   get '/admin/monitors/:id*' do
+    check_logout
     @monitor = controller.get(params[:id])
     content_type('text/html')
     erb :monitor
@@ -218,7 +220,20 @@ class App < Sinatra::Base
     bad_request
   end
 
+  def check_logout
+    token = request.cookies['AuthSession']
+    if logged_out?(token)
+      redirect '/admin/login'
+    end
+  end
+
 private
+
+  def logged_out?(token)
+    return false if !Ragios::Admin.do_authentication?
+    (!session[:authenticated] || !Ragios::Admin.valid_token?(token)) ? true : false
+  end
+
   def bad_request
     generate_json(error: "bad_request")
   end
