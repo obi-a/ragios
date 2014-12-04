@@ -78,6 +78,9 @@ describe "Ragios::Database::Model" do
           @model.all_monitors.first.should include(_id: "monitor_3")
           @model.all_monitors.last.should include(_id: "monitor_1")
         end
+        it "can limit results" do
+          @model.all_monitors(take = 2).count.should == 2
+        end
       end
       describe "#monitors_where" do
         it "returns monitors that match provided attributes" do

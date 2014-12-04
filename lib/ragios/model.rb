@@ -95,16 +95,16 @@ module Ragios
         get_docs(results)
       end
 
+      Contract Any => Array
+      #change to optional hash {take: take, start_from: start_from}
       def all_monitors(take = nil, start_from_doc = nil)
         script = design_doc_script('function(doc){ if(doc.type == "monitor" && doc.created_at_) emit([doc.created_at_]); }')
-
         query_options = {
           endkey: ["1913-01-15 05:30:00 -0500"].to_s,
           startkey: ["3015-01-15 05:30:00 -0500"].to_s
         }
-
-         results = query("_design/all_monitors", script, query_options, take, start_from_doc)
-         get_docs(results)
+        results = query("_design/all_monitors", script, query_options, take, start_from_doc)
+        get_docs(results)
       end
 
     private
