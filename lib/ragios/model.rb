@@ -43,14 +43,12 @@ module Ragios
       Contract Doc_id => Hash
       def get_monitor_state(id)
         script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.event_type) emit([doc.monitor_id, doc.event_type, doc.time]); }')
-        results = dynamic_view("_design/events", script) do
-          @database.view("_design/events", "events",
-            endkey: [id, "monitor.test", "1913-01-15 05:30:00 -0500"].to_s,
-            startkey: [id, "monitor.test", "3015-01-15 05:30:00 -0500"].to_s,
-            limit: 1,
-            include_docs: true,
-            descending: true)
-        end
+        query_options = {
+          endkey: [id, "monitor.test", "1913-01-15 05:30:00 -0500"].to_s,
+          startkey: [id, "monitor.test", "3015-01-15 05:30:00 -0500"].to_s,
+          limit: 1
+        }
+        results = query("_design/events", script, query_options)
         results[:rows].blank? ? {} : results[:rows].first[:doc]
       end
 
@@ -62,59 +60,52 @@ module Ragios
           endkey: [options[:monitor_id], options[:state], "monitor.test", options[:end_date]].to_s,
           startkey: [options[:monitor_id], options[:state], "monitor.test", options[:start_date], "monitor.test"].to_s
         }
-
-        results = query("_design/results_by_state", script, query_options, options[:take], options[:start_from_doc])
+        query_options[:limit] = options[:take] if options[:take]
+        results = query("_design/results_by_state", script, query_options)
         get_docs(results)
       end
 
-      #def get_all_results(monitor_id, start_date, end_date, take = nil, start_from_doc = nil)
-      def get_all_events(options)
+      #returns all events for specified monitor id
+      Contract Doc_id, Hash => Array
+      def get_events(monitor_id, options)
         script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id) emit([doc.monitor_id, doc.time]); }')
-        #example
-        #start_date: "3015-01-15 05:30:00 -0500"
-        #end_date: "1913-01-15 05:30:00 -0500"
-        query_options = {
-          endkey: [options[:monitor_id], options[:end_date]].to_s,
-          startkey: [options[:monitor_id], options[:start_date]].to_s
-        }
-
-        results = query("_design/get_all_events", script, query_options, options[:take], options[:start_from_doc])
+        query_options = {}
+        query_options[:endkey] = [monitor_id, options[:end_date]].to_s
+        query_options[:startkey] = [monitor_id, options[:start_date]].to_s
+        query_options[:limit] = options[:take] if options[:take]
+        results = query("_design/get_all_events", script, query_options)
         get_docs(results)
       end
 
-      #def notifications(monitor_id, take = nil, start_from_doc = nil)
       def notifications(options)
         script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.event_type) emit([doc.monitor_id, doc.event_type, doc.time]); }')
 
         query_options = {
           endkey: [options[:monitor_id], "monitor.notification", options[:end_date]].to_s,
           startkey: [options[:monitor_id], "monitor.notification", options[:start_date]].to_s
-        }
 
-        results = query("_design/notifications", script, query_options, options[:take], options[:start_from_doc])
+        }
+        query_options[:limit] = options[:take] if options[:take]
+        results = query("_design/notifications", script, query_options)
         get_docs(results)
       end
 
       Contract Any => Array
-      #change to optional hash {take: take, start_from: start_from}
-      def all_monitors(take = nil, start_from_doc = nil)
+      def all_monitors(options = {})
         script = design_doc_script('function(doc){ if(doc.type == "monitor" && doc.created_at_) emit([doc.created_at_]); }')
-        query_options = {
-          endkey: ["1913-01-15 05:30:00 -0500"].to_s,
-          startkey: ["3015-01-15 05:30:00 -0500"].to_s
-        }
-        results = query("_design/all_monitors", script, query_options, take, start_from_doc)
+        query_options = {}
+        query_options[:endkey] = ["1913-01-15 05:30:00 -0500"].to_s
+        query_options[:startkey] = ["3015-01-15 05:30:00 -0500"].to_s
+        query_options[:limit] = options[:take] if options[:take]
+        results = query("_design/all_monitors", script, query_options)
         get_docs(results)
       end
 
     private
 
-      def query(design_doc_name, script, query_options, take, start_from_doc)
+      def query(design_doc_name, script, query_options)
         query_options[:descending] = true
         query_options[:include_docs] = true
-        query_options[:limit] = take if take
-        query_options[:startkey_docid] = start_from_doc if start_from_doc
-
         results = dynamic_view(design_doc_name, script) do
           @database.view(design_doc_name, "events", query_options)
         end

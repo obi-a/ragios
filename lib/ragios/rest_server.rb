@@ -129,12 +129,12 @@ class App < Sinatra::Base
 
   get '/monitors/:id/events*', :check => :valid_token? do
     try_request do
-      all_events = controller.get_all_events(
-        monitor_id: params[:id],
+      events = controller.get_events(
+        params[:id],
         start_date: params[:end_date],
         end_date: params[:start_date]
       )
-      generate_json(all_events)
+      generate_json(events)
     end
   end
 
@@ -149,7 +149,7 @@ class App < Sinatra::Base
 
   get '/monitors*', :check => :valid_token? do
     try_request do
-      monitors =  controller.get_all(params[:take], params[:start_from_doc])
+      monitors =  controller.get_all(take: params[:take])
       generate_json(monitors)
     end
   end

@@ -78,8 +78,8 @@ module Ragios
     end
 
     Contract Any => ArrayOf[Monitor]
-    def self.get_all(take = nil, start_from_doc = nil)
-      model.all_monitors(take, start_from_doc)
+    def self.get_all(options)
+      model.all_monitors(options)
     end
 
     Contract Hash => ArrayOf[Hash]
@@ -92,9 +92,9 @@ module Ragios
       model.notifications(options)
     end
 
-    Contract Hash => ArrayOf[Hash]
-    def self.get_all_events(options)
-      model.get_all_events(options)
+    Contract Monitor_id, Hash => ArrayOf[Hash]
+    def self.get_events(monitor_id, options)
+      model.get_events(monitor_id, options)
     end
 
     Contract Monitor_id => Bool
