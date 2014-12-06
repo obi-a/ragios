@@ -67,7 +67,7 @@ module Ragios
 
       #returns all events for specified monitor id
       Contract Doc_id, Hash => Array
-      def get_events(monitor_id, options)
+      def get_monitor_events(monitor_id, options)
         script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id) emit([doc.monitor_id, doc.time]); }')
         query_options = {}
         query_options[:endkey] = [monitor_id, options[:end_date]].to_s

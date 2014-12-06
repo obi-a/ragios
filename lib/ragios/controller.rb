@@ -78,7 +78,7 @@ module Ragios
     end
 
     Contract Any => ArrayOf[Monitor]
-    def self.get_all(options)
+    def self.get_all(options = {})
       model.all_monitors(options)
     end
 
@@ -94,7 +94,7 @@ module Ragios
 
     Contract Monitor_id, Hash => ArrayOf[Hash]
     def self.get_events(monitor_id, options)
-      model.get_events(monitor_id, options)
+      model.get_monitor_events(monitor_id, options)
     end
 
     Contract Monitor_id => Bool

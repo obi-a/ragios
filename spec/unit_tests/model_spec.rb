@@ -79,7 +79,7 @@ describe "Ragios::Database::Model" do
           @model.all_monitors.last.should include(_id: "monitor_1")
         end
         it "can limit results" do
-          @model.all_monitors(take = 2).count.should == 2
+          @model.all_monitors(take: 2).count.should == 2
         end
       end
       describe "#monitors_where" do
@@ -139,6 +139,72 @@ describe "Ragios::Database::Model" do
           @database.delete_doc! "activity#{count}"
         end
         @database.delete_doc! "latest_activity"
+      end
+    end
+    describe "#get_monitor_events" do
+      before(:each) do
+        for count in 1..5 do
+          time = Time.now
+          timestamp = time.to_i
+          event = {
+            monitor_id: "my_monitor",
+            state: "failed",
+            event: {winner: "chicken dinner"},
+            time: time,
+            timestamp: timestamp,
+            monitor: {},
+            event_type: "monitor.test",
+            type: "event"
+          }
+          @database.create_doc  "event_#{count}", event
+        end
+      end
+      it "returns all events for the monitor that happened within the specified date range" do
+        events = @model.get_monitor_events("my_monitor", start_date: "3015-01-15 05:30:00 -0500", end_date: "1913-01-15 05:30:00 -0500")
+        events.first[:_id].should == "event_5"
+        events.last[:_id].should == "event_1"
+        events.count.should == 5
+
+        events = @model.get_monitor_events("my_monitor", start_date: "3015-01-15 05:30:00", end_date: "1913-01-15 05:30:00")
+        events.first[:_id].should == "event_5"
+        events.last[:_id].should == "event_1"
+        events.count.should == 5
+
+        events = @model.get_monitor_events("my_monitor", start_date: "3015-01-15", end_date: "1913-01-15")
+        events.first[:_id].should == "event_5"
+        events.last[:_id].should == "event_1"
+        events.count.should == 5
+
+        events = @model.get_monitor_events("my_monitor", start_date: "3015-01-15", end_date: "1913-01-15")
+        events.first[:_id].should == "event_5"
+        events.last[:_id].should == "event_1"
+        events.count.should == 5
+
+        events = @model.get_monitor_events("my_monitor", start_date: "3015", end_date: "1913")
+        events.first[:_id].should == "event_5"
+        events.last[:_id].should == "event_1"
+        events.count.should == 5
+      end
+      it "can limit the number of returned results" do
+        events = @model.get_monitor_events("my_monitor", start_date: "3015", end_date: "1913", take: 2)
+        events.first[:_id].should == "event_5"
+        events.last[:_id].should == "event_4"
+        events.count.should == 2
+      end
+      it "cannot return events with reversed start and end date" do
+        expect{ @model.get_monitor_events("my_monitor", end_date: "3015-01-15 05:30:00 -0500", start_date: "1913-01-15 05:30:00 -0500") }.to raise_error(Leanback::CouchdbException)
+        expect{ @model.get_monitor_events("my_monitor", {}) }.to raise_error(Leanback::CouchdbException)
+      end
+      it "returns an empty array when no events happened in the provided data range" do
+        @model.get_monitor_events("my_monitor", start_date: "1965", end_date: "1913").should == []
+      end
+      it "returns an empty array when the specified monitor is not found" do
+        @model.get_monitor_events("not_found", start_date: "3015", end_date: "1913").should == []
+      end
+      after(:each) do
+        for count in 1..5 do
+          @database.delete_doc! "event_#{count}"
+        end
       end
     end
     after(:each) do
