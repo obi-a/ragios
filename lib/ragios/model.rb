@@ -43,29 +43,25 @@ module Ragios
       Contract Doc_id => Hash
       def get_monitor_state(id)
         script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.event_type) emit([doc.monitor_id, doc.event_type, doc.time]); }')
-        query_options = {
-          endkey: [id, "monitor.test", "1913-01-15 05:30:00 -0500"].to_s,
-          startkey: [id, "monitor.test", "3015-01-15 05:30:00 -0500"].to_s,
-          limit: 1
-        }
+        query_options = {}
+        query_options[:endkey] = [id, "monitor.test", "1913-01-15 05:30:00 -0500"].to_s
+        query_options[:startkey] = [id, "monitor.test", "3015-01-15 05:30:00 -0500"].to_s
+        query_options[:limit] = 1
         results = query("_design/events", script, query_options)
         results[:rows].blank? ? {} : results[:rows].first[:doc]
       end
 
-      #def results_by_state(monitor_id, state, start_date, end_date, take = nil, start_from_doc = nil)
-      def results_by_state(options)
+      Contract Doc_id, String, Hash => Array
+      def get_monitor_events_by_state(monitor_id, state, options)
         script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.state && doc.event_type) emit([doc.monitor_id, doc.state, doc.event_type, doc.time]); }')
-
-        query_options = {
-          endkey: [options[:monitor_id], options[:state], "monitor.test", options[:end_date]].to_s,
-          startkey: [options[:monitor_id], options[:state], "monitor.test", options[:start_date], "monitor.test"].to_s
-        }
+        query_options = {}
+        query_options[:endkey] = [monitor_id, state, "monitor.test", options[:end_date]].to_s
+        query_options[:startkey] = [monitor_id, state, "monitor.test", options[:start_date]].to_s
         query_options[:limit] = options[:take] if options[:take]
         results = query("_design/results_by_state", script, query_options)
         get_docs(results)
       end
 
-      #returns all events for specified monitor id
       Contract Doc_id, Hash => Array
       def get_monitor_events(monitor_id, options)
         script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id) emit([doc.monitor_id, doc.time]); }')
@@ -77,14 +73,12 @@ module Ragios
         get_docs(results)
       end
 
-      def notifications(options)
+      Contract Doc_id, Hash => Array
+      def get_monitor_notifications(monitor_id, options)
         script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id && doc.event_type) emit([doc.monitor_id, doc.event_type, doc.time]); }')
-
-        query_options = {
-          endkey: [options[:monitor_id], "monitor.notification", options[:end_date]].to_s,
-          startkey: [options[:monitor_id], "monitor.notification", options[:start_date]].to_s
-
-        }
+        query_options = {}
+        query_options[:endkey] = [monitor_id, "monitor.notification", options[:end_date]].to_s
+        query_options[:startkey] = [monitor_id, "monitor.notification", options[:start_date]].to_s
         query_options[:limit] = options[:take] if options[:take]
         results = query("_design/notifications", script, query_options)
         get_docs(results)

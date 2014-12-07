@@ -82,14 +82,14 @@ module Ragios
       model.all_monitors(options)
     end
 
-    Contract Hash => ArrayOf[Hash]
-    def self.get_results_by_state(options)
-      model.results_by_state(options)
+    Contract Monitor_id, String, Hash => ArrayOf[Hash]
+    def self.get_events_by_state(monitor_id, state, options)
+      model.get_monitor_events_by_state(monitor_id, state, options)
     end
 
-    Contract Hash => ArrayOf[Hash]
-    def self.get_notifications(options)
-      model.notifications(options)
+    Contract Monitor_id, Hash => ArrayOf[Hash]
+    def self.get_notifications(monitor_id, options)
+      model.get_monitor_notifications(monitor_id, options)
     end
 
     Contract Monitor_id, Hash => ArrayOf[Hash]

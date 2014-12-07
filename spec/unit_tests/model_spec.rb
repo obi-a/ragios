@@ -141,6 +141,96 @@ describe "Ragios::Database::Model" do
         @database.delete_doc! "latest_activity"
       end
     end
+    describe "#get_monitor_events_by_state" do
+      before(:each) do
+        for count in 1..5 do
+          time = Time.now
+          timestamp = time.to_i
+          event = {
+            monitor_id: "my_monitor",
+            state: "failed",
+            event: {winner: "chicken dinner"},
+            time: time,
+            timestamp: timestamp,
+            monitor: {},
+            event_type: "monitor.test",
+            type: "event"
+          }
+          @database.create_doc  "event_by_state_#{count}", event
+        end
+      end
+
+      it "returns all events by specified state over the provided date range" do
+        events = @model.get_monitor_events_by_state("my_monitor", "failed", start_date: "3015-01-15 05:30:00 -0500", end_date: "1913")
+        events.first[:_id].should == "event_by_state_5"
+        events.last[:_id].should == "event_by_state_1"
+        events.count.should == 5
+
+        @model.get_monitor_events_by_state("my_monitor", "passed", start_date: "3015", end_date: "1913").should == []
+        @model.get_monitor_events_by_state("my_monitor", "passed", start_date: "2000", end_date: "1980").should == []
+
+        events = @model.get_monitor_events_by_state("my_monitor", "failed", start_date: "3015", end_date: "1913", take: 2)
+        events.first[:_id].should == "event_by_state_5"
+        events.last[:_id].should == "event_by_state_4"
+        events.count.should == 2
+
+        expect { @model.get_monitor_events_by_state("not_found", "failed", start_date: "1913", end_date: "3015") }.to raise_error(Leanback::CouchdbException)
+        expect { @model.get_monitor_events_by_state("not_found", "failed", {}) }.to raise_error(Leanback::CouchdbException)
+      end
+
+      after(:each) do
+        for count in 1..5 do
+          @database.delete_doc! "event_by_state_#{count}"
+        end
+      end
+    end
+    describe "#get_monitor_notifications" do
+      before(:each) do
+        for count in 1..5 do
+          time = Time.now
+          timestamp = time.to_i
+          notification = {
+            monitor_id: "my_monitor",
+            state: "failed",
+            event: {winner: "chicken dinner"},
+            time: time,
+            timestamp: timestamp,
+            monitor: {},
+            event_type: "monitor.notification",
+            type: "event",
+            notifier: "notifier"
+          }
+          @database.create_doc "notification_#{count}", notification
+        end
+      end
+      it "returns all notifications for specified  monitor within the specified date range" do
+        notifications = @model.get_monitor_notifications("my_monitor", start_date: "3015", end_date: "1913")
+        notifications.first[:_id].should == "notification_5"
+        notifications.last[:_id].should == "notification_1"
+        notifications.count.should == 5
+      end
+      it "can limit the number of notifications returned in the query" do
+        notifications = @model.get_monitor_notifications("my_monitor", start_date: "3015", end_date: "1913", take: 2)
+        notifications.first[:_id].should == "notification_5"
+        notifications.last[:_id].should == "notification_4"
+        notifications.count.should == 2
+      end
+      it "returns an empty array when notification is found within the date range" do
+        @model.get_monitor_notifications("my_monitor", start_date: "1990", end_date: "1980").should == []
+      end
+      it "returns an empty array when monitor is not found" do
+        @model.get_monitor_notifications("not_found", start_date: "3015", end_date: "1913").should == []
+      end
+      it "raises an exception when start_date and end_date is reversed or missing" do
+        expect{ @model.get_monitor_notifications("my_monitor", start_date: "1913", end_date: "3015")}.to raise_error(Leanback::CouchdbException)
+        expect{ @model.get_monitor_notifications("my_monitor", {})}.to raise_error(Leanback::CouchdbException)
+      end
+      after(:each) do
+        for count in 1..5 do
+          @database.delete_doc! "notification_#{count}"
+        end
+      end
+    end
     describe "#get_monitor_events" do
       before(:each) do
         for count in 1..5 do
@@ -191,7 +281,7 @@ describe "Ragios::Database::Model" do
         events.last[:_id].should == "event_4"
         events.count.should == 2
       end
-      it "cannot return events with reversed start and end date" do
+      it "cannot return events with reversed or missing start and end date" do
         expect{ @model.get_monitor_events("my_monitor", end_date: "3015-01-15 05:30:00 -0500", start_date: "1913-01-15 05:30:00 -0500") }.to raise_error(Leanback::CouchdbException)
         expect{ @model.get_monitor_events("my_monitor", {}) }.to raise_error(Leanback::CouchdbException)
       end
