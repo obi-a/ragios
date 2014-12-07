@@ -3,7 +3,9 @@
 
 =Goals for versions 0.6.2
 * Add a web UI admin dashboard for Ragios.
+* Add unit tests for Ragios::NotifyJob
 
+Add methods  - get results, get notifications, get errors
 
 * write about directly testing a plugin by calling generic_monitor
  generic_monitor = Ragios::GenericMonitor.new monitor
