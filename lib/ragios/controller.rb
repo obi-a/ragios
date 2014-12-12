@@ -77,26 +77,6 @@ module Ragios
       end
     end
 
-    Contract Any => ArrayOf[Monitor]
-    def self.get_all(options = {})
-      model.all_monitors(options)
-    end
-
-    Contract Monitor_id, String, Hash => ArrayOf[Hash]
-    def self.get_events_by_state(monitor_id, state, options)
-      model.get_monitor_events_by_state(monitor_id, state, options)
-    end
-
-    Contract Monitor_id, Hash => ArrayOf[Hash]
-    def self.get_notifications(monitor_id, options)
-      model.get_monitor_notifications(monitor_id, options)
-    end
-
-    Contract Monitor_id, Hash => ArrayOf[Hash]
-    def self.get_events(monitor_id, options)
-      model.get_monitor_events(monitor_id, options)
-    end
-
     Contract Monitor_id => Bool
     def self.start(monitor_id)
       try_monitor(monitor_id) do
@@ -117,11 +97,6 @@ module Ragios
       end
     end
 
-    Contract Hash => ArrayOf[Monitor]
-    def self.where(options)
-      model.monitors_where(options)
-    end
-
     #only called when first starting the application
     #to start all active monitors from database to scheduler
     Contract None => Or[ArrayOf[Monitor], nil]
@@ -133,11 +108,6 @@ module Ragios
           add_to_scheduler(updated_generic_monitor)
         end
       end
-    end
-
-    Contract Monitor_id => Hash
-    def self.get_current_state(monitor_id)
-      model.get_monitor_state(monitor_id)
     end
 
     Contract Hash => Monitor
@@ -167,6 +137,37 @@ module Ragios
 
     def self.resolved(monitor, test_result, notifier)
       save_notification("resolved", monitor, test_result, notifier)
+    end
+
+    #queries
+    Contract Any => ArrayOf[Monitor]
+    def self.get_all(options = {})
+      model.all_monitors(options)
+    end
+
+    Contract Monitor_id, String, Hash => ArrayOf[Hash]
+    def self.get_events_by_state(monitor_id, state, options)
+      model.get_monitor_events_by_state(monitor_id, state, options)
+    end
+
+    Contract Monitor_id, Hash => ArrayOf[Hash]
+    def self.get_notifications(monitor_id, options)
+      model.get_monitor_notifications(monitor_id, options)
+    end
+
+    Contract Monitor_id, Hash => ArrayOf[Hash]
+    def self.get_events(monitor_id, options)
+      model.get_monitor_events(monitor_id, options)
+    end
+
+    Contract Hash => ArrayOf[Monitor]
+    def self.where(options)
+      model.monitors_where(options)
+    end
+
+    Contract Monitor_id => Hash
+    def self.get_current_state(monitor_id)
+      model.get_monitor_state(monitor_id)
     end
 
   private

@@ -2,11 +2,13 @@ require 'spec_base.rb'
 
 describe "Ragios::Database::Model" do
   before(:all) do
-    @database = Leanback::Couchdb.new(database: "ragios_test_model_database#{Time.now.to_i}",
-                  address: "http://localhost",
-                  username: ENV['COUCHDB_ADMIN_USERNAME'],
-                  password: ENV['COUCHDB_ADMIN_PASSWORD'],
-                  port: "5984")
+    @database = Leanback::Couchdb.new(
+      database: "ragios_test_model_database#{Time.now.to_i}",
+      address: "http://localhost",
+      username: ENV['COUCHDB_ADMIN_USERNAME'],
+      password: ENV['COUCHDB_ADMIN_PASSWORD'],
+      port: "5984"
+    )
     @database.create
     @model =  Ragios::Database::Model.new(@database)
   end

@@ -393,32 +393,6 @@ describe Ragios::Controller do
       expect { controller.get("dont_exist") }.to raise_error Ragios::MonitorNotFound
     end
   end
-  describe "#where" do
-    it "returns monitors that match the provided attributes" do
-      unique_name = "Something unique #{Time.now.to_i}"
-      monitor = {
-        monitor: unique_name,
-        every: "5m",
-        via: "mock_notifier",
-        plugin: "passing_plugin"
-      }
-
-      monitor_id = controller.add(monitor)[:_id]
-      results = controller.where(monitor: unique_name, every: "5m")
-      results.first[:_id].should == monitor_id
-
-      controller.delete(monitor_id)
-    end
-
-    it "returns an empty array when no monitor matches the provided attributes" do
-      unique_name = "Something unique #{Time.now.to_i}"
-      controller.where(monitor: unique_name, tag: "xyz").should == []
-    end
-  end
-  it "get_all returns an empty array when there is no monitor" do
-    controller.get_all.should == []
-  end
-
   it "will not start when there is no active monitor" do
     controller.start_all_active.should == nil
   end
@@ -441,12 +415,6 @@ describe Ragios::Controller do
 
       @first_monitor = controller.add(monitor_1)[:_id]
       @second_monitor = controller.add(monitor_1)[:_id]
-    end
-    describe "#get_all" do
-      it "fetches all monitors" do
-        all_monitors = controller.get_all
-        [all_monitors[0][:_id], all_monitors[1][:_id]].should include(@first_monitor, @second_monitor)
-      end
     end
     describe "#start_all_active" do
       it "starts all active monitors" do
@@ -521,31 +489,14 @@ describe Ragios::Controller do
       controller.delete(monitor_id)
     end
   end
-  describe "#get_current_state" do
-    it "returns a monitors current state" do
-      monitor = {
-        monitor: "Something",
-        every: "15m",
-        via: "mock_notifier",
-        plugin: "failing_plugin"
-      }
-
-      monitor_id = controller.add(monitor)[:_id]
-      controller.stop(monitor_id)
-
-      controller.test_now(monitor_id)
-
-      sleep 1
-      controller.update(monitor_id, plugin: "passing_plugin")
-      controller.test_now(monitor_id)
-      sleep 1
-
-      controller.get_current_state(monitor_id)[:state].should == "passed"
-
-      controller.delete(monitor_id)
-    end
-    it "returns nil when monitor doesn't have a any state stored in the database" do
-      controller.get_current_state("dont_exist").should == {}
+  describe "#queries" do
+    it "has no errors" do
+      expect { controller.get_current_state("dont_exist") }.to_not raise_error
+      expect { controller.get_notifications("not_found", start_date: "2009", end_date: "2001") }.to_not raise_error
+      expect { controller.where({}) }.to_not raise_error
+      expect { controller.get_events("not_found", start_date: "2009", end_date: "2001") }.to_not raise_error
+      expect { controller.get_events_by_state("not_found", "none", start_date: "2009", end_date: "2001") }.to_not raise_error
+      expect { controller.get_all }.to_not raise_error
     end
   end
   after(:all) do
