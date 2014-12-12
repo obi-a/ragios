@@ -17,6 +17,20 @@ describe Ragios::Admin do
     @database = Ragios::CouchdbAdmin.get_database
   end
 
+  describe "#invalidate_token" do
+    it "deletes a valid token and returns true" do
+      valid_token = admin.session
+      admin.invalidate_token(valid_token).should == true
+    end
+    it "returns false when token is blank" do
+      admin.invalidate_token("").should == false
+      admin.invalidate_token(nil).should == false
+    end
+    it "returns false when token is not found" do
+      admin.invalidate_token("not_found_token").should == false
+    end
+  end
+
   describe "#authenticate?" do
     it "returns true when credentials are valid" do
       username = "tester"
@@ -29,6 +43,15 @@ describe Ragios::Admin do
       password = "12345"
       admin.config(username: "something else", password: "something else")
       admin.authenticate?(username, password).should == false
+    end
+  end
+
+  describe "#do_authentication?" do
+    it "returns config authentication settings" do
+      admin.config(authentication: true)
+      admin.do_authentication?.should == true
+      admin.config(authentication: false)
+      admin.do_authentication?.should == false
     end
   end
 
