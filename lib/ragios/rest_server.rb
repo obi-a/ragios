@@ -106,21 +106,21 @@ class App < Sinatra::Base
 
   get '/monitors/:id/notifications*', :check => :valid_token? do
     try_request do
-      notifications = controller.get_notifications(params[:id], start_date: params[:end_date], end_date: params[:start_date])
+      notifications = controller.get_notifications(params[:id], start_date: params[:end_date], end_date: params[:start_date], take: params[:take])
       generate_json(notifications)
     end
   end
 
   get '/monitors/:id/events_by_state/:state*', :check => :valid_token? do
     try_request do
-      events =  controller.get_events_by_state(params[:id], params[:state], start_date: params[:end_date], end_date: params[:start_date])
+      events =  controller.get_events_by_state(params[:id], params[:state], start_date: params[:end_date], end_date: params[:start_date], take: params[:take])
       generate_json(events)
     end
   end
 
   get '/monitors/:id/events*', :check => :valid_token? do
     try_request do
-      events = controller.get_events(params[:id], start_date: params[:end_date], end_date: params[:start_date])
+      events = controller.get_events(params[:id], start_date: params[:end_date], end_date: params[:start_date], take: params[:take])
       generate_json(events)
     end
   end

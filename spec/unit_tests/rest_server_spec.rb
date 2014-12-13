@@ -240,6 +240,23 @@ describe "Ragios REST API" do
     post('/xyz').status.should == 400
     get('/xyz').status.should == 400
   end
+  describe "Events API" do
+    before(:all) do
+      @params = { start_date: "2000", end_date: "2013", take: 1}
+    end
+    it "returns all events by date range for specified monitor" do
+      get '/monitors/mymonitor/events', @params
+      last_response.should be_ok
+    end
+    it "returns all notifications for specified monitor" do
+      get '/monitors/mymonitor/notifications', @params
+      last_response.should be_ok
+    end
+    it "returns all events by state for specified monitor" do
+      get '/monitors/mymonitor/events_by_state/failed', @params
+      last_response.should be_ok
+    end
+  end
   describe "Session API" do
     it "authenticates user" do
       Ragios::Admin.config(username: "admin", password: "12345")
