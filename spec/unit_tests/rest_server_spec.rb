@@ -26,6 +26,7 @@ describe "Ragios REST API" do
     }
     Ragios::CouchdbAdmin.config(database_admin)
     Ragios::CouchdbAdmin.setup_database
+    @database = Ragios::CouchdbAdmin.get_database
   end
   it "adds a monitor" do
     monitor = {
@@ -261,6 +262,7 @@ describe "Ragios REST API" do
     Ragios::Admin.config(authentication: false)
   end
   after(:all) do
-    Ragios::CouchdbAdmin.get_database.delete
+    @database.delete
+    Ragios::Controller.reset
   end
 end

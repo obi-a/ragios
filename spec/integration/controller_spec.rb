@@ -500,5 +500,6 @@ describe Ragios::Controller do
   end
   after(:all) do
     @database.delete
+    Ragios::Controller.reset
   end
 end

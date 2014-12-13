@@ -14,6 +14,11 @@ module Ragios
       @model ||= Ragios::Database::Model.new(Ragios::CouchdbAdmin.get_database)
     end
 
+    def self.reset
+      @model = nil
+      @scheduler = nil
+    end
+
     Contract Monitor_id => Bool
     def self.stop(monitor_id)
       try_monitor(monitor_id) do

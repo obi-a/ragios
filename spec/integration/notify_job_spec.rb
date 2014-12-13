@@ -30,10 +30,11 @@ describe "Ragios::NotifyJob" do
     database_admin = {
       username: ENV['COUCHDB_ADMIN_USERNAME'],
       password: ENV['COUCHDB_ADMIN_PASSWORD'],
-      database: 'ragios_test_generic_monitor_database',
+      database: 'ragios_test_notify_job_database',
       address: 'http://localhost',
       port: '5984'
     }
+
     Ragios::CouchdbAdmin.config(database_admin)
     Ragios::CouchdbAdmin.setup_database
     @database = Ragios::CouchdbAdmin.get_database
@@ -51,10 +52,10 @@ describe "Ragios::NotifyJob" do
       notifier = Ragios::Notifier::TestNotifyJobNotifier.new
 
       notify_job = Ragios::NotifyJob.new
-
       notify_job.failed(monitor, test_result, notifier)
       notify_job.resolved(monitor, test_result, notifier)
-      sleep 1
+      #sleep 1
+
       #assert that events are logged correctly
       @database.where(
         type: "event",
@@ -87,7 +88,7 @@ describe "Ragios::NotifyJob" do
       notify_job.failed(monitor, test_result, notifier)
       notify_job.resolved(monitor, test_result, notifier)
 
-      sleep 1
+      #sleep 1
 
       #assert that the error events are logged correctly
       @database.where(
@@ -109,5 +110,6 @@ describe "Ragios::NotifyJob" do
   end
   after(:all) do
     @database.delete
+    Ragios::Controller.reset
   end
 end
