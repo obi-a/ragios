@@ -451,14 +451,13 @@ describe Ragios::Controller do
 
       sleep 1
 
-      @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "failed", notifier: "mock_notifier").count.should_not == 0
+      @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "failed", notifier: "mock_notifier").count.should == 1
 
       controller.update(monitor_id, plugin: "passing_plugin")
 
       sleep 1
 
-      @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "resolved").inspect
-
+      @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "resolved").count.should == 1
       controller.delete(monitor_id)
     end
     it "logs notifications for events failed and resolved monitor restart" do
@@ -473,7 +472,7 @@ describe Ragios::Controller do
 
       sleep 1
 
-      @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "failed", notifier: "mock_notifier").count.should_not == 0
+      @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "failed", notifier: "mock_notifier").count.should == 1
 
       controller.stop(monitor_id)
       #stopped monitors are not restarted after an update
@@ -484,7 +483,7 @@ describe Ragios::Controller do
 
       sleep 1
 
-      @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "resolved").inspect
+      @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "resolved").count.should == 1
 
       controller.delete(monitor_id)
     end

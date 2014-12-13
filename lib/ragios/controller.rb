@@ -139,6 +139,27 @@ module Ragios
       save_notification("resolved", monitor, test_result, notifier)
     end
 
+    def self.notifier_failure(notifier, exception, event, monitor, test_result)
+      event_time = Time.now
+      event_timestamp = event_time.to_i
+      log_event(
+        monitor_id: monitor[:_id],
+        event: {"notifier error" => exception.message},
+        state: event,
+        time: event_time,
+        timestamp: event_timestamp,
+        type: "event",
+        event_type: "notifier.error",
+        monitor: monitor,
+        test_result: test_result,
+        notifier: notifier
+      )
+      $stderr.puts '-' * 80
+      $stderr.puts exception.message
+      $stderr.puts exception.backtrace.join("\n")
+      $stderr.puts '-' * 80
+    end
+
     #queries
     Contract Any => ArrayOf[Monitor]
     def self.get_all(options = {})
