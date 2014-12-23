@@ -186,7 +186,7 @@ describe "Ragios::Database::Model" do
         end
       end
     end
-    describe "#get_monitor_notifications" do
+    describe "#get_monitor_events_by_type" do
       before(:each) do
         for count in 1..5 do
           time = Time.now
@@ -205,27 +205,27 @@ describe "Ragios::Database::Model" do
           @database.create_doc "notification_#{count}", notification
         end
       end
-      it "returns all notifications for specified  monitor within the specified date range" do
-        notifications = @model.get_monitor_notifications("my_monitor", start_date: "3015", end_date: "1913")
+      it "returns all events by type for specified monitor within the specified date range" do
+        notifications = @model.get_monitor_events_by_type("my_monitor", "monitor.notification", start_date: "3015", end_date: "1913")
         notifications.first[:_id].should == "notification_5"
         notifications.last[:_id].should == "notification_1"
         notifications.count.should == 5
       end
-      it "can limit the number of notifications returned in the query" do
-        notifications = @model.get_monitor_notifications("my_monitor", start_date: "3015", end_date: "1913", take: 2)
+      it "can limit the number of events returned in the query" do
+        notifications = @model.get_monitor_events_by_type("my_monitor", "monitor.notification", start_date: "3015", end_date: "1913", take: 2)
         notifications.first[:_id].should == "notification_5"
         notifications.last[:_id].should == "notification_4"
         notifications.count.should == 2
       end
-      it "returns an empty array when notification is found within the date range" do
-        @model.get_monitor_notifications("my_monitor", start_date: "1990", end_date: "1980").should == []
+      it "returns an empty array when no event is found within the date range" do
+        @model.get_monitor_events_by_type("my_monitor", "monitor.notification", start_date: "1990", end_date: "1980").should == []
       end
       it "returns an empty array when monitor is not found" do
-        @model.get_monitor_notifications("not_found", start_date: "3015", end_date: "1913").should == []
+        @model.get_monitor_events_by_type("not_found", "monitor.notification", start_date: "3015", end_date: "1913").should == []
       end
       it "raises an exception when start_date and end_date is reversed or missing" do
-        expect{ @model.get_monitor_notifications("my_monitor", start_date: "1913", end_date: "3015")}.to raise_error(Leanback::CouchdbException)
-        expect{ @model.get_monitor_notifications("my_monitor", {})}.to raise_error(Leanback::CouchdbException)
+        expect{ @model.get_monitor_events_by_type("my_monitor", "monitor.notification", start_date: "1913", end_date: "3015")}.to raise_error(Leanback::CouchdbException)
+        expect{ @model.get_monitor_events_by_type("my_monitor", "monitor.notification", {})}.to raise_error(Leanback::CouchdbException)
       end
       after(:each) do
         for count in 1..5 do

@@ -491,7 +491,7 @@ describe Ragios::Controller do
   describe "#queries" do
     it "has no errors" do
       expect { controller.get_current_state("dont_exist") }.to_not raise_error
-      expect { controller.get_notifications("not_found", start_date: "2009", end_date: "2001") }.to_not raise_error
+      expect { controller.get_events_by_type("not_found","none", start_date: "2009", end_date: "2001") }.to_not raise_error
       expect { controller.where({}) }.to_not raise_error
       expect { controller.get_events("not_found", start_date: "2009", end_date: "2001") }.to_not raise_error
       expect { controller.get_events_by_state("not_found", "none", start_date: "2009", end_date: "2001") }.to_not raise_error

@@ -249,7 +249,7 @@ describe "Ragios REST API" do
       last_response.should be_ok
     end
     it "returns all notifications for specified monitor" do
-      get '/monitors/mymonitor/notifications', @params
+      get '/monitors/mymonitor/events_by_type/monitor.notification', @params
       last_response.should be_ok
     end
     it "returns all events by state for specified monitor" do

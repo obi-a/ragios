@@ -23,14 +23,11 @@ module Ragios
     def self.stop(monitor_id)
       try_monitor(monitor_id) do
         scheduler.unschedule(monitor_id)
-        event_time = Time.now
-        event_timestamp = event_time.to_i
         log_event(
           monitor_id: monitor_id,
           event: {"monitor status" => "stopped"},
           state: "stopped",
-          time: event_time,
-          timestamp: event_timestamp,
+          time: Time.now,
           type: "event",
           event_type: "monitor.stop"
         )
@@ -44,6 +41,14 @@ module Ragios
         monitor = model.find(monitor_id)
         scheduler.unschedule(monitor_id) if is_active?(monitor)
         !!model.delete(monitor_id)
+        log_event(
+          monitor_id: monitor_id,
+          event: {"monitor status" => "deleted"},
+          state: "deleted",
+          time: Time.now,
+          type: "event",
+          event_type: "monitor.delete"
+        )
       end
     end
 
@@ -56,6 +61,16 @@ module Ragios
         end
         model.update(monitor_id, options)
         monitor = model.find(monitor_id)
+        log_event(
+          monitor_id: monitor_id,
+          state: "updated",
+          event: {"monitor status" => "updated"},
+          time: Time.now,
+          monitor: monitor,
+          update: options,
+          type: "event",
+          event_type: "monitor.update"
+        )
         if is_active?(monitor)
           scheduler.unschedule(monitor_id)
           updated_generic_monitor = update_previous_state(monitor)
@@ -117,10 +132,19 @@ module Ragios
 
     Contract Hash => Monitor
     def self.add(monitor)
-      monitor_with_id = monitor.merge({created_at_: Time.now, status_: 'active', _id: unique_id, type: "monitor"})
+      event_time = Time.now
+      monitor_with_id = monitor.merge({created_at_: event_time, status_: 'active', _id: unique_id, type: "monitor"})
       this_generic_monitor = generic_monitor(monitor_with_id)
       add_to_scheduler(this_generic_monitor)
       model.save(this_generic_monitor.id, this_generic_monitor.options)
+      log_event(
+        monitor_id: this_generic_monitor.id,
+        event: {"monitor status" => "created"},
+        state: "create",
+        time: event_time,
+        type: "event",
+        event_type: "monitor.create"
+      )
       log_monitor_start(this_generic_monitor.id, this_generic_monitor.options)
       return this_generic_monitor.options
     end
@@ -145,14 +169,11 @@ module Ragios
     end
 
     def self.notifier_failure(notifier, exception, event, monitor, test_result)
-      event_time = Time.now
-      event_timestamp = event_time.to_i
       log_event(
         monitor_id: monitor[:_id],
         event: {"notifier error" => exception.message},
         state: event,
-        time: event_time,
-        timestamp: event_timestamp,
+        time: Time.now,
         type: "event",
         event_type: "notifier.error",
         monitor: monitor,
@@ -176,9 +197,9 @@ module Ragios
       model.get_monitor_events_by_state(monitor_id, state, options)
     end
 
-    Contract Monitor_id, Hash => ArrayOf[Hash]
-    def self.get_notifications(monitor_id, options)
-      model.get_monitor_notifications(monitor_id, options)
+    Contract Monitor_id, String, Hash => ArrayOf[Hash]
+    def self.get_events_by_type(monitor_id, event_type, options)
+      model.get_monitor_events_by_type(monitor_id, event_type, options)
     end
 
     Contract Monitor_id, Hash => ArrayOf[Hash]
@@ -220,15 +241,12 @@ module Ragios
     end
 
     def self.save_notification(event, monitor, test_result, notifier)
-      event_time = Time.now
-      event_timestamp = event_time.to_i
       notification = {notified: event, via: notifier}
       log_event(
         monitor_id: monitor[:_id],
         state: event,
         event: notification,
-        time: event_time,
-        timestamp: event_timestamp,
+        time: Time.now,
         monitor: monitor,
         type: "event",
         event_type: "monitor.notification",
@@ -261,15 +279,12 @@ module Ragios
     end
 
     def self.log_monitor_start(monitor_id, monitor)
-      event_time = Time.now
-      event_timestamp = event_time.to_i
       log_event(
         monitor_id: monitor_id,
         event: {"monitor status" => "started"},
         state: "started",
-        time: event_time,
+        time: Time.now,
         monitor: monitor,
-        timestamp: event_timestamp,
         type: "event",
         event_type: "monitor.start"
       )
