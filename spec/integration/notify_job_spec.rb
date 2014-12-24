@@ -93,7 +93,7 @@ describe "Ragios::NotifyJob" do
       #assert that the error events are logged correctly
       @database.where(
         type: "event",
-        event_type: "notifier.error",
+        event_type: "monitor.notification",
         monitor_id: monitor[:_id],
         state: "failed",
         notifier: "error_notifier"
@@ -101,7 +101,7 @@ describe "Ragios::NotifyJob" do
 
       @database.where(
         type: "event",
-        event_type: "notifier.error",
+        event_type: "monitor.notification",
         monitor_id: monitor[:_id],
         state: "resolved",
         notifier: "error_notifier"

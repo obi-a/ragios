@@ -175,7 +175,7 @@ module Ragios
         state: event,
         time: Time.now,
         type: "event",
-        event_type: "notifier.notification",
+        event_type: "monitor.notification",
         monitor: monitor,
         test_result: test_result,
         notifier: notifier
