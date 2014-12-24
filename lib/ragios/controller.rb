@@ -175,7 +175,7 @@ module Ragios
         state: event,
         time: Time.now,
         type: "event",
-        event_type: "notifier.error",
+        event_type: "notifier.notification",
         monitor: monitor,
         test_result: test_result,
         notifier: notifier
@@ -266,7 +266,6 @@ module Ragios
         state: state,
         event: result,
         time: this_generic_monitor.time_of_test,
-        timestamp: this_generic_monitor.timestamp_of_test,
         monitor: this_generic_monitor.options,
         tag: this_generic_monitor.options[:tag],
         type: "event",
