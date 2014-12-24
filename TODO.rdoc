@@ -1,17 +1,12 @@
 ==TODO
 
-
-=Goals for versions 0.6.2
-* Add a web UI admin dashboard for Ragios.
-* Add unit tests for Ragios::NotifyJob
-
-Add methods  - get results, get notifications, get errors
-
 * write about directly testing a plugin by calling generic_monitor
  generic_monitor = Ragios::GenericMonitor.new monitor
  generic_monitor.test_command?
 
 ===Nice to have
+
+
 * Document the feature: Grouping monitors by tag
 
 * Add validation for the REST api input data
@@ -20,12 +15,14 @@ Add methods  - get results, get notifications, get errors
 
 *Ragios URL plugin should allow users to set the type of http request they choose either a GET or POST and include body  data for a POST
 
-=Goals for versions 0.5.2
-
-==TODO
-* Add a web UI admin dashboard for using Ragios Server.
 
 ==DONE
+=Goals for versions 0.6.2
+* Add a web UI admin dashboard for Ragios.
+* Add unit tests for Ragios::NotifyJob
+
+Add methods  - get results, get notifications, get errors
+
 * Document fail_tolerance feature
 * Rename specs to reflect classes and code being tested eg ragios_server_spec to controller.spec
 * fix failing tests on the current new refactor - refactor schedulers
