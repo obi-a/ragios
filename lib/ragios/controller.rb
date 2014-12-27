@@ -180,10 +180,7 @@ module Ragios
         test_result: test_result,
         notifier: notifier
       )
-      $stderr.puts '-' * 80
-      $stderr.puts exception.message
-      $stderr.puts exception.backtrace.join("\n")
-      $stderr.puts '-' * 80
+      send_stderr(exception)
     end
 
     #queries
@@ -297,7 +294,10 @@ module Ragios
     def self.log_error(this_generic_monitor, exception)
       test_result = create_result({error: exception.message}, "error", this_generic_monitor)
       log_event(test_result)
+      send_stderr(exception)
+    end
 
+    def self.send_stderr(exception)
       $stderr.puts '-' * 80
       $stderr.puts exception.message
       $stderr.puts exception.backtrace.join("\n")

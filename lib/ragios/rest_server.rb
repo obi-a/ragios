@@ -230,7 +230,8 @@ private
   rescue Ragios::MonitorNotFound => e
     status 404
     body generate_json(error: e.message)
-  rescue Exception => e
+  rescue => e
+    controller.send_stderr(e)
     status 500
     body generate_json(error: e.message)
   end
