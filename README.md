@@ -56,6 +56,10 @@ I'm doing this just for fun and educational purposes.
 
    + [Notifications](http://www.whisperservers.com/ragios/ragios-saint-ruby/notifications/)
 
+   + [Events](http://www.whisperservers.com/ragios/events/)
+
+   + [Web Admin Dashboard](https://github.com/obi-a/ragios/wiki/Web-Admin-Dashboard)
+
    + [Creating Notifiers](http://www.whisperservers.com/ragios/notifiers/)
 
    + [Creating Plugins](http://www.whisperservers.com/ragios/plugins/)
@@ -68,7 +72,8 @@ I'm doing this just for fun and educational purposes.
 
      * [Monitors API](http://www.whisperservers.com/ragios/monitors-api/)
 
-   + [Analytics & Reporting](http://www.whisperservers.com/ragios/analytics-reporting/)
+     * [Events API](http://www.whisperservers.com/ragios/events-api/)
+
 
 ##License:
 MIT License.

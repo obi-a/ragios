@@ -1,3 +1,9 @@
+==Ragios v0.6.2
+12-24-2014
+* Adds a Ragios Web Admin Dashboard for managing and controlling monitors through a web interface.
+* Everything that happens to a monitor is now stored in the database as an event.  Every monitor's creation, starting, stopping, updates, deletion, tests, notifications are now stored as events that can be retrieved and plotted over a datetime range to track the behaviour and performance of a monitor over any time period. These events can be viewed using the new Admin Dashboard.
+* Change in Ragios rubyclient ragios.add() is now changed to ragios.create(), ragios.restart is changed to ragios.start which more accurately reflacts what the method does.
+
 ==Ragios v0.6.1
 08-31-2014
 * Switched from Thin web server to Puma
