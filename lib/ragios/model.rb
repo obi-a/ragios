@@ -47,7 +47,7 @@ module Ragios
         query_options[:endkey] = [id, "monitor.test", "1913-01-15 05:30:00 -0500"].to_s
         query_options[:startkey] = [id, "monitor.test", "3015-01-15 05:30:00 -0500"].to_s
         query_options[:limit] = 1
-        results = query("_design/events", script, query_options)
+        results = query("_design/monitor_events", script, query_options)
         results[:rows].blank? ? {} : results[:rows].first[:doc]
       end
 
@@ -62,6 +62,18 @@ module Ragios
         get_docs(results)
       end
 
+      def get_all_events(options)
+        script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time) emit([doc.time]); }')
+        query_options = {}
+        start_date = options[:start_date] || "3015-01-15 05:30:00 -0500"
+        end_date = options[:end_date] || "1913-01-15 05:30:00 -0500"
+        query_options[:endkey] = [end_date].to_s
+        query_options[:startkey] = [start_date].to_s
+        query_options[:limit] = options[:take] if options[:take]
+        results = query("_design/all_system_events", script, query_options)
+        get_docs(results)
+      end
+
       Contract Doc_id, Hash => Array
       def get_monitor_events(monitor_id, options)
         script = design_doc_script('function(doc){ if(doc.type == "event" && doc.time && doc.monitor_id) emit([doc.monitor_id, doc.time]); }')
@@ -69,7 +81,7 @@ module Ragios
         query_options[:endkey] = [monitor_id, options[:end_date]].to_s
         query_options[:startkey] = [monitor_id, options[:start_date]].to_s
         query_options[:limit] = options[:take] if options[:take]
-        results = query("_design/get_all_events", script, query_options)
+        results = query("_design/all_monitor_events", script, query_options)
         get_docs(results)
       end
 

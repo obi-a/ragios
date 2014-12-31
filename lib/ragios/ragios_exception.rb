@@ -6,6 +6,7 @@ end
 
 
 module Ragios
+  class EventNotFound < StandardError; end
   class MonitorNotFound < StandardError; end
   class NotifierNotFound < StandardError; end
   class PluginNotFound < StandardError; end

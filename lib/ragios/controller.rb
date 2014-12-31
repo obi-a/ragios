@@ -1,3 +1,4 @@
+#Controller for monitors
 module Ragios
   class Controller
     #see contracts: https://github.com/egonSchiele/contracts.ruby
@@ -83,14 +84,13 @@ module Ragios
     Contract Monitor_id, Bool => Monitor
     def self.get(monitor_id, include_current_state = false)
       try_monitor(monitor_id) do
-        monitor = model.find(monitor_id)
+        monitor = get_valid_monitor(monitor_id)
         if include_current_state
           current_state = get_current_state(monitor_id)
           monitor[:current_state_] =  {
             state: current_state[:state],
             test_result: current_state[:event],
-            time_of_test: current_state[:time],
-            timestamp_of_test: current_state[:timestamp]
+            time_of_test: current_state[:time]
           }
         end
         return monitor
@@ -100,7 +100,7 @@ module Ragios
     Contract Monitor_id => Bool
     def self.start(monitor_id)
       try_monitor(monitor_id) do
-        monitor = model.find(monitor_id)
+        monitor = get_valid_monitor(monitor_id)
         return true if is_active?(monitor)
         updated_generic_monitor = update_previous_state(monitor)
         add_to_scheduler(updated_generic_monitor)
@@ -237,6 +237,15 @@ module Ragios
       end
     end
 
+    def self.get_valid_monitor(monitor_id)
+      monitor = model.find(monitor_id)
+      if monitor[:type] != "monitor"
+        raise Ragios::MonitorNotFound.new(error: "No monitor found"), "No monitor found with id = #{monitor_id}"
+      else
+        return monitor
+      end
+    end
+
     def self.save_notification(event, monitor, test_result, notifier)
       notification = {notified: event, via: notifier}
       log_event(
@@ -248,8 +257,7 @@ module Ragios
         type: "event",
         event_type: "monitor.notification",
         test_result: test_result,
-        notifier: notifier,
-        tag: monitor[:tag]
+        notifier: notifier
       )
     end
 
@@ -264,7 +272,6 @@ module Ragios
         event: result,
         time: this_generic_monitor.time_of_test,
         monitor: this_generic_monitor.options,
-        tag: this_generic_monitor.options[:tag],
         type: "event",
         event_type: "monitor.test"
       }
