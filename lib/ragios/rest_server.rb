@@ -17,7 +17,7 @@ class App < Sinatra::Base
 
   helpers do
     def valid_token?
-      Ragios::Admin.valid_token?(request.cookies["AuthSession"])
+      Ragios::Admin.valid_token?(request.cookies["RagiosAuthSession"])
     end
     def controller
       @controller ||= Ragios::Controller
@@ -33,7 +33,7 @@ class App < Sinatra::Base
 
   post '/session*' do
     if Ragios::Admin.authenticate?(params[:username],params[:password])
-      generate_json(AuthSession: Ragios::Admin.session)
+      generate_json(RagiosAuthSession: Ragios::Admin.session)
     else
       status 401
       generate_json(error: "You are not authorized to access this resource")
@@ -203,7 +203,7 @@ class App < Sinatra::Base
   post '/admin_session*' do
     @login_page = true
     if Ragios::Admin.authenticate?(params[:username], params[:password])
-      response.set_cookie "AuthSession", Ragios::Admin.session
+      response.set_cookie "RagiosAuthSession", Ragios::Admin.session
       session[:authenticated] = true
       redirect '/admin/index'
     else
@@ -214,8 +214,8 @@ class App < Sinatra::Base
   end
 
   get '/admin/logout' do
-    token = request.cookies['AuthSession']
-    response.delete_cookie "AuthSession"
+    token = request.cookies['RagiosAuthSession']
+    response.delete_cookie "RagiosAuthSession"
     session.clear
     Ragios::Admin.invalidate_token(token)
     redirect '/admin/login'
@@ -242,7 +242,7 @@ class App < Sinatra::Base
   end
 
   def check_logout
-    token = request.cookies['AuthSession']
+    token = request.cookies['RagiosAuthSession']
     if logged_out?(token)
       redirect '/admin/login'
     end
