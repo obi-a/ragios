@@ -17,7 +17,7 @@ module Ragios
 
     def self.get(event_id)
       try_event(event_id) do
-        event = model.find(event_id)
+        get_valid_event(event_id)
       end
     end
 

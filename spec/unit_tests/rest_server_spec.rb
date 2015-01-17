@@ -256,6 +256,31 @@ describe "Ragios REST API" do
       get '/monitors/mymonitor/events_by_state/failed', @params
       last_response.should be_ok
     end
+    describe "more events API" do
+      before(:each) do
+        @database.create_doc("event1", type: "event", time: Time.now)
+        @database.create_doc("event2", type: "event", time: Time.now)
+        @database.create_doc("event3", type: "event", time: Time.now)
+      end
+      it "returns event by id" do
+        get '/events/event3'
+        last_response.should be_ok
+      end
+      it "returns all events" do
+        get '/events', @params
+        last_response.should be_ok
+      end
+      it "deletes an event" do
+        @database.create_doc("event4", type: "event", time: Time.now)
+        delete '/events/event4'
+        last_response.should be_ok
+      end
+      after(:each) do
+        @database.delete_doc!("event1")
+        @database.delete_doc!("event2")
+        @database.delete_doc!("event3")
+      end
+    end
   end
   describe "Session API" do
     it "authenticates user" do
