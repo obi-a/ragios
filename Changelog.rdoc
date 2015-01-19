@@ -1,3 +1,10 @@
+==Ragios v0.6.2.1
+01-18-2014
+* Added REST API endpoints for retrieving all & for individual events, and deleting events. Also updated ragios-client to support the new API.
+* Added Web Admin UI option to view and delete an event from monitors page
+* changes AuthSession cookie to RagiosAuthSession cookie, because CouchDB  uses the same cookie, and this causes problems for CouchDB futon when running Ragios Web Admin and Futon on the same browser on localhost
+* find monitor can no longer return any document that doesn't have `type: "monitor"`
+
 ==Ragios v0.6.2
 12-24-2014
 * Adds a Ragios Web Admin Dashboard for managing and controlling monitors through a web interface.

@@ -1,11 +1,5 @@
 ==TODO
 
-0.6.2.1
-* change rename AuthSession cookie to RagiosSession cookie, because CouchDB  uses the same cookie, and this causes problems for CouchDB futon when running Ragios Web Admin and Futon on the same browser,
-* Add API GET single event, GET all events and DELETE an event
-* Add Web Admin option to view and delete an event, and to view all events
-
-
 * Summarize and group a monitor's change of state and event_type by date, this quickly summaries a monitor's behavior and performance over any given time period
 
 
@@ -26,6 +20,11 @@
 
 
 ==DONE
+0.6.2.1
+* change rename AuthSession cookie to RagiosSession cookie, because CouchDB  uses the same cookie, and this causes problems for CouchDB futon when running Ragios Web Admin and Futon on the same browser,
+* Add API GET single event, GET all events and DELETE an event
+* Add Web Admin option to view and delete an event, and to view all events
+
 =Goals for versions 0.6.2
 * Add a web UI admin dashboard for Ragios.
 * Add unit tests for Ragios::NotifyJob
