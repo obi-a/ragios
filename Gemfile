@@ -17,7 +17,7 @@ gem "puma"
 gem 'leanback', '~> 0.5.1'
 gem "uuidtools"
 gem "thor"
-gem "ragios-client", '~> 0.0.6'
+gem "ragios-client", '~> 0.0.7'
 gem "eventmachine", '~> 1.0.4'
 gem "contracts"
 
