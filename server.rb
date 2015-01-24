@@ -71,7 +71,7 @@ state_path 'tmp/pids/puma.state'
 #
 # The default is “tcp://0.0.0.0:9292”.
 #
-bind 'tcp://127.0.0.1:5041'
+bind  ENV['RAGIOS_BIND_ADDRESS'] || 'tcp://127.0.0.1:5041'
 # bind 'unix:///var/run/puma.sock'
 # bind 'unix:///var/run/puma.sock?umask=0777'
 # bind 'ssl://127.0.0.1:9292?key=path_to_key&cert=path_to_cert'
