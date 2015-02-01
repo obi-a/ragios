@@ -50,6 +50,8 @@ I'm doing this just for fun and educational purposes.
 
    + [Installation](http://www.whisperservers.com/ragios/ragios-saint-ruby/installation/)
 
+   + [Running Ragios on Docker](https://github.com/obi-a/ragios/wiki/Running-Ragios-in-a-Docker-Container)
+
    + [Start/Stop the server](http://www.whisperservers.com/ragios/running-ragios/)
 
    + [Using Ragios](http://www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)

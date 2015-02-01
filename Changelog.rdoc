@@ -1,5 +1,18 @@
+==Ragios v0.6.3
+01-30-2015
+* All config settings can now be changed with ENV vars see. config.rb for details. All default configurations still remain same.
+Ragios authentication is disabled by default by can be configured with env var RAGIOS_AUTHENTICATION
+Ragios authentication auth-timeout default is 900 seconds but can be configured with env var RAGIOS_AUTH_TIMEOUT
+CouchDB database used by Ragios is "ragios_database" by default but can be configured with env var RAGIOS_DATABASE
+Default address and port of CouchDB database used by Ragios is "http://localhost" and "5984" but can be convigured with RAGIOS_COUCHDB_ADDRESS and RAGIOS_COUCHDB_PORT
+* New defaults for Ragios:
+By default:
+Ragios runs in Puma development mode, not daemonized, allows the environment log stream doesn't write logs to file, runs in single process mode
+* Adds support for running Ragios in a Docker container see doc for details.
+
+
 ==Ragios v0.6.2.1
-01-18-2014
+01-18-2015
 * Added REST API endpoints for retrieving all & for individual events, and deleting events. Also updated ragios-client to support the new API.
 * Added Web Admin UI option to view and delete an event from monitors page
 * changes AuthSession cookie to RagiosAuthSession cookie, because CouchDB  uses the same cookie, and this causes problems for CouchDB futon when running Ragios Web Admin and Futon on the same browser on localhost
