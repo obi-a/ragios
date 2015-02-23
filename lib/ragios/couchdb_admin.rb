@@ -11,7 +11,8 @@ module Ragios
       begin
         @database.create
       rescue Leanback::CouchdbException => e
-        raise e if e.response[:error] == "unauthorized"
+        unauthorized = (e.response[:error] == "unauthorized") rescue false
+        raise e if unauthorized
       end
 
       if @database_config[:username]
