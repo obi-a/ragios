@@ -18,8 +18,8 @@ describe Ragios::Scheduler do
   it "should schedule a job, trigger immediately and at intervals" do
     scheduler = Ragios::Scheduler.new(MockController.new)
     scheduler.schedule(@args)
-    sleep 1
-    #first test is performed immediately
+    sleep 11
+    #first test is performed by the worker after 10s immediately
     unless RUBY_PLATFORM == "java"
       #jruby using java threads will yield a different result for the
       #class variable @@performed

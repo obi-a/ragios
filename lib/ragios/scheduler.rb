@@ -19,11 +19,12 @@ module Ragios
     end
     def run_worker
       @scheduler.interval '10s' do
-        generic_monitor = @work_queue.pop
-        if generic_monitor
-          puts "Ragios::Scheduler.run_worker - - [#{Time.now}] performing job #{generic_monitor.options.inspect}"
+        item = @work_queue.pop
+        if item
           puts '-' * 80
-          controller.perform(generic_monitor)
+          puts "Ragios::Scheduler.run_worker - - [#{Time.now}] performing job #{item.inspect}"
+          puts '-' * 80
+          controller.perform(item)
         end
       end
     end
