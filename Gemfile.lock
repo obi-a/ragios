@@ -51,9 +51,7 @@ GEM
       method_source (~> 0.8)
       slop (~> 3.4)
       spoon (~> 0.0)
-    puma (2.9.0)
-      rack (>= 1.1, < 2.0)
-    puma (2.9.0-java)
+    puma (2.10.2)
       rack (>= 1.1, < 2.0)
     rack (1.5.1)
     rack-protection (1.3.2)
@@ -120,7 +118,7 @@ DEPENDENCIES
   leanback (~> 0.5.1)
   pony
   pry
-  puma
+  puma (~> 2.10.1)
   rack-test
   ragios-client (~> 0.0.7)
   rake
