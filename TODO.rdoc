@@ -1,4 +1,5 @@
 ==TODO
+* update to activerecord 4.0
 
 * Summarize and group a monitor's change of state and event_type by date, this quickly summaries a monitor's behavior and performance over any given time period
 
