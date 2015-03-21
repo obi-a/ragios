@@ -449,13 +449,13 @@ describe Ragios::Controller do
 
       monitor_id = controller.add(monitor)[:_id]
 
-      sleep 20
+      sleep 30
 
       @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "failed", notifier: "mock_notifier").count.should == 1
 
       controller.update(monitor_id, plugin: "passing_plugin")
 
-      sleep 20
+      sleep 30
 
       @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "resolved").count.should == 1
       controller.delete(monitor_id)
@@ -470,7 +470,7 @@ describe Ragios::Controller do
 
       monitor_id = controller.add(monitor)[:_id]
 
-      sleep 15
+      sleep 30
 
       @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "failed", notifier: "mock_notifier").count.should == 1
 
@@ -481,7 +481,7 @@ describe Ragios::Controller do
       #manually start this monitor
       controller.start(monitor_id)
 
-      sleep 15
+      sleep 30
 
       @database.where(type: "event", event_type: "monitor.notification", monitor_id: monitor_id, state: "resolved").count.should == 1
 
