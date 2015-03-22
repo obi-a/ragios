@@ -28,7 +28,7 @@ module Ragios
           monitor_id: monitor_id,
           event: {"monitor status" => "stopped"},
           state: "stopped",
-          time: Time.now,
+          time: time,
           type: "event",
           event_type: "monitor.stop"
         )
@@ -46,7 +46,7 @@ module Ragios
           monitor_id: monitor_id,
           event: {"monitor status" => "deleted"},
           state: "deleted",
-          time: Time.now,
+          time: time,
           type: "event",
           event_type: "monitor.delete"
         )
@@ -66,7 +66,7 @@ module Ragios
           monitor_id: monitor_id,
           state: "updated",
           event: {"monitor status" => "updated"},
-          time: Time.now,
+          time: time,
           monitor: monitor,
           update: options,
           type: "event",
@@ -132,7 +132,7 @@ module Ragios
 
     Contract Hash => Monitor
     def self.add(monitor)
-      event_time = Time.now
+      event_time = time
       monitor_with_id = monitor.merge({created_at_: event_time, status_: 'active', _id: unique_id, type: "monitor"})
       this_generic_monitor = generic_monitor(monitor_with_id)
       add_to_scheduler(this_generic_monitor)
@@ -173,7 +173,7 @@ module Ragios
         monitor_id: monitor[:_id],
         event: {"notifier error" => exception.message},
         state: event,
-        time: Time.now,
+        time: time,
         type: "event",
         event_type: "monitor.notification",
         monitor: monitor,
@@ -215,6 +215,9 @@ module Ragios
     end
 
   private
+    def self.time
+      Time.now.utc
+    end
     def self.update_previous_state(monitor)
       monitor_id = monitor[:_id]
       this_generic_monitor = generic_monitor(monitor)
@@ -252,7 +255,7 @@ module Ragios
         monitor_id: monitor[:_id],
         state: event,
         event: notification,
-        time: Time.now,
+        time: time,
         monitor: monitor,
         type: "event",
         event_type: "monitor.notification",
@@ -286,7 +289,7 @@ module Ragios
         monitor_id: monitor_id,
         event: {"monitor status" => "started"},
         state: "started",
-        time: Time.now,
+        time: time,
         monitor: monitor,
         type: "event",
         event_type: "monitor.start"
