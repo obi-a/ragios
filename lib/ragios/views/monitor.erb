@@ -5,7 +5,7 @@
 <script type="text/javascript" src="/jsoneditor/asset/ace/ace.js"></script>
 <script type="text/javascript" src="/jsoneditor/asset/jsonlint/jsonlint.js"></script>
 <script src="/javascripts/monitor.js"></script>
-<span style="display:none" id="monitor-id"><%= @monitor[:_id] %></span>
+<span class="hide" id="monitor-id" data-monitor-id="<%= @monitor[:_id] %>"></span>
 <ol class="breadcrumb">
   <li><a href="/admin/index">All Monitors</a></li>
   <li class="active"><%= @monitor[:monitor] %></li>
@@ -46,14 +46,6 @@
 </ul>
 <div class="tab-content panel-spacing">
     <div class="tab-pane active" id="monitor">
-        <div class="table-options-section">
-            <span class="table-select-rows-spacing pull-right">
-                <button type="button" id="refresh-monitor-button" class="btn btn-default btn-sm" data-loading-text="Loading..." autocomplete="off">
-                    <span class="glyphicon glyphicon-refresh">
-                    </span> Refresh data
-                </button>
-            </span>
-        </div>
         <div id="monitor-editor" style="width: 100%; height: 450px;"></div>
     </div>
 
