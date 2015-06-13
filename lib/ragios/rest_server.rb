@@ -31,6 +31,10 @@ class App < Sinatra::Base
     redirect '/admin/index'
   end
 
+  get '/favicon.ico' do
+    redirect '/images/favicon.ico'
+  end
+
   post '/session*' do
     if Ragios::Admin.authenticate?(params[:username],params[:password])
       generate_json(RagiosAuthSession: Ragios::Admin.session)
