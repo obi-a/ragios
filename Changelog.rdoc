@@ -1,3 +1,11 @@
+==Ragios v0.6.3.2
+06-14-2015
+* Improvements to the Web Admin dashboard for Ragios
+- Adds Backbone.js to stack
+- All data on monitor page now auto-updates when an event occurs on the page.
+- Sections on monitor page are now bookmarkable
+- minor improvements - save state of datatables
+
 ==Ragios v0.6.3.1
 03-07-2015
 * Changed the way jobs are scheduled. At the monitor's time interval, the monitor's test are no longer performed instantly, the monitor is now added to a work_queue, a worker checks/pops the queue every 10 seconds and performs the test. This is more efficient, requires less system resources when performing resource intensive tests and provides more control over the jobs that are being performed.
