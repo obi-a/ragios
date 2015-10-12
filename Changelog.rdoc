@@ -1,3 +1,8 @@
+==Ragios v0.6.4
+10-12-2015
+* Ragios now stores all timestamps in UTC format.
+- Problems loading events while running on servers in different timezones is now fixed
+
 ==Ragios v0.6.3.2
 06-14-2015
 * Improvements to the Web Admin dashboard for Ragios
