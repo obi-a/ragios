@@ -1,3 +1,7 @@
+==Ragios v0.6.4.1
+10-19-2015
+* Ragios Docker image is now based on ubuntu 14.04+, this makes it easy to install exotic applications, plugins and gems. Replaced the old image that was based on Debian Wheezy
+
 ==Ragios v0.6.4
 10-12-2015
 * Ragios now stores all timestamps in UTC format.
