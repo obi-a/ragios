@@ -20,6 +20,7 @@ gem "thor"
 gem "ragios-client", '~> 0.0.7'
 gem "eventmachine", '~> 1.0.4'
 gem "contracts"
+gem "excon"
 
 gem "rspec"
 gem "rack-test"

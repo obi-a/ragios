@@ -18,6 +18,7 @@ GEM
     diff-lcs (1.1.2)
     eventmachine (1.0.4)
     eventmachine (1.0.4-java)
+    excon (0.45.4)
     faraday (0.8.7)
       multipart-post (~> 1.1)
     ffi (1.9.0-java)
@@ -112,6 +113,7 @@ DEPENDENCIES
   contracts
   daemons
   eventmachine (~> 1.0.4)
+  excon
   gmail
   i18n
   json_pure
@@ -130,3 +132,6 @@ DEPENDENCIES
   thor
   twitter
   uuidtools
+
+BUNDLED WITH
+   1.10.6
