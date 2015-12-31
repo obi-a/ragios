@@ -1,3 +1,21 @@
+==Ragios v0.6.4.2
+12-31-2015
+* Upgrades the Ragios built url_monitor plugin to use excon gem instead of restclient gem.
+- url monitors can now make http GET requests with a retry_limit (default is 3 times) and a connection timeout setting default is 60 seconds.
+Sample url monitor with new retry_limit and connect_timeout keys:
+```ruby
+monitor = {
+  monitor: "My Website",
+  url: "http://mysite.com",
+  every: "5m",
+  contact: "admin@mail.com",
+  via: "gmail_notifier",
+  plugin: "url_monitor",
+  retry_limit: 6,
+  connect_timeout: 300
+}
+```
+
 ==Ragios v0.6.4.1
 10-19-2015
 * Ragios Docker image is now based on ubuntu 14.04+, this makes it easy to install exotic applications, plugins and gems. Replaced the old image that was based on Debian Wheezy

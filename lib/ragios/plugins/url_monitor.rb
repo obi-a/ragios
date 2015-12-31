@@ -1,5 +1,5 @@
-#Plugin: Monitors a URL by sending a http GET request to it
-#the test PASSES if it gets a HTTP 200, 301 or 302 Response status code from the http request
+# Plugin: Monitors a URL by sending a http GET request to it
+# the test PASSES if it gets a HTTP 200, 301 or 302 Response status code from the http request
 
 module Ragios
   module Plugin
