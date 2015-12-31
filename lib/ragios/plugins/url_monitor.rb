@@ -8,27 +8,23 @@ module Ragios
       attr_reader :test_result
       attr_reader :url
       attr_reader :connection
-      attr_reader :retry_limit
-      attr_reader :connect_timeout
+      attr_reader :options
 
       def init(monitor)
+        raise "A url must be provided for url_monitor in #{monitor[:monitor]} monitor" if monitor[:url].nil?
         @url = monitor[:url]
-        @retry_limit = monitor[:retry_limit]
-        @connect_timeout = monitor[:connect_timeout]
-        raise "A url must be provided for url_monitor in #{monitor[:monitor]} monitor" if @url.nil?
-      end
-
-      def test_command?
         @connection = Excon.new(@url)
-        options = {
+        @options = {
           expects: [200, 301, 302],
           method: :get,
           idempotent: true
         }
+        @options[:retry_limit] = monitor[:retry_limit] || 3
+        @options[:connect_timeout] = monitor[:connect_timeout] || 60
+      end
 
-        options[:retry_limit] = @retry_limit || 3
-        options[:connect_timeout] = @connect_timeout || 60
-        response = @connection.request(options)
+      def test_command?
+        response = @connection.request(@options)
         @test_result = { "HTTP GET Request to #{@url}" => response.status }
         return true
       rescue => e
