@@ -1,5 +1,12 @@
 ==TODO
-* update to activerecord 4.0
+Goals for version 0.7
+* Upgrades needed to allow Ragios to scale and cut down memory usage
+- break up the app into multiple apps running on multiple processes
+- new concurrent and fault tolerant design
+- Use as little dependencies as possible each app runs its own Gemfile.
+- Preferred target system - Rubinius
+
+
 
 * Summarize and group a monitor's change of state and event_type by date, this quickly summaries a monitor's behavior and performance over any given time period
 
