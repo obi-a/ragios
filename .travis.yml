@@ -15,4 +15,5 @@ matrix:
 services:
   - couchdb
 
-script: bundle exec rake test_ragios
+# temporarily disable the script
+#script: bundle exec rake test_ragios

@@ -17,10 +17,12 @@ gem "puma", '~> 2.10.1'
 gem 'leanback', '~> 0.5.1'
 gem "uuidtools"
 gem "thor"
-gem "ragios-client", '~> 0.0.7'
-gem "eventmachine", '~> 1.0.4'
+#gem "ragios-client", '~> 0.0.7'
+#gem "eventmachine", '~> 1.0.4'
 gem "contracts"
 gem "excon"
+
+gem "celluloid"
 
 gem "rspec"
 gem "rack-test"
