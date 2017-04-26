@@ -116,12 +116,7 @@ GEM
       simple_oauth (~> 0.3.0)
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
-    unf (0.1.4)
-      unf_ext
-    unf (0.1.4-java)
-    unf_ext (0.0.7.4)
-    uuidtools (2.1.5)
-    xml-simple (1.1.5)
+    xml-simple (1.1.2)
 
 PLATFORMS
   java
@@ -149,7 +144,6 @@ DEPENDENCIES
   sucker_punch (~> 1.0)
   thor
   twitter
-  uuidtools
 
 BUNDLED WITH
    1.14.6
