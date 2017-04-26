@@ -15,7 +15,7 @@ gem "sinatra", :require => "sinatra/base"
 gem "json_pure", :require => "json/pure"
 gem "puma", '~> 2.10.1'
 gem 'leanback', '~> 0.5.1'
-gem "uuidtools"
+#gem "uuidtools"
 gem "thor"
 #gem "ragios-client", '~> 0.0.7'
 #gem "eventmachine", '~> 1.0.4'
