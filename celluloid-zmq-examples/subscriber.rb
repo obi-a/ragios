@@ -13,6 +13,7 @@ class Subscriber
     @topic = topic
     @subscriber.subscribe(@topic)
     @subscriber.connect(@link)
+    @pool = MyWorker.pool(size: 1000)
   end
 
   # def subscribe
@@ -39,7 +40,8 @@ class Subscriber
     loop do
       puts "Waiting for response..."
       #async.handle_message(@subscriber.read_multipart)
-      Handler.new.async.handle_message(@subscriber.read_multipart)
+      #Handler.new.async.handle_message(@subscriber.read_multipart)
+      @pool.async.perform(@subscriber.read_multipart)
     end
   end
 
@@ -48,12 +50,11 @@ class Subscriber
   end
 end
 
-class Handler
+class MyWorker
   include Celluloid
 
-  def handle_message(multipart_message)
+  def perform(multipart_message)
     puts "Received #{multipart_message.inspect}"
-    terminate
   end
 end
 
