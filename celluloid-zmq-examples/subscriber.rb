@@ -31,14 +31,15 @@ class Subscriber
   #   @subscriber.read(@topic)
   # end
 
-  def handle_message(multipart_message)
-    puts "Received #{multipart_message.inspect}"
-  end
+  #def handle_message(multipart_message)
+  #  puts "Received #{multipart_message.inspect}"
+  #end
 
   def run
     loop do
       puts "Waiting for response..."
-      async.handle_message(@subscriber.read_multipart)
+      #async.handle_message(@subscriber.read_multipart)
+      Handler.new.async.handle_message(@subscriber.read_multipart)
     end
   end
 
@@ -46,6 +47,16 @@ class Subscriber
     @subscriber.close
   end
 end
+
+class Handler
+  include Celluloid
+
+  def handle_message(multipart_message)
+    puts "Received #{multipart_message.inspect}"
+    terminate
+  end
+end
+
 
 s = Subscriber.new("animals")
 s.run
