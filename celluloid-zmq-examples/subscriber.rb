@@ -13,7 +13,7 @@ class Subscriber
     @topic = topic
     @subscriber.subscribe(@topic)
     @subscriber.connect(@link)
-    @pool = MyWorker.pool(size: 1000)
+    @pool = MyWorker.pool(size: 20)
   end
 
   # def subscribe

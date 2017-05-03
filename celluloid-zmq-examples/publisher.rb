@@ -14,7 +14,7 @@ class Publisher
 
   def publish(topic)
     @publisher.write(topic, "Animal crackers!", "publisher-A")
-    sleep 5
+    sleep 60
   end
 
   def close
@@ -23,7 +23,7 @@ class Publisher
 
   def run
     count = 0
-    loop do
+    10000.times do
       topic = "animals.#{count}"
       publish(topic)
       count += 1
