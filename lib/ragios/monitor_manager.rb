@@ -1,3 +1,4 @@
+#re-write for controller.rbmodule Ragios
 module Ragios
   class MonitorManager
 
