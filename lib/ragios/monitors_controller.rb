@@ -1,6 +1,6 @@
 #to be re-written
 #copied as is from rest_server.rb
-class MonitorsController < ApplicationController
+class MonitorsController < AppController
 
   helpers do
     def controller

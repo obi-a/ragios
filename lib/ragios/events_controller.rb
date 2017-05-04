@@ -1,6 +1,6 @@
 #to be re-written
 #copied as is from rest_server.rb
-class EventsController < ApplicationController
+class EventsController < AppController
 
   helpers do
     def events_ctr
