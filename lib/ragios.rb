@@ -3,6 +3,7 @@ require 'bundler/setup'
 require 'net/http'
 require 'net/https'
 
+
 Bundler.require
 
 dir = Pathname(__FILE__).dirname.expand_path
@@ -22,7 +23,7 @@ require dir + 'ragios/job'
 #require_all '/ragios/plugins'
 
 #system
-#require_all '/ragios'
+require_all '/ragios'
 
 #global variable path to the folder with erb message files
-#$path_to_messages =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/messages/'))
+$path_to_messages =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/messages/'))

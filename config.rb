@@ -1,6 +1,6 @@
 dir = Pathname(__FILE__).dirname.expand_path
 require dir + 'lib/ragios'
-=begin
+
 ragios_admin_user = {
   username: ENV['RAGIOS_ADMIN_USERNAME'],
   password: ENV['RAGIOS_ADMIN_PASSWORD'],
@@ -19,4 +19,3 @@ database_admin = {
   port: ENV['RAGIOS_COUCHDB_PORT'] || '5984'
 }
 Ragios::CouchdbAdmin.config(database_admin)
-=end

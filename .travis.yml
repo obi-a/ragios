@@ -16,4 +16,4 @@ services:
   - couchdb
 
 # temporarily disable the script
-#script: bundle exec rake test_ragios
+script: bundle exec rake test_ragios
