@@ -5,6 +5,8 @@ module Ragios
 
       Doc_id = String
 
+      attr_reader :database
+
       def initialize(database)
         @database = database
       end
