@@ -1,6 +1,6 @@
 module Ragios
   class NotifyJob
-    include SuckerPunch::Job
+    #include SuckerPunch::Job
 
     def failed(monitor, test_result, notifier)
       handle_event(:failed, monitor, test_result, notifier)

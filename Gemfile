@@ -10,7 +10,7 @@ gem "rake"
 gem "aws-ses"
 gem 'pry'
 gem 'state_machine'
-gem 'sucker_punch', '~> 1.0'
+#gem 'sucker_punch', '~> 1.0'
 gem "sinatra", :require => "sinatra/base"
 gem "json_pure", :require => "json/pure"
 gem "puma", '~> 2.10.1'
@@ -21,7 +21,7 @@ gem "ragios-client", '~> 0.0.7'
 #gem "eventmachine", '~> 1.0.4'
 gem "contracts"
 gem "excon"
-gem "celluloid-zmq"
+gem "celluloid-zmq", '~> 0.17.2'
 
 gem "rspec"
 gem "rack-test"

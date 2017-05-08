@@ -3,6 +3,8 @@ require 'bundler/setup'
 require 'net/http'
 require 'net/https'
 
+require "celluloid/zmq/current"
+require 'celluloid/current'
 
 Bundler.require
 
