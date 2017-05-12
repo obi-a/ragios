@@ -40,7 +40,7 @@ class PushDealer
 end
 
 push = PushDealer.new
-push.async.run
+push.run
 
 trap("INT") { puts "Shutting down."; push.terminate; exit}
 

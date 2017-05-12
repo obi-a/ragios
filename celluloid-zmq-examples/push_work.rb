@@ -40,7 +40,7 @@ class PushWork
 end
 
 pull = PullDealer.new
-pull.async.run
+pull.run
 
 trap("INT") { puts "Shutting down."; pull.terminate; exit}
 
