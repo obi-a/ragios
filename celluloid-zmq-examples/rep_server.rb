@@ -37,7 +37,7 @@ class RepServer
 end
 
 rep = RepServer.new
-rep.async.run
+rep.run
 
 trap("INT") { puts "Shutting down."; rep.terminate; exit}
 
