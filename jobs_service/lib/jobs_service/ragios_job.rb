@@ -1,17 +1,14 @@
-require 'celluloid/debug'
-require "celluloid/current"
-require "json"
-
 module Ragios
-  class Job
+  class RagiosJob
     include Celluloid
 
     attr_reader :monitor_id, :interval, :timer
 
-    def initialize(options_str)
-      options =  JSON.parse(options_str, symbolize_names: true)
+    def init(options_array)
+      options =  JSON.parse(options_array.first, symbolize_names: true)
       @monitor_id = options[:monitor_id]
       @interval = options[:interval]
+      start
     end
 
     def start
@@ -22,16 +19,13 @@ module Ragios
 
     def trigger_work
       puts "#{@monitor_id} triggered work"
-    rescue => e
-      send_stderr(e)
-      raise e
     end
 
-    def send_stderr(exception)
+    def exception_handler
       $stderr.puts '-' * 80
       $stderr.puts "ERROR: #{monitor_id} at interval #{interval} seconds"
-      $stderr.puts exception.message
       $stderr.puts '-' * 80
+      super
     end
   end
 end

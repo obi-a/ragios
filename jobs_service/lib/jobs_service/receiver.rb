@@ -4,10 +4,9 @@ module Ragios
     class Receiver
       include Celluloid::ZMQ
 
-      attr_reader :socket, :link
+      attr_reader :socket, :link, :supervisor
 
       def initialize
-
         @link = "tcp://127.0.0.1:5677"
         @socket = Socket::Dealer.new
         begin
@@ -19,12 +18,13 @@ module Ragios
       end
 
       def run
-        loop { async.handle_message(@socket.read_multipart) }
+        loop { handle_message(@socket.read_multipart) }
       end
 
       def handle_message(message)
         puts "got message: #{message}"
-        Ragios::Job.supervise as: :job, args: [message], size: 100
+        @supervisor = Ragios::RagiosJob.supervise as: :job
+        @supervisor[:job].async.init(message)
       end
 
       def terminate
