@@ -20,10 +20,9 @@ class JobsSender
 
   def run
     count = 0
-    1000.times do
-      message = JSON.generate({monitor_id: "monitor_#{count}", interval: 5})
+    500.times do
+      message = JSON.generate({monitor_id: "monitor_#{count}", interval: "5s"})
       write(message)
-      sleep 5
       count += 1
     end
   end

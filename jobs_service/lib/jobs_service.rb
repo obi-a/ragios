@@ -5,13 +5,14 @@ dir = Pathname(__FILE__).dirname.expand_path
 require 'celluloid/debug'
 require "celluloid/zmq/current"
 require "json"
+require "rufus/scheduler"
 
 Celluloid::ZMQ.init
 
 #POOL_SIZE = 100
 
 require dir + 'jobs_service/receiver'
-require dir + 'jobs_service/ragios_job'
+require dir + 'jobs_service/job_scheduler'
 
 puts "Starting up"
 

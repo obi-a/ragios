@@ -2,18 +2,17 @@ module Ragios
   class RagiosJob
     include Celluloid
 
-    attr_reader :monitor_id, :interval, :timer
+    attr_reader :monitor_id, :interval, :scheduler
 
-    def init(options_array)
+    def initialize(options_array)
       options =  JSON.parse(options_array.first, symbolize_names: true)
       @monitor_id = options[:monitor_id]
       @interval = options[:interval]
-      start
     end
 
     def start
-      @timer = every(interval) do
-        trigger_work
+      @scheduler.interval args[:time_interval], :first => :now,  :tags => args[:tags] do
+        @work_queue.push args[:object]
       end
     end
 
