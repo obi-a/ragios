@@ -1,52 +1,55 @@
 module Ragios
   class GenericMonitor
 
-    attr_reader :plugin
-    attr_reader :notifiers
-    attr_reader :options
-    attr_reader :id
-    attr_reader :test_result
-    attr_accessor :state
-    attr_reader :time_of_test
-    attr_reader :timestamp_of_test
+    attr_reader :plugin, :notifiers, :id, :test_result,
+    attr_reader :time_of_test, :timestamp_of_test, :options, :state
 
-    state_machine :state, :initial => :pending do
+    TRANSITIONS = {
+      pending: {
+        success: "passed",
+        failed: "failed",
+        error: "error"
+      }
+    }.freeze
 
-      before_transition :from => :pending, :to => :failed, :do => :has_failed
-      before_transition :from => :failed, :to => :passed, :do => :is_fixed
-      before_transition :from => :passed, :to => :failed, :do => :has_failed
-
-      event :success do
-        transition all => :passed
-      end
-
-      event :failure do
-        transition :passed => :failed, :pending => :failed
-      end
-
-      state :error
-    end
     def initialize(options)
+      @state = :pending
       @options = options
       @id = @options[:_id]
-      create_plugin
-      create_notifiers
-      super()
+      create_plugin unless @options[:_skip_plugin]
+      create_notifiers unless @options[:_skip_notifiers]
     end
+
     def test_command?
-      raise Ragios::PluginTestCommandNotFound.new(error: "No test_command? found for #{@plugin.class} plugin"), "No test_command? found for #{@plugin.class} plugin" unless @plugin.respond_to?('test_command?')
       @time_of_test = Time.now.utc
       @timestamp_of_test =  @time_of_test.to_i
       result = @plugin.test_command?
-      raise Ragios::PluginTestResultNotFound.new(error: "No test_result found for #{@plugin.class} plugin"), "No test_result found for #{@plugin.class} plugin" unless defined?(@plugin.test_result)
       @test_result = @plugin.test_result
-      boolean(result) ? fire_state_event(:success) : fire_state_event(:failure)
+      !!result ? fire_state_event(:success) : fire_state_event(:failure)
       return result
+    rescue Exception => e
+      fire_state_event(:error)
+      raise e
     end
 
-private
-    def boolean(value)
-      !!value
+  private
+
+    def accepted_events
+      Ragios::GenericMonitor::TRANSITIONS[@state]
+    end
+
+    def fire_state_event(event)
+      if accepted_events.keys.include?(event)
+        @state.replace(accepted_events[event])
+      else
+        #TODO: add proper exception for this error
+        raise "Incorrect Action: #{event} for state #{@state}"
+      end
+    end
+
+    def validate_plugin
+      validate_plugin_test_command
+      validate_plugin_test_result
     end
 
     def has_failed
@@ -54,6 +57,7 @@ private
         NotifyJob.new.async.failed(@options, @test_result, notifier)
       end
     end
+
     def is_fixed
       @notifiers.each do |notifier|
         NotifyJob.new.async.resolved(@options, @test_result, notifier)
@@ -61,7 +65,7 @@ private
     end
 
     def create_notifiers
-      raise Ragios::NotifierNotFound.new(error: "No Notifier Found in #{@options}"), "No Notifier Found in #{@options}" unless @options.has_key?(:via)
+      validate_notifiers_in_options
       @options[:via] = [] << @options[:via] if @options[:via].is_a? String
       @notifiers = @options[:via].map {|notifier_name| create_notifier(notifier_name) }
     end
@@ -71,13 +75,42 @@ private
     end
 
     def create_plugin
-      raise Ragios::PluginNotFound.new(error: "No Plugin Found in #{@options}"), "No Plugin Found in #{@options}" unless @options.has_key?(:plugin)
+      validate_plugin_in_options
       module_name = "Plugin"
       plugin_name = @options[:plugin]
       plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize)
       plugin = plugin_class.new
       plugin.init(@options)
+      validate_plugin
       @plugin = plugin
-   end
- end
+    end
+
+    def validate_plugin_test_command
+      unless @plugin.respond_to?(:test_command?)
+        error_message = "No test_command? found for #{@plugin.class} plugin"
+        raise Ragios::PluginTestCommandNotFound.new(error: error_message), error_message
+      end
+    end
+
+    def validate_plugin_test_result
+      unless defined?(@plugin.test_result)
+        error_message = "No test_result found for #{@plugin.class} plugin"
+        raise Ragios::PluginTestResultNotFound.new(error: error_message), error_message
+      end
+    end
+
+    def validate_notifiers_in_options
+      unless @options.has_key?(:via)
+        error_message = "No Notifier Found in #{@options}"
+        raise Ragios::NotifierNotFound.new(error: error_message), error_message
+      end
+    end
+
+    def validate_plugin_in_options
+      unless @options.has_key?(:plugin)
+        error_message = "No Plugin Found in #{@options}"
+        raise Ragios::PluginNotFound.new(error: error_message), error_message
+      end
+    end
+  end
 end
