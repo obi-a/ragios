@@ -2,22 +2,32 @@ module Ragios
   class GenericMonitor
 
     attr_reader :plugin, :notifiers, :id, :test_result,
-    attr_reader :time_of_test, :timestamp_of_test, :options, :state
+    attr_reader :time_of_test, :timestamp_of_test, :options
+    attr_accessor :state
 
-    TRANSITIONS = {
-      pending: {
-        success: "passed",
-        failed: "failed",
-        error: "error"
-      }
-    }.freeze
+    state_machine :state, :initial => :pending do
+
+      before_transition :from => :pending, :to => :failed, :do => :has_failed
+      before_transition :from => :failed, :to => :passed, :do => :is_fixed
+      before_transition :from => :passed, :to => :failed, :do => :has_failed
+
+      event :success do
+        transition all => :passed
+      end
+
+      event :failure do
+        transition :passed => :failed, :pending => :failed
+      end
+
+      state :error
+    end
 
     def initialize(options)
-      @state = :pending
       @options = options
       @id = @options[:_id]
       create_plugin unless @options[:_skip_plugin]
       create_notifiers unless @options[:_skip_notifiers]
+      super()
     end
 
     def test_command?
