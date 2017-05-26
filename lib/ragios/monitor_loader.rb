@@ -9,7 +9,8 @@ module Ragios
       @monitor_id = options[:_id]
       @monitor = model.find(@monitor_id)
       monitor.merge(options)
-      @generic_monitor = Generic_monitor(monitor)
+      #set initial state
+      @generic_monitor = GenericMonitor.new(monitor)
     end
 
   private

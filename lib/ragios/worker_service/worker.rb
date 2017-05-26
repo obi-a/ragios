@@ -11,7 +11,6 @@ module Ragios
 
     def perform
       @generic_monitor.test_command?
-      notify_failure if (@generic_monitor.state.to_sym == :failed)
       publish_event
     rescue Exception => e
       log_error(e)
