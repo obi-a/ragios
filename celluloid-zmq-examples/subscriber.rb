@@ -12,7 +12,7 @@ class Subscriber
     @subscriber = Socket::Sub.new
     @topic = topic
     @subscriber.subscribe(@topic)
-    @subscriber.connect(@link)
+    @subscriber.bind(@link)
     @pool = MyWorker.pool(size: 20)
   end
 

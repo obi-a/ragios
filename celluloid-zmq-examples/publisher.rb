@@ -9,12 +9,12 @@ class Publisher
     @link = "tcp://127.0.0.1:5555"
     @publisher = Socket::Pub.new
     @publisher.linger = 100
-    @publisher.bind(@link)
+    @publisher.connect(@link)
   end
 
   def publish(topic)
     @publisher.write(topic, "Animal crackers!", "publisher-A")
-    sleep 60
+    sleep 10
   end
 
   def close
@@ -32,7 +32,7 @@ class Publisher
 end
 
 p = Publisher.new
-p.async.run
+p.run
 
 trap("INT") { puts "Shutting down."; p.close; p.terminate; exit}
 
