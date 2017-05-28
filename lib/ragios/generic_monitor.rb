@@ -44,19 +44,6 @@ module Ragios
 
   private
 
-    def accepted_events
-      Ragios::GenericMonitor::TRANSITIONS[@state]
-    end
-
-    def fire_state_event(event)
-      if accepted_events.keys.include?(event)
-        @state.replace(accepted_events[event])
-      else
-        #TODO: add proper exception for this error
-        raise "Incorrect Action: #{event} for state #{@state}"
-      end
-    end
-
     def validate_plugin
       validate_plugin_test_command
       validate_plugin_test_result
