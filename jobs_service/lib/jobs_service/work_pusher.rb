@@ -6,7 +6,6 @@ module Ragios
       @link = "tcp://127.0.0.1:5679"
       @socket = zmq_dealer
       bind_link
-      @scheduler = Ragios::JobScheduler.new
     end
 
     def write(message)
@@ -14,8 +13,8 @@ module Ragios
       nil
     end
 
-    def push(options)
-
+    def push(monitor_id)
+      write(monitor_id)
     end
 
     def terminate

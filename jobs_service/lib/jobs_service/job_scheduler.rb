@@ -31,9 +31,9 @@ module Ragios
     end
 
     def trigger_work(options)
-      @work_pusher
+      @work_pusher.push(options[:monitor_id])
       publisher.async.log_event!(
-        monitor_id: monitor.id,
+        monitor_id: options[:monitor_id],
         event: {"monitor status" => "triggered"},
         state: "triggered",
         time: Time.now.utc,
@@ -44,6 +44,12 @@ module Ragios
     end
 
     def unschedule(job_id)
+    end
+
+    def terminate
+      @work_pusher.terminate
+      @socket.close
+      super
     end
 
   private

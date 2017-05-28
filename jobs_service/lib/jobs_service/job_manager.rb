@@ -26,6 +26,7 @@ module Ragios
     end
 
     def terminate
+      @scheduler.terminate
       @socket.close
       super
     end
