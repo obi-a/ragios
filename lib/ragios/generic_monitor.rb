@@ -44,21 +44,29 @@ module Ragios
 
   private
 
+    def log_event(state)
+      Ragios::NotificationPublisher.new.async.log_event(
+        monitor_id: generic_monitor.id,
+        state: state,
+        event: generic_monitor.test_result,
+        time: generic_monitor.time_of_test,
+        monitor: generic_monitor.options,
+        type: "event",
+        event_type: "monitor.#{state}"
+      )
+    end
+
     def validate_plugin
       validate_plugin_test_command
       validate_plugin_test_result
     end
 
     def has_failed
-      @notifiers.each do |notifier|
-        NotifyJob.new.async.failed(@options, @test_result, notifier)
-      end
+      log_event("failed")
     end
 
     def is_fixed
-      @notifiers.each do |notifier|
-        NotifyJob.new.async.resolved(@options, @test_result, notifier)
-      end
+      log_event("resolved")
     end
 
     def create_notifiers

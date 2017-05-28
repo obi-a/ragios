@@ -20,14 +20,14 @@ module Ragios
 
     def log_event!(options)
       publish(options[:event_type], options[:monitor_id], options)
-      close!
+      close
     end
 
     def publish(topic, monitor_id, event)
       @socket.write(topic, monitor_id, event)
     end
 
-    def close!
+    def close
       @socket.close
       terminate
     end
