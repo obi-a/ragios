@@ -25,6 +25,7 @@ module Ragios
       publisher.async.log_event(
         event_details.merge(event: occurred)
       )
+      terminate
     end
 
   private
