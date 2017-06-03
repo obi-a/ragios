@@ -22,7 +22,7 @@ module Ragios
       #@supervisor[:job].async.init(message)
       #Ragios::RagiosJob.new(message).start
       #acording to the message,
-      @scheduler.schedule(message)
+      @scheduler.perform(message)
     end
 
     def terminate

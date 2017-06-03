@@ -9,10 +9,15 @@ module Ragios
       @scheduler = Rufus::Scheduler.new
     end
 
-    def schedule(options_array)
-      #according to instructions -
-      # if adding a new never before run monitor call run_now_and_schedule
-      # if restarting a previously existing monitor call schedule_and_run_later
+    def perform(options_array)
+      options = JSON.parse(options_array.first, symbolize_names: true)
+      if options[:_first_run]
+        run_now_and_schedule(options)
+      elsif options[:_unschedule]
+        unschedule(options)
+      else
+        schedule_and_run_later(options)
+      end
     end
 
     #TODO: DRY up later
