@@ -1,5 +1,5 @@
 module Ragios
-  class JobScheduler
+  class RecuringJobScheduler
     include Celluloid
 
     attr_reader :scheduler, :work_pusher

@@ -1,6 +1,6 @@
 #receive jobs from clients
 module Ragios
-  class JobManager
+  class RecurringJobManager
     include Celluloid::ZMQ
 
     attr_reader :receiver, :link, :scheduler
@@ -9,7 +9,7 @@ module Ragios
       @link = "tcp://127.0.0.1:5677"
       @socket = zmq_dealer
       bind_link(@job_receiver, @frontend_link)
-      @scheduler = Ragios::JobScheduler.new
+      @scheduler = Ragios::RecurringJobScheduler.new
     end
 
     def run
