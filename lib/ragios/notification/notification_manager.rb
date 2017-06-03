@@ -12,7 +12,7 @@ module Ragios
       @topic = "monitor"
       @socket.subscribe(@topic)
       bind_link
-      @worker_pool = Ragios::NotificationWorker.pool(size: 20)
+      @worker_pool = Ragios::NotificationJob.pool(size: 20)
     end
 
     def run
@@ -20,21 +20,9 @@ module Ragios
         puts "Waiting for response..."
         #async.handle_message(@subscriber.read_multipart)
         #Handler.new.async.handle_message(@subscriber.read_multipart)
-        @pool.async.perform(@subscriber.read_multipart)
+        @worker_pool.async.perform(@subscriber.read_multipart)
       end
     end
-
-
-    def run
-      loop { handle_message(@socket.read_multipart) }
-    end
-
-    def handle_message(message)
-      @worker_pool.async.perform(message)
-      #use proper logging to stdout
-      puts "got message: #{message}"
-    end
-
 
     def terminate
       @socket.close
@@ -53,6 +41,5 @@ module Ragios
       @socket.close
       raise
     end
-
   end
 end

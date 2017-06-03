@@ -5,7 +5,7 @@ module Ragios
     attr_reader :generic_monitor, :monitor_id, :monitor
     attr_reader :model
 
-    def initialize(options = {})
+    def initialize(options)
       @monitor_id = options[:_id]
       @monitor = model.find(@monitor_id)
       monitor.merge(options)

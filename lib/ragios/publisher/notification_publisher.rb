@@ -24,7 +24,7 @@ module Ragios
     end
 
     def publish(topic, monitor_id, event)
-      @socket.write(topic, monitor_id, event)
+      @socket.write(topic, monitor_id, JSON.generate(event))
     end
 
     def close
