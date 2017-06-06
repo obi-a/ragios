@@ -6,9 +6,11 @@ require 'net/https'
 require "celluloid/zmq/current"
 require 'celluloid/current'
 
+Celluloid::ZMQ.init
+
 Bundler.require
 
-dir = Pathname(__FILE__).dirname.expand_path
+dir = Pathname(__FILE__).dirname.expand_path + 'ragios/'
 
 def require_all(path)
  Dir.glob(File.dirname(__FILE__) + path + '/*.rb') do |file|
@@ -16,16 +18,16 @@ def require_all(path)
  end
 end
 
-require dir + 'ragios/job'
 
 #notifiers
-#require dir + 'ragios/notifiers/email/email_notifier'
-#require_all '/ragios/notifiers'
+require_all '/ragios/notifiers/email'
+require_all '/ragios/notifiers'
 
-#require_all '/ragios/plugins'
+require_all '/ragios/plugins'
 
 #system
 require_all '/ragios'
 
+#TODO: move this to notifications service
 #global variable path to the folder with erb message files
 $path_to_messages =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/messages/'))

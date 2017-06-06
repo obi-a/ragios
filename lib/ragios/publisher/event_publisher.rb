@@ -1,6 +1,3 @@
-require "celluloid/zmq/current"
-Celluloid::ZMQ.init
-
 module Ragios
   class EventPublisher
     include Celluloid::ZMQ

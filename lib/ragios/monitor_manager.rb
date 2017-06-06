@@ -157,6 +157,44 @@ module Ragios
       end
     end
 
+    def send_stderr(exception)
+      $stderr.puts '-' * 80
+      $stderr.puts exception.message
+      $stderr.puts exception.backtrace.join("\n")
+      $stderr.puts '-' * 80
+    end
+
+    #queries
+    Contract Any => ArrayOf[Monitor]
+    def get_all(options = {})
+      model.all_monitors(options)
+    end
+
+    Contract Monitor_id, String, Hash => ArrayOf[Hash]
+    def get_events_by_state(monitor_id, state, options)
+      model.get_monitor_events_by_state(monitor_id, state, options)
+    end
+
+    Contract Monitor_id, String, Hash => ArrayOf[Hash]
+    def get_events_by_type(monitor_id, event_type, options)
+      model.get_monitor_events_by_type(monitor_id, event_type, options)
+    end
+
+    Contract Monitor_id, Hash => ArrayOf[Hash]
+    def get_events(monitor_id, options)
+      model.get_monitor_events(monitor_id, options)
+    end
+
+    Contract Hash => ArrayOf[Monitor]
+    def where(options)
+      model.monitors_where(options)
+    end
+
+    Contract Monitor_id => Hash
+    def get_current_state(monitor_id)
+      model.get_monitor_state(monitor_id)
+    end
+
   private
 
     def log_monitor_start(monitor_id, monitor)

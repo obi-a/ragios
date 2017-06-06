@@ -1,7 +1,7 @@
 module Ragios
   class GenericMonitor
 
-    attr_reader :plugin, :notifiers, :id, :test_result,
+    attr_reader :plugin, :notifiers, :id, :test_result
     attr_reader :time_of_test, :timestamp_of_test, :options
     attr_accessor :state
 
