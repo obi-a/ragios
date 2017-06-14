@@ -5,6 +5,7 @@ Goals for version 0.7
 - new concurrent and fault tolerant design
 - Use as little dependencies as possible each app runs its own Gemfile.
 - Preferred target system - Rubinius
+- Code should be written to be read
 
 
 

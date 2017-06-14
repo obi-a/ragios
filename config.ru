@@ -4,9 +4,9 @@ begin
   require "bundler/setup"
   dir = Pathname(__FILE__).dirname.expand_path
   require dir + 'config'
-  require dir + 'lib/ragios/rest_server'
+  require dir + 'lib/ragios/web/application'
 
-  run App
+  run Ragios::Web::Application
 
   def require_all(path)
     Dir.glob(File.dirname(__FILE__) + path + '/*.rb') do |file|
