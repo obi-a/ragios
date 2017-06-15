@@ -8,7 +8,7 @@ module Ragios
     Event_id = String
 
     def self.model
-      @model ||= Ragios::Database::Model.new(Ragios::CouchdbAdmin.get_database)
+      @model ||= Ragios::Database::Model.new(Ragios::Database::Admin.get_database)
     end
 
     def self.reset

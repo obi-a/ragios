@@ -18,4 +18,4 @@ database_admin = {
   address: ENV['RAGIOS_COUCHDB_ADDRESS'] || 'http://localhost',
   port: ENV['RAGIOS_COUCHDB_PORT'] || '5984'
 }
-Ragios::CouchdbAdmin.config(database_admin)
+Ragios::Database::Admin.config(database_admin)

@@ -5,6 +5,8 @@ begin
   dir = Pathname(__FILE__).dirname.expand_path
   require dir + 'config'
   require dir + 'lib/ragios/web/application'
+  require dir + 'lib/ragios/monitors/manager'
+  require dir + 'lib/ragios/database/model'
 
   run Ragios::Web::Application
 

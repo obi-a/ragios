@@ -18,7 +18,7 @@ module Ragios
     end
 
     def model
-      @model ||= Ragios::Database::Model.new(Ragios::CouchdbAdmin.get_database)
+      @model ||= Ragios::Database::Model.new(Ragios::Database::Admin.get_database)
     end
   end
 end

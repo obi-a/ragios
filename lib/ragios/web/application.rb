@@ -22,7 +22,7 @@ module Ragios
           Ragios::Admin.valid_token?(request.cookies["RagiosAuthSession"])
         end
         def monitor_manager
-          @monitor_manager ||= Ragios::MonitorManager.new
+          @monitor_manager ||= Ragios::Monitors::Manager.new
         end
         def events_ctr
           @events ||= Ragios::Events

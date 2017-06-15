@@ -1,5 +1,5 @@
 #create database if it doesn't already exisit
-Ragios::CouchdbAdmin.setup_database
+Ragios::Database::Admin.setup_database
 
 # TODO remove later
 # this functionality should be moved to a rake task
