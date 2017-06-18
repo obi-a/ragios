@@ -19,7 +19,7 @@ module Ragios
 
       helpers do
         def valid_token?
-          Ragios::Admin.valid_token?(request.cookies["RagiosAuthSession"])
+          Ragios::Web::Admin.valid_token?(request.cookies["RagiosAuthSession"])
         end
         def monitor_manager
           @monitor_manager ||= Ragios::Monitors::Manager.new
@@ -38,8 +38,8 @@ module Ragios
       end
 
       post '/session*' do
-        if Ragios::Admin.authenticate?(params[:username],params[:password])
-          generate_json(RagiosAuthSession: Ragios::Admin.session)
+        if Ragios::Web::Admin.authenticate?(params[:username],params[:password])
+          generate_json(RagiosAuthSession: Ragios::Web::Admin.session)
         else
           status 401
           generate_json(error: "You are not authorized to access this resource")
@@ -208,8 +208,8 @@ module Ragios
 
       post '/admin_session*' do
         @login_page = true
-        if Ragios::Admin.authenticate?(params[:username], params[:password])
-          response.set_cookie "RagiosAuthSession", Ragios::Admin.session
+        if Ragios::Web::Admin.authenticate?(params[:username], params[:password])
+          response.set_cookie "RagiosAuthSession", Ragios::Web::Admin.session
           session[:authenticated] = true
           redirect '/admin/index'
         else
@@ -223,7 +223,7 @@ module Ragios
         token = request.cookies['RagiosAuthSession']
         response.delete_cookie "RagiosAuthSession"
         session.clear
-        Ragios::Admin.invalidate_token(token)
+        Ragios::Web::Admin.invalidate_token(token)
         redirect '/admin/login'
       end
 
@@ -257,8 +257,8 @@ module Ragios
     private
 
       def logged_out?(token)
-        return false if !Ragios::Admin.do_authentication?
-        (!session[:authenticated] || !Ragios::Admin.valid_token?(token)) ? true : false
+        return false if !Ragios::Web::Admin.do_authentication?
+        (!session[:authenticated] || !Ragios::Web::Admin.valid_token?(token)) ? true : false
       end
 
       def bad_request

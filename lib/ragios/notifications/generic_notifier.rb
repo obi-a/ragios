@@ -1,5 +1,5 @@
 module Ragios
-  class GenericNotifier < Ragios::GenericMonitor
+  class GenericNotifier < Ragios::Monitors::GenericMonitor
 
     def initialize(notification_event)
       @options = nofitcation_event[:monitor]

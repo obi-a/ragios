@@ -22,8 +22,9 @@ end
 #notifiers
 require_all '/ragios/notifiers/email'
 require_all '/ragios/notifiers'
-require_all 'ragios/monitors'
-require_all 'ragios/database'
+require_all '/ragios/monitors'
+require_all '/ragios/database'
+require_all '/ragios/web'
 
 require_all '/ragios/plugins'
 

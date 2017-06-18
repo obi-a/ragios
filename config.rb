@@ -8,7 +8,7 @@ ragios_admin_user = {
   auth_timeout: ENV['RAGIOS_AUTH_TIMEOUT'] || 900
 }
 
-Ragios::Admin.config(ragios_admin_user)
+Ragios::Web::Admin.config(ragios_admin_user)
 
 #database configuration
 database_admin = {
