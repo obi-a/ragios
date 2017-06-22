@@ -18,7 +18,7 @@ module Ragios
         event_time = time
         monitor_id = unique_id
         monitor_options = options.merge({created_at_: event_time, status_: 'active', type: "monitor"})
-
+        validate_monitor(monitor_options)
         model.save(monitor_id, monitor_options)
         schedule(monitor_id, monitor_options[:every], first_run = true)
         publisher.log_event(
@@ -95,6 +95,9 @@ module Ragios
           if options.keys.any? { |key| [:type, :status_, :created_at_, :creation_timestamp_, :current_state_].include?(key) }
             raise Ragios::CannotEditSystemSettings.new(error: message), message
           end
+          old_monitor = model.find(monitor_id)
+          new_monitor = old_monitor.merge(options)
+          validate_monitor(new_monitor)
           model.update(monitor_id, options)
           reschedule(monitor_id, options[:every]) if options.keys.include?(:every)
           publisher.log_event(
@@ -209,6 +212,17 @@ module Ragios
         pusher = Ragios::RecurringJobs::Pusher.new
         pusher.push(JSON.generate(options))
         pusher.terminate
+      end
+
+
+      def validate_monitor(options)
+        !!Ragios::Monitors::GenericMonitor.new(options)
+      rescue Ragios::PluginTestCommandNotFound,
+        Ragios::PluginTestResultNotFound,
+        Ragios::NotifierNotFound,
+        Ragios::PluginNotFound
+
+        raise
       end
 
     private

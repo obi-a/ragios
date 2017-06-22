@@ -26,8 +26,8 @@ module Ragios
       def initialize(options)
         @options = options
         @id = @options[:_id]
-        create_plugin unless @options[:_skip_plugin]
-        create_notifiers unless @options[:_skip_notifiers]
+        create_plugin
+        create_notifiers
         super()
       end
 
@@ -73,22 +73,30 @@ module Ragios
       def create_notifiers
         validate_notifiers_in_options
         @options[:via] = [] << @options[:via] if @options[:via].is_a? String
+        raise_notifier_not_found_error if @options[:via].empty?
         @notifiers = @options[:via].map {|notifier_name| create_notifier(notifier_name) }
       end
 
       def create_notifier(notifier_name)
         (Module.const_get("Ragios").const_get("Notifier").const_get(notifier_name.camelize)).new(@options)
+      rescue => e
+        raise $!, "Cannot Create Notifier #{notifier_name}: #{$!}", $!.backtrace
       end
 
       def create_plugin
         validate_plugin_in_options
-        module_name = "Plugin"
-        plugin_name = @options[:plugin]
-        plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize)
-        plugin = plugin_class.new
+        plugin = build_plugin(@options[:plugin])
         plugin.init(@options)
-        validate_plugin
         @plugin = plugin
+        validate_plugin
+      end
+
+      def build_plugin(plugin_name)
+        module_name = "Plugin"
+        plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize)
+        plugin_class.new
+      rescue => e
+        raise $!, "Cannot Create Plugin #{plugin_name}: #{$!}", $!.backtrace
       end
 
       def validate_plugin_test_command
@@ -107,9 +115,13 @@ module Ragios
 
       def validate_notifiers_in_options
         unless @options.has_key?(:via)
-          error_message = "No Notifier Found in #{@options}"
-          raise Ragios::NotifierNotFound.new(error: error_message), error_message
+          raise_notifier_not_found_error
         end
+      end
+
+      def raise_notifier_not_found_error
+        error_message = "No Notifier Found in #{@options}"
+        raise Ragios::NotifierNotFound.new(error: error_message), error_message
       end
 
       def validate_plugin_in_options
