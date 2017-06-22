@@ -14,7 +14,7 @@ module Ragios
       end
     end
 
-    def log_event!(options)
+    def log_event(options)
       publish(options[:event_type], options[:monitor_id], options)
       close
     end

@@ -11,9 +11,9 @@ module Ragios
 
     def perform(options_array)
       options = JSON.parse(options_array.first, symbolize_names: true)
-      if options[:_first_run]
+      if options[:first_run]
         run_now_and_schedule(options)
-      elsif options[:_unschedule]
+      elsif options[:unschedule]
         unschedule(options)
       else
         schedule_and_run_later(options)
@@ -21,15 +21,15 @@ module Ragios
     end
 
     #TODO: DRY up later
-    def run_now_and_schedule(options_array)
-      options =  JSON.parse(options_array.first, symbolize_names: true)
+    def run_now_and_schedule(options)
+      #options =  JSON.parse(options_array.first, symbolize_names: true)
       @scheduler.interval options[:interval], :first => :now,  :tags => options[:monitor_id] do
         trigger_work(options)
       end
     end
 
-    def schedule_and_run_later(options_array)
-      options =  JSON.parse(options_array.first, symbolize_names: true)
+    def schedule_and_run_later(options)
+      #options =  JSON.parse(options_array.first, symbolize_names: true)
       @scheduler.interval options[:interval],  :tags => options[:monitor_id] do
         trigger_work(options)
       end
