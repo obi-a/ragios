@@ -59,7 +59,7 @@ class MyWorker
 end
 
 
-s = Subscriber.new("animals")
+s = Subscriber.new("monitor")
 s.run
 
 trap("INT") { puts "Shutting down.";  s.close; s.terminate; exit}

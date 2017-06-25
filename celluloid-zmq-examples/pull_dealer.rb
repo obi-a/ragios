@@ -7,7 +7,7 @@ class PullDealer
 
   def initialize
 
-    @link = "tcp://127.0.0.1:5677"
+    @link = "tcp://127.0.0.1:5679"
     @socket = Socket::Dealer.new
     begin
       @socket.connect(@link)
@@ -22,7 +22,7 @@ class PullDealer
   end
 
   def handle_message(message)
-    puts "got message: #{message}"
+    puts "#{Time.now} got message: #{message}"
   end
 
   def terminate
