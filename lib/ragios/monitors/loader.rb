@@ -6,12 +6,13 @@ module Ragios
       attr_reader :generic_monitor, :monitor_id, :monitor
       attr_reader :model
 
-      def initialize(options)
-        @monitor_id = options[:_id]
+      def initialize(monitor_id)
+        @monitor_id = monitor_id
         @monitor = model.find(@monitor_id)
-        monitor.merge(options)
-        #set initial state
-        @generic_monitor = GenericMonitor.new(monitor)
+        current_state  =  model.get_monitor_state(@monitor_id)
+        puts "current_state #{current_state.inspect}"
+        @generic_monitor = GenericMonitor.new(@monitor)
+        @generic_monitor.state = current_state[:state]
       end
 
     private

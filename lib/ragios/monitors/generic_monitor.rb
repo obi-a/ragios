@@ -20,10 +20,15 @@ module Ragios
           transition :passed => :failed, :pending => :failed
         end
 
+        event :error do
+          transition all => :error
+        end
+
         state :error
       end
 
       def initialize(options)
+        puts "these are the options #{options.inspect}"
         @options = options
         @id = @options[:_id]
         create_plugin
@@ -32,11 +37,13 @@ module Ragios
       end
 
       def test_command?
+        puts "generic monitor previous state #{@state}"
         @time_of_test = Time.now.utc
         @timestamp_of_test =  @time_of_test.to_i
         result = @plugin.test_command?
         @test_result = @plugin.test_result
-        !!result ? fire_state_event(:success) : fire_state_event(:failure)
+        result ? fire_state_event(:success) : fire_state_event(:failure)
+        puts "generic monitor new state #{@state}"
         return result
       rescue Exception => e
         fire_state_event(:error)
@@ -46,15 +53,17 @@ module Ragios
     private
 
       def log_event(state)
-        Ragios::NotificationPublisher.new.async.log_event(
-          monitor_id: generic_monitor.id,
+        event_details = {
+          monitor_id: @id,
           state: state,
-          event: generic_monitor.test_result,
-          time: generic_monitor.time_of_test,
-          monitor: generic_monitor.options,
+          event: @test_result,
+          time: @time_of_test,
+          monitor: @options,
           type: "event",
           event_type: "monitor.#{state}"
-        )
+        }
+        NotificationPublisher.new.async.log_event!(event_details)
+        #EventPublisher.new.async.log_event!(event_details)
       end
 
       def validate_plugin

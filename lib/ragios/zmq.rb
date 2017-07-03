@@ -1,7 +1,7 @@
 module Ragios
   class ZMQ
     include Celluloid::ZMQ
-    attr_reader :socket, :link, :handler
+    attr_reader :socket, :link, :handler, :topic
 
     def run
       loop { async.handle_message(@socket.read_multipart) }
@@ -19,6 +19,11 @@ module Ragios
     def log_event(options)
       publish(options[:event_type], options[:monitor_id], options)
       puts "#{Time.now} Publish event: #{options}"
+    end
+
+    def log_event!(options)
+      log_event(options)
+      close
     end
 
     def terminate

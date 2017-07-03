@@ -4,7 +4,7 @@ module Ragios
       attr_reader :scheduler, :work_pusher, :publisher
 
       def initialize
-        @work_pusher = Ragios::WorkPusher.new
+        @work_pusher = Ragios::Monitors::Workers::Pusher.new
         @scheduler = Rufus::Scheduler.new
         @publisher = Ragios::EventPublisher.pool(size: 20)
       end

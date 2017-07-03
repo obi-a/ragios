@@ -9,7 +9,7 @@ module Ragios
 
       def test_command?
         @test_result = {"This test" => "does nothing"}
-        return true
+        return ((rand(1..10) % 2 == 0) ? true : false)
       end
     end
 

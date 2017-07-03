@@ -1,6 +1,6 @@
 #Controller for events
 module Ragios
-  class Events
+  class Eventsx
     #see contracts: https://github.com/egonSchiele/contracts.ruby
     include Contracts
     #types

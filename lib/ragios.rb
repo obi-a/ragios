@@ -25,10 +25,13 @@ require_all '/ragios'
 require_all '/ragios/notifiers/email'
 require_all '/ragios/notifiers'
 require_all '/ragios/monitors'
+require_all '/ragios/monitors/workers'
 require_all '/ragios/database'
 require_all '/ragios/recurring_jobs'
 require_all '/ragios/publisher'
 require_all '/ragios/web'
+require_all '/ragios/events'
+require_all '/ragios/notifications'
 
 require_all '/ragios/plugins'
 
