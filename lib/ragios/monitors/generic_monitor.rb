@@ -52,7 +52,7 @@ module Ragios
 
     private
 
-      def log_event(state)
+      def push_event(state)
         event_details = {
           monitor_id: @id,
           state: state,
@@ -62,8 +62,9 @@ module Ragios
           type: "event",
           event_type: "monitor.#{state}"
         }
-        NotificationPublisher.new.async.log_event!(event_details)
-        #EventPublisher.new.async.log_event!(event_details)
+        pusher = Ragios::Notifications::Pusher.new
+        pusher.push(JSON.generate(event_details))
+        pusher.terminate
       end
 
       def validate_plugin
@@ -72,11 +73,11 @@ module Ragios
       end
 
       def has_failed
-        log_event("failed")
+        push_event("failed")
       end
 
       def is_fixed
-        log_event("resolved")
+        push_event("resolved")
       end
 
       def create_notifiers

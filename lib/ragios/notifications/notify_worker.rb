@@ -18,7 +18,7 @@ module Ragios
         notifier.send(event, test_result) if notifier.respond_to?(event)
 
         occurred = {notified: event, via: notifier_name(notifier)}
-        publisher.async.log_event(
+        publisher.async.log_event!(
           event_details.merge(event: occurred)
         )
 
