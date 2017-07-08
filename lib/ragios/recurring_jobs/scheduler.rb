@@ -6,7 +6,7 @@ module Ragios
       def initialize
         @work_pusher = Ragios::Monitors::Workers::Pusher.new
         @scheduler = Rufus::Scheduler.new
-        @publisher = Ragios::EventPublisher.pool(size: 20)
+        @publisher = Ragios::Events::Publisher.pool(size: 20)
       end
 
       def perform(options_array)

@@ -33,7 +33,7 @@ module Ragios
     private
 
       def publisher
-        Ragios::EventPublisher.new
+        Ragios::Events::Publisher.new
       end
 
       def notifier_name(notifier)

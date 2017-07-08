@@ -244,7 +244,7 @@ module Ragios
       end
 
       def publisher
-        Ragios::EventPublisher.new
+        Ragios::Events::Publisher.new
       end
 
       def get_valid_monitor(monitor_id)

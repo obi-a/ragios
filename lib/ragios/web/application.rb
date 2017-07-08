@@ -21,11 +21,13 @@ module Ragios
         def valid_token?
           Ragios::Web::Admin.valid_token?(request.cookies["RagiosAuthSession"])
         end
+
         def monitor_manager
           @monitor_manager ||= Ragios::Monitors::Manager.new
         end
+
         def events_ctr
-          @events ||= Ragios::Events
+          @events ||= Ragios::Events::Manager.new
         end
       end
 

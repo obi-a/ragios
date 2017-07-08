@@ -36,7 +36,7 @@ module Ragios
         end
 
         def publisher
-          Ragios::EventPublisher.new
+          Ragios::Events::Publisher.new
         end
       end
     end
