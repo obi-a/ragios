@@ -20,8 +20,8 @@ module Ragios
         monitor_options = options.merge({created_at_: event_time, status_: 'active', type: "monitor"})
         validate_monitor(monitor_options)
         model.save(monitor_id, monitor_options)
-        schedule(monitor_id, monitor_options[:every], first_run = true)
-        publisher.log_event(
+        schedule(monitor_id, monitor_options[:every], :run_now_and_schedule)
+        publisher.log_event!(
           monitor_id: monitor_id,
           event: {"monitor status" => "created"},
           state: "create",
@@ -60,7 +60,7 @@ module Ragios
         try_monitor(monitor_id) do
           unschedule(monitor_id)
           !!model.update(monitor_id, status_: "stopped")
-          !!publisher.log_event(
+          !!publisher.log_event!(
             monitor_id: monitor_id,
             event: {"monitor status" => "stopped"},
             state: "stopped",
@@ -76,7 +76,7 @@ module Ragios
         try_monitor(monitor_id) do
           !!model.delete(monitor_id)
           unschedule(monitor_id)
-          !!publisher.log_event(
+          !!publisher.log_event!(
             monitor_id: monitor_id,
             event: {"monitor status" => "deleted"},
             state: "deleted",
@@ -100,7 +100,7 @@ module Ragios
           validate_monitor(new_monitor)
           model.update(monitor_id, options)
           reschedule(monitor_id, options[:every]) if options.keys.include?(:every)
-          publisher.log_event(
+          publisher.log_event!(
             monitor_id: monitor_id,
             state: "updated",
             event: {"monitor status" => "updated"},
@@ -129,9 +129,8 @@ module Ragios
       Contract Monitor_id => Bool
       def test_now(monitor_id)
         try_monitor(monitor_id) do
-          #monitor = model.find(monitor_id)
-          #!!perform(generic_monitor(monitor))
-          puts "ask worker to perform job"
+          monitor = model.find(monitor_id)
+          schedule(monitor[:_id], monitor[:every], :trigger_work)
           true
         end
       end
@@ -190,21 +189,22 @@ module Ragios
       #check if rufu-scheduler can be rescheduled without being manually stopped & rescheduled
       def reschedule(monitor_id, interval)
         unschedule(monitor_id)
-        schedule(monitor_id, interval )
+        schedule(monitor_id, interval)
       end
 
-      def schedule(monitor_id, interval, first_run = false)
+
+      def schedule(monitor_id, interval, perform = :schedule_and_run_later)
         add_to_scheduler({
           monitor_id: monitor_id,
           interval: interval,
-          first_run: first_run
+          perform: perform
         })
       end
 
       def unschedule(monitor_id)
         add_to_scheduler({
           monitor_id: monitor_id,
-          unschedule: true
+          perform: :unschedule
         })
       end
 
@@ -213,7 +213,6 @@ module Ragios
         pusher.push(JSON.generate(options))
         pusher.terminate
       end
-
 
       def validate_monitor(options)
         !!Ragios::Monitors::GenericMonitor.new(options)
@@ -228,7 +227,7 @@ module Ragios
     private
 
       def log_monitor_start(monitor_id, monitor)
-        publisher.log_event(
+        publisher.log_event!(
           monitor_id: monitor_id,
           event: {"monitor status" => "started"},
           state: "started",

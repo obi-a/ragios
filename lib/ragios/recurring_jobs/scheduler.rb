@@ -38,11 +38,12 @@ module Ragios
         )
       end
 
-      def unschedule(monitor_id)
-        jobs = find(monitor_id)
+      def unschedule(options)
+        jobs = find(options[:monitor_id])
         jobs.each do |job|
           job.unschedule
         end
+        puts "unscheduling #{jobs.inspect}"
       end
 
       def find(monitor_id)
