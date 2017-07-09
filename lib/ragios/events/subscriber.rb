@@ -1,6 +1,6 @@
 module Ragios
   module Events
-    class Subscriber < Ragios::ZMQ
+    class Subscriber < ZMQ::Receiver
 
       def initialize
         @link = "tcp://127.0.0.1:5555"

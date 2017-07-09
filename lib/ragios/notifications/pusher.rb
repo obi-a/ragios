@@ -1,6 +1,6 @@
 module Ragios
   module Notifications
-    class Pusher < Ragios::ZMQ
+    class Pusher < ZMQ::Pusher
 
       def initialize
         @link = "tcp://127.0.0.1:5588"

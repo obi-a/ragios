@@ -1,6 +1,6 @@
 module Ragios
   module Events
-    class Publisher < Ragios::ZMQ
+    class Publisher < ZMQ::Publisher
 
       def initialize
         @link = "tcp://127.0.0.1:5555"

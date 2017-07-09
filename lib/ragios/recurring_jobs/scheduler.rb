@@ -11,13 +11,7 @@ module Ragios
 
       def perform(options_array)
         options = JSON.parse(options_array.first, symbolize_names: true)
-        if options[:first_run]
-          run_now_and_schedule(options)
-        elsif options[:unschedule]
-          unschedule(options[:monitor_id])
-        else
-          schedule_and_run_later(options)
-        end
+        send(options[:perform], options)
       end
 
       def run_now_and_schedule(options)

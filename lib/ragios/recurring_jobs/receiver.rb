@@ -1,8 +1,7 @@
 #receive jobs from clients
 module Ragios
   module RecurringJobs
-    class Receiver < Ragios::ZMQ
-      finalizer :close
+    class Receiver < ZMQ::Receiver
 
       attr_reader :receiver, :link, :scheduler
 

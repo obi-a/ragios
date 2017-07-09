@@ -2,6 +2,7 @@ module Ragios
   module ZMQ
     class Base
       include Celluloid::ZMQ
+      finalizer :clean_up
       attr_reader :socket, :link
 
       def terminate
@@ -15,6 +16,10 @@ module Ragios
       end
 
     protected
+
+      def clean_up
+        @socket.close
+      end
 
       def zmq_dealer
         Socket::Dealer.new
