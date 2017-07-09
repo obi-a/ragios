@@ -9,7 +9,6 @@ Daemons.run_proc('notifications', log_output: true) do
   puts "starting out"
 
   receiver = Ragios::Notifications::Receiver.new
-  #trap("INT") { puts "Shutting down."; pull.terminate; exit}
-  trap 'TERM', lambda { puts "Shutting down."; receiver.terminate;}
+  trap("INT") { puts "Shutting down."; exit}
   receiver.run
 end

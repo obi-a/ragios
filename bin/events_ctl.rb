@@ -9,7 +9,7 @@ Daemons.run_proc('events', log_output: true) do
   puts "starting out"
 
   receiver = Ragios::Events::Subscriber.new
-  #trap("INT") { puts "Shutting down."; pull.terminate; exit}
-  trap 'TERM', lambda { puts "Shutting down."; receiver.terminate;}
+  trap("INT") {puts "Shutting down."; exit}
+
   receiver.run
 end

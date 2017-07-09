@@ -7,9 +7,9 @@ Daemons.run_proc('recurring_jobs', log_output: true) do
   require config
 
   puts "starting out"
-
+  Celluloid.shutdown_timeout=1_000_000
   receiver = Ragios::RecurringJobs::Receiver.new
   #trap("INT") { puts "Shutting down."; pull.terminate; exit}
-  trap 'TERM', lambda { puts "Shutting down."; receiver.terminate;}
+  trap("INT") { puts "Shutting down."; exit}
   receiver.run
 end
