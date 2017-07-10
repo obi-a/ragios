@@ -12,6 +12,7 @@ module Ragios
       end
 
       def notify
+        #add a worker pool to manage notify workers
         @notifiers.each do |notifier|
           Notifications::NotifyWorker.new.async.perform(@state, @options, @test_result, notifier)
         end
