@@ -6,7 +6,7 @@ module Ragios
 
         def perform(monitor_id)
           puts "got this id #{monitor_id}"
-          generic_monitor =  Ragios::Monitors::Loader.new(monitor_id).generic_monitor
+          generic_monitor =  Ragios::Monitors::GenericMonitor.find(monitor_id)
           generic_monitor.test_command?
           publisher.async.log_event!(
             monitor_id: generic_monitor.id,

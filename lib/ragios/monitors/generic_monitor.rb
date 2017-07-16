@@ -27,8 +27,21 @@ module Ragios
         state :error
       end
 
+      class << self
+        def find(monitor_id)
+          monitor = model.find(monitor_id)
+          current_state  =  model.get_monitor_state(monitor_id)
+          generic_monitor = GenericMonitor.new(monitor)
+          generic_monitor.state = current_state[:state]
+          generic_monitor
+        end
+
+        private def model
+          @model ||= Ragios::Database::Model.new(Ragios::Database::Admin.get_database)
+        end
+      end
+
       def initialize(options)
-        puts "these are the options #{options.inspect}"
         @options = options
         @id = @options[:_id]
         create_plugin
@@ -37,13 +50,13 @@ module Ragios
       end
 
       def test_command?
-        puts "generic monitor previous state #{@state}"
+        p "generic monitor previous state #{@state}"
         @time_of_test = Time.now.utc
         @timestamp_of_test =  @time_of_test.to_i
         result = @plugin.test_command?
         @test_result = @plugin.test_result
         result ? fire_state_event(:success) : fire_state_event(:failure)
-        puts "generic monitor new state #{@state}"
+        p "generic monitor new state #{@state}"
         return result
       rescue Exception => e
         fire_state_event(:error)
