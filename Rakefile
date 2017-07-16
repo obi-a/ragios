@@ -27,15 +27,16 @@ task :integration do
 end
 
 task :test_ragios do
-  sh 'rspec -fs spec/unit_tests'
-  sh 'rspec -fs spec/integration'
+  #sh 'rspec -fs spec/unit_tests'
+  #sh 'rspec -fs spec/integration'
+  sh 'rspec spec/lib --format documentation'
 end
 
-task :c => :console
-task :test_notifiers => :notifiers
-task :test_plugins => :plugins
-task :test_unit => :unit
-task :test_integration => :integration
+#task :c => :console
+#task :test_notifiers => :notifiers
+#task :test_plugins => :plugins
+#task :test_unit => :unit
+#task :test_integration => :integration
 
 task :test => :test_ragios
 task :default => :test_ragios

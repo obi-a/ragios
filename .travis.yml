@@ -1,7 +1,7 @@
 language: ruby
 
 rvm:
-  - 2.4.0
+  - 2.4.1
   - 2.3.4
   - rbx-3.75
   - jruby-19mode # JRuby in 1.9 mode
@@ -15,5 +15,8 @@ matrix:
 services:
   - couchdb
 
-# temporarily disable the script
+install:
+  - sudo apt-get install zeromq
+  - bundle install
+
 script: bundle exec rake test_ragios
