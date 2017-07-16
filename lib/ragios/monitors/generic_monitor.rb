@@ -55,11 +55,13 @@ module Ragios
         end
       end
 
-      def initialize(options)
+      def initialize(options, skip_extensions_creation = false)
         @options = options
         @id = @options[:_id]
-        create_plugin
-        create_notifiers
+        unless skip_extensions_creation
+          create_plugin
+          create_notifiers
+        end
         super()
       end
 
