@@ -135,19 +135,6 @@ module Ragios
         end
       end
 
-      # only called when first starting the application
-      # to start all active monitors from database to scheduler
-      # may later have a rake task do this
-      Contract None => Or[ArrayOf[Monitor], nil]
-      def start_all_active
-        monitors = model.active_monitors
-        unless monitors.empty?
-          monitors.each do |monitor|
-            schedule(monitor[:_id], monitor[:every])
-          end
-        end
-      end
-
       def send_stderr(exception)
         $stderr.puts '-' * 80
         $stderr.puts exception.message
