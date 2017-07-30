@@ -44,8 +44,8 @@ module Ragios
           raise $!, "Cannot Create Plugin #{plugin_name}: #{$!}", $!.backtrace
         end
 
-        def build_notifier(notifier_name, options)
-          (Module.const_get("Ragios").const_get("Notifier").const_get(notifier_name.camelize)).new(options)
+        def build_notifier(notifier_name)
+          (Module.const_get("Ragios").const_get("Notifier").const_get(notifier_name.camelize)).new
         rescue => e
           raise $!, "Cannot Create Notifier #{notifier_name}: #{$!}", $!.backtrace
         end
@@ -105,11 +105,13 @@ module Ragios
 
       def create_notifiers
         raise_notifier_not_found_error unless @options.has_key?(:via)
-        validate_notifiers_in_options
         @options[:via] = [] << @options[:via] if @options[:via].is_a? String
         raise_notifier_not_found_error if @options[:via].empty?
         @notifiers = @options[:via].map do |notifier_name|
-          GenericMonitor.build_notifier(notifier_name, @options)
+          notifier = GenericMonitor.build_notifier(notifier_name)
+          validate_notifier(notifier)
+          notifier.init(@options)
+          notifier
         end
       end
 
@@ -133,6 +135,21 @@ module Ragios
         elsif !defined?(plugin.test_result)
           error_message = "test_result not defined in #{plugin.class} plugin"
           raise Ragios::PluginTestResultNotDefined.new(error: error_message), error_message
+        else
+          true
+        end
+      end
+
+      def validate_notifier(notifier)
+        if !notifier.respond_to?(:init)
+          error_message = "init not implemented in #{notifier.class} notifier"
+          raise Ragios::NotifierInitNotImplemented.new(error: error_message), error_message
+        elsif !notifier.respond_to?(:failed)
+          error_message = "failed not implemented in #{notifier.class} notifier"
+          raise Ragios::NotifierFailedNotImplemented.new(error: error_message), error_message
+        elsif !notifier.respond_to?(:resolved)
+          error_message = "resolved not implemented in #{notifier.class} notifier"
+          raise Ragios::NotifierResolvedNotImplemented.new(error: error_message), error_message
         else
           true
         end

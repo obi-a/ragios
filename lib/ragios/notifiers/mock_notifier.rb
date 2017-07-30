@@ -1,7 +1,7 @@
 module Ragios
   module Notifier
     class MockNotifier
-      def initialize(monitor)
+      def init(monitor)
         @monitor = monitor
       end
       def failed(test_result)
