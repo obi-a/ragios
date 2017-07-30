@@ -21,12 +21,13 @@ module Ragios
         publisher.async.log_event!(
           event_details.merge(event: occurred)
         )
-
+        terminate
       rescue Exception => exception
         occurred = {"notifier error" => exception.message}
         publisher.async.log_event!(
           event_details.merge(event: occurred)
         )
+        raise exception
       end
 
     private

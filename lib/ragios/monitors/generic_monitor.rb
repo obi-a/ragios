@@ -38,7 +38,7 @@ module Ragios
 
         def build_plugin(plugin_name)
           module_name = "Plugin"
-          plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.camelize)
+          plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.to_s.camelize)
           plugin_class.new
         rescue => e
           raise $!, "Cannot Create Plugin #{plugin_name}: #{$!}", $!.backtrace
@@ -95,11 +95,6 @@ module Ragios
         true
       end
 
-      def validate_plugin
-        validate_plugin_test_command
-        validate_plugin_test_result
-      end
-
       def has_failed
         push_event("failed")
       end
@@ -109,6 +104,7 @@ module Ragios
       end
 
       def create_notifiers
+        raise_notifier_not_found_error unless @options.has_key?(:via)
         validate_notifiers_in_options
         @options[:via] = [] << @options[:via] if @options[:via].is_a? String
         raise_notifier_not_found_error if @options[:via].empty?
@@ -118,47 +114,38 @@ module Ragios
       end
 
       def create_plugin
-        validate_plugin_in_options
-        @plugin = GenericMonitor.build_plugin(@options[:plugin])
-        @plugin.init(@options)
-        validate_plugin
-        @plugin
+        raise_plugin_not_found unless @options.has_key?(:plugin)
+        plugin = GenericMonitor.build_plugin(@options[:plugin])
+        validate_plugin(plugin)
+        plugin.init(@options)
+        @plugin = plugin
       end
 
-      def validate_plugin_test_command
-        if @plugin.respond_to?(:test_command?)
-          true
+    private
+
+      def validate_plugin(plugin)
+        if !plugin.respond_to?(:test_command?)
+          error_message = "test_command? not implemented in #{plugin.class} plugin"
+          raise Ragios::PluginTestCommandNotImplemented.new(error: error_message), error_message
+        elsif !plugin.respond_to?(:init)
+          error_message = "init not implemented in #{plugin.class} plugin"
+          raise Ragios::PluginInitNotImplemented.new(error: error_message), error_message
+        elsif !defined?(plugin.test_result)
+          error_message = "test_result not defined in #{plugin.class} plugin"
+          raise Ragios::PluginTestResultNotDefined.new(error: error_message), error_message
         else
-          error_message = "No test_command? found for #{@plugin.class} plugin"
-          raise Ragios::PluginTestCommandNotFound.new(error: error_message), error_message
+          true
         end
       end
 
-      def validate_plugin_test_result
-        if defined?(@plugin.test_result)
-          true
-        else
-          error_message = "No test_result found for #{@plugin.class} plugin"
-          raise Ragios::PluginTestResultNotFound.new(error: error_message), error_message
-        end
+      def raise_notifier_not_found_error
+        error_message = "No Notifier Found in #{@options}"
+        raise Ragios::NotifierNotFound.new(error: error_message), error_message
       end
 
-      def validate_notifiers_in_options
-        if @options.has_key?(:via)
-          true
-        else
-          error_message = "No Notifier Found in #{@options}"
-          raise Ragios::NotifierNotFound.new(error: error_message), error_message
-        end
-      end
-
-      def validate_plugin_in_options
-        if @options.has_key?(:plugin)
-          true
-        else
-          error_message = "No Plugin Found in #{@options}"
-          raise Ragios::PluginNotFound.new(error: error_message), error_message
-        end
+      def raise_plugin_not_found
+        error_message = "No Plugin Found in #{@options}"
+        raise Ragios::PluginNotFound.new(error: error_message), error_message
       end
     end
   end
