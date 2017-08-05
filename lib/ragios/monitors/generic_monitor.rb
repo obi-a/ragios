@@ -66,13 +66,11 @@ module Ragios
       end
 
       def test_command?
-        p "generic monitor previous state #{@state}"
         @time_of_test = Time.now.utc
         @timestamp_of_test =  @time_of_test.to_i
         result = @plugin.test_command?
         @test_result = @plugin.test_result
         result ? fire_state_event(:success) : fire_state_event(:failure)
-        p "generic monitor new state #{@state}"
         result
       rescue Exception => e
         fire_state_event(:error)
@@ -92,7 +90,7 @@ module Ragios
         pusher = Ragios::Notifications::Pusher.new
         pusher.push(JSON.generate(event_details))
         pusher.terminate
-        true
+        event_details
       end
 
       def has_failed
