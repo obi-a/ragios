@@ -22,6 +22,32 @@ module Ragios
       attr_reader :test_result
       def test_command?; end
     end
+
+    class Passing
+      attr_reader :test_result
+      def init(options); end
+      def test_command?
+        @test_result = {"This test" => "always passes"}
+        return true
+      end
+    end
+
+    class Failing
+      attr_reader :test_result
+      def init(options); end
+      def test_command?
+        @test_result = {"This test" => "always fails"}
+        return false
+      end
+    end
+
+    class Error
+      attr_reader :test_result
+      def init(options); end
+      def test_command?
+        raise "test_command? error"
+      end
+    end
   end
 end
 
@@ -76,85 +102,112 @@ describe Ragios::Monitors::GenericMonitor do
   describe "State Transitions" do
     context "when monitor state transitions from pending to failed" do
       it "pushes a failed event to Notifier" do
-        generic_monitor = Ragios::Monitors::GenericMonitor.new({}, true)
+        generic_monitor = Ragios::Monitors::GenericMonitor.new({
+          plugin: "failing",
+          via: "good_notifier"
+        })
         expect(generic_monitor).to be_pending
         expect(generic_monitor).to receive(:push_event).with("failed")
-        generic_monitor.fire_state_event(:failure)
+        generic_monitor.test_command?
         expect(generic_monitor).to be_failed
       end
     end
     context "when monitor state transitions from pending to passed" do
       it "does not push an event to Notifier" do
-        generic_monitor = Ragios::Monitors::GenericMonitor.new({}, true)
+        generic_monitor = Ragios::Monitors::GenericMonitor.new({
+          plugin: "passing",
+          via: "good_notifier"
+        })
         expect(generic_monitor).to be_pending
         expect(generic_monitor).not_to receive(:push_event)
-        generic_monitor.fire_state_event(:success)
+        generic_monitor.test_command?
         expect(generic_monitor).to be_passed
       end
     end
     context "when monitor state transitions from pending to error" do
       it "does not push an event to notifier" do
-        generic_monitor = Ragios::Monitors::GenericMonitor.new({}, true)
+        generic_monitor = Ragios::Monitors::GenericMonitor.new({
+          plugin: "error",
+          via: "good_notifier"
+        })
         expect(generic_monitor).to be_pending
         expect(generic_monitor).not_to receive(:push_event)
-        generic_monitor.fire_state_event(:error)
+        expect{generic_monitor.test_command?}.to raise_error("test_command? error")
         expect(generic_monitor).to be_error
       end
     end
 
     context "when monitor state transitions from passed to error" do
       it "does not push an event to notifier" do
-        generic_monitor = Ragios::Monitors::GenericMonitor.new({}, true)
+        generic_monitor = Ragios::Monitors::GenericMonitor.new({
+          plugin: "error",
+          via: "good_notifier"
+        })
         generic_monitor.state = "passed"
         expect(generic_monitor).not_to receive(:push_event)
-        generic_monitor.fire_state_event(:error)
+        expect{generic_monitor.test_command?}.to raise_error("test_command? error")
         expect(generic_monitor).to be_error
       end
     end
 
     context "when monitor state transitions from failed to error" do
       it "does not push an event to notifier" do
-        generic_monitor = Ragios::Monitors::GenericMonitor.new({}, true)
+        generic_monitor = Ragios::Monitors::GenericMonitor.new({
+          plugin: "error",
+          via: "good_notifier"
+        })
         generic_monitor.state = "failed"
         expect(generic_monitor).not_to receive(:push_event)
-        generic_monitor.fire_state_event(:error)
+        expect{generic_monitor.test_command?}.to raise_error("test_command? error")
         expect(generic_monitor).to be_error
       end
     end
 
     context "when monitor state transitions from failed to failed" do
       it "does not push an event to notifier" do
-        generic_monitor = Ragios::Monitors::GenericMonitor.new({}, true)
+        generic_monitor = Ragios::Monitors::GenericMonitor.new({
+          plugin: "failing",
+          via: "good_notifier"
+        })
         generic_monitor.state = "failed"
         expect(generic_monitor).not_to receive(:push_event)
-        generic_monitor.fire_state_event(:failure)
+        generic_monitor.test_command?
         expect(generic_monitor).to be_failed
       end
     end
     context "when monitor state transitions from passed to passed" do
       it "does not push an event to notifier" do
-        generic_monitor = Ragios::Monitors::GenericMonitor.new({}, true)
+        generic_monitor = Ragios::Monitors::GenericMonitor.new({
+          plugin: "passing",
+          via: "good_notifier"
+        })
         generic_monitor.state = "passed"
         expect(generic_monitor).not_to receive(:push_event)
-        generic_monitor.fire_state_event(:success)
+        generic_monitor.test_command?
         expect(generic_monitor).to be_passed
       end
     end
     context "when monitor state transitions from passed to failed" do
       it "pushes a failed event to Notifier" do
-        generic_monitor = Ragios::Monitors::GenericMonitor.new({}, true)
+        generic_monitor = Ragios::Monitors::GenericMonitor.new({
+          plugin: "failing",
+          via: "good_notifier"
+        })
         generic_monitor.state = "passed"
         expect(generic_monitor).to receive(:push_event).with("failed")
-        generic_monitor.fire_state_event(:failure)
+        generic_monitor.test_command?
         expect(generic_monitor).to be_failed
       end
     end
     context "when monitor state transitions from failed to passed" do
       it "pushes a failed event to Notifier" do
-        generic_monitor = Ragios::Monitors::GenericMonitor.new({}, true)
+        generic_monitor = Ragios::Monitors::GenericMonitor.new({
+          plugin: "passing",
+          via: "good_notifier"
+        })
         generic_monitor.state = "failed"
         expect(generic_monitor).to receive(:push_event).with("resolved")
-        generic_monitor.fire_state_event(:success)
+        generic_monitor.test_command?
         expect(generic_monitor).to be_passed
       end
     end
