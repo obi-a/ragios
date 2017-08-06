@@ -87,6 +87,9 @@ module Ragios
 end
 
 describe Ragios::Monitors::GenericMonitor do
+  describe "#find" do
+    pending
+  end
   describe "#build_extension" do
     context "when extension type is not found" do
       it "will raise a Ragios::UnIdentifiedExtensionType error" do
