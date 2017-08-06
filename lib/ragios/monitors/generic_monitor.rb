@@ -36,18 +36,21 @@ module Ragios
           generic_monitor
         end
 
-        def build_plugin(plugin_name)
-          module_name = "Plugin"
-          plugin_class = Module.const_get("Ragios").const_get(module_name).const_get(plugin_name.to_s.camelize)
-          plugin_class.new
-        rescue => e
-          raise $!, "Cannot Create Plugin #{plugin_name}: #{$!}", $!.backtrace
-        end
+        def build_extension(extension_type, extension_name)
+          extension_module =
+            case extension_type
+            when :plugin
+              Ragios::Plugin
+            when :notifier
+              Ragios::Notifier
+            else
+              error_message = "Unidentified Extension Type #{extension_type}"
+              raise Ragios::UnIdentifiedExtensionType.new(error_message), error_message
+            end
 
-        def build_notifier(notifier_name)
-          (Module.const_get("Ragios").const_get("Notifier").const_get(notifier_name.camelize)).new
+          extension_module.const_get("#{extension_name.to_s.camelize}", false).new
         rescue => e
-          raise $!, "Cannot Create Notifier #{notifier_name}: #{$!}", $!.backtrace
+          raise $!, "Cannot Create #{extension_type} #{extension_name}: #{$!}", $!.backtrace
         end
 
         private def model
@@ -102,11 +105,11 @@ module Ragios
       end
 
       def create_notifiers
-        raise_notifier_not_found_error unless @options.has_key?(:via)
+        raise_notifier_not_found unless @options.has_key?(:via)
         @options[:via] = [] << @options[:via] if @options[:via].is_a? String
-        raise_notifier_not_found_error if @options[:via].empty?
+        raise_notifier_not_found if @options[:via].empty?
         @notifiers = @options[:via].map do |notifier_name|
-          notifier = GenericMonitor.build_notifier(notifier_name)
+          notifier = GenericMonitor.build_extension(:notifier, notifier_name)
           validate_notifier(notifier)
           notifier.init(@options)
           notifier
@@ -115,7 +118,7 @@ module Ragios
 
       def create_plugin
         raise_plugin_not_found unless @options.has_key?(:plugin)
-        plugin = GenericMonitor.build_plugin(@options[:plugin])
+        plugin = GenericMonitor.build_extension(:plugin, @options[:plugin])
         validate_plugin(plugin)
         plugin.init(@options)
         @plugin = plugin
@@ -153,7 +156,7 @@ module Ragios
         end
       end
 
-      def raise_notifier_not_found_error
+      def raise_notifier_not_found
         error_message = "No Notifier Found in #{@options}"
         raise Ragios::NotifierNotFound.new(error: error_message), error_message
       end

@@ -17,4 +17,5 @@ module Ragios
   class PluginTestResultNotDefined < StandardError; end
   class PluginInitNotImplemented < StandardError; end
   class CannotEditSystemSettings < StandardError; end
+  class UnIdentifiedExtensionType < StandardError; end
 end
