@@ -11,9 +11,9 @@ module Ragios
         @database = database
       end
 
-      Contract Doc_id, Hash => Bool
+      Contract Doc_id, Hash => Hash
       def save(id, data)
-        !!@database.create_doc(id, data)
+        @database.create_doc(id, data)
       end
 
       Contract Doc_id => Hash
@@ -21,25 +21,25 @@ module Ragios
         @database.get_doc(id)
       end
 
-      Contract Doc_id, Hash => Bool
+      Contract Doc_id, Hash => Hash
       def update(id, data)
-        !!@database.edit_doc!(id, data)
+        @database.edit_doc!(id, data)
       end
 
-      Contract Doc_id => Bool
+      Contract Doc_id => Hash
       def delete(id)
-        !!@database.delete_doc!(id)
+        @database.delete_doc!(id)
       end
 
-      Contract None => ArrayOf[Hash]
-      def active_monitors
-        @database.where(type: "monitor", status_: "active")
+      Contract Or[None, Hash] => ArrayOf[Hash]
+      def active_monitors(options = {})
+        @database.where({type: "monitor", status_: "active"}, options)
       end
 
       Contract Hash => ArrayOf[Hash]
-      def monitors_where(attributes_hash)
+      def monitors_where(attributes_hash, options = {})
         hash_with_type = attributes_hash.merge(type: "monitor")
-        @database.where(hash_with_type)
+        @database.where(hash_with_type, options)
       end
 
       Contract Doc_id => Hash
@@ -59,7 +59,7 @@ module Ragios
         query_options = {}
         query_options[:endkey] = [monitor_id, "monitor.test", state, options[:end_date]].to_s
         query_options[:startkey] = [monitor_id, "monitor.test", state, options[:start_date]].to_s
-        query_options[:limit] = options[:take] if options[:take]
+        query_options[:limit] = options[:limit] if options[:limit]
         results = query("_design/events_by_state", script, query_options)
         get_docs(results)
       end
@@ -82,7 +82,7 @@ module Ragios
         query_options = {}
         query_options[:endkey] = [monitor_id, options[:end_date]].to_s
         query_options[:startkey] = [monitor_id, options[:start_date]].to_s
-        query_options[:limit] = options[:take] if options[:take]
+        query_options[:limit] = options[:limit] if options[:limit]
         results = query("_design/all_monitor_events", script, query_options)
         get_docs(results)
       end
@@ -93,7 +93,7 @@ module Ragios
         query_options = {}
         query_options[:endkey] = [monitor_id, event_type, options[:end_date]].to_s
         query_options[:startkey] = [monitor_id, event_type, options[:start_date]].to_s
-        query_options[:limit] = options[:take] if options[:take]
+        query_options[:limit] = options[:limit] if options[:limit]
         results = query("_design/events_by_type", script, query_options)
         get_docs(results)
       end
@@ -104,7 +104,7 @@ module Ragios
         query_options = {}
         query_options[:endkey] = ["1913-01-15 05:30:00 -0500"].to_s
         query_options[:startkey] = ["3015-01-15 05:30:00 -0500"].to_s
-        query_options[:limit] = options[:take] if options[:take]
+        query_options[:limit] = options[:limit].to_i if options[:limit]
         results = query("_design/all_monitors", script, query_options)
         get_docs(results)
       end
