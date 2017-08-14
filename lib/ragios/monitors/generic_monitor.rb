@@ -28,12 +28,17 @@ module Ragios
       end
 
       class << self
-        def find(monitor_id)
+        def find(monitor_id, skip_extensions_creation = false)
           monitor = model.find(monitor_id)
+          if monitor[:type] != "monitor"
+            raise_monitor_not_found(monitor_id)
+          end
           current_state  =  model.get_monitor_state(monitor_id)
-          generic_monitor = GenericMonitor.new(monitor)
-          generic_monitor.state = current_state[:state]
+          generic_monitor = GenericMonitor.new(monitor, skip_extensions_creation)
+          generic_monitor.state = current_state[:state] if current_state[:state]
           generic_monitor
+        rescue Leanback::CouchdbException => e
+          handle_couchdb_error(monitor_id, e)
         end
 
         def build_extension(extension_type, extension_name)
@@ -53,8 +58,22 @@ module Ragios
           raise $!, "Cannot Create #{extension_type} #{extension_name}: #{$!}", $!.backtrace
         end
 
-        private def model
+      private
+        def model
           @model ||= Ragios::Database::Model.new(Ragios::Database::Admin.get_database)
+        end
+
+        def raise_monitor_not_found(monitor_id)
+          error_message = "No monitor found with id = #{monitor_id}"
+          raise Ragios::MonitorNotFound.new(error: "No monitor found"), error_message
+        end
+
+        def handle_couchdb_error(monitor_id, couchdb_exception)
+          if couchdb_exception.response[:error] == "not_found"
+            raise_monitor_not_found(monitor_id)
+          else
+            raise couchdb_exception
+          end
         end
       end
 

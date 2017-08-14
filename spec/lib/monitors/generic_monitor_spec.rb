@@ -88,7 +88,87 @@ end
 
 describe Ragios::Monitors::GenericMonitor do
   describe "#find" do
-    pending
+    before(:all) do
+
+      @database = Ragios::Database::Admin.get_database
+
+      monitor = {
+        monitor: "website",
+        every:  "10m",
+        type: "monitor",
+        status_: "stopped",
+        created_at_: Time.now
+      }
+      @monitor_with_state = "monitor_#{Time.now.to_i}"
+      @database.create_doc @monitor_with_state, monitor
+
+      event = {
+        monitor_id: @monitor_with_state,
+        state: "failed",
+        event: {winner: "chicken dinner"},
+        time: Time.now,
+        timestamp: Time.now.to_i,
+        monitor: monitor,
+        event_type: "monitor.test",
+        type: "event"
+      }
+      @event_doc = "event_by_state_#{Time.now.to_i}"
+      @database.create_doc @event_doc, event
+
+      monitor = {
+        monitor: "other website",
+        every:  "10m",
+        type: "monitor",
+        status_: "stopped",
+        created_at_: Time.now
+      }
+      @other_monitor_with_no_state = "other_monitor_#{Time.now.to_i}"
+      @database.create_doc @other_monitor_with_no_state, monitor
+
+      monitor = {
+        monitor: "other website",
+        every:  "10m",
+        status_: "stopped",
+        created_at_: Time.now
+      }
+      @no_monitor_type = "no_monitor_type_#{Time.now.to_i}"
+      @database.create_doc @no_monitor_type, monitor
+    end
+    context "when monitor with id exists" do
+      context "when monitor has a current state" do
+        it "returns the generic monitor with its most current state" do
+          generic_monitor = Ragios::Monitors::GenericMonitor.find(@monitor_with_state, skip_extensions_creation = true)
+          expect(generic_monitor).to be_a(Ragios::Monitors::GenericMonitor)
+          expect(generic_monitor.state).to eq("failed")
+        end
+      end
+      context "when monitor has no current state" do
+        it "returns the generic monitor with default state (pending state)" do
+          generic_monitor = Ragios::Monitors::GenericMonitor.find(@other_monitor_with_no_state, skip_extensions_creation = true)
+          expect(generic_monitor).to be_a(Ragios::Monitors::GenericMonitor)
+          expect(generic_monitor.state).to eq("pending")
+        end
+      end
+      context "when monitor is not of type monitor" do
+        it "raises a Ragios::MonitorNotFound exception" do
+          expect { Ragios::Monitors::GenericMonitor.find(@no_monitor_type, skip_extensions_creation = true) }.to raise_error(
+            Ragios::MonitorNotFound
+          )
+        end
+      end
+    end
+    context "when monitor doesn't exist" do
+      it "raises a Ragios::MonitorNotFound exception" do
+        expect { Ragios::Monitors::GenericMonitor.find("not_found", skip_extensions_creation = true) }.to raise_error(
+          Ragios::MonitorNotFound
+        )
+      end
+    end
+    after(:all) do
+      @database.delete_doc! @monitor_with_state
+      @database.delete_doc! @event_doc
+      @database.delete_doc! @other_monitor_with_no_state
+    end
   end
   describe "#build_extension" do
     context "when extension type is not found" do
