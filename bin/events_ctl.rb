@@ -2,9 +2,7 @@
 require 'daemons'
 ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 Daemons.run_proc('events', log_output: true) do
-
-  config = ragios_dir + '/config'
-  require config
+  require "#{ragios_dir}/lib/ragios"
 
   puts "starting out"
 

@@ -3,7 +3,7 @@ begin
   require 'rubygems'
   require "bundler/setup"
   dir = Pathname(__FILE__).dirname.expand_path
-  require dir + 'config'
+  require "#{dir}/lib/ragios"
 
   run Ragios::Web::Application
 
