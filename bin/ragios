@@ -10,8 +10,8 @@ class RagiosCLI < Thor
 
   desc "console", "Load Ragios into PRY REPL"
   def console
-    config = ragios_dir + '/config'
-    irb = "bundle exec pry -r #{config}"
+    ragios_lib = "#{ragios_dir}/lib/ragios"
+    irb = "bundle exec pry -r #{ragios_lib}"
     exec(irb)
   end
 
