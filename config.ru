@@ -6,6 +6,8 @@ begin
   require "#{dir}/lib/ragios"
 
   run Ragios::Web::Application
+  Ragios::Logging.setup(program_name: "Web Service")
+  Ragios::Logging.logger.info("starting out")
 
   def require_all(path)
     Dir.glob(File.dirname(__FILE__) + path + '/*.rb') do |file|

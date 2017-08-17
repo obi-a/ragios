@@ -5,9 +5,9 @@ Daemons.run_proc('recurring_jobs', log_output: true) do
 
   require "#{ragios_dir}/lib/ragios"
 
-  Ragios::Logger.setup(program_name: "RecurringJobs Service")
+  Ragios::Logging.setup(program_name: "RecurringJobs Service")
 
-  Ragios::Logger.log(:info, "starting out")
+  Ragios::Logging.logger.info("starting out")
   receiver = Ragios::RecurringJobs::Receiver.new
 
   trap("INT") { puts "Shutting down."; exit}
