@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 
+gem "foreman"
 gem "pony"
 gem "twitter"
 gem "rufus-scheduler", '~> 3.0.7', :require => "rufus/scheduler"
@@ -16,7 +17,7 @@ gem "json_pure", :require => "json/pure"
 gem "puma", '~> 2.10.1'
 gem 'leanback', '~> 0.5.1'
 gem "uuidtools"
-gem "thor"
+#gem "thor"
 gem "ragios-client", '~> 0.0.7'
 #gem "eventmachine", '~> 1.0.4'
 gem "contracts"
@@ -25,3 +26,4 @@ gem "celluloid-zmq", '~> 0.17.2'
 
 gem "rspec"
 gem "rack-test"
+

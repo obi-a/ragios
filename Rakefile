@@ -1,8 +1,7 @@
 task :console do
   ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios'))
-  config = ragios_dir + '/config'
-  console = ragios_dir + '/initializers/console'
-  irb = "bundle exec pry -r #{config}  -r #{console}"
+  ragios_lib = "#{ragios_dir}/lib/ragios"
+  irb = "bundle exec pry -r #{ragios_lib}"
   sh irb
 end
 
