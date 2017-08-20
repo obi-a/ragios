@@ -3,7 +3,7 @@ module Ragios
     class GenericMonitor
 
       attr_reader :plugin, :notifiers, :id, :test_result
-      attr_reader :time_of_test, :timestamp_of_test, :options
+      attr_reader :time_of_test, :options
       attr_accessor :state
 
       state_machine :state, :initial => :pending do
@@ -89,7 +89,6 @@ module Ragios
 
       def test_command?
         @time_of_test = Time.now.utc
-        @timestamp_of_test =  @time_of_test.to_i
         result = @plugin.test_command?
         @test_result = @plugin.test_result
         result ? fire_state_event(:success) : fire_state_event(:failure)

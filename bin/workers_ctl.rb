@@ -5,7 +5,7 @@ Daemons.run_proc("workers#{Time.now.to_i}", log_output: true) do
 
   require "#{ragios_dir}/lib/ragios"
 
-    Ragios::Logging.setup(program_name: "Workers Service")
+  Ragios::Logging.setup(program_name: "Workers Service")
 
   Ragios::Logging.logger.info("starting out")
 

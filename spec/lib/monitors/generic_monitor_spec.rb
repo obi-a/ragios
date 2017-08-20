@@ -254,6 +254,22 @@ describe Ragios::Monitors::GenericMonitor do
     end
   end
 
+  describe "#is_fixed" do
+    it "calls push_event with resolved" do
+      generic_monitor = Ragios::Monitors::GenericMonitor.new({_id: "monitor_id"}, true)
+      expect(generic_monitor).to receive(:push_event).with("resolved")
+      generic_monitor.is_fixed
+    end
+  end
+
+  describe "#has_failed" do
+    it "calls push_event with failed" do
+      generic_monitor = Ragios::Monitors::GenericMonitor.new({_id: "monitor_id"}, true)
+      expect(generic_monitor).to receive(:push_event).with("failed")
+      generic_monitor.has_failed
+    end
+  end
+
   describe "#push_event" do
     it "pushes events to notifier" do
       options = {_id: "monitor_id"}

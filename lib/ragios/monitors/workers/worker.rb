@@ -25,11 +25,11 @@ module Ragios
       private
         def log_error(exception, generic_monitor)
           publisher.async.log_event!(
-            monitor_id: generic_monitor.id,
+            monitor_id: generic_monitor&.id,
             state: "error",
             event: {error: exception.message},
-            time: generic_monitor.time_of_test,
-            monitor: generic_monitor.options,
+            time: generic_monitor&.time_of_test,
+            monitor: generic_monitor&.options,
             type: "event",
             event_type: "monitor.test"
           )
