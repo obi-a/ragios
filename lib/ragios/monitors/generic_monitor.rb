@@ -60,7 +60,7 @@ module Ragios
 
       private
         def model
-          @model ||= Ragios::Database::Model.new(Ragios::Database::Admin.get_database)
+          @model ||= Ragios::Database::Model.new
         end
 
         def raise_monitor_not_found(monitor_id)

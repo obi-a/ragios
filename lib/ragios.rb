@@ -42,21 +42,68 @@ require_all '/ragios/plugins'
 #global variable path to the folder with erb message files
 $path_to_messages =  File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/ragios/messages/'))
 
-ragios_admin_user = {
-  username: ENV['RAGIOS_ADMIN_USERNAME'],
-  password: ENV['RAGIOS_ADMIN_PASSWORD'],
-  authentication: ENV['RAGIOS_AUTHENTICATION'] || false ,
-  auth_timeout: ENV['RAGIOS_AUTH_TIMEOUT'] || 900
-}
+module Ragios
+  ADMIN = {
+    username: ENV['RAGIOS_ADMIN_USERNAME'],
+    password: ENV['RAGIOS_ADMIN_PASSWORD'],
+    authentication: ENV['RAGIOS_AUTHENTICATION'] || false,
+    auth_timeout: ENV['RAGIOS_AUTH_TIMEOUT'] || 900
+  }
 
-Ragios::Web::Admin.config(ragios_admin_user)
+  DATABASE = {
+    username: ENV['COUCHDB_ADMIN_USERNAME'],
+    password: ENV['COUCHDB_ADMIN_PASSWORD'],
+    database: ENV['RAGIOS_DATABASE'] || 'ragios_database',
+    address: ENV['RAGIOS_COUCHDB_ADDRESS'] || 'http://localhost',
+    port: ENV['RAGIOS_COUCHDB_PORT'] || '5984'
+  }
 
-#database configuration
-database_admin = {
-  username: ENV['COUCHDB_ADMIN_USERNAME'],
-  password: ENV['COUCHDB_ADMIN_PASSWORD'],
-  database: ENV['RAGIOS_DATABASE'] || 'ragios_database',
-  address: ENV['RAGIOS_COUCHDB_ADDRESS'] || 'http://localhost',
-  port: ENV['RAGIOS_COUCHDB_PORT'] || '5984'
-}
-Ragios::Database::Admin.config(database_admin)
+  SERVERS = {
+    recurring_jobs_receiver: ENV['RAGIOS_RECURRING_JOBS_RECEIVER'] || "tcp://127.0.0.1:5042",
+    workers_pusher: ENV['RAGIOS_WORKERS_PUSHER'] || "tcp://127.0.0.1:5043",
+    notifications_receiver: ENV['RAGIOS_NOTIFICATIONS_RECEIVER'] || "tcp://127.0.0.1:5044",
+    events_subscriber: ENV['RAGIOS_EVENTS_SUBSCRIBER'] || "tcp://127.0.0.1:5045"
+  }
+
+  LOGGER = {
+    level: ENV['RAGIOS_LOGGER_LEVEL'] || :info,
+    program_name: "Ragios"
+  }
+
+  class << self
+    def database
+      @database ||= db_admin.database
+    end
+
+    def db_admin
+      @db_admin ||= Ragios::Database::Admin.new
+    end
+
+    def admin
+      @admin ||= Ragios::Web::Admin.new
+    end
+
+    def logger
+      ::Ragios::Logging.logger
+    end
+
+    def log_event(performer, action, event, level = :info)
+      if event.is_a?(Hash) && event[:monitor_id] && event[:event_type]
+        Ragios.logger.send(level, "#{performer.class.name} #{action} event #{event[:event_type]} for monitor_id: #{event[:monitor_id]} with options #{event}")
+      else
+        Ragios.logger.send(level, "#{performer.class.name} #{action} event #{event}")
+      end
+    end
+  end
+end
+
+# extracted from activesupport
+class Object
+  def blank?
+    respond_to?(:empty?) ? !!empty? : !self
+  end
+end
+
+Ragios.db_admin.setup_database
+# TODO: may remove initializers entirely, similar configure them notifiers or plugins with env vars
+require_all '/initializers'

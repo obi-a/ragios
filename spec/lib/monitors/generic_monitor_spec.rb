@@ -90,7 +90,7 @@ describe Ragios::Monitors::GenericMonitor do
   describe "#find" do
     before(:all) do
 
-      @database = Ragios::Database::Admin.get_database
+      @database = Ragios.database
 
       monitor = {
         monitor: "website",

@@ -1,14 +1,14 @@
 module Ragios
   module Database
     class Admin
-      def self.config(database_config)
-        @database_config = database_config
+      attr_reader :database, :database_config
+
+      def initialize
+        @database_config = Ragios::DATABASE
         @database = Leanback::Couchdb.new(@database_config)
       end
-      def self.get_database
-        @database
-      end
-      def self.setup_database
+
+      def setup_database
         begin
           @database.create
         rescue Leanback::CouchdbException => e

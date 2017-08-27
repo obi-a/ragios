@@ -37,7 +37,7 @@ module Ragios
         end
 
         if job_id
-          logger.info("scheduled #{scheduler_type} job #{job_id} for monitor_id #{options[:monitor_id]} at interval #{options[:interval]}")
+          logger.info("#{self.class.name} scheduled #{scheduler_type} job #{job_id} for monitor_id #{options[:monitor_id]} at interval #{options[:interval]}")
         end
       end
 
@@ -57,7 +57,7 @@ module Ragios
         jobs = find(options[:monitor_id])
         jobs.each do |job|
           job.unschedule
-          logger.info("unscheduled job: #{job.id} for tags #{job.tags}")
+          logger.info("#{self.class.name} unscheduled job: #{job.id} for tags #{job.tags}")
         end
       end
 

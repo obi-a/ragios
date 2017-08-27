@@ -15,7 +15,6 @@ begin
     end
   end
 
-  require_all '/initializers'
 rescue => e
   $stderr.puts '-' * 80
   $stderr.puts "Application Error: #{e.class}: '#{e.message}'"

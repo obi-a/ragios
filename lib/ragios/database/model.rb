@@ -7,8 +7,8 @@ module Ragios
 
       attr_reader :database
 
-      def initialize(database)
-        @database = database
+      def initialize
+        @database = Ragios.database
       end
 
       Contract Doc_id, Hash => Hash

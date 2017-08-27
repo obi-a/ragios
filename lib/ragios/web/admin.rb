@@ -1,54 +1,48 @@
 module Ragios
   module Web
     class Admin
-      attr_accessor :username
-      attr_accessor :password
-      attr_accessor :auth_timeout
+      attr_reader :database, :username, :password, :auth_timeout, :authentication
 
-      def self.config(ragios_admin)
-        @username = ragios_admin[:username]
-        @password = ragios_admin[:password]
-        @auth_timeout = ragios_admin[:auth_timeout]
-        @authentication = ragios_admin[:authentication]
-        @database = Ragios::Database::Admin.get_database
+      def initialize
+        @username = Ragios::ADMIN[:username]
+        @password = Ragios::ADMIN[:password]
+        @auth_timeout = Ragios::ADMIN[:auth_timeout]
+        @authentication = Ragios::ADMIN[:authentication]
+        @database = Ragios.database
       end
 
-      def self.authenticate?(username,password)
+      def authenticate?(username, password)
         (username == @username) && (password == @password)
       end
 
-      def self.database
-        @database ||= Ragios::Database::Admin.get_database
-      end
-
-      def self.do_authentication?
+      def authentication?
         @authentication
       end
 
-      def self.valid_token?(token)
+      def valid_token?(token)
         return true unless @authentication
         return false if token.blank?
-        auth_session = database.get_doc(token)
+        auth_session = @database.get_doc(token)
         time_elapsed = (Time.now.to_f - Time.at(auth_session[:timestamp]).to_f).to_i
         is_valid_token =
-        if auth_session[:auth_timeout].to_i > time_elapsed
-          true
-        else
-          database.delete_doc!(token)
-          false
-        end
+          if auth_session[:auth_timeout].to_i > time_elapsed
+            true
+          else
+            @database.delete_doc!(token)
+            false
+          end
       rescue Leanback::CouchdbException
         false
       end
 
-      def self.invalidate_token(token)
+      def invalidate_token(token)
         return false if token.blank?
         !!database.delete_doc!(token) rescue false
       end
 
-      def self.session
-        auth_session_token = UUIDTools::UUID.random_create.to_s
-        database.create_doc(
+      def session
+        auth_session_token = SecureRandom.uuid
+        @database.create_doc(
           auth_session_token,
           auth_timeout: @auth_timeout,
           timestamp: Time.now.to_i,

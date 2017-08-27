@@ -19,7 +19,7 @@ module Ragios
 
       helpers do
         def valid_token?
-          Ragios::Web::Admin.valid_token?(request.cookies["RagiosAuthSession"])
+          Ragios.admin.valid_token?(request.cookies["RagiosAuthSession"])
         end
 
         def monitor_manager
@@ -40,8 +40,8 @@ module Ragios
       end
 
       post '/session*' do
-        if Ragios::Web::Admin.authenticate?(params[:username],params[:password])
-          generate_json(RagiosAuthSession: Ragios::Web::Admin.session)
+        if Ragios.admin.authenticate?(params[:username],params[:password])
+          generate_json(RagiosAuthSession: Ragios.admin.session)
         else
           status 401
           generate_json(error: "You are not authorized to access this resource")
@@ -210,8 +210,8 @@ module Ragios
 
       post '/admin_session*' do
         @login_page = true
-        if Ragios::Web::Admin.authenticate?(params[:username], params[:password])
-          response.set_cookie "RagiosAuthSession", Ragios::Web::Admin.session
+        if Ragios.admin.authenticate?(params[:username], params[:password])
+          response.set_cookie "RagiosAuthSession", Ragios.admin.session
           session[:authenticated] = true
           redirect '/admin/index'
         else
@@ -225,7 +225,7 @@ module Ragios
         token = request.cookies['RagiosAuthSession']
         response.delete_cookie "RagiosAuthSession"
         session.clear
-        Ragios::Web::Admin.invalidate_token(token)
+        Ragios.admin.invalidate_token(token)
         redirect '/admin/login'
       end
 
@@ -259,8 +259,8 @@ module Ragios
     private
 
       def logged_out?(token)
-        return false if !Ragios::Web::Admin.do_authentication?
-        (!session[:authenticated] || !Ragios::Web::Admin.valid_token?(token)) ? true : false
+        return false if !Ragios.admin.authentication?
+        (!session[:authenticated] || !Ragios.admin.valid_token?(token)) ? true : false
       end
 
       def bad_request
