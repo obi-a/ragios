@@ -3,9 +3,10 @@ module Ragios
     class Publisher < ZMQ::Publisher
 
       def initialize
-        @link = "tcp://127.0.0.1:5555"
-        @socket = zmq_publisher
-        connect_link
+        super(
+          link: Ragios::SERVERS[:events_subscriber],
+          action: :connect_link
+        )
       end
     end
   end

@@ -5,6 +5,13 @@ module Ragios
       finalizer :clean_up
       attr_reader :socket, :link
 
+      def initialize(options)
+        @socket = send(options.fetch(:socket))
+        @link = options.fetch(:link)
+        send(options.fetch(:action))
+        @socket.linger = 100
+      end
+
       def terminate
         @socket.close
         super
@@ -18,7 +25,7 @@ module Ragios
     protected
 
       def clean_up
-        @socket.close
+        @socket&.close
       end
 
       def zmq_dealer

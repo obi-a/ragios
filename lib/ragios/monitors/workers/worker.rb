@@ -5,10 +5,9 @@ module Ragios
         include Celluloid
 
         def perform(monitor_id)
-          puts "got this id #{monitor_id}"
           generic_monitor =  Ragios::Monitors::GenericMonitor.find(monitor_id)
           generic_monitor.test_command?
-          publisher.async.log_event!(
+          results = {
             monitor_id: generic_monitor.id,
             state: generic_monitor.state,
             event: generic_monitor.test_result,
@@ -16,7 +15,9 @@ module Ragios
             monitor: generic_monitor.options,
             type: "event",
             event_type: "monitor.test"
-          )
+          }
+          publisher.async.log_event!(results)
+          Ragios.logger.info "#{self.class.name} performed test for monitor_id #{generic_monitor.id}, state: #{generic_monitor.state}, result: #{generic_monitor.test_result}, complete state: #{results}"
         rescue Exception => e
           log_error(e, generic_monitor)
           raise e

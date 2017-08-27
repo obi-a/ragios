@@ -4,7 +4,6 @@ module Ragios
       include Celluloid
 
       def perform(options)
-        puts options.inspect
         @event =  JSON.parse(options, symbolize_names: true)
         log_event
       end
@@ -13,6 +12,7 @@ module Ragios
 
       def log_event
         model.save(unique_id, @event)
+        Ragios.log_event(self, "logged", @event)
       end
 
       def unique_id
@@ -20,7 +20,7 @@ module Ragios
       end
 
       def model
-        @model ||= Ragios::Database::Model.new(Ragios::Database::Admin.get_database)
+        @model ||= Ragios::Database::Model.new
       end
     end
   end

@@ -3,9 +3,11 @@ module Ragios
     class Pusher < ZMQ::Pusher
 
       def initialize
-        @link = "tcp://127.0.0.1:5588"
-        @socket = zmq_dealer
-        connect_link
+        super(
+          link: Ragios::SERVERS[:notifications_receiver],
+          socket: :zmq_dealer,
+          action: :connect_link
+        )
       end
     end
   end

@@ -6,15 +6,17 @@ module Ragios
       attr_reader :receiver, :link, :scheduler
 
       def initialize
-        @link = "tcp://127.0.0.1:5677"
-        @socket = zmq_dealer
-        bind_link
         @scheduler = Ragios::RecurringJobs::Scheduler.new
         async.start_active_jobs
-        @handler = lambda do |message|
-          puts "got message: #{message}"
+        handler = lambda do |message|
           @scheduler.perform(message)
         end
+        super(
+          link: Ragios::SERVERS[:recurring_jobs_receiver],
+          socket: :zmq_dealer,
+          action: :bind_link,
+          handler: handler
+        )
       end
 
       def start_active_jobs
@@ -31,7 +33,7 @@ module Ragios
 
     private
       def model
-        @model ||= Ragios::Database::Model.new(Ragios::Database::Admin.get_database)
+        @model ||= Ragios::Database::Model.new
       end
     end
   end

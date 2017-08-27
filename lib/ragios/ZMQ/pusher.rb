@@ -2,16 +2,9 @@ module Ragios
   module ZMQ
     class Pusher < Base
 
-      def push(monitor_id)
-        write(monitor_id)
-        puts "#{Time.now} push work for monitor_id: #{monitor_id} to worker"
-      end
-
-    protected
-
-      def write(message)
+      def push(message)
         @socket << message
-        nil
+        Ragios.logger.info "#{self.class.name } pushed message: #{message}"
       end
     end
   end
