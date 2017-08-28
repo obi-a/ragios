@@ -11,10 +11,11 @@ module Ragios
       end
 
       def run
-        loop do
-          event = @socket.read_multipart.last
-          async.handle_message(event)
-        end
+        loop { async.handle_message(receive) }
+      end
+
+      def receive
+        @socket.read_multipart.last
       end
 
       def handle_message(event)

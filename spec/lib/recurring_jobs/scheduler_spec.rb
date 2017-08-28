@@ -5,6 +5,8 @@ describe Ragios::RecurringJobs::Scheduler do
     @scheduler = Ragios::RecurringJobs::Scheduler.new(skip_actor_creation = true)
   end
 
+  pending "skip_actor_creation"
+
   describe "#perform" do
     context "when scheduler responds to action" do
       it "sends message to action" do
