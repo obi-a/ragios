@@ -87,6 +87,30 @@ module Ragios
 end
 
 describe Ragios::Monitors::GenericMonitor do
+  describe "skip_extensions_creation" do
+    context "when set to true" do
+      it "creates a plugin and notifers" do
+        options = {plugin: "good_plugin", via: "good_notifier"}
+        # skip_extensions_creation defaults to false
+        generic_monitor = Ragios::Monitors::GenericMonitor.new(options)
+        expect(generic_monitor.plugin).to be_a(Ragios::Plugin::GoodPlugin)
+        expect(generic_monitor.notifiers).to include(a_kind_of(Ragios::Notifier::GoodNotifier))
+      end
+    end
+    context "when set to false" do
+      it "does not create a plugin and notifers" do
+        options = {}
+        generic_monitor = Ragios::Monitors::GenericMonitor.new(options, skip_extensions_creation = true)
+        expect(generic_monitor.plugin).to be_nil
+        expect(generic_monitor.notifiers).to be_nil
+      end
+      it "raises an exception on test_command?" do
+        options = {}
+        generic_monitor = Ragios::Monitors::GenericMonitor.new(options, skip_extensions_creation = true)
+        expect {generic_monitor.test_command?}.to raise_error(Ragios::PluginNotFound)
+      end
+    end
+  end
   describe "#find" do
     before(:all) do
 

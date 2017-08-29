@@ -88,6 +88,7 @@ module Ragios
       end
 
       def test_command?
+        create_plugin unless defined?(@plugin)
         @time_of_test = Time.now.utc
         result = @plugin.test_command?
         @test_result = @plugin.test_result

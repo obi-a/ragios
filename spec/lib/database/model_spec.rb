@@ -14,6 +14,14 @@ describe "Ragios::Database::Model" do
     @database.create_doc("exists", name: "some document")
   end
   describe "basic database operatons" do
+    describe "default couchDB database" do
+      context "when no database is provided" do
+        it "uses the default database" do
+          model =  Ragios::Database::Model.new
+          expect(model.database).to eq(Ragios.database)
+        end
+      end
+    end
     describe "#save" do
       context "when document doesn't already exists" do
         it "saves the document" do

@@ -5,7 +5,25 @@ describe Ragios::RecurringJobs::Scheduler do
     @scheduler = Ragios::RecurringJobs::Scheduler.new(skip_actor_creation = true)
   end
 
-  pending "skip_actor_creation"
+  describe "skip_actor_creation" do
+    context "when it is true in scheduler creation" do
+      it "skips actor creation" do
+        expect(@scheduler.work_pusher).to be_nil
+        expect(@scheduler.publisher).to be_nil
+
+      end
+      it "stays silent when trigger_work is called" do
+        expect(@scheduler.trigger_work(:any)).to be_falsey
+      end
+    end
+    context "when it is not included in scheduler creation" do
+      it "creates the actors" do
+        s = Ragios::RecurringJobs::Scheduler.new
+        expect(s.work_pusher).to be_a(Ragios::Monitors::Workers::Pusher)
+        expect(s.publisher).to be_a(Ragios::Events::Publisher)
+      end
+    end
+  end
 
   describe "#perform" do
     context "when scheduler responds to action" do
@@ -35,9 +53,6 @@ describe Ragios::RecurringJobs::Scheduler do
     end
   end
 
-  describe "#trigger_work" do
-    pending "pushes work to the worker and logs event"
-  end
   describe "#unschedule" do
     context "when monitor_id is provided" do
       context "when monitor's recurring job is found" do
