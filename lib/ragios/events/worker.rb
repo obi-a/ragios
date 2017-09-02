@@ -4,15 +4,15 @@ module Ragios
       include Celluloid
 
       def perform(options)
-        @event =  JSON.parse(options, symbolize_names: true)
-        log_event
+        event =  JSON.parse(options, symbolize_names: true)
+        log_event(event)
       end
 
     private
 
-      def log_event
-        model.save(unique_id, @event)
-        Ragios.log_event(self, "logged", @event)
+      def log_event(event)
+        model.save(unique_id, event)
+        Ragios.log_event(self, "logged", event)
       end
 
       def unique_id

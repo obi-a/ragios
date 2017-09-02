@@ -5,9 +5,11 @@ module Ragios
 
       attr_reader :receiver, :link, :scheduler
 
-      def initialize
-        @scheduler = Ragios::RecurringJobs::Scheduler.new
-        async.start_active_jobs
+      def initialize(skip_scheduler_creation = false)
+        unless skip_scheduler_creation
+          @scheduler = Ragios::RecurringJobs::Scheduler.new
+          async.start_active_jobs
+        end
         handler = lambda do |message|
           @scheduler.perform(message)
         end
@@ -18,6 +20,8 @@ module Ragios
           handler: handler
         )
       end
+
+    private
 
       def start_active_jobs
         monitors = model.active_monitors
@@ -31,7 +35,6 @@ module Ragios
         end
       end
 
-    private
       def model
         @model ||= Ragios::Database::Model.new
       end

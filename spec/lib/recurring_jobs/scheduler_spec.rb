@@ -18,9 +18,12 @@ describe Ragios::RecurringJobs::Scheduler do
     end
     context "when it is not included in scheduler creation" do
       it "creates the actors" do
+        Celluloid.shutdown; Celluloid.boot
         s = Ragios::RecurringJobs::Scheduler.new
         expect(s.work_pusher).to be_a(Ragios::Monitors::Workers::Pusher)
         expect(s.publisher).to be_a(Ragios::Events::Publisher)
+        s.work_pusher.close
+        s.publisher.close
       end
     end
   end

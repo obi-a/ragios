@@ -296,10 +296,13 @@ describe Ragios::Monitors::GenericMonitor do
 
   describe "#push_event" do
     it "pushes events to notifier" do
+      Celluloid.shutdown; Celluloid.boot
       options = {_id: "monitor_id"}
       generic_monitor = Ragios::Monitors::GenericMonitor.new(options, true)
       state = "resolved"
-      expect(generic_monitor.push_event(state)).to eq({
+      receiver = Ragios::Notifications::Receiver.new
+      future  = receiver.future.receive
+      results = {
         monitor_id: "monitor_id",
         state: state,
         event: nil,
@@ -307,7 +310,10 @@ describe Ragios::Monitors::GenericMonitor do
         monitor: options,
         type: "event",
         event_type: "monitor.#{state}"
-      })
+      }
+      expect(generic_monitor.push_event(state)).to eq(results)
+      received = JSON.parse(future.value.first, symbolize_names: true)
+      expect(received).to eq(results)
     end
   end
   describe "State Transitions" do

@@ -8,7 +8,8 @@ module Ragios
       end
 
       def log_event(options)
-        publish(options[:event_type], options[:monitor_id], options)
+        raise ArgumentError.new("Expected Argument must be a Hash") unless options.is_a?(Hash)
+        publish(options.fetch(:event_type), options.fetch(:monitor_id), options)
         Ragios.log_event(self, "published", options)
       end
 

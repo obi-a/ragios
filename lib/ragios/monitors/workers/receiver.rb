@@ -2,7 +2,7 @@ module Ragios
   module Monitors
     module Workers
       class Receiver < ZMQ::Receiver
-
+        attr_reader :worker_pool
         def initialize
           @worker_pool = Worker.pool(size: 20)
 

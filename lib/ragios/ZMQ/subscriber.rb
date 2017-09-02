@@ -1,7 +1,7 @@
 module Ragios
   module ZMQ
     class Subscriber < Base
-      attr_reader :topic
+      attr_reader :topic, :handler
 
       def initialize(options)
         @topic = options.fetch(:topic)

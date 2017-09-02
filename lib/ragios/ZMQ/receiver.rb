@@ -17,7 +17,7 @@ module Ragios
       end
 
       def handle_message(message)
-        @handler&.call(message)
+        @handler.call(message)
         Ragios.logger.info "#{self.class.name } received message: #{message}"
       end
     end

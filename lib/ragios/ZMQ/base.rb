@@ -3,12 +3,13 @@ module Ragios
     class Base
       include Celluloid::ZMQ
       finalizer :clean_up
-      attr_reader :socket, :link
+      attr_reader :socket, :link, :action
 
       def initialize(options)
         @socket = send(options.fetch(:socket))
         @link = options.fetch(:link)
-        send(options.fetch(:action))
+        @action = options.fetch(:action)
+        send(@action)
         @socket.linger = 100
       end
 

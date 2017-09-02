@@ -32,7 +32,7 @@ module Ragios
             time: generic_monitor&.time_of_test,
             monitor: generic_monitor&.options,
             type: "event",
-            event_type: "monitor.test"
+            event_type: "monitor.error"
           )
         end
 
