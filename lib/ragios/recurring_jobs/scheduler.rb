@@ -15,7 +15,6 @@ module Ragios
       end
 
       def perform(options_array)
-        #TODO: decide if we change options_array to a hash, removing the need to call options_array.first
         options = JSON.parse(options_array.first, symbolize_names: true)
         send(options[:perform], options) if ACTIONS.include?(options[:perform])
       end

@@ -5,8 +5,8 @@ module Ragios
 
       def perform(options)
         notification_event =  JSON.parse(options, symbolize_names: true)
-        generic_notifier = Notifications::GenericMonitor.new(notification_event)
-        generic_notifier.notify
+        generic_monitor = Notifications::GenericMonitor.new(notification_event)
+        generic_monitor.notify
       end
     end
   end

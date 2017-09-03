@@ -4,7 +4,7 @@ module Ragios
       include Celluloid
 
       def perform(options)
-        event =  JSON.parse(options, symbolize_names: true)
+        event = JSON.parse(options, symbolize_names: true)
         log_event(event)
       end
 
