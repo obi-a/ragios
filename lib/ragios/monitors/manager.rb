@@ -91,8 +91,8 @@ module Ragios
       Contract Monitor_id, Hash => Bool
       def update(monitor_id, options)
         try_monitor(monitor_id) do
-          message = "Cannot edit system settings"
           if options.keys.any? { |key| [:type, :status_, :created_at_, :creation_timestamp_, :current_state_].include?(key) }
+            message = "Cannot edit system settings"
             raise Ragios::CannotEditSystemSettings.new(error: message), message
           end
           old_monitor = model.find(monitor_id)
