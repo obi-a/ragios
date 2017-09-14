@@ -126,18 +126,18 @@ describe Ragios::Monitors::GenericMonitor do
       @monitor_with_state = "monitor_#{Time.now.to_i}"
       @database.create_doc @monitor_with_state, monitor
 
-      event = {
+      @event = {
         monitor_id: @monitor_with_state,
         state: "failed",
         event: {winner: "chicken dinner"},
-        time: Time.now,
+        time: Time.now.to_s,
         timestamp: Time.now.to_i,
         monitor: monitor,
         event_type: "monitor.test",
         type: "event"
       }
       @event_doc = "event_by_state_#{Time.now.to_i}"
-      @database.create_doc @event_doc, event
+      @database.create_doc @event_doc, @event
 
       monitor = {
         monitor: "other website",
@@ -160,10 +160,18 @@ describe Ragios::Monitors::GenericMonitor do
     end
     context "when monitor with id exists" do
       context "when monitor has a current state" do
+        before(:each) do
+          @generic_monitor = Ragios::Monitors::GenericMonitor.find(@monitor_with_state, skip_extensions_creation = true)
+        end
         it "returns the generic monitor with its most current state" do
-          generic_monitor = Ragios::Monitors::GenericMonitor.find(@monitor_with_state, skip_extensions_creation = true)
-          expect(generic_monitor).to be_a(Ragios::Monitors::GenericMonitor)
-          expect(generic_monitor.state).to eq("failed")
+          expect(@generic_monitor).to be_a(Ragios::Monitors::GenericMonitor)
+          expect(@generic_monitor.state).to eq(@event[:state])
+        end
+        it "sets the generic_monitor with most current test_result" do
+          expect(@generic_monitor.test_result).to eq(@event[:event])
+        end
+        it "sets the generic_monitor with most recent time_of_test" do
+          expect(@generic_monitor.time_of_test).to eq(@event[:time])
         end
       end
       context "when monitor has no current state" do

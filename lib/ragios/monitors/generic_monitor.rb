@@ -2,7 +2,7 @@ module Ragios
   module Monitors
     class GenericMonitor
 
-      attr_reader :plugin, :notifiers, :id, :test_result
+      attr_reader :plugin, :notifiers, :id, :test_result, :interval
       attr_reader :time_of_test, :options
       attr_accessor :state
 
@@ -29,16 +29,73 @@ module Ragios
 
       class << self
         def find(monitor_id, skip_extensions_creation = false)
-          monitor = model.find(monitor_id)
+          monitor = try_monitor(monitor_id) do
+            model.find(monitor_id)
+          end
+
           if monitor[:type] != "monitor"
             raise_monitor_not_found(monitor_id)
           end
-          current_state  =  model.get_monitor_state(monitor_id)
+          #current_state  =  model.get_monitor_state(monitor_id)
           generic_monitor = GenericMonitor.new(monitor, skip_extensions_creation)
-          generic_monitor.state = current_state[:state] if current_state[:state]
+          #generic_monitor.state = current_state[:state] if current_state[:state]
+          generic_monitor.current_state = model.get_monitor_state(monitor_id)
           generic_monitor
-        rescue Leanback::CouchdbException => e
-          handle_couchdb_error(monitor_id, e)
+        end
+
+        def create(opts)
+          options = opts.merge({created_at_: time, status_: 'active', type: "monitor"})
+          generic_monitor = Ragios::Monitors::GenericMonitor.new(options)
+          generic_monitor.save
+          generic_monitor.schedule
+          generic_monitor
+          #monitor_id = SecureRandom.uuid
+          #model.save(monitor_id, options)
+          #schedule(monitor_id, monitor_options[:every], :run_now_and_schedule)
+        end
+
+        def stop(monitor_id)
+          unschedule(monitor_id)
+          try_monitor(monitor_id) do
+            model.update(monitor_id, status_: "stopped")
+          end
+        end
+
+        def start(monitor_id)
+          generic_monitor = GenericMonitor.find(monitor_id)
+          reschedule(generic_monitor.id, generic_monitor.interval)
+          model.update(generic_monitor.id, status_: "active")
+          true
+        end
+
+        def delete(monitor_id)
+          unschedule(monitor_id)
+          try_monitor(monitor_id) do
+            model.delete(monitor_id)
+          end
+        end
+
+        def update(monitor_id, options)
+          if options.keys.any? { |key| [:type, :status_, :created_at_, :creation_timestamp_, :current_state_, :_id].include?(key) }
+            message = "Cannot edit system settings"
+            raise Ragios::CannotEditSystemSettings.new(error: message), message
+          end
+          try_monitor(monitor_id) do
+            old_monitor = model.find(monitor_id)
+            new_monitor = old_monitor.merge(options)
+            generic_monitor = GenericMonitor.new(new_monitor)
+            model.update(generic_monitor.id, options)
+          end
+          reschedule(monitor_id, options[:every]) if options.keys.include?(:every)
+          true
+        end
+
+        def trigger(monitor_id)
+          try_monitor(monitor_id) do
+            monitor = model.find(monitor_id)
+            schedule(monitor[:_id], monitor[:every], :trigger_work)
+            true
+          end
         end
 
         def build_extension(extension_type, extension_name)
@@ -58,10 +115,38 @@ module Ragios
           raise $!, "Cannot Create #{extension_type} #{extension_name}: #{$!}", $!.backtrace
         end
 
-      private
+        def add_to_scheduler(options)
+          pusher = Ragios::RecurringJobs::Pusher.new
+          pusher.push(JSON.generate(options))
+          pusher.terminate
+        end
+
         def model
           @model ||= Ragios::Database::Model.new
         end
+
+        def schedule(monitor_id, interval, perform = :schedule_and_run_later)
+          add_to_scheduler({
+            monitor_id: monitor_id,
+            interval: interval,
+            perform: perform
+          })
+        end
+
+        #check if rufu-scheduler can be rescheduled without being manually stopped & rescheduled
+        def reschedule(monitor_id, interval)
+          unschedule(monitor_id)
+          schedule(monitor_id, interval)
+        end
+
+        def unschedule(monitor_id)
+          add_to_scheduler({
+            monitor_id: monitor_id,
+            perform: :unschedule
+          })
+        end
+
+      private
 
         def raise_monitor_not_found(monitor_id)
           error_message = "No monitor found with id = #{monitor_id}"
@@ -75,11 +160,18 @@ module Ragios
             raise couchdb_exception
           end
         end
+
+        def try_monitor(monitor_id)
+          yield
+        rescue Leanback::CouchdbException => e
+          handle_couchdb_error(monitor_id, e)
+        end
       end
 
       def initialize(options, skip_extensions_creation = false)
         @options = options
         @id = @options[:_id]
+        @interval = @options[:every]
         unless skip_extensions_creation
           create_plugin
           create_notifiers
@@ -141,6 +233,30 @@ module Ragios
         validate_plugin(plugin)
         plugin.init(@options)
         @plugin = plugin
+      end
+
+      def current_state=(results)
+        @state = results[:state] if results[:state]
+        @test_result = results[:event]
+        @time_of_test = results[:time]
+        @options[:current_state] = {
+          state: @state,
+          test_result: @test_result,
+          time_of_test: @time_of_test
+        }
+      end
+
+      def save
+        @id = SecureRandom.uuid
+        GenericMonitor.model.save(@id, @options)
+      end
+
+      def schedule
+        GenericMonitor.add_to_scheduler({
+          monitor_id: @id,
+          interval: @interval,
+          perform: :run_now_and_schedule
+        })
       end
 
     private
