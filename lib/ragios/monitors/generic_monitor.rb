@@ -39,7 +39,7 @@ module Ragios
           #current_state  =  model.get_monitor_state(monitor_id)
           generic_monitor = GenericMonitor.new(monitor, skip_extensions_creation)
           #generic_monitor.state = current_state[:state] if current_state[:state]
-          generic_monitor.current_state = model.get_monitor_state(monitor_id)
+          generic_monitor.send :current_state, model.get_monitor_state(monitor_id)
           generic_monitor
         end
 
@@ -235,17 +235,6 @@ module Ragios
         @plugin = plugin
       end
 
-      def current_state=(results)
-        @state = results[:state] if results[:state]
-        @test_result = results[:event]
-        @time_of_test = results[:time]
-        @options[:current_state] = {
-          state: @state,
-          test_result: @test_result,
-          time_of_test: @time_of_test
-        }
-      end
-
       def save
         @id = SecureRandom.uuid
         GenericMonitor.model.save(@id, @options)
@@ -260,6 +249,17 @@ module Ragios
       end
 
     private
+
+      def current_state(results)
+        @state = results[:state] if results[:state]
+        @test_result = results[:event]
+        @time_of_test = results[:time]
+        @options[:current_state] = {
+          state: @state,
+          test_result: @test_result,
+          time_of_test: @time_of_test
+        }
+      end
 
       def validate_plugin(plugin)
         if !plugin.respond_to?(:test_command?)

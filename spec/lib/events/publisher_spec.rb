@@ -38,13 +38,6 @@ describe Ragios::Events::Publisher do
 
   describe "logging events" do
     context "when a valid event is provided" do
-      describe "#log_event!" do
-        it "logs the event closes the socket & terminates the publisher actor" do
-          socket = @publisher.socket
-          @publisher.log_event!(@event)
-          expect{@publisher.socket}.to raise_error(/No live threads left. Deadlock?/)
-        end
-      end
       describe "#log_event" do
         it "logs event and does not terminate the actor" do
           @publisher.log_event(@event)
