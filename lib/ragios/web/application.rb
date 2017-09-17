@@ -140,7 +140,7 @@ module Ragios
       get '/monitors/:id*', :check => :valid_token? do
         try_request do
           monitor_id = params[:id]
-          monitor = monitor_manager.get(monitor_id, include_current_state = true)
+          monitor = monitor_manager.get(monitor_id)
           generate_json(monitor)
         end
       end

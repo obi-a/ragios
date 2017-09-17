@@ -340,9 +340,11 @@ describe Ragios::Monitors::GenericMonitor do
           monitor_id = SecureRandom.uuid
           database.create_doc monitor_id, monitor
           updated_status = "active"
-          expect{ Ragios::Monitors::GenericMonitor.update(monitor_id,status_: updated_status)}.to raise_error(
-            Ragios::CannotEditSystemSettings
-          )
+          [:type, :status_, :created_at_, :creation_timestamp_, :current_state_, :_id].each do |sys_setting|
+            expect{ Ragios::Monitors::GenericMonitor.update(monitor_id, sys_setting => updated_status)}.to raise_error(
+              Ragios::CannotEditSystemSettings
+            )
+          end
           database.delete_doc!(monitor_id)
         end
       end
