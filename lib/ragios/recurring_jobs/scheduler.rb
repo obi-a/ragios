@@ -3,7 +3,7 @@ module Ragios
     class Scheduler
       attr_reader :internal_scheduler, :work_pusher, :publisher
 
-      ACTIONS = %w(run_now_and_schedule schedule_and_run_later trigger_work unschedule).freeze
+      ACTIONS = %w(run_now_and_schedule schedule_and_run_later trigger_work reschedule unschedule).freeze
       TYPES = [:every, :interval].freeze
 
       def initialize(skip_actor_creation = false)
@@ -25,6 +25,11 @@ module Ragios
 
       def schedule_and_run_later(options)
         schedule(:every, options)
+      end
+
+      def reschedule(options)
+        unschedule(options)
+        schedule_and_run_later(options)
       end
 
       def schedule(scheduler_type, options)

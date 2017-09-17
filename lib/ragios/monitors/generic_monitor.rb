@@ -36,22 +36,17 @@ module Ragios
           if monitor[:type] != "monitor"
             raise_monitor_not_found(monitor_id)
           end
-          #current_state  =  model.get_monitor_state(monitor_id)
           generic_monitor = GenericMonitor.new(monitor, skip_extensions_creation)
-          #generic_monitor.state = current_state[:state] if current_state[:state]
           generic_monitor.send :current_state, model.get_monitor_state(monitor_id)
           generic_monitor
         end
 
         def create(opts)
-          options = opts.merge({created_at_: time, status_: 'active', type: "monitor"})
+          options = opts.merge({created_at_: Time.now.utc, status_: 'active', type: "monitor"})
           generic_monitor = Ragios::Monitors::GenericMonitor.new(options)
           generic_monitor.save
           generic_monitor.schedule
           generic_monitor
-          #monitor_id = SecureRandom.uuid
-          #model.save(monitor_id, options)
-          #schedule(monitor_id, monitor_options[:every], :run_now_and_schedule)
         end
 
         def stop(monitor_id)
@@ -93,7 +88,7 @@ module Ragios
         def trigger(monitor_id)
           try_monitor(monitor_id) do
             monitor = model.find(monitor_id)
-            schedule(monitor[:_id], monitor[:every], :trigger_work)
+            add_to_scheduler(monitor_id: monitor[:_id], perform: :trigger_work)
             true
           end
         end
@@ -133,10 +128,12 @@ module Ragios
           })
         end
 
-        #check if rufu-scheduler can be rescheduled without being manually stopped & rescheduled
         def reschedule(monitor_id, interval)
-          unschedule(monitor_id)
-          schedule(monitor_id, interval)
+          add_to_scheduler({
+            monitor_id: monitor_id,
+            interval: interval,
+            perform: :reschedule
+          })
         end
 
         def unschedule(monitor_id)

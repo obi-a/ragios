@@ -111,6 +111,304 @@ describe Ragios::Monitors::GenericMonitor do
       end
     end
   end
+
+  describe "#create" do
+    context "when valid monitor options are provided" do
+      it "persists a monitor in DB and schedules it with the scheduler" do
+        monitor_opts = {
+          monitor: "website",
+          every:  "10m",
+          via: ["good_notifier"],
+          plugin: "good_plugin"
+        }
+        Celluloid.shutdown; Celluloid.boot
+        receiver = Ragios::RecurringJobs::Receiver.new(skip_scheduler_creation = true)
+        future = receiver.future.receive
+        generic_monitor = Ragios::Monitors::GenericMonitor.create(monitor_opts)
+        received = JSON.parse(future.value.first, symbolize_names: true)
+
+        expect(generic_monitor.id).to eq(received[:monitor_id])
+        expect(generic_monitor.interval).to eq(received[:interval])
+        expect(received[:perform]).to eq("run_now_and_schedule")
+
+        id = generic_monitor.id
+        doc = Ragios.database.get_doc(id)
+        expect(doc).to include(type: "monitor", _id: id, status_: 'active')
+        expect(doc).to include(monitor_opts)
+        Ragios.database.delete_doc!(id)
+      end
+    end
+    context "when invalid monitor options are provided" do
+      it "fails validation and raises an exception" do
+        opts = {monitor: "monitor"}
+        expect{Ragios::Monitors::GenericMonitor.create(opts)}.to raise_error(Ragios::PluginNotFound)
+      end
+    end
+  end
+
+  describe "#stop" do
+    context "when the monitor exists" do
+      it "stops the monitor" do
+        database = Ragios.database
+
+        monitor = {
+          monitor: "website",
+          every:  "10m",
+          type: "monitor",
+          status_: "active",
+          created_at_: Time.now
+        }
+        monitor_id = SecureRandom.uuid
+        database.create_doc monitor_id, monitor
+
+        Celluloid.shutdown; Celluloid.boot
+        receiver = Ragios::RecurringJobs::Receiver.new(skip_scheduler_creation = true)
+        future = receiver.future.receive
+        Ragios::Monitors::GenericMonitor.stop(monitor_id)
+        received = JSON.parse(future.value.first, symbolize_names: true)
+        expect(received).to eq(monitor_id: monitor_id, perform: "unschedule")
+        saved = database.get_doc(monitor_id)
+        expect(saved[:status_]).to eq("stopped")
+
+        database.delete_doc!(monitor_id)
+      end
+    end
+    context "when monitor is not found in the database" do
+      it "raises a monitor not found exception" do
+        expect{Ragios::Monitors::GenericMonitor.stop("not_found")}.to raise_error(Ragios::MonitorNotFound)
+      end
+    end
+  end
+
+  describe "#start" do
+    context "when monitor exists" do
+      context "when monitor is valid" do
+        it "starts the monitor in the scheduler & updates the database" do
+          Celluloid.shutdown; Celluloid.boot
+          database = Ragios.database
+          interval = "10m"
+          monitor = {
+            monitor: "website",
+            every:  interval,
+            type: "monitor",
+            plugin: "good_plugin",
+            via: "good_notifier",
+            status_: "stopped",
+            created_at_: Time.now
+          }
+          monitor_id = SecureRandom.uuid
+          database.create_doc monitor_id, monitor
+
+          receiver = Ragios::RecurringJobs::Receiver.new(skip_scheduler_creation = true)
+          future = receiver.future.receive
+          started = Ragios::Monitors::GenericMonitor.start(monitor_id)
+          expect(started).to be_truthy
+          received = JSON.parse(future.value.first, symbolize_names: true)
+          expect(received).to eq(monitor_id: monitor_id,interval: interval, perform: "reschedule")
+          saved = database.get_doc(monitor_id)
+          expect(saved[:status_]).to eq("active")
+
+          database.delete_doc!(monitor_id)
+        end
+      end
+      context "when monitor is not valid" do
+        it "fails validation and raises an exception" do
+          database = Ragios.database
+          monitor = {
+            monitor: "website",
+            every:  "10m",
+            type: "monitor",
+            status_: "stopped",
+            created_at_: Time.now
+          }
+          monitor_id = SecureRandom.uuid
+          database.create_doc monitor_id, monitor
+
+          expect{ Ragios::Monitors::GenericMonitor.start(monitor_id) }.to raise_error(Ragios::PluginNotFound)
+        end
+      end
+    end
+    context "when monitor is not found" do
+      it "raises a monitor not found exception" do
+        expect{Ragios::Monitors::GenericMonitor.start("not_found")}.to raise_error(Ragios::MonitorNotFound)
+      end
+    end
+  end
+
+  describe "#delete" do
+    context "when monitor exists" do
+      it "deletes & unchedules the monitor and updates its status" do
+        database = Ragios.database
+
+        monitor = {
+          monitor: "website",
+          every:  "10m",
+          type: "monitor",
+          status_: "active",
+          created_at_: Time.now
+        }
+        monitor_id = SecureRandom.uuid
+        database.create_doc monitor_id, monitor
+
+        Celluloid.shutdown; Celluloid.boot
+        receiver = Ragios::RecurringJobs::Receiver.new(skip_scheduler_creation = true)
+        future = receiver.future.receive
+        Ragios::Monitors::GenericMonitor.delete(monitor_id)
+        received = JSON.parse(future.value.first, symbolize_names: true)
+        expect(received).to eq(monitor_id: monitor_id, perform: "unschedule")
+
+        expect { database.get_doc(monitor_id) }.to raise_error(/not_found/)
+      end
+    end
+    context "when monitor is not found" do
+      it "raises a monitor not found exception" do
+        expect{Ragios::Monitors::GenericMonitor.start("not_found")}.to raise_error(Ragios::MonitorNotFound)
+      end
+    end
+  end
+
+  describe "#update" do
+    context "when valid options is provided" do
+      context "when interval is updated" do
+        it "reschedules the monitor with new interval" do
+          database = Ragios.database
+
+          monitor = {
+            monitor: "website",
+            every:  "30m",
+            type: "monitor",
+            plugin: "good_plugin",
+            via: "good_notifier",
+            status_: "stopped",
+            created_at_: Time.now
+          }
+          monitor_id = SecureRandom.uuid
+          database.create_doc monitor_id, monitor
+
+          Celluloid.shutdown; Celluloid.boot
+          receiver = Ragios::RecurringJobs::Receiver.new(skip_scheduler_creation = true)
+          future = receiver.future.receive
+          interval = "15m"
+          updated_monitor = "updated monitor"
+          updated = Ragios::Monitors::GenericMonitor.update(monitor_id, monitor: updated_monitor, every: interval)
+          expect(updated).to be_truthy
+          received = JSON.parse(future.value.first, symbolize_names: true)
+          expect(received).to eq(monitor_id: monitor_id, interval: interval, perform: "reschedule")
+          saved = database.get_doc(monitor_id)
+          expect(saved).to include(monitor: updated_monitor, every: interval)
+          database.delete_doc!(monitor_id)
+        end
+      end
+      it "updates the monitor attributes" do
+        expect(Ragios::Monitors::GenericMonitor).not_to receive(:reschedule)
+        database = Ragios.database
+
+        monitor = {
+          monitor: "website",
+          every: "30m",
+          type: "monitor",
+          plugin: "good_plugin",
+          via: "good_notifier",
+          status_: "stopped",
+          created_at_: Time.now
+        }
+        monitor_id = SecureRandom.uuid
+        database.create_doc monitor_id, monitor
+
+        updated_monitor = "updated monitor"
+        updated = Ragios::Monitors::GenericMonitor.update(monitor_id, monitor: updated_monitor)
+        expect(updated).to be_truthy
+        saved = database.get_doc(monitor_id)
+        expect(saved).to include(monitor: updated_monitor)
+        database.delete_doc!(monitor_id)
+      end
+    end
+    context "when valid options are not provided" do
+      context "when reserved attributes are provided in options" do
+        it "raises a cannot update system settings exception" do
+          database = Ragios.database
+
+          monitor = {
+            monitor: "website",
+            every: "30m",
+            type: "monitor",
+            plugin: "good_plugin",
+            via: "good_notifier",
+            status_: "stopped",
+            created_at_: Time.now
+          }
+          monitor_id = SecureRandom.uuid
+          database.create_doc monitor_id, monitor
+          updated_status = "active"
+          expect{ Ragios::Monitors::GenericMonitor.update(monitor_id,status_: updated_status)}.to raise_error(
+            Ragios::CannotEditSystemSettings
+          )
+          database.delete_doc!(monitor_id)
+        end
+      end
+      context "when updated monitor fails validation" do
+        it "raises an exception" do
+          database = Ragios.database
+
+          monitor = {
+            monitor: "website",
+            every: "30m",
+            type: "monitor",
+            plugin: "good_plugin",
+            via: "good_notifier",
+            status_: "stopped",
+            created_at_: Time.now
+          }
+          monitor_id = SecureRandom.uuid
+          database.create_doc monitor_id, monitor
+          updated_notifier = "not_found"
+          expect{ Ragios::Monitors::GenericMonitor.update(monitor_id,via: updated_notifier)}.to raise_error(
+            /Cannot Create notifier/
+          )
+          database.delete_doc!(monitor_id)
+        end
+      end
+      context "when monitor not found" do
+        it "raises a monitor not found exception" do
+          expect{Ragios::Monitors::GenericMonitor.update("not_found",{})}.to raise_error(Ragios::MonitorNotFound)
+        end
+      end
+    end
+  end
+
+  describe "#trigger_work" do
+    context "when monitor exists" do
+      it "triggers work in the scheduler" do
+        database = Ragios.database
+        interval = "10m"
+        monitor = {
+          monitor: "website",
+          every:  interval,
+          type: "monitor",
+          plugin: "good_plugin",
+          via: "good_notifier",
+          status_: "stopped",
+          created_at_: Time.now
+        }
+        monitor_id = SecureRandom.uuid
+        database.create_doc monitor_id, monitor
+
+        Celluloid.shutdown; Celluloid.boot
+        receiver = Ragios::RecurringJobs::Receiver.new(skip_scheduler_creation = true)
+        future = receiver.future.receive
+        triggered = Ragios::Monitors::GenericMonitor.trigger(monitor_id)
+        expect(triggered).to be_truthy
+        received = JSON.parse(future.value.first, symbolize_names: true)
+        expect(received).to eq(monitor_id: monitor_id, perform: "trigger_work")
+      end
+    end
+    context "when monitor does not exist" do
+      it "raises a monitor not found exception" do
+        expect{Ragios::Monitors::GenericMonitor.trigger("not_found")}.to raise_error(Ragios::MonitorNotFound)
+      end
+    end
+  end
+
   describe "#find" do
     before(:all) do
 

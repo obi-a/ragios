@@ -76,6 +76,13 @@ describe Ragios::RecurringJobs::Scheduler do
             @scheduler.unschedule(options)
             expect(@scheduler.internal_scheduler.jobs.count).to eq(0)
           end
+          context "when job doesn't exist" do
+            it "stays silent" do
+              expect(@scheduler.internal_scheduler.jobs.count).to eq(0)
+              @scheduler.unschedule(monitor_id: "not_found")
+              expect(@scheduler.internal_scheduler.jobs.count).to eq(0)
+            end
+          end
         end
       end
       context "when monitor's recurring job is not found" do
@@ -118,6 +125,34 @@ describe Ragios::RecurringJobs::Scheduler do
       options = {interval: "5h"}
       expect(@scheduler).to receive(:schedule).with(:every, options)
       @scheduler.schedule_and_run_later(options)
+    end
+  end
+  describe "#reschedule" do
+    context "when job is previously scheduled" do
+      it "reschedules the job with new interval" do
+        monitor_id = SecureRandom.uuid
+        @scheduler.schedule(:interval, interval: "5d", monitor_id: monitor_id)
+        expect(@scheduler.internal_scheduler.jobs.count).to eq(1)
+
+        new_interval = "3h"
+        @scheduler.reschedule(interval: new_interval, monitor_id: monitor_id)
+        expect(@scheduler.internal_scheduler.jobs.count).to eq(1)
+
+        job = @scheduler.internal_scheduler.jobs.first
+        expect(job.original).to eq(new_interval)
+      end
+    end
+    context "when job is not previously scheduled" do
+      it "schedules the job" do
+        monitor_id = SecureRandom.uuid
+        expect(@scheduler.internal_scheduler.jobs.count).to eq(0)
+        interval = "3h"
+        @scheduler.reschedule(interval: interval, monitor_id: monitor_id)
+        expect(@scheduler.internal_scheduler.jobs.count).to eq(1)
+
+        job = @scheduler.internal_scheduler.jobs.first
+        expect(job.original).to eq(interval)
+      end
     end
   end
   describe "#schedule" do
