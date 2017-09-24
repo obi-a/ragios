@@ -7,7 +7,7 @@ module Ragios
         @username = Ragios::ADMIN[:username]
         @password = Ragios::ADMIN[:password]
         @auth_timeout = Ragios::ADMIN[:auth_timeout]
-        @authentication = Ragios::ADMIN[:authentication]
+        @authentication = (Ragios::ADMIN[:authentication] == "true") ? true : false
         @database = Ragios.database
       end
 
