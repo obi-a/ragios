@@ -171,7 +171,7 @@ module Ragios
 
       get '/events*', :check => :valid_token? do
         try_request do
-          events =  events_ctr.all(take: params[:take])
+          events =  events_ctr.all(limit: params[:limit])
           generate_json(events)
         end
       end
@@ -273,7 +273,8 @@ module Ragios
         status 404
         body generate_json(error: e.message)
       rescue => e
-        monitor_manager.send_stderr(e)
+        Ragios::logger.error(e.message)
+        Ragios::logger.error(e.backtrace.join("\n"))
         status 500
         body generate_json(error: e.message)
       end

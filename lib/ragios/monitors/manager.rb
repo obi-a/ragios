@@ -90,13 +90,6 @@ module Ragios
         model.get_monitor_state(monitor_id)
       end
 
-      def send_stderr(exception)
-        $stderr.puts '-' * 80
-        $stderr.puts exception.message
-        $stderr.puts exception.backtrace.join("\n")
-        $stderr.puts '-' * 80
-      end
-
     private unless $TESTING
 
       def model

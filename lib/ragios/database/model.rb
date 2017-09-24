@@ -71,7 +71,7 @@ module Ragios
         end_date = options[:end_date] || "1913-01-15 05:30:00 -0500"
         query_options[:endkey] = [end_date].to_s
         query_options[:startkey] = [start_date].to_s
-        query_options[:limit] = options[:take] if options[:take]
+        query_options[:limit] = options[:limit] if options[:limit]
         results = query("_design/all_system_events", script, query_options)
         get_docs(results)
       end
