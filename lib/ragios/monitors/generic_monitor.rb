@@ -43,7 +43,7 @@ module Ragios
 
         def create(opts)
           options = opts.merge({created_at_: Time.now.utc, status_: 'active', type: "monitor"})
-          generic_monitor = Ragios::Monitors::GenericMonitor.new(options)
+          generic_monitor = GenericMonitor.new(options)
           generic_monitor.save
           generic_monitor.schedule
           generic_monitor
@@ -167,7 +167,7 @@ module Ragios
 
       def initialize(options, skip_extensions_creation = false)
         @options = options
-        @id = @options[:_id]
+        @id = @options[:_id] if options[:_id]
         @interval = @options[:every]
         unless skip_extensions_creation
           create_plugin
@@ -233,7 +233,10 @@ module Ragios
       end
 
       def save
-        @id = SecureRandom.uuid
+        unless defined?(@id)
+          @id = SecureRandom.uuid
+          @options.merge!(_id: @id)
+        end
         GenericMonitor.model.save(@id, @options)
       end
 
