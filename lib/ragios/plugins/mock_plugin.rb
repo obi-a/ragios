@@ -4,7 +4,7 @@ module Ragios
     class MockPlugin
       attr_reader :test_result
 
-      def init(monitor);end
+      def init(monitor); end
 
       def test_command?
         @test_result = {"This test" => "does nothing"}
