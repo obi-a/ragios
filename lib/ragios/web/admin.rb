@@ -11,8 +11,8 @@ module Ragios
         @database = Ragios.database
       end
 
-      def authenticate?(username, password)
-        (username == @username) && (password == @password)
+      def authenticate?(user, pass)
+        (user == @username) && (pass == @password)
       end
 
       def authentication?
@@ -20,7 +20,7 @@ module Ragios
       end
 
       def valid_token?(token)
-        return true unless @authentication
+        return true unless authentication
         return false if token.blank?
         auth_session = @database.get_doc(token)
         time_elapsed = (Time.now.to_f - Time.at(auth_session[:timestamp]).to_f).to_i
@@ -37,7 +37,9 @@ module Ragios
 
       def invalidate_token(token)
         return false if token.blank?
-        !!database.delete_doc!(token) rescue false
+        database.delete_doc!(token)
+      rescue Leanback::CouchdbException
+        false
       end
 
       def session
