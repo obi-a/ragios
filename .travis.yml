@@ -15,8 +15,10 @@ matrix:
 services:
   - couchdb
 
-install:
-  - sudo apt-get install zeromq
-  - bundle install
+sudo: false
+addons:
+  apt:
+    packages:
+      - libzmq3-dev
 
-script: bundle exec rake test_ragios
+script: bundle exec rake webapp_tests core_tests
