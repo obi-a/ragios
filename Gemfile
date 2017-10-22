@@ -5,7 +5,6 @@ gem 'state_machine'
 gem 'leanback', '~> 0.5.1'
 gem 'contracts'
 gem 'celluloid-zmq', '~> 0.17.2'
-gem 'i18n'
 
 gem 'daemons', :group => [:services]
 gem 'rake', :group => [:development, :test]
@@ -17,7 +16,7 @@ group :development do
 end
 
 group :notifiers do
- gem 'aws-ses'
+  gem 'aws-ses'
 end
 
 group :plugins do
