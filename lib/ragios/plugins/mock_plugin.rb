@@ -1,5 +1,5 @@
 module Ragios
-  module Plugin
+  module Plugins
 
     class MockPlugin
       attr_reader :test_result

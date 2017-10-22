@@ -36,7 +36,7 @@ module Ragios
       end
 
       def notifier_name(notifier)
-        notifier.class.name.split('::').last.underscore
+        notifier.class.name.split('::').last #.underscore
       end
     end
   end

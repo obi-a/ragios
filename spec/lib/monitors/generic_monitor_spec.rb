@@ -4,7 +4,7 @@ class OffRagios; end
 
 module Ragios
   class OffPlugin; end
-  module Plugin
+  module Plugins
     class GoodPlugin
       attr_reader :test_result
       def init(options); end
@@ -56,7 +56,7 @@ end
 
 module Ragios
   class OffNotifier; end
-  module Notifier
+  module Notifiers
     class GoodNotifier
       def init(monitor);end
       def failed(test_result);end
@@ -93,8 +93,8 @@ describe Ragios::Monitors::GenericMonitor do
         options = {plugin: "good_plugin", via: "good_notifier"}
         # skip_extensions_creation defaults to false
         generic_monitor = Ragios::Monitors::GenericMonitor.new(options)
-        expect(generic_monitor.plugin).to be_a(Ragios::Plugin::GoodPlugin)
-        expect(generic_monitor.notifiers).to include(a_kind_of(Ragios::Notifier::GoodNotifier))
+        expect(generic_monitor.plugin).to be_a(Ragios::Plugins::GoodPlugin)
+        expect(generic_monitor.notifiers).to include(a_kind_of(Ragios::Notifiers::GoodNotifier))
       end
     end
     context "when set to false" do
@@ -515,13 +515,13 @@ describe Ragios::Monitors::GenericMonitor do
         context "when extension is in the Notifier Module" do
           it "will build and return the notifier" do
             expect(Ragios::Monitors::GenericMonitor.build_extension(:notifier, "good_notifier")).to be_a(
-              Ragios::Notifier::GoodNotifier
+              Ragios::Notifiers::GoodNotifier
             )
           end
           context "when notifier name is not a string" do
             it "will be converted to a string" do
               expect(Ragios::Monitors::GenericMonitor.build_extension(:notifier, :good_notifier)).to be_a(
-                Ragios::Notifier::GoodNotifier
+                Ragios::Notifiers::GoodNotifier
               )
             end
           end
@@ -553,11 +553,11 @@ describe Ragios::Monitors::GenericMonitor do
       context "when extension is in the Ragios module" do
         context "when plugin is in the Plugin module" do
           it "will build and return the plugin" do
-            expect(Ragios::Monitors::GenericMonitor.build_extension(:plugin,"good_plugin")).to be_a(Ragios::Plugin::GoodPlugin)
+            expect(Ragios::Monitors::GenericMonitor.build_extension(:plugin,"good_plugin")).to be_a(Ragios::Plugins::GoodPlugin)
           end
           context "when plugin name is not a string" do
             it "will be converted to a string" do
-              expect(Ragios::Monitors::GenericMonitor.build_extension(:plugin, :good_plugin)).to be_a(Ragios::Plugin::GoodPlugin)
+              expect(Ragios::Monitors::GenericMonitor.build_extension(:plugin, :good_plugin)).to be_a(Ragios::Plugins::GoodPlugin)
             end
           end
         end
@@ -750,8 +750,8 @@ describe Ragios::Monitors::GenericMonitor do
             it "creates the plugin" do
               options = {plugin: "good_plugin"}
               generic_monitor = Ragios::Monitors::GenericMonitor.new(options, true)
-              expect(generic_monitor.create_plugin).to be_a(Ragios::Plugin::GoodPlugin)
-              expect(generic_monitor.plugin).to be_a(Ragios::Plugin::GoodPlugin)
+              expect(generic_monitor.create_plugin).to be_a(Ragios::Plugins::GoodPlugin)
+              expect(generic_monitor.plugin).to be_a(Ragios::Plugins::GoodPlugin)
             end
           end
         end
@@ -878,8 +878,8 @@ describe Ragios::Monitors::GenericMonitor do
               options = {via: "good_notifier"}
               generic_monitor = Ragios::Monitors::GenericMonitor.new(options, true)
               expect(generic_monitor.create_notifiers.count).to eq(1)
-              expect(generic_monitor.create_notifiers).to include(a_kind_of(Ragios::Notifier::GoodNotifier))
-              expect(generic_monitor.notifiers).to include(a_kind_of(Ragios::Notifier::GoodNotifier))
+              expect(generic_monitor.create_notifiers).to include(a_kind_of(Ragios::Notifiers::GoodNotifier))
+              expect(generic_monitor.notifiers).to include(a_kind_of(Ragios::Notifiers::GoodNotifier))
             end
           end
           context "when multiple notifiers are included in options" do
@@ -888,8 +888,8 @@ describe Ragios::Monitors::GenericMonitor do
                 options = {via: ["good_notifier", "other_good_notifier"]}
                 generic_monitor = Ragios::Monitors::GenericMonitor.new(options, true)
                 expect(generic_monitor.create_notifiers.count).to eq(2)
-                expect(generic_monitor.create_notifiers).to include(a_kind_of(Ragios::Notifier::GoodNotifier))
-                expect(generic_monitor.notifiers).to include(a_kind_of(Ragios::Notifier::OtherGoodNotifier))
+                expect(generic_monitor.create_notifiers).to include(a_kind_of(Ragios::Notifiers::GoodNotifier))
+                expect(generic_monitor.notifiers).to include(a_kind_of(Ragios::Notifiers::OtherGoodNotifier))
               end
             end
             context "when one of the provided notifiers are invalid" do

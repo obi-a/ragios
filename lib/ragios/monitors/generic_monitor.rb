@@ -97,15 +97,15 @@ module Ragios
           extension_module =
             case extension_type
             when :plugin
-              Ragios::Plugin
+              Ragios::Plugins
             when :notifier
-              Ragios::Notifier
+              Ragios::Notifiers
             else
               error_message = "Unidentified Extension Type #{extension_type}"
               raise Ragios::UnIdentifiedExtensionType.new(error_message), error_message
             end
 
-          extension_module.const_get("#{extension_name.to_s.camelize}", false).new
+          extension_module.const_get("#{camelize(extension_name.to_s)}", false).new
         rescue => e
           raise $!, "Cannot Create #{extension_type} #{extension_name}: #{$!}", $!.backtrace
         end
@@ -144,6 +144,10 @@ module Ragios
         end
 
       private
+
+        def camelize(str)
+          str.split('_').collect(&:capitalize).join
+        end
 
         def raise_monitor_not_found(monitor_id)
           error_message = "No monitor found with id = #{monitor_id}"

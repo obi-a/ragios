@@ -1,6 +1,6 @@
 module Ragios
-  module Notifier
-    class Dummy
+  module Notifiers
+    class Sample
       def init(monitor); end
       def failed(test_result); end
       def resolved(test_result); end

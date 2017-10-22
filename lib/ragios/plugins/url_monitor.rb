@@ -1,6 +1,8 @@
 # Plugin: Monitors a URL by sending a http GET request to it
 # the test PASSES if it gets a HTTP success Response status code from the http request
 
+require 'excon'
+
 module Ragios
   module Plugin
     class UrlMonitor

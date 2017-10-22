@@ -1,7 +1,7 @@
 require 'spec_base.rb'
 
 module Ragios
-  module Notifier
+  module Notifiers
     class GoodNotifier
       def init(monitor);end
       def failed(test_result)
@@ -32,7 +32,6 @@ describe Ragios::Notifications::NotificationWorker do
       every:  "10m",
       type: "monitor",
       status_: "active",
-      created_at_: time,
       via: [:exceptional_notifier],
       created_at_: time
     }
@@ -49,7 +48,6 @@ describe Ragios::Notifications::NotificationWorker do
         every:  "10m",
         type: "monitor",
         status_: "active",
-        created_at_: time,
         via: [:good_notifier],
         created_at_: time
       },
@@ -64,7 +62,7 @@ describe Ragios::Notifications::NotificationWorker do
       future = subscriber.future.receive
       @worker.perform(JSON.generate(@notification_event))
       result = JSON.parse(future.value, symbolize_names: true)
-      expect(result).to include(event: {notified: "failed", via: "good_notifier"}, monitor_id: @monitor_id, event_type: "monitor.notification")
+      expect(result).to include(event: {notified: "failed", via: "GoodNotifier"}, monitor_id: @monitor_id, event_type: "monitor.notification")
     end
     it "handles notifier errors" do
       subscriber = Ragios::Events::Subscriber.new

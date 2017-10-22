@@ -1,7 +1,7 @@
 require 'spec_base.rb'
 
 module Ragios
-  module Notifier
+  module Notifiers
     class GoodNotifier
       def init(monitor);end
       def failed(test_result);end
@@ -11,7 +11,7 @@ module Ragios
 end
 
 module Ragios
-  module Plugin
+  module Plugins
     class GoodPlugin
       attr_reader :test_result
       def init(options); end

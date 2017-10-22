@@ -14,7 +14,7 @@ def monitor_manager
 end
 
 plugin = "mock_plugin"
-notifiers = ["mock_notifier"]
+notifiers = ["log_notifier"]
 
 describe "Ragios REST API" do
   it "redirects to home & returns 302" do
@@ -127,7 +127,7 @@ describe "Ragios REST API" do
     describe "Updating a Monitor" do
       context "when valid attributes are provided" do
         it "updates the monitor" do
-          update_options = {every: "10h", via: ["mock_notifier"]}
+          update_options = {every: "10h", via: ["log_notifier"]}
           put "/monitors/#{@monitor_id}", update_options.to_json, {'CONTENT_TYPE'=>'application/json'}
           expect(last_response.status).to eq(200)
           expect(parse_json(last_response.body)).to eq(ok: true)
@@ -145,7 +145,7 @@ describe "Ragios REST API" do
       end
       context "when monitor doesn't exist" do
         it "returns a 404 not found error" do
-          update_options = {every: "10h", via: ["mock_notifier"]}
+          update_options = {every: "10h", via: ["log_notifier"]}
           put "/monitors/not_found", update_options.to_json, {'CONTENT_TYPE'=>'application/json'}
           expect(last_response.status).to eq(404)
           expect(last_response.body).to include("No monitor found with id = not_found")
