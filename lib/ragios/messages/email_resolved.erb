@@ -2,8 +2,8 @@
 
 <%= @monitor[:monitor] %> PASSED
 
-<% @test_result.each do |key,value| %>
+<% @test_result.each do |key, value| %>
 <%= key %>: <%= value %>
 <% end %>
 
-Created on: <%= Time.now.to_s(:long) %>
+Created on: <%= Time.now.to_s %>
