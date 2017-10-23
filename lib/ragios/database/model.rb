@@ -83,6 +83,7 @@ module Ragios
         query_options[:endkey] = [monitor_id, options[:end_date]].to_s
         query_options[:startkey] = [monitor_id, options[:start_date]].to_s
         query_options[:limit] = options[:limit] if options[:limit]
+        Ragios.logger.debug "#{self.class.name}##{__method__}, Query Options: #{query_options.inspect}"
         results = query("_design/all_monitor_events", script, query_options)
         get_docs(results)
       end

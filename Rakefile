@@ -1,7 +1,7 @@
 task :console do
   ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'Ragios'))
   ragios_lib = "#{ragios_dir}/lib/ragios"
-  irb = "bundle exec pry -r #{ragios_lib}"
+  irb = "foreman run bundle exec pry -r #{ragios_lib}"
   sh irb
 end
 

@@ -4,7 +4,7 @@
 require 'excon'
 
 module Ragios
-  module Plugin
+  module Plugins
     class UrlMonitor
 
       attr_reader :test_result, :url, :connection, :options
