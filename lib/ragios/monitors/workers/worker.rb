@@ -29,7 +29,7 @@ module Ragios
             monitor_id: generic_monitor&.id,
             state: "error",
             event: {error: exception.message},
-            time: generic_monitor&.time_of_test,
+            time: Time.now.utc,
             monitor: generic_monitor&.options,
             type: "event",
             event_type: "monitor.error"
