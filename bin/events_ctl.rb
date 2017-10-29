@@ -8,7 +8,7 @@ Daemons.run_proc('events', log_output: true) do
 
   Ragios::Logging.logger.info("starting out")
 
-  receiver = Ragios::Events::Subscriber.new
+  receiver = Ragios::Events::Receiver.new
   trap("INT") {puts "Shutting down."; exit}
 
   receiver.run

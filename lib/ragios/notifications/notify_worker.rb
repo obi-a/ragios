@@ -18,12 +18,12 @@ module Ragios
         notifier.send(event, test_result) if notifier.respond_to?(event)
 
         occurred = {notified: event, via: notifier_name(notifier)}
-        publisher.async.log_event!(
+        pusher.async.log_event!(
           event_details.merge(event: occurred)
         )
       rescue Exception => exception
         occurred = {"notifier error" => exception.message}
-        publisher.async.log_event!(
+        pusher.async.log_event!(
           event_details.merge(event: occurred)
         )
         raise exception
@@ -31,8 +31,8 @@ module Ragios
 
     private
 
-      def publisher
-        Ragios::Events::Publisher.new
+      def pusher
+        Ragios::Events::Pusher.new
       end
 
       def notifier_name(notifier)

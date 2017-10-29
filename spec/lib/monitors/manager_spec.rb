@@ -146,11 +146,11 @@ describe Ragios::Monitors::Manager do
       Celluloid.shutdown; Celluloid.boot
     end
 
-    it "logs monitor start event publishing to events subscriber" do
-      subcriber = Ragios::Events::Subscriber.new
+    it "logs monitor start event publishing to events receiver" do
+      subcriber = Ragios::Events::Receiver.new
       future = subcriber.future.receive
       @manager.log_monitor(:start, "monitor_id")
-      received = JSON.parse(future.value, symbolize_names: true)
+      received = JSON.parse(future.value.first, symbolize_names: true)
       expect(received).to include(
         monitor_id: "monitor_id",
         event: {:"monitor status" => "started"},
@@ -160,11 +160,11 @@ describe Ragios::Monitors::Manager do
       )
     end
 
-    it "logs monitor create event publishing to events subscriber" do
-      subcriber = Ragios::Events::Subscriber.new
+    it "logs monitor create event publishing to events receiver" do
+      subcriber = Ragios::Events::Receiver.new
       future = subcriber.future.receive
       @manager.log_monitor(:create, "monitor_id")
-      received = JSON.parse(future.value, symbolize_names: true)
+      received = JSON.parse(future.value.first, symbolize_names: true)
       expect(received).to include(
         monitor_id: "monitor_id",
         event: {:"monitor status" => "created"},
@@ -174,11 +174,11 @@ describe Ragios::Monitors::Manager do
       )
     end
 
-    it "logs monitor stop event publishing to events subscriber" do
-      subcriber = Ragios::Events::Subscriber.new
+    it "logs monitor stop event publishing to events receiver" do
+      subcriber = Ragios::Events::Receiver.new
       future = subcriber.future.receive
       @manager.log_monitor(:stop, "monitor_id")
-      received = JSON.parse(future.value, symbolize_names: true)
+      received = JSON.parse(future.value.first, symbolize_names: true)
       expect(received).to include(
         monitor_id: "monitor_id",
         event: {:"monitor status" => "stopped"},
@@ -188,11 +188,11 @@ describe Ragios::Monitors::Manager do
       )
     end
 
-    it "logs monitor delete event publishing to events subscriber" do
-      subcriber = Ragios::Events::Subscriber.new
+    it "logs monitor delete event publishing to events receiver" do
+      subcriber = Ragios::Events::Receiver.new
       future = subcriber.future.receive
       @manager.log_monitor(:delete, "monitor_id")
-      received = JSON.parse(future.value, symbolize_names: true)
+      received = JSON.parse(future.value.first, symbolize_names: true)
       expect(received).to include(
         monitor_id: "monitor_id",
         event: {:"monitor status" => "deleted"},
@@ -202,11 +202,11 @@ describe Ragios::Monitors::Manager do
       )
     end
 
-     it "logs monitor update event publishing to events subscriber" do
-      subcriber = Ragios::Events::Subscriber.new
+     it "logs monitor update event publishing to events receiver" do
+      subcriber = Ragios::Events::Receiver.new
       future = subcriber.future.receive
       @manager.log_monitor(:update, "monitor_id", update: {monitor: "updated options"})
-      received = JSON.parse(future.value, symbolize_names: true)
+      received = JSON.parse(future.value.first, symbolize_names: true)
       expect(received).to include(
         monitor_id: "monitor_id",
         event: {:"monitor status" => "updated"},

@@ -64,19 +64,19 @@ describe Ragios::Monitors::Workers::Worker do
   end
   context "when provided an existing monitor_id" do
     context "when it performs the monitors test_command?" do
-      it "publishes the test results" do
-        subscriber = Ragios::Events::Subscriber.new
-        future = subscriber.future.receive
+      it "pushes the test results" do
+        receiver = Ragios::Events::Receiver.new
+        future = receiver.future.receive
         @worker.perform(@monitor_id)
-        result = JSON.parse(future.value, symbolize_names: true)
+        result = JSON.parse(future.value.first, symbolize_names: true)
         expect(result).to include(monitor_id: @monitor_id, state: "passed", event: {test: "success"})
       end
       context "when test command raises an exception" do
         it "handles the error and publishes the error" do
-          subscriber = Ragios::Events::Subscriber.new
-          future = subscriber.future.receive
+          receiver = Ragios::Events::Receiver.new
+          future = receiver.future.receive
           expect{ @worker.perform(@exceptional_monitor_id) }.to raise_error(/Something went wrong/)
-          result = JSON.parse(future.value, symbolize_names: true)
+          result = JSON.parse(future.value.first, symbolize_names: true)
           expect(result).to include(monitor_id: @exceptional_monitor_id, event_type: "monitor.error", event: {error: "Something went wrong"})
         end
       end
@@ -84,10 +84,10 @@ describe Ragios::Monitors::Workers::Worker do
   end
   context "when provided monitor id is not found" do
     it "handles the error and publishes the error" do
-      subscriber = Ragios::Events::Subscriber.new
-      future = subscriber.future.receive
+      receiver = Ragios::Events::Receiver.new
+      future = receiver.future.receive
       expect{ @worker.perform("not_found") }.to raise_error(Ragios::MonitorNotFound)
-      result = JSON.parse(future.value, symbolize_names: true)
+      result = JSON.parse(future.value.first, symbolize_names: true)
       expect(result).to include(monitor_id: nil, event_type: "monitor.error", event: {error: "No monitor found with id = not_found"})
     end
   end

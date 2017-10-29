@@ -60,7 +60,7 @@ module Ragios
     recurring_jobs_receiver: ENV['RAGIOS_RECURRING_JOBS_RECEIVER'] || "tcp://127.0.0.1:5042",
     workers_pusher: ENV['RAGIOS_WORKERS_PUSHER'] || "tcp://127.0.0.1:5043",
     notifications_receiver: ENV['RAGIOS_NOTIFICATIONS_RECEIVER'] || "tcp://127.0.0.1:5044",
-    events_subscriber: ENV['RAGIOS_EVENTS_SUBSCRIBER'] || "tcp://127.0.0.1:5045"
+    events_receiver: ENV['RAGIOS_EVENTS_RECEIVER'] || "tcp://127.0.0.1:5045"
   }
 
   LOGGER = {

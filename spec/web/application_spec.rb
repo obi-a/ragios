@@ -252,14 +252,17 @@ describe "Ragios REST API" do
     before(:all) do
       @params = { start_date: "2000", end_date: "2013", limit: 1}
     end
+
     it "returns all events by date range for specified monitor" do
       get '/monitors/mymonitor/events', @params
       expect(last_response.status).to eq(200)
     end
+
     it "returns all notifications for specified monitor" do
       get '/monitors/mymonitor/events_by_type/monitor.notification', @params
       expect(last_response.status).to eq(200)
     end
+
     it "returns all events by state for specified monitor" do
       get '/monitors/mymonitor/events_by_state/failed', @params
       expect(last_response.status).to eq(200)

@@ -96,8 +96,8 @@ module Ragios
         @model ||= Ragios::Database::Model.new
       end
 
-      def publisher
-        Ragios::Events::Publisher.new
+      def pusher
+        Ragios::Events::Pusher.new
       end
 
       def log_monitor(event, monitor_id, options = {})
@@ -143,7 +143,7 @@ module Ragios
           event_type: "monitor.#{opts[:type]}"
         }.merge(options)
 
-        publisher.log_event!(event_details)
+        pusher.log_event!(event_details)
       end
     end
   end

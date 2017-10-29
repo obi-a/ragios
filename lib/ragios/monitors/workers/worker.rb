@@ -16,7 +16,7 @@ module Ragios
             type: "event",
             event_type: "monitor.test"
           }
-          publisher.async.log_event!(results)
+          pusher.async.log_event!(results)
           Ragios.logger.info "#{self.class.name} performed test for monitor_id #{generic_monitor.id}, state: #{generic_monitor.state}, result: #{generic_monitor.test_result}, complete state: #{results}"
         rescue Exception => e
           log_error(e, generic_monitor)
@@ -25,7 +25,7 @@ module Ragios
 
       private
         def log_error(exception, generic_monitor)
-          publisher.async.log_event!(
+          pusher.async.log_event!(
             monitor_id: generic_monitor&.id,
             state: "error",
             event: {error: exception.message},
@@ -36,8 +36,8 @@ module Ragios
           )
         end
 
-        def publisher
-          Ragios::Events::Publisher.new
+        def pusher
+          Ragios::Events::Pusher.new
         end
       end
     end

@@ -9,7 +9,7 @@ describe Ragios::RecurringJobs::Scheduler do
     context "when it is true in scheduler creation" do
       it "skips actor creation" do
         expect(@scheduler.work_pusher).to be_nil
-        expect(@scheduler.publisher).to be_nil
+        expect(@scheduler.events_pusher).to be_nil
 
       end
       it "stays silent when trigger_work is called" do
@@ -21,9 +21,9 @@ describe Ragios::RecurringJobs::Scheduler do
         Celluloid.shutdown; Celluloid.boot
         s = Ragios::RecurringJobs::Scheduler.new
         expect(s.work_pusher).to be_a(Ragios::Monitors::Workers::Pusher)
-        expect(s.publisher).to be_a(Ragios::Events::Publisher)
+        expect(s.events_pusher).to be_a(Ragios::Events::Pusher)
         s.work_pusher.close
-        s.publisher.close
+        s.events_pusher.close
       end
     end
   end

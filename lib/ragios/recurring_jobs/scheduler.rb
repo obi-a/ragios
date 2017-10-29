@@ -1,7 +1,7 @@
 module Ragios
   module RecurringJobs
     class Scheduler
-      attr_reader :internal_scheduler, :work_pusher, :publisher
+      attr_reader :internal_scheduler, :work_pusher, :events_pusher
 
       ACTIONS = %w(run_now_and_schedule schedule_and_run_later trigger_work reschedule unschedule).freeze
       TYPES = [:every, :interval].freeze
@@ -10,7 +10,7 @@ module Ragios
         @internal_scheduler = Rufus::Scheduler.new
         unless skip_actor_creation
           @work_pusher = Ragios::Monitors::Workers::Pusher.new
-          @publisher = Ragios::Events::Publisher.pool(size: 20)
+          @events_pusher = Ragios::Events::Pusher.pool(size: 20)
         end
       end
 
@@ -47,7 +47,7 @@ module Ragios
 
       def trigger_work(options)
         @work_pusher&.async&.push(options[:monitor_id])
-        @publisher&.async&.log_event(
+        @events_pusher&.async&.log_event(
           monitor_id: options[:monitor_id],
           event: {"monitor status" => "triggered"},
           state: "triggered",

@@ -58,18 +58,18 @@ describe Ragios::Notifications::NotificationWorker do
   end
   context "when provided a valid notification event" do
     it "sends the correct notification" do
-      subscriber = Ragios::Events::Subscriber.new
-      future = subscriber.future.receive
+      receiver = Ragios::Events::Receiver.new
+      future = receiver.future.receive
       @worker.perform(JSON.generate(@notification_event))
-      result = JSON.parse(future.value, symbolize_names: true)
+      result = JSON.parse(future.value.first, symbolize_names: true)
       expect(result).to include(event: {notified: "failed", via: "GoodNotifier"}, monitor_id: @monitor_id, event_type: "monitor.notification")
     end
     it "handles notifier errors" do
-      subscriber = Ragios::Events::Subscriber.new
-      future = subscriber.future.receive
+      receiver = Ragios::Events::Receiver.new
+      future = receiver.future.receive
       @notification_event[:monitor] = @monitor_with_exceptional_notifier
       @worker.perform(JSON.generate(@notification_event))
-      result = JSON.parse(future.value)
+      result = JSON.parse(future.value.first)
       expect(result["event"]).to eq("notifier error" => "something went wrong")
     end
   end
