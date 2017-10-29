@@ -117,6 +117,9 @@ module Ragios
 
       get '/monitors/:id/events_by_type/:event_type*', :check => :valid_token? do
         try_request do
+          #start_date = Time.parse(params[:start_date]).getutc.to_s
+          #end_date = Time.parse(params[:end_date]).getutc.to_s
+          #events = monitor_manager.get_events_by_type(params[:id], params[:event_type], start_date: end_date, end_date: start_date, limit: params[:limit])
           events = monitor_manager.get_events_by_type(params[:id], params[:event_type], start_date: params[:end_date], end_date: params[:start_date], limit: params[:limit])
           generate_json(events)
         end
@@ -124,6 +127,9 @@ module Ragios
 
       get '/monitors/:id/events_by_state/:state*', :check => :valid_token? do
         try_request do
+          #start_date = Time.parse(params[:start_date]).getutc.to_s
+          #end_date = Time.parse(params[:end_date]).getutc.to_s
+          #events =  monitor_manager.get_events_by_state(params[:id], params[:state], start_date: end_date, end_date: start_date, limit: params[:limit])
           events =  monitor_manager.get_events_by_state(params[:id], params[:state], start_date: params[:end_date], end_date: params[:start_date], limit: params[:limit])
           generate_json(events)
         end
@@ -131,6 +137,9 @@ module Ragios
 
       get '/monitors/:id/events*', :check => :valid_token? do
         try_request do
+          #start_date = Time.parse(params[:start_date]).getutc.to_s
+          #end_date = Time.parse(params[:end_date]).getutc.to_s
+          #events = monitor_manager.get_events(params[:id], start_date: end_date, end_date: start_date, limit: params[:limit])
           events = monitor_manager.get_events(params[:id], start_date: params[:end_date], end_date: params[:start_date], limit: params[:limit])
           generate_json(events)
         end
