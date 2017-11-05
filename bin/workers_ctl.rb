@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 require 'daemons'
+require 'securerandom'
+
 ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-Daemons.run_proc("workers#{Time.now.to_i}", log_output: true) do
+Daemons.run_proc("workers#{SecureRandom.hex(6)}", log_output: true) do
 
   require "#{ragios_dir}/lib/ragios"
 

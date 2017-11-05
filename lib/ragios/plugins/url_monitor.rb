@@ -7,7 +7,7 @@ module Ragios
   module Plugins
     class UrlMonitor
 
-      attr_reader :test_result, :url, :connection, :options
+      attr_reader :test_result, :url, :connection, :options, :mock
 
       SUCCESS_STATUSES = [
         200, 201, 202, 301, 302, 307, 308
@@ -19,23 +19,24 @@ module Ragios
 
       HTTP_METHOD = :get
 
+      def initialize(mock = false)
+        @mock = mock
+        @options = {}
+      end
 
-      def init(monitor)
-        raise "A url must be provided for url_monitor in #{monitor[:monitor]} monitor" if monitor[:url].nil?
-        @url = monitor[:url]
-        @connection = Excon.new(@url)
-        @options = {
-          idempotent: true
-        }
+      def init(monitor = {})
+        raise "A url must be provided for url_monitor in #{monitor[:monitor]} monitor" unless monitor[:url]
+        @url = monitor.fetch(:url)
+        @connection = Excon.new(@url, mock: @mock)
 
-        @options[:method]          = monitor[:method] || HTTP_METHOD
-        @options[:expects]         = monitor[:expects] || SUCCESS_STATUSES
-        @options[:retry_limit]     = monitor[:retry_limit] || RETRY_COUNT
-        @options[:connect_timeout] = monitor[:connect_timeout] || CONN_TIMEOUT
+        @options[:idempotent]      = monitor.fetch(:idempotent, true)
+        @options[:method]          = monitor.fetch(:method, HTTP_METHOD)
+        @options[:expects]         = monitor.fetch(:expects, SUCCESS_STATUSES)
+        @options[:retry_limit]     = monitor.fetch(:retry_limit, RETRY_COUNT)
+        @options[:connect_timeout] = monitor.fetch(:connect_timeout, CONN_TIMEOUT)
 
-        @options[:body]            = monitor[:body] if monitor[:body]
-        @options[:headers]         = monitor[:headers] if monitor[:headers]
-        @options[:mock]            = monitor[:mock] if monitor[:mock]
+        @options[:body]            = monitor.fetch(:body) if monitor[:body]
+        @options[:headers]         = monitor.fetch(:headers) if monitor[:headers]
 
         true
       end
