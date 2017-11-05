@@ -1,7 +1,16 @@
 #!/usr/bin/env ruby
 require 'daemons'
 ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-Daemons.run_proc('notifications', log_output: true) do
+
+options = {
+  log_output: true,
+  dir_mode: :normal,
+  dir: 'tmp/pids',
+  keep_pid_files: false,
+  ontop: true
+}
+
+Daemons.run_proc('notifications', options) do
 
   require "#{ragios_dir}/lib/ragios"
 

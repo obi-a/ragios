@@ -2,12 +2,16 @@
 begin
   require 'rubygems'
   require "bundler/setup"
+
   Bundler.require(:web)
+
   dir = Pathname(__FILE__).dirname.expand_path
+
   require "#{dir}/lib/ragios"
   require_all '/ragios/web'
 
   run Ragios::Web::Application
+
   Ragios::Logging.setup(program_name: "Web Service")
   Ragios::Logging.logger.info("starting out")
 
