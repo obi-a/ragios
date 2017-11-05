@@ -12,16 +12,17 @@ environment = ENV['RAGIOS_ENV'] || "development"
 
 Bundler.require(:default, environment)
 
-dir = Pathname(__FILE__).dirname.expand_path + 'ragios/'
-
 def require_all(path)
  Dir.glob(File.dirname(__FILE__) + path + '/*.rb') do |file|
    require File.dirname(__FILE__)  + path + '/' + File.basename(file, File.extname(file))
  end
 end
 
+dir = Pathname(__FILE__).dirname.expand_path + 'ragios/'
+
 #system
 require_all '/ragios'
+require "#{dir}ZMQ/base"
 require_all '/ragios/ZMQ'
 
 #notifiers
