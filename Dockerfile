@@ -1,5 +1,7 @@
-FROM cloudgear/ruby:2.2-onbuild
-ENV RAGIOS_COUCHDB_ADDRESS couchdb
-ENV RAGIOS_BIND_ADDRESS tcp://0.0.0.0:5041
-EXPOSE 5041
-CMD ./ragios s start
+FROM ruby:2.4.1-stretch
+RUN apt-get update && apt-get install -y \
+    libzmq3-dev
+
+COPY . /usr/src/app
+WORKDIR /usr/src/app
+RUN bundle install
