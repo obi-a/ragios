@@ -1,0 +1,83 @@
+  web:
+    image: "ragios"
+    links:
+      - couchdb:couchdb
+      - recurring_jobs:recurring_jobs
+      - events:events
+    depends_on:
+      - couchdb
+    environment:
+      RAGIOS_RECURRING_JOBS_RECEIVER: 'tcp://127.0.0.1:5042'
+      RAGIOS_WORKERS_PUSHER: 'tcp://127.0.0.1:5043'
+      RAGIOS_NOTIFICATIONS_RECEIVER: 'tcp://127.0.0.1:5044'
+      RAGIOS_EVENTS_RECEIVER: 'tcp://127.0.0.1:5045'
+      RAGIOS_LOG_LEVEL: info
+      RAGIOS_COUCHDB_ADDRESS: couchdb
+    ports:
+      - 5041:5041
+    entrypoint: bundle exec pumactl -F server.rb start
+
+
+  recurring_jobs:
+    image: "ragios"
+    links:
+      - couchdb:couchdb
+      - events:events
+    depends_on:
+      - couchdb
+    environment:
+      RAGIOS_RECURRING_JOBS_RECEIVER: 'tcp://127.0.0.1:5042'
+      RAGIOS_WORKERS_PUSHER: 'tcp://127.0.0.1:5043'
+      RAGIOS_NOTIFICATIONS_RECEIVER: 'tcp://127.0.0.1:5044'
+      RAGIOS_EVENTS_RECEIVER: 'tcp://127.0.0.1:5045'
+      RAGIOS_LOG_LEVEL: info
+      RAGIOS_COUCHDB_ADDRESS: 'http://127.0.0.1'
+    entrypoint: bundle exec ruby bin/recurring_jobs_ctl.rb run
+
+  workers:
+    image: "ragios"
+    links:
+      - couchdb:couchdb
+      - events:events
+      - recurring_jobs:recurring_jobs
+      - notifications:notifications
+    depends_on:
+      - couchdb
+    environment:
+      RAGIOS_RECURRING_JOBS_RECEIVER: 'tcp://127.0.0.1:5042'
+      RAGIOS_WORKERS_PUSHER: 'tcp://127.0.0.1:5043'
+      RAGIOS_NOTIFICATIONS_RECEIVER: 'tcp://127.0.0.1:5044'
+      RAGIOS_EVENTS_RECEIVER: 'tcp://127.0.0.1:5045'
+      RAGIOS_LOG_LEVEL: info
+      RAGIOS_COUCHDB_ADDRESS: 'http://127.0.0.1'
+    entrypoint: bundle exec ruby bin/workers_ctl.rb run
+
+  events:
+    image: "ragios"
+    links:
+      - couchdb:couchdb
+    depends_on:
+      - couchdb
+    environment:
+      RAGIOS_RECURRING_JOBS_RECEIVER: 'tcp://127.0.0.1:5042'
+      RAGIOS_WORKERS_PUSHER: 'tcp://127.0.0.1:5043'
+      RAGIOS_NOTIFICATIONS_RECEIVER: 'tcp://127.0.0.1:5044'
+      RAGIOS_EVENTS_RECEIVER: 'tcp://127.0.0.1:5045'
+      RAGIOS_LOG_LEVEL: info
+      RAGIOS_COUCHDB_ADDRESS: 'http://127.0.0.1'
+    entrypoint: bundle exec ruby bin/events_ctl.rb run
+
+  notifications:
+    image: "ragios"
+    links:
+      - couchdb:couchdb
+    depends_on:
+      - couchdb
+    environment:
+      RAGIOS_RECURRING_JOBS_RECEIVER: 'tcp://127.0.0.1:5042'
+      RAGIOS_WORKERS_PUSHER: 'tcp://127.0.0.1:5043'
+      RAGIOS_NOTIFICATIONS_RECEIVER: 'tcp://127.0.0.1:5044'
+      RAGIOS_EVENTS_RECEIVER: 'tcp://127.0.0.1:5045'
+      RAGIOS_LOG_LEVEL: info
+      RAGIOS_COUCHDB_ADDRESS: 'http://127.0.0.1'
+    entrypoint: bundle exec ruby bin/notifications_ctl.rb run

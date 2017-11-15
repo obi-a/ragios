@@ -4,7 +4,7 @@ describe "Ragios::Database::Model" do
   before(:all) do
     @database = Leanback::Couchdb.new(
       database: "ragios_test_model_database#{Time.now.to_i}",
-      address: "http://localhost",
+      address: (ENV['RAGIOS_COUCHDB_ADDRESS'] || "http://localhost"),
       username: ENV['COUCHDB_ADMIN_USERNAME'],
       password: ENV['COUCHDB_ADMIN_PASSWORD'],
       port: "5984"

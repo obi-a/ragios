@@ -7,13 +7,9 @@ services:
     ports:
       - 5984:5984
 
-  web:
+  ragios:
     build: .
     links:
       - couchdb:couchdb
     depends_on:
       - couchdb
-    ports:
-      - "5041:5041"
-    entrypoint: bundle exec pumactl -F server.rb start
-
