@@ -3,6 +3,7 @@ require 'daemons'
 ragios_dir = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 options = {
+  multiple: true,
   log_output: true,
   dir_mode: :normal,
   dir: 'tmp/pids',

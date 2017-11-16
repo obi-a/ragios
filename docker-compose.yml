@@ -11,9 +11,22 @@ services:
     build: .
     links:
       - couchdb:couchdb
+      - recurring_jobs:recurring_jobs
     depends_on:
       - couchdb
+      - recurring_jobs
+    environment:
+      RAGIOS_WEB_SERVER_ADDRESS: 'tcp://0.0.0.0:5041'
+      RAGIOS_RECURRING_JOBS_RECEIVER: 'tcp://127.0.0.1:5042'
     ports:
       - "5041:5041"
     entrypoint: bundle exec pumactl -F server.rb start
+
+  recurring_jobs:
+    build: .
+    links:
+      - couchdb:couchdb
+    depends_on:
+      - couchdb
+    entrypoint: bundle exec ruby bin/recurring_jobs_ctl.rb run
 
