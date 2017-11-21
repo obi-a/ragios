@@ -4,7 +4,7 @@ module Ragios
 
       def push(message)
         @socket << message
-        Ragios.logger.info "#{self.class.name } pushed message: #{message}"
+        Ragios.logger.info "#{self.class.name } pushed message: #{message} to link: #{link} action: #{action}"
       end
     end
   end

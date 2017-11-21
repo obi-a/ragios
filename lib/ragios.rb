@@ -57,11 +57,43 @@ module Ragios
     port: ENV['RAGIOS_COUCHDB_PORT'] || '5984'
   }
 
+  recurring_jobs_receiver = if ENV['RAGIOS_RECURRING_JOBS_RECEIVER']
+    ENV['RAGIOS_RECURRING_JOBS_RECEIVER']
+  else
+    recurring_jobs_receiver_address = ENV['RAGIOS_RECURRING_JOBS_RECEIVER_ADDRESS'] || "127.0.0.1"
+    recurring_jobs_receiver_port = ENV['RAGIOS_RECURRING_JOBS_RECEIVER_PORT'] || "5042"
+    "tcp://#{recurring_jobs_receiver_address}:#{recurring_jobs_receiver_port}"
+  end
+
+  workers_pusher = if ENV['RAGIOS_WORKERS_PUSHER']
+    ENV['RAGIOS_WORKERS_PUSHER']
+  else
+    workers_pusher_address = ENV['RAGIOS_WORKERS_PUSHER_ADDRESS'] || "127.0.0.1"
+    workers_pusher_port = ENV['RAGIOS_WORKERS_PUSHER_PORT'] || "5043"
+    "tcp://#{workers_pusher_address}:#{workers_pusher_port}"
+  end
+
+  notifications_receiver = if ENV['RAGIOS_NOTIFICATIONS_RECEIVER']
+    ENV['RAGIOS_NOTIFICATIONS_RECEIVER']
+  else
+    notifications_receiver_address = ENV['RAGIOS_NOTIFICATIONS_RECEIVER_ADDRESS'] || "127.0.0.1"
+    notifications_receiver_port = ENV['RAGIOS_NOTIFICATIONS_RECEIVER_PORT'] || "5044"
+    "tcp://#{notifications_receiver_address}:#{notifications_receiver_port}"
+  end
+
+  events_receiver = if ENV['RAGIOS_EVENTS_RECEIVER']
+    ENV['RAGIOS_EVENTS_RECEIVER']
+  else
+    events_receiver_address = ENV['RAGIOS_EVENTS_RECEIVER_ADDRESS'] || "127.0.0.1"
+    events_receiver_port = ENV['RAGIOS_EVENTS_RECEIVER_PORT'] || "5045"
+    "tcp://#{events_receiver_address}:#{events_receiver_port}"
+  end
+
   SERVERS = {
-    recurring_jobs_receiver: ENV['RAGIOS_RECURRING_JOBS_RECEIVER'] || "tcp://127.0.0.1:5042",
-    workers_pusher: ENV['RAGIOS_WORKERS_PUSHER'] || "tcp://127.0.0.1:5043",
-    notifications_receiver: ENV['RAGIOS_NOTIFICATIONS_RECEIVER'] || "tcp://127.0.0.1:5044",
-    events_receiver: ENV['RAGIOS_EVENTS_RECEIVER'] || "tcp://127.0.0.1:5045"
+    recurring_jobs_receiver: recurring_jobs_receiver,
+    workers_pusher: workers_pusher,
+    notifications_receiver: notifications_receiver,
+    events_receiver: events_receiver
   }
 
   LOGGER = {
