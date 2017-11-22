@@ -125,6 +125,28 @@ module Ragios
         Ragios.logger.send(level, "#{performer.class.name} #{action} event #{event}")
       end
     end
+
+    def retriable(options = {})
+      opts = {on: Exception, tries: 1, interval: 1}.merge(options)
+
+      exceptions = opts[:on].is_a?(Array) ? opts[:on] : [opts[:on]]
+      retries    = opts[:tries]
+      interval   = opts[:interval]
+      tries      = 1
+
+      begin
+        return yield(tries)
+      rescue *exceptions => e
+        tries += 1
+
+        if tries <= retries
+          sleep interval
+          retry
+        else
+          raise
+        end
+      end
+    end
   end
 end
 
@@ -135,4 +157,8 @@ class Object
   end
 end
 
-Ragios.db_admin.setup_database
+
+Ragios.retriable(on: Errno::ECONNREFUSED, interval: 3, tries: 5) do |try|
+  Ragios.logger.info "Trying to connect to database attempt #{try}"
+  Ragios.db_admin.setup_database
+end
