@@ -1,7 +1,5 @@
 require 'rubygems'
 require 'bundler/setup'
-#require 'net/http'
-#require 'net/https'
 
 require "celluloid/zmq/current"
 require 'celluloid/current'
@@ -102,6 +100,11 @@ module Ragios
   }
 
   class << self
+
+    def environment
+      @environment ||= (ENV['RAGIOS_ENV'] || "development")
+    end
+
     def database
       @database ||= db_admin.database
     end
@@ -158,7 +161,7 @@ class Object
 end
 
 
-Ragios.retriable(on: Errno::ECONNREFUSED, interval: 3, tries: 5) do |try|
+Ragios.retriable(on: Errno::ECONNREFUSED, interval: 3, tries: 10) do |try|
   Ragios.logger.info "Trying to connect to database attempt #{try}"
   Ragios.db_admin.setup_database
 end

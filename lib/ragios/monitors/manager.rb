@@ -8,9 +8,7 @@ module Ragios
       Monitor = Hash
       Monitor_id = String
 
-
       attr_reader :model
-
 
       Contract Hash => Monitor
       def add(options)

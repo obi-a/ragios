@@ -2,8 +2,7 @@ module Ragios
   module Monitors
     class GenericMonitor
 
-      attr_reader :plugin, :notifiers, :id, :test_result, :interval
-      attr_reader :time_of_test, :options
+      attr_reader :plugin, :notifiers, :id, :test_result, :interval, :time_of_test, :options
       attr_accessor :state
 
       state_machine :state, :initial => :pending do

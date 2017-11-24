@@ -17,6 +17,11 @@ services:
       RAGIOS_RECURRING_JOBS_RECEIVER_ADDRESS: recurring_jobs
       RAGIOS_EVENTS_RECEIVER_ADDRESS: events
       RAGIOS_WEB_SERVER_ADDRESS: 'tcp://0.0.0.0:5041'
+      RAGIOS_ENV: production
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      AWS_SES_SEND_FROM:
+      AWS_SES_ENDPOINT:
     expose:
       - "5041"
     ports:
@@ -34,6 +39,11 @@ services:
       RAGIOS_RECURRING_JOBS_RECEIVER_ADDRESS: '0.0.0.0'
       RAGIOS_EVENTS_RECEIVER_ADDRESS: events
       RAGIOS_WORKERS_PUSHER_ADDRESS: '0.0.0.0'
+      RAGIOS_ENV: production
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      AWS_SES_SEND_FROM:
+      AWS_SES_ENDPOINT:
     expose:
       - "5042"
       - "5043"
@@ -53,6 +63,11 @@ services:
       RAGIOS_EVENTS_RECEIVER_ADDRESS: events
       RAGIOS_WORKERS_PUSHER_ADDRESS: recurring_jobs
       RAGIOS_NOTIFICATIONS_RECEIVER_ADDRESS: notifications
+      RAGIOS_ENV: production
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      AWS_SES_SEND_FROM:
+      AWS_SES_ENDPOINT:
     tty: true
     stdin_open: true
     entrypoint: bundle exec ruby bin/workers_ctl.rb run
@@ -63,6 +78,7 @@ services:
       - couchdb:couchdb
     environment:
       RAGIOS_EVENTS_RECEIVER_ADDRESS: '0.0.0.0'
+      RAGIOS_ENV: production
     expose:
       - "5045"
     tty: true
@@ -77,6 +93,11 @@ services:
     environment:
       RAGIOS_NOTIFICATIONS_RECEIVER_ADDRESS: '0.0.0.0'
       RAGIOS_EVENTS_RECEIVER_ADDRESS: events
+      RAGIOS_ENV: production
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      AWS_SES_SEND_FROM:
+      AWS_SES_ENDPOINT:
     expose:
       - "5044"
     tty: true

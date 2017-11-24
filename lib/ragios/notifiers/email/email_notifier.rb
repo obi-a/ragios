@@ -1,3 +1,5 @@
+require "erb"
+
 module Ragios
   module EmailNotifier
 
