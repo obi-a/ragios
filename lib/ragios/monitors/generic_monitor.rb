@@ -257,7 +257,7 @@ module Ragios
         @state = results[:state] if results[:state]
         @test_result = results[:event]
         @time_of_test = results[:time]
-        @options[:current_state] = {
+        @options[:current_state_] = {
           state: @state,
           test_result: @test_result,
           time_of_test: @time_of_test

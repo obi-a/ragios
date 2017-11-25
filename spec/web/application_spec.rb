@@ -89,7 +89,7 @@ describe "Ragios REST API" do
           returned_monitor = parse_json(last_response.body)
           expect(returned_monitor).to include(@monitor)
           expect(returned_monitor).to include(type: "monitor")
-          expect(returned_monitor.keys).to include(:current_state)
+          expect(returned_monitor.keys).to include(:current_state_)
         end
       end
       context "when monitor is not found" do

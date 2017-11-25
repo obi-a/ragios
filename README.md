@@ -21,33 +21,31 @@ The above example creates a monitor that monitor uses an `uptime_monitor` plugin
 
 ## Features:
 A small and minimal extensible design:
-* Users can add, update, start, stop, restart and delete monitors in simple Ruby code. [See details](http://www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)
-
-* Plugins
-  + Ragios relies on plugins to perform tests on different types of systems. The plugins are plain old ruby objects, any test/check that could be performed in ruby code could be performed by Ragios. Developers can create plugins to meet their specific needs.
-  + Ragios ships with a built-in url_monitor plugin for monitoring http(s) endpoints for uptime
-
-* Notifications & Notifiers
-  + Notifications are sent out when a test fails and when the test passes again.
-  + Notification messages are generated from ERB templates which developers can easily customize.
-  + Multiple email addresses could be added to a monitor, so it notfies all email addresses when a test fails or recovers from failure.
-  + Ragios relies on Notifiers to send out notifications. The notifiers are pluggable plain old ruby objects. Any type of notification that could be implemented in Ruby code can be sent by Ragios, notifications by email, SMS, twitter etc. Developers can create notifiers to meet their specific needs.
-  + Ragios ships with a built-in Amazon SES notifier that sends notifications via Amazon SES, developers can implement other types of notifiers.
-  + Multiple notifiers could be added to one monitor, so when a test fails or recovers from failure, it ssends out notifications via all the notifiers. For example a monitor could be setup to send notifications via email, SMS, Slack and twitter simultaneously.
+* Users can add, update, start, stop, restart and delete monitors that can monitor anything in simple Ruby code. [See details](http://www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)
 
 * REST API is available for interacting with Ragios.
 
 * An admin dashboard (Web UI) is available for using Ragios
 
-* Ragios includes a Ruby client library that makes it easy to interact with Ragios directly with ruby code.
+* Ragios includes a Ruby client rubygem that makes it easy to interact with Ragios directly with ruby code.
 
-* A Ragios instance running on a remote server can be controlled from anywhere using the Ruby client library or the REST API.
-
-* Ragios is designed to be modular, memory efficient, distributed, and scalable. Each operation runs in a separate microservice, that can run in a separate server.
+* Ragios is re-designed & re-written to be modular, memory efficient, distributed, and scalable. Each operation runs in a separate microservice, that can run in a separate server.
 
 * Ragios runs as a set of tiny distributed microservices, communicating with each other via ZeroMQ, and packaged with docker-compose.
 
 * Only dependency required to run Ragios is docker-compose.
+
+* Plugins
+  + Ragios relies on plugins to perform tests on different types of systems. The plugins are plain old ruby objects, any test/check that could be performed in ruby code could be performed by Ragios. Developers can create plugins to meet their specific needs.
+  + Ragios ships with a built-in url_monitor plugin for monitoring http(s) endpoints for uptime, developers can implement other types of plugins.
+
+* Notifications & Notifiers
+  + Notifications are sent out when a test fails and when the test passes again.
+  + Notification messages are generated from ERB templates which developers can easily customize.
+  + Multiple email addresses could be added to a monitor, so it notfies all email addresses when a test fails or recovers from failure.
+  + Ragios relies on Notifiers to send out notifications. The notifiers are pluggable plain old ruby objects. Any type of notification that could be implemented in Ruby code can be sent by Ragios, notifications by email, SMS, Slack etc. Developers can create notifiers to meet their specific needs.
+  + Ragios ships with a built-in Amazon SES notifier that sends notifications via Amazon SES, developers can implement other types of notifiers.
+  + Multiple notifiers could be added to one monitor, so when a test fails or recovers from failure, it ssends out notifications via all the notifiers. For example a monitor could be setup to send notifications via email, SMS, Slack and twitter simultaneously.
 
 
 I'm doing this just for fun and educational purposes.
@@ -58,8 +56,6 @@ I'm doing this just for fun and educational purposes.
 * [Ragios (Saint Ruby)](http://www.whisperservers.com/ragios/ragios-saint-ruby/)
 
    + [Installation](http://www.whisperservers.com/ragios/ragios-saint-ruby/installation/)
-
-   + [Running Ragios on Docker](https://github.com/obi-a/ragios/wiki/Running-Ragios-in-a-Docker-Container)
 
    + [Start/Stop the server](http://www.whisperservers.com/ragios/running-ragios/)
 

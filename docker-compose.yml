@@ -8,7 +8,7 @@ services:
       - 5984:5984
 
   web:
-    image: "obiora/ragios"
+    image: "obiora/ragios:latest"
     links:
       - couchdb:couchdb
       - recurring_jobs:recurring_jobs
@@ -31,7 +31,7 @@ services:
     entrypoint: bundle exec pumactl -F server.rb start
 
   recurring_jobs:
-    image: "obiora/ragios"
+    image: "obiora/ragios:latest"
     links:
       - couchdb:couchdb
       - events:events
@@ -52,7 +52,7 @@ services:
     entrypoint: bundle exec ruby bin/recurring_jobs_ctl.rb run
 
   workers:
-    image: "obiora/ragios"
+    image: "obiora/ragios:latest"
     links:
       - couchdb:couchdb
       - events:events
@@ -73,7 +73,7 @@ services:
     entrypoint: bundle exec ruby bin/workers_ctl.rb run
 
   events:
-    image: "obiora/ragios"
+    image: "obiora/ragios:latest"
     links:
       - couchdb:couchdb
     environment:
@@ -86,7 +86,7 @@ services:
     entrypoint: bundle exec ruby bin/events_ctl.rb run
 
   notifications:
-    image: "obiora/ragios"
+    image: "obiora/ragios:latest"
     links:
       - couchdb:couchdb
       - events:events
