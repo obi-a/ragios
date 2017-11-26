@@ -1,8 +1,6 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    atomic (1.1.16)
-    atomic (1.1.16-java)
     aws-ses (0.6.0)
       builder
       mail (> 2.2.5)
@@ -35,6 +33,8 @@ GEM
     contracts (0.4)
     daemons (1.1.0)
     diff-lcs (1.3)
+    et-orbi (1.0.8)
+      tzinfo
     excon (0.45.4)
     ffi (1.9.18)
     ffi (1.9.18-java)
@@ -90,8 +90,8 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
-    rufus-scheduler (3.0.7)
-      tzinfo
+    rufus-scheduler (3.4.2)
+      et-orbi (~> 1.0)
     sinatra (1.4.8)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -101,14 +101,11 @@ GEM
       ffi
     state_machine (1.2.0)
     thor (0.19.4)
-    thread_safe (0.3.1)
-      atomic (>= 1.1.7, < 2)
-    thread_safe (0.3.1-java)
-      atomic (>= 1.1.7, < 2)
+    thread_safe (0.3.6)
     tilt (2.0.8)
     timers (4.1.2)
       hitimes
-    tzinfo (1.1.0)
+    tzinfo (1.2.4)
       thread_safe (~> 0.1)
     xml-simple (1.1.5)
 
@@ -130,9 +127,9 @@ DEPENDENCIES
   ragios-client (~> 0.0.7)
   rake
   rspec
-  rufus-scheduler (~> 3.0.7)
+  rufus-scheduler (~> 3.4.2)
   sinatra
   state_machine
 
 BUNDLED WITH
-   1.15.1
+   1.15.4

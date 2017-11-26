@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rufus-scheduler', '~> 3.0.7', :require => 'rufus/scheduler'
+gem 'rufus-scheduler', '~> 3.4.2', :require => 'rufus/scheduler'
 gem 'state_machine'
 gem 'leanback', '~> 0.5.1'
 gem 'contracts'
