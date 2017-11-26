@@ -163,7 +163,7 @@ describe Ragios::RecurringJobs::Scheduler do
             options = {interval: "9h"}
             @scheduler.schedule(:every, options)
             job = @scheduler.internal_scheduler.jobs.first
-            expect(job).to be_a(Rufus::Scheduler::EveryJob)
+            expect(job).to be_a(Rufus::Scheduler::IntervalJob)
             expect(job.original).to eq(options[:interval])
             expect(@scheduler).to receive(:trigger_work).with(options)
             job.callable.call

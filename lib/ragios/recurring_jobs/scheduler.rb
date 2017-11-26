@@ -4,6 +4,9 @@ module Ragios
       attr_reader :internal_scheduler, :work_pusher, :events_pusher
 
       ACTIONS = %w(run_now_and_schedule schedule_and_run_later trigger_work reschedule unschedule).freeze
+
+      # interval jobs - trigger immediately and  then triggers every time the set interval has elasped
+      # every jobs - don't trigger immediately, it triggers first when the set interval has elasped and keep recurring at that interval
       TYPES = [:every, :interval].freeze
 
       def initialize(skip_actor_creation = false)
@@ -36,7 +39,14 @@ module Ragios
         unless TYPES.include?(scheduler_type)
           raise ArgumentError.new("Unrecognized scheduler_type #{scheduler_type}")
         end
-        job_id = @internal_scheduler.send(scheduler_type, options[:interval].to_s, :tags => options[:monitor_id]) do
+
+        opts = {
+          tags: options[:monitor_id]
+        }
+
+        opts[:first] = :now  if scheduler_type == :interval
+
+        job_id = @internal_scheduler.interval options[:interval].to_s, opts do
           trigger_work(options)
         end
 
