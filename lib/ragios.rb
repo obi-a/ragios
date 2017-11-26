@@ -95,7 +95,7 @@ module Ragios
   }
 
   LOGGER = {
-    level: ENV['RAGIOS_LOG_LEVEL'] || :info,
+    level: ENV['RAGIOS_LOG_LEVEL'] || :debug,
     program_name: "Ragios"
   }
 

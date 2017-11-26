@@ -26,8 +26,8 @@
 # Set the environment in which the rack's app will run. The value must be a string.
 #
 # The default is “development”.
-#
-#environment 'production'
+
+environment ENV['RAGIOS_WEB_SERVER_ENV'] || 'development'
 
 # Daemonize the server into the background. Highly suggest that
 # this be combined with “pidfile” and “stdout_redirect”.
