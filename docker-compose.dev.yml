@@ -17,7 +17,9 @@ services:
       RAGIOS_RECURRING_JOBS_RECEIVER_ADDRESS: recurring_jobs
       RAGIOS_EVENTS_RECEIVER_ADDRESS: events
       RAGIOS_WEB_SERVER_ADDRESS: 'tcp://0.0.0.0:5041'
+      RAGIOS_WEB_SERVER_ENV: production
       RAGIOS_ENV: production
+      RAGIOS_LOG_LEVEL: debug
       AWS_ACCESS_KEY_ID:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
@@ -42,6 +44,7 @@ services:
       RAGIOS_EVENTS_RECEIVER_ADDRESS: events
       RAGIOS_WORKERS_PUSHER_ADDRESS: '0.0.0.0'
       RAGIOS_ENV: production
+      RAGIOS_LOG_LEVEL: debug
       AWS_ACCESS_KEY_ID:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
@@ -68,6 +71,7 @@ services:
       RAGIOS_WORKERS_PUSHER_ADDRESS: recurring_jobs
       RAGIOS_NOTIFICATIONS_RECEIVER_ADDRESS: notifications
       RAGIOS_ENV: production
+      RAGIOS_LOG_LEVEL: debug
       AWS_ACCESS_KEY_ID:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
@@ -85,6 +89,7 @@ services:
     environment:
       RAGIOS_EVENTS_RECEIVER_ADDRESS: '0.0.0.0'
       RAGIOS_ENV: production
+      RAGIOS_LOG_LEVEL: debug
     volumes:
       - .:/usr/src/ragios
     expose:
@@ -102,6 +107,7 @@ services:
       RAGIOS_NOTIFICATIONS_RECEIVER_ADDRESS: '0.0.0.0'
       RAGIOS_EVENTS_RECEIVER_ADDRESS: events
       RAGIOS_ENV: production
+      RAGIOS_LOG_LEVEL: debug
       AWS_ACCESS_KEY_ID:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
