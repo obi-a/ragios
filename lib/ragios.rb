@@ -160,8 +160,8 @@ class Object
   end
 end
 
-
-Ragios.retriable(on: Errno::ECONNREFUSED, interval: 3, tries: 10) do |try|
-  Ragios.logger.info "Trying to connect to database attempt #{try}"
+tries = 10
+Ragios.retriable(on: Errno::ECONNREFUSED, interval: 3, tries: tries) do |try|
+  Ragios.logger.info "Trying to connect to database attempt #{try}/#{tries}"
   Ragios.db_admin.setup_database
 end

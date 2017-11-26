@@ -1,0 +1,115 @@
+version: '3'
+services:
+  couchdb:
+    image: "klaemo/couchdb"
+    expose:
+      - "5984"
+    ports:
+      - 5984:5984
+
+  web:
+    build: .
+    links:
+      - couchdb:couchdb
+      - recurring_jobs:recurring_jobs
+      - events:events
+    environment:
+      RAGIOS_RECURRING_JOBS_RECEIVER_ADDRESS: recurring_jobs
+      RAGIOS_EVENTS_RECEIVER_ADDRESS: events
+      RAGIOS_WEB_SERVER_ADDRESS: 'tcp://0.0.0.0:5041'
+      RAGIOS_ENV: production
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      AWS_SES_SEND_FROM:
+      AWS_SES_ENDPOINT:
+    volumes:
+      - .:/usr/src/ragios
+    expose:
+      - "5041"
+    ports:
+      - "5041:5041"
+    tty: true
+    stdin_open: true
+    entrypoint: bundle exec pumactl -F server.rb start
+
+  recurring_jobs:
+    build: .
+    links:
+      - couchdb:couchdb
+      - events:events
+    environment:
+      RAGIOS_RECURRING_JOBS_RECEIVER_ADDRESS: '0.0.0.0'
+      RAGIOS_EVENTS_RECEIVER_ADDRESS: events
+      RAGIOS_WORKERS_PUSHER_ADDRESS: '0.0.0.0'
+      RAGIOS_ENV: production
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      AWS_SES_SEND_FROM:
+      AWS_SES_ENDPOINT:
+    volumes:
+      - .:/usr/src/ragios
+    expose:
+      - "5042"
+      - "5043"
+    tty: true
+    stdin_open: true
+    entrypoint: bundle exec ruby bin/recurring_jobs_ctl.rb run
+
+  workers:
+    build: .
+    links:
+      - couchdb:couchdb
+      - events:events
+      - recurring_jobs:recurring_jobs
+      - notifications:notifications
+    environment:
+      RAGIOS_RECURRING_JOBS_RECEIVER_ADDRESS: recurring_jobs
+      RAGIOS_EVENTS_RECEIVER_ADDRESS: events
+      RAGIOS_WORKERS_PUSHER_ADDRESS: recurring_jobs
+      RAGIOS_NOTIFICATIONS_RECEIVER_ADDRESS: notifications
+      RAGIOS_ENV: production
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      AWS_SES_SEND_FROM:
+      AWS_SES_ENDPOINT:
+    volumes:
+      - .:/usr/src/ragios
+    tty: true
+    stdin_open: true
+    entrypoint: bundle exec ruby bin/workers_ctl.rb run
+
+  events:
+    build: .
+    links:
+      - couchdb:couchdb
+    environment:
+      RAGIOS_EVENTS_RECEIVER_ADDRESS: '0.0.0.0'
+      RAGIOS_ENV: production
+    volumes:
+      - .:/usr/src/ragios
+    expose:
+      - "5045"
+    tty: true
+    stdin_open: true
+    entrypoint: bundle exec ruby bin/events_ctl.rb run
+
+  notifications:
+    build: .
+    links:
+      - couchdb:couchdb
+      - events:events
+    environment:
+      RAGIOS_NOTIFICATIONS_RECEIVER_ADDRESS: '0.0.0.0'
+      RAGIOS_EVENTS_RECEIVER_ADDRESS: events
+      RAGIOS_ENV: production
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      AWS_SES_SEND_FROM:
+      AWS_SES_ENDPOINT:
+    volumes:
+      - .:/usr/src/ragios
+    expose:
+      - "5044"
+    tty: true
+    stdin_open: true
+    entrypoint: bundle exec ruby bin/notifications_ctl.rb run
