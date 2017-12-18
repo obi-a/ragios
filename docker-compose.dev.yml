@@ -4,8 +4,6 @@ services:
     image: "klaemo/couchdb"
     expose:
       - "5984"
-    ports:
-      - 5984:5984
 
   web:
     build: .

@@ -7,9 +7,11 @@ services:
     ports:
       - 5984:5984
 
-  ragios:
+  unit_tests:
     build: .
     links:
       - couchdb:couchdb
-    depends_on:
-      - couchdb
+    volumes:
+      - .:/usr/src/ragios
+    environment:
+      RAGIOS_COUCHDB_ADDRESS: couchdb
