@@ -1,3 +1,17 @@
+==Ragios v0.7
+12-31-2017
+- Complete re-design of the backend to be modular, memory efficient, distributed, and scalable.
+- Ragios now runs as a set of tiny distributed microservices, communicating with each other via ZeroMQ. The microservices can run on different hosts and different containers.
+- Completely removed ActiveSupport as a dependency
+- Removed Twitter and gmail notifers from being bundled
+- re-wrote amazon SES notifier
+- re-wrote url_monitor plugin to support all http request types, now supports mock requests
+- changed mock notifier to log notifier also re-wrote it
+- added Ragios logger, a uniform internal logging system for Ragios, also includes various log levels based on Ruby logger
+- Adds different modes Production, development and test mode
+- Now distributed with Docker-compose and only dependency required to run Ragios now is docker-compose
+
+
 ==Ragios v0.6.4.2
 12-31-2015
 * Upgrades the Ragios built url_monitor plugin to use excon gem instead of restclient gem.

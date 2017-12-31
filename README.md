@@ -23,13 +23,9 @@ The above example creates a monitor that monitor uses an `uptime_monitor` plugin
 A small and minimal extensible design:
 * Users can add, update, start, stop, restart and delete monitors that can monitor anything in simple Ruby code. [See details](http://www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)
 
-* REST API is available for interacting with Ragios.
+* Includes a REST API, a web admin dashboard (Web UI) and a Ruby client rubygem that makes it easy to interact with Ragios directly with ruby code.
 
-* An admin dashboard (Web UI) is available for using Ragios
-
-* Ragios includes a Ruby client rubygem that makes it easy to interact with Ragios directly with ruby code.
-
-* Ragios is re-designed & re-written to be modular, memory efficient, distributed, and scalable. Each operation runs in a separate microservice, that can run in a separate server.
+* Ragios is re-designed & re-written to be modular, memory efficient, distributed, and scalable.
 
 * Ragios runs as a set of tiny distributed microservices, communicating with each other via ZeroMQ, and packaged with docker-compose.
 

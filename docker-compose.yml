@@ -24,6 +24,12 @@ services:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
       AWS_SES_ENDPOINT:
+      RAGIOS_ADMIN_USERNAME:
+      RAGIOS_ADMIN_PASSWORD:
+      RAGIOS_AUTHENTICATION:
+      RAGIOS_AUTH_TIMEOUT:
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     expose:
       - "5041"
     ports:
@@ -47,6 +53,8 @@ services:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
       AWS_SES_ENDPOINT:
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     expose:
       - "5042"
       - "5043"
@@ -72,6 +80,8 @@ services:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
       AWS_SES_ENDPOINT:
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     tty: true
     stdin_open: true
     entrypoint: bundle exec ruby bin/workers_ctl.rb run
@@ -84,6 +94,8 @@ services:
       RAGIOS_EVENTS_RECEIVER_ADDRESS: '0.0.0.0'
       RAGIOS_ENV: production
       RAGIOS_LOG_LEVEL: info
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     expose:
       - "5045"
     tty: true
@@ -104,6 +116,8 @@ services:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
       AWS_SES_ENDPOINT:
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     expose:
       - "5044"
     tty: true

@@ -4,6 +4,8 @@ services:
     image: "klaemo/couchdb"
     expose:
       - "5984"
+    ports:
+      - 5984:5984
 
   web:
     build: .
@@ -22,6 +24,12 @@ services:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
       AWS_SES_ENDPOINT:
+      RAGIOS_ADMIN_USERNAME:
+      RAGIOS_ADMIN_PASSWORD:
+      RAGIOS_AUTHENTICATION:
+      RAGIOS_AUTH_TIMEOUT:
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     volumes:
       - .:/usr/src/ragios
     expose:
@@ -47,6 +55,8 @@ services:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
       AWS_SES_ENDPOINT:
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     volumes:
       - .:/usr/src/ragios
     expose:
@@ -74,6 +84,8 @@ services:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
       AWS_SES_ENDPOINT:
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     volumes:
       - .:/usr/src/ragios
     tty: true
@@ -88,6 +100,8 @@ services:
       RAGIOS_EVENTS_RECEIVER_ADDRESS: '0.0.0.0'
       RAGIOS_ENV: production
       RAGIOS_LOG_LEVEL: debug
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     volumes:
       - .:/usr/src/ragios
     expose:
@@ -110,6 +124,8 @@ services:
       AWS_SECRET_ACCESS_KEY:
       AWS_SES_SEND_FROM:
       AWS_SES_ENDPOINT:
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
     volumes:
       - .:/usr/src/ragios
     expose:
