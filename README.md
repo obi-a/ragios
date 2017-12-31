@@ -61,7 +61,11 @@ I'm doing this just for fun and educational purposes.
 
    + [Events](http://www.whisperservers.com/ragios/events/)
 
+   + [Services](http://www.whisperservers.com/ragios/services/)
+
    + [Web Admin Dashboard](https://github.com/obi-a/ragios/wiki/Web-Admin-Dashboard)
+
+   + [Development Mode](http://www.whisperservers.com/ragios/development-mode/)
 
    + [Creating Notifiers](http://www.whisperservers.com/ragios/notifiers/)
 
