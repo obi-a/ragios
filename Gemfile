@@ -12,7 +12,7 @@ gem 'rake', :group => [:development, :test]
 group :development do
   gem 'pry'
   gem 'foreman'
-  gem 'ragios-client', '~> 0.0.7'
+  gem 'ragios-client', '~> 0.2.1'
 end
 
 group :notifiers do
