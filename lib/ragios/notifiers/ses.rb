@@ -10,8 +10,8 @@ module Ragios
 
       def initialize
         @aws_credentials = {
-          access_key: ENV['AWS_ACCESS_KEY_ID'],
-          secret_key: ENV['AWS_SECRET_ACCESS_KEY'],
+          access_key: ENV['AWS_SES_ACCESS_KEY_ID'],
+          secret_key: ENV['AWS_SES_SECRET_ACCESS_KEY'],
           endpoint: ENV['AWS_SES_ENDPOINT'],
           send_from: ENV['AWS_SES_SEND_FROM']
         }
