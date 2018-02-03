@@ -129,21 +129,33 @@ module Ragios
       end
     end
 
+    # credits to https://github.com/kamui/retriable
+    def retry_intervals(retries)
+      tries         = retries
+      base_interval = 0.5
+      max_interval  = 120
+      multiplier    = 1.5
+
+      intervals = Array.new(tries) do |iteration|
+        [base_interval * multiplier**iteration, max_interval].min
+      end
+    end
+
     def retriable(options = {})
-      opts = {on: Exception, tries: 1, interval: 1}.merge(options)
+      opts = {on: StandardError,  tries: 1}.merge(options)
 
       exceptions = opts[:on].is_a?(Array) ? opts[:on] : [opts[:on]]
       retries    = opts[:tries]
-      interval   = opts[:interval]
       tries      = 1
+      intervals  = retry_intervals(retries)
 
       begin
-        return yield(tries)
+        return yield(tries, intervals[tries + 1])
       rescue *exceptions => e
         tries += 1
 
         if tries <= retries
-          sleep interval
+          sleep intervals[tries]
           retry
         else
           raise
@@ -160,8 +172,8 @@ class Object
   end
 end
 
-tries = 10
-Ragios.retriable(on: Errno::ECONNREFUSED, interval: 3, tries: tries) do |try|
-  Ragios.logger.info "Trying to connect to database attempt #{try}/#{tries}"
+tries = 13
+Ragios.retriable(on: Errno::ECONNREFUSED, tries: tries) do |try, next_try_time|
+  Ragios.logger.info "Connecting to database attempt #{try}/#{tries}, next try in #{next_try_time.round(2)} secounds"
   Ragios.db_admin.setup_database
 end
