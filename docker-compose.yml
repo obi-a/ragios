@@ -1,14 +1,27 @@
 version: '3'
 services:
   couchdb:
-    image: "klaemo/couchdb"
+    image: "apache/couchdb:1.7.1"
     expose:
       - "5984"
     ports:
       - 5984:5984
 
+  database_setup:
+    image: "obiora/ragios:ragios-production-mode"
+    links:
+      - couchdb:couchdb
+    environment:
+      COUCHDB_ADMIN_USERNAME:
+      COUCHDB_ADMIN_PASSWORD:
+    tty: true
+    stdin_open: true
+    entrypoint: bundle exec ruby bin/database_setup.rb
+
   web:
     image: "obiora/ragios:latest"
+    depends_on:
+      - database_setup
     links:
       - couchdb:couchdb
       - recurring_jobs:recurring_jobs
@@ -40,6 +53,8 @@ services:
 
   recurring_jobs:
     image: "obiora/ragios:latest"
+    depends_on:
+      - database_setup
     links:
       - couchdb:couchdb
       - events:events
@@ -64,6 +79,8 @@ services:
 
   workers:
     image: "obiora/ragios:latest"
+    depends_on:
+      - database_setup
     links:
       - couchdb:couchdb
       - events:events
@@ -88,6 +105,8 @@ services:
 
   events:
     image: "obiora/ragios:latest"
+    depends_on:
+      - database_setup
     links:
       - couchdb:couchdb
     environment:
@@ -104,6 +123,8 @@ services:
 
   notifications:
     image: "obiora/ragios:latest"
+    depends_on:
+      - database_setup
     links:
       - couchdb:couchdb
       - events:events
