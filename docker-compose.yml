@@ -8,7 +8,7 @@ services:
       - 5984:5984
 
   database_setup:
-    image: "obiora/ragios:ragios-production-mode"
+    image: "obiora/ragios:latest"
     links:
       - couchdb:couchdb
     environment:
