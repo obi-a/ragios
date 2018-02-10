@@ -50,9 +50,9 @@ GEM
     hitimes (1.2.4-java)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    leanback (0.5.4)
-      multi_json
-      rest-client
+    leanback (0.5.8)
+      multi_json (~> 1.11)
+      rest-client (~> 2.0)
     mail (2.6.6)
       mime-types (>= 1.16, < 4)
     method_source (0.8.1)
@@ -119,7 +119,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf (0.1.4-java)
-    unf_ext (0.0.7.4)
+    unf_ext (0.0.7.5)
     xml-simple (1.1.5)
 
 PLATFORMS
@@ -133,7 +133,7 @@ DEPENDENCIES
   daemons
   excon
   foreman
-  leanback (~> 0.5.1)
+  leanback (~> 0.5.8)
   pry
   puma (~> 3.10.0)
   rack-test
