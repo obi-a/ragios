@@ -1,3 +1,7 @@
+==Ragios v0.7.1
+10-06-2018
+- Update sinatra and ffi to fix vulnerbility
+
 ==Ragios v0.7
 12-31-2017
 - Complete re-design of the backend to be modular, memory efficient, distributed, and scalable.
