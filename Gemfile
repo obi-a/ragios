@@ -8,6 +8,7 @@ gem 'celluloid-zmq', '~> 0.17.2'
 
 gem 'daemons', :group => [:services]
 gem 'rake', :group => [:development, :test]
+gem 'ffi', '~> 1.9.24'
 
 group :development do
   gem 'pry'
@@ -30,6 +31,6 @@ end
 
 group :web, :development do
   gem 'puma', '~> 3.10.0'
-  gem 'sinatra', :require => 'sinatra/base'
+  gem 'sinatra', '~> 2.0.2', :require => 'sinatra/base'
   gem 'rack-protection', '~> 2.0.0'
 end
