@@ -1,3 +1,7 @@
+==Ragios v0.7.1.1
+12-25-2018
+- Fix rack vulnerbility, upgrade to Rack 2.0.6
+
 ==Ragios v0.7.1
 10-06-2018
 - Update sinatra and ffi to fix vulnerbility

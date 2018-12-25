@@ -9,6 +9,7 @@ gem 'celluloid-zmq', '~> 0.17.2'
 gem 'daemons', :group => [:services]
 gem 'rake', :group => [:development, :test]
 gem 'ffi', '~> 1.9.24'
+gem "rack", ">= 2.0.6"
 
 group :development do
   gem 'pry'
