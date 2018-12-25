@@ -1,5 +1,5 @@
 
-==Ragios v0.7.1.1
+==Ragios v0.7.1.2
 12-25-2018
 - upgrade leanback for rack vulnerbility
 - upgrade ragios-client for rack vulnerbility
