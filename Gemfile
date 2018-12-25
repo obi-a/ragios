@@ -9,12 +9,12 @@ gem 'celluloid-zmq', '~> 0.17.2'
 gem 'daemons', :group => [:services]
 gem 'rake', :group => [:development, :test]
 gem 'ffi', '~> 1.9.24'
-gem "rack", ">= 2.0.6"
+gem "rack", ">= 2.0.6", :group => [:development, :web]
 
 group :development do
   gem 'pry'
   gem 'foreman'
-  gem 'ragios-client', '~> 0.2.1'
+  gem 'ragios-client', '~> 0.2.4'
 end
 
 group :notifiers do
