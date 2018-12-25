@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rufus-scheduler', '~> 3.4.2', :require => 'rufus/scheduler'
 gem 'state_machine'
-gem 'leanback', '~> 0.5.8'
+gem 'leanback', '~> 0.5.14'
 gem 'contracts'
 gem 'celluloid-zmq', '~> 0.17.2'
 

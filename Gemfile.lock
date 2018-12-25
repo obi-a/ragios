@@ -50,7 +50,7 @@ GEM
     hitimes (1.2.4-java)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    leanback (0.5.8)
+    leanback (0.5.14)
       multi_json (~> 1.11)
       rest-client (~> 2.0)
     mail (2.6.6)
@@ -136,7 +136,7 @@ DEPENDENCIES
   excon
   ffi (~> 1.9.24)
   foreman
-  leanback (~> 0.5.8)
+  leanback (~> 0.5.14)
   pry
   puma (~> 3.10.0)
   rack (>= 2.0.6)
