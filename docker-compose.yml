@@ -73,6 +73,9 @@ services:
     expose:
       - "5042"
       - "5043"
+    ports:
+      - "5042:5042"
+      - "5043:5043"
     tty: true
     stdin_open: true
     entrypoint: bundle exec ruby bin/recurring_jobs_ctl.rb run
@@ -99,6 +102,8 @@ services:
       AWS_SES_ENDPOINT:
       COUCHDB_ADMIN_USERNAME:
       COUCHDB_ADMIN_PASSWORD:
+    ports:
+      - "5043:5043"
     tty: true
     stdin_open: true
     entrypoint: bundle exec ruby bin/workers_ctl.rb run
@@ -117,6 +122,8 @@ services:
       COUCHDB_ADMIN_PASSWORD:
     expose:
       - "5045"
+    ports:
+      - "5045:5045"
     tty: true
     stdin_open: true
     entrypoint: bundle exec ruby bin/events_ctl.rb run
@@ -141,6 +148,8 @@ services:
       COUCHDB_ADMIN_PASSWORD:
     expose:
       - "5044"
+    ports:
+      - "5044:5044"
     tty: true
     stdin_open: true
     entrypoint: bundle exec ruby bin/notifications_ctl.rb run

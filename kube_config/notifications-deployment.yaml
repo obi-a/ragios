@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: notifications
+  name: notifications
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: notifications
+    spec:
+      containers:
+      - command:
+        - bundle
+        - exec
+        - ruby
+        - bin/notifications_ctl.rb
+        - run
+        env:
+        - name: RAGIOS_ENV
+          value: production
+        - name: RAGIOS_EVENTS_RECEIVER_ADDRESS
+          value: events
+        - name: RAGIOS_LOG_LEVEL
+          value: info
+        - name: RAGIOS_NOTIFICATIONS_RECEIVER_ADDRESS
+          value: 0.0.0.0
+        image: obiora/ragios:v0.7.1.2
+        name: notifications
+        ports:
+        - containerPort: 5044
+        resources: {}
+        stdin: true
+        tty: true
+      restartPolicy: Always
+status: {}

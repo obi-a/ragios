@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: workers
+  name: workers
+spec:
+  ports:
+  - name: "5043"
+    port: 5043
+    targetPort: 5043
+  selector:
+    io.kompose.service: workers
+status:
+  loadBalancer: {}
