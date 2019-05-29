@@ -43,6 +43,28 @@ spec:
           value: tcp://0.0.0.0:5041
         - name: RAGIOS_WEB_SERVER_ENV
           value: production
+        - name: RAGIOS_AUTHENTICATION
+          value: 'true'
+        - name: RAGIOS_ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: ragios-secret
+              key: username
+        - name: RAGIOS_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ragios-secret
+              key: password
+        - name: COUCHDB_ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: couchdb-secret
+              key: username
+        - name: COUCHDB_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: couchdb-secret
+              key: password
         image: obiora/ragios:v0.7.1.2
         name: web
         ports:
