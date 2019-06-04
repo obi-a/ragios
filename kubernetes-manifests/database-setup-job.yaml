@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: database-setup
+  name: database-setup
+spec:
+  containers:
+  - command:
+    - bundle
+    - exec
+    - ruby
+    - bin/database_setup.rb
+    image: obiora/ragios:v0.7.1.2
+    name: database-setup
+    env:
+    - name: COUCHDB_ADMIN_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: couchdb-secret
+          key: username
+    - name: COUCHDB_ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: couchdb-secret
+          key: password
+    resources: {}
+    stdin: true
+    tty: true
