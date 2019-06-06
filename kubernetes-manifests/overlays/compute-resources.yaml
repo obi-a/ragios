@@ -1,0 +1,107 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: couchdb
+  namespace: ragios
+spec:
+  template:
+    spec:
+      containers:
+      - resources:
+          limits:
+            memory: 512Mi
+            cpu: 1000m
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        name: couchdb
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: events
+  namespace: ragios
+spec:
+  template:
+    spec:
+      containers:
+      - resources:
+          limits:
+            memory: 512Mi
+            cpu: 1000m
+          requests:
+            cpu: 10m
+            memory: 200Mi
+        name: events
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: notifications
+  namespace: ragios
+spec:
+  template:
+    spec:
+      containers:
+      - resources:
+          limits:
+            memory: 512Mi
+            cpu: 1000m
+          requests:
+            cpu: 10m
+            memory: 200Mi
+        name: notifications
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: recurring-jobs
+  namespace: ragios
+spec:
+  template:
+    spec:
+      containers:
+      - resources:
+          limits:
+            memory: 512Mi
+            cpu: 1000m
+          requests:
+            cpu: 10m
+            memory: 200Mi
+        name: recurring-jobs
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: web
+  namespace: ragios
+spec:
+  template:
+    spec:
+      containers:
+      - resources:
+          limits:
+            memory: 512Mi
+            cpu: 1000m
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        name: web
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: workers
+  namespace: ragios
+spec:
+  template:
+    spec:
+      containers:
+      - resources:
+          limits:
+            memory: 512Mi
+            cpu: 1000m
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        name: workers

@@ -6,24 +6,31 @@ metadata:
     kompose.version: 1.18.0 ()
   creationTimestamp: null
   labels:
-    io.kompose.service: recurring-jobs
-  name: recurring-jobs
+    io.kompose.service: web
+    app: web
+  name: web
+  namespace: ragios
 spec:
   replicas: 1
   strategy: {}
+  selector:
+    matchLabels:
+      app: web
   template:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: recurring-jobs
+        io.kompose.service: web
+        app: web
     spec:
       containers:
       - command:
         - bundle
         - exec
-        - ruby
-        - bin/recurring_jobs_ctl.rb
-        - run
+        - pumactl
+        - -F
+        - server.rb
+        - start
         env:
         - name: RAGIOS_ENV
           value: production
@@ -32,9 +39,23 @@ spec:
         - name: RAGIOS_LOG_LEVEL
           value: info
         - name: RAGIOS_RECURRING_JOBS_RECEIVER_ADDRESS
-          value: 0.0.0.0
-        - name: RAGIOS_WORKERS_PUSHER_ADDRESS
-          value: 0.0.0.0
+          value: recurring-jobs
+        - name: RAGIOS_WEB_SERVER_ADDRESS
+          value: tcp://0.0.0.0:5041
+        - name: RAGIOS_WEB_SERVER_ENV
+          value: production
+        - name: RAGIOS_AUTHENTICATION
+          value: 'true'
+        - name: RAGIOS_ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: ragios-secret
+              key: username
+        - name: RAGIOS_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ragios-secret
+              key: password
         - name: COUCHDB_ADMIN_USERNAME
           valueFrom:
             secretKeyRef:
@@ -46,10 +67,9 @@ spec:
               name: couchdb-secret
               key: password
         image: obiora/ragios:v0.7.1.2
-        name: recurring-jobs
+        name: web
         ports:
-        - containerPort: 5042
-        - containerPort: 5043
+        - containerPort: 5041
         resources: {}
         stdin: true
         tty: true

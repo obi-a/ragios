@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: recurring-jobs
   name: recurring-jobs
+  namespace: ragios
 spec:
   replicas: 1
   strategy: {}

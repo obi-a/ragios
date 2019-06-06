@@ -1,0 +1,8 @@
+resources:
+- couchdb-deployment.yaml
+- events-deployment.yaml
+- notifications-deployment.yaml
+- recurring-jobs-deployment.yaml
+- web-deployment.yaml
+- workers-deployment.yaml
+- database-setup.yaml

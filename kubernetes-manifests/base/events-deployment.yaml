@@ -6,8 +6,9 @@ metadata:
     kompose.version: 1.18.0 ()
   creationTimestamp: null
   labels:
-    io.kompose.service: workers
-  name: workers
+    io.kompose.service: events
+  name: events
+  namespace: ragios
 spec:
   replicas: 1
   strategy: {}
@@ -15,28 +16,22 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: workers
+        io.kompose.service: events
     spec:
       containers:
       - command:
         - bundle
         - exec
         - ruby
-        - bin/workers_ctl.rb
+        - bin/events_ctl.rb
         - run
         env:
         - name: RAGIOS_ENV
           value: production
         - name: RAGIOS_EVENTS_RECEIVER_ADDRESS
-          value: events
+          value: 0.0.0.0
         - name: RAGIOS_LOG_LEVEL
           value: info
-        - name: RAGIOS_NOTIFICATIONS_RECEIVER_ADDRESS
-          value: notifications
-        - name: RAGIOS_RECURRING_JOBS_RECEIVER_ADDRESS
-          value: recurring-jobs
-        - name: RAGIOS_WORKERS_PUSHER_ADDRESS
-          value: recurring-jobs
         - name: COUCHDB_ADMIN_USERNAME
           valueFrom:
             secretKeyRef:
@@ -48,9 +43,9 @@ spec:
               name: couchdb-secret
               key: password
         image: obiora/ragios:v0.7.1.2
-        name: workers
+        name: events
         ports:
-        - containerPort: 5043
+        - containerPort: 5045
         resources: {}
         stdin: true
         tty: true

@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: workers
   name: workers
+  namespace: ragios
 spec:
   ports:
   - name: "5043"

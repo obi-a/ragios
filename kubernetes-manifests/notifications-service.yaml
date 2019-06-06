@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: notifications
   name: notifications
+  namespace: ragios
 spec:
   ports:
   - name: "5044"

@@ -9,6 +9,7 @@ metadata:
     io.kompose.service: web
     app: web
   name: web
+  namespace: ragios
 spec:
   type: LoadBalancer
   ports:
