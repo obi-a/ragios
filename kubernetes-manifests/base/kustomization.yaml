@@ -1,5 +1,5 @@
 resources:
-- couchdb-deployment.yaml
+- couchdb-statefulset.yaml
 - events-deployment.yaml
 - notifications-deployment.yaml
 - recurring-jobs-deployment.yaml

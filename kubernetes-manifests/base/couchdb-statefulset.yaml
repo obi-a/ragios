@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   annotations:
     kompose.cmd: kompose convert
@@ -10,8 +10,8 @@ metadata:
   name: couchdb
   namespace: ragios
 spec:
+  serviceName: couchdb
   replicas: 1
-  strategy: {}
   template:
     metadata:
       creationTimestamp: null
@@ -23,6 +23,18 @@ spec:
         name: couchdb
         ports:
         - containerPort: 5984
-        resources: {}
+        volumeMounts:
+        - name: couchdb-data
+          mountPath: /volumes/couchdb/data
       restartPolicy: Always
-status: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: couchdb-data
+      labels:
+        io.kompose.service: couchdb
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: do-block-storage
+      resources:
+        requests:
+          storage: 30Gi
