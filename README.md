@@ -27,9 +27,9 @@ A small and minimal extensible design:
 
 * Ragios is re-designed & re-written to be modular, memory efficient, distributed, and scalable.
 
-* Ragios runs as a set of tiny distributed microservices, communicating with each other via ZeroMQ, and packaged with docker-compose.
+* Ragios runs as a set of tiny distributed microservices, communicating with each other via ZeroMQ, and packaged with docker-compose, easily run it on a (kubernetes cluster)(https://github.com/obi-a/ragios/wiki/Run-Ragios-on-a-Kubernetes-Cluster).
 
-* Only dependency required to run Ragios is docker-compose.
+* Only dependency required to run Ragios locally is docker-compose or just run it on a Kubernetes cluster.
 
 * Plugins
   + Ragios relies on plugins to perform tests on different types of systems. The plugins are plain old ruby objects, any test/check that could be performed in ruby code could be performed by Ragios. Developers can create plugins to meet their specific needs.
@@ -80,9 +80,10 @@ I'm doing this just for fun and educational purposes.
      * [Monitors API](http://www.whisperservers.com/ragios/monitors-api/)
 
      * [Events API](http://www.whisperservers.com/ragios/events-api/)
+   + [Run Ragios on a Kubernetes Cluster](https://github.com/obi-a/ragios/wiki/Run-Ragios-on-a-Kubernetes-Cluster)
 
 
 ## License:
 MIT License.
 
-Copyright (c) 2018 Obi Akubue, obi-akubue.org
+Copyright (c) 2019 Obi Akubue, obi-akubue.org

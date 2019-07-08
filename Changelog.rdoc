@@ -1,3 +1,6 @@
+==Ragios v0.7.2
+07-07-2019
+- Added support to easily run Ragios on a Kubernetes cluster and expose it via a load balancer
 
 ==Ragios v0.7.1.2
 12-25-2018
