@@ -34,7 +34,6 @@ spec:
         io.kompose.service: couchdb
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: do-block-storage
       resources:
         requests:
           storage: 30Gi
