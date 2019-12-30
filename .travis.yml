@@ -21,4 +21,6 @@ addons:
     packages:
       - libzmq3-dev
 
+before_install: bundle update --bundler
+
 script: bundle exec rake webapp_tests core_tests
