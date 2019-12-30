@@ -46,7 +46,7 @@ spec:
             secretKeyRef:
               name: couchdb-secret
               key: password
-        image: obiora/ragios:v0.7.1.2
+        image: obiora/ragios:v0.7.2.2
         name: recurring-jobs
         ports:
         - containerPort: 5042

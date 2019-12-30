@@ -18,7 +18,7 @@ spec:
         - exec
         - ruby
         - bin/database_setup.rb
-        image: obiora/ragios:v0.7.1.2
+        image: obiora/ragios:v0.7.2.2
         name: database-setup
         env:
         - name: COUCHDB_ADMIN_USERNAME

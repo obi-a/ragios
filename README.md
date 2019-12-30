@@ -8,7 +8,7 @@ Sample usage to monitor a website for uptime in Ruby code:
 ```ruby
 monitor = {
   monitor: "My Website",
-  url: "http://mysite.com",
+  url: "https//mysite.com",
   every: "5m",
   contact: "admin@mail.com",
   via: "email_notifier",
@@ -17,11 +17,11 @@ monitor = {
 
 ragios.create(monitor)
 ```
-The above example creates a monitor that monitor uses an `uptime_monitor` plugin to monitor the website `http://mysite.com` for uptime. This monitor runs tests on the website every 5 minutes, if it detects the website is down, it sends an  alert email to `admin@mail.com` via an email notifier.
+The above example creates a monitor that monitor uses an `uptime_monitor` plugin to monitor the website `https//mysite.com` for uptime. This monitor runs tests on the website every 5 minutes, if it detects the website is down, it sends an  alert email to `admin@mail.com` via an email notifier.
 
 ## Features:
 A small and minimal extensible design:
-* Users can add, update, start, stop, restart and delete monitors that can monitor anything in simple Ruby code. [See details](http://www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)
+* Users can add, update, start, stop, restart and delete monitors that can monitor anything in simple Ruby code. [See details](https://www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)
 
 * Includes a REST API, a web admin dashboard (Web UI) and a Ruby client rubygem that makes it easy to interact with Ragios directly with ruby code.
 
@@ -49,41 +49,41 @@ I'm doing this just for fun and educational purposes.
 ## Documentation:
 
 
-* [Ragios (Saint Ruby)](http://www.whisperservers.com/ragios/ragios-saint-ruby/)
+* [Ragios (Saint Ruby)](https//www.whisperservers.com/ragios/ragios-saint-ruby/)
 
-   + [Installation](http://www.whisperservers.com/ragios/ragios-saint-ruby/installation/)
+   + [Installation](https//www.whisperservers.com/ragios/ragios-saint-ruby/installation/)
 
-   + [Start/Stop the server](http://www.whisperservers.com/ragios/running-ragios/)
+   + [Start/Stop the server](https//www.whisperservers.com/ragios/running-ragios/)
 
-   + [Using Ragios](http://www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)
+   + [Using Ragios](https//www.whisperservers.com/ragios/ragios-saint-ruby/using-ragios/)
 
-   + [Notifications](http://www.whisperservers.com/ragios/ragios-saint-ruby/notifications/)
+   + [Notifications](https//www.whisperservers.com/ragios/ragios-saint-ruby/notifications/)
 
-   + [Events](http://www.whisperservers.com/ragios/events/)
+   + [Events](https//www.whisperservers.com/ragios/events/)
 
-   + [Services](http://www.whisperservers.com/ragios/services/)
+   + [Services](https//www.whisperservers.com/ragios/services/)
 
    + [Web Admin Dashboard](https://github.com/obi-a/ragios/wiki/Web-Admin-Dashboard)
 
-   + [Development Mode](http://www.whisperservers.com/ragios/development-mode/)
+   + [Development Mode](https//www.whisperservers.com/ragios/development-mode/)
 
-   + [Creating Notifiers](http://www.whisperservers.com/ragios/notifiers/)
+   + [Creating Notifiers](https//www.whisperservers.com/ragios/notifiers/)
 
-   + [Creating Plugins](http://www.whisperservers.com/ragios/plugins/)
+   + [Creating Plugins](https//www.whisperservers.com/ragios/plugins/)
 
-   + [Authentication](http://www.whisperservers.com/ragios/authentication/)
+   + [Authentication](https//www.whisperservers.com/ragios/authentication/)
 
-   + [REST API](http://www.whisperservers.com/ragios/ragios-rest-api/)
+   + [REST API](https//www.whisperservers.com/ragios/ragios-rest-api/)
 
-     * [API Authentication](http://www.whisperservers.com/ragios/api-authentication/)
+     * [API Authentication](https//www.whisperservers.com/ragios/api-authentication/)
 
-     * [Monitors API](http://www.whisperservers.com/ragios/monitors-api/)
+     * [Monitors API](https//www.whisperservers.com/ragios/monitors-api/)
 
-     * [Events API](http://www.whisperservers.com/ragios/events-api/)
+     * [Events API](https//www.whisperservers.com/ragios/events-api/)
    + [Run Ragios on a Kubernetes Cluster](https://github.com/obi-a/ragios/wiki/Run-Ragios-on-a-Kubernetes-Cluster)
 
 
 ## License:
 MIT License.
 
-Copyright (c) 2019 Obi Akubue, obi-akubue.org
+Copyright (c) 2020 Obi Akubue, obi-akubue.org

@@ -1,3 +1,10 @@
+==Ragios v0.7.2.2
+12-30-2019
+- Fix security vulnerbility for rack, nokogiri, excon, puma
+- lock all dependency gem versions to make it safe to `bundle update` at anytime
+- update Readme links to ssl version of the documentation
+
+
 ==Ragios v0.7.2.1
 07-08-2019
 - Fix bug with that raises a port already bound error for workers port 5043 during started, this bug was introduced during the translation of existing docker-compose files to kubernetes for the last release. (showstopper release for v0.7.2 users)

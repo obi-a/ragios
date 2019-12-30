@@ -1,20 +1,20 @@
 source 'http://rubygems.org'
 
 gem 'rufus-scheduler', '~> 3.4.2', :require => 'rufus/scheduler'
-gem 'state_machine'
+gem 'state_machine', '~> 1.2.0'
 gem 'leanback', '~> 0.5.14'
-gem 'contracts'
+gem 'contracts', '0.4'
 gem 'celluloid-zmq', '~> 0.17.2'
+gem "nokogiri", '~> 1.10.4'
 
 gem 'daemons', :group => [:services]
 gem 'rake', :group => [:development, :test]
 gem 'ffi', '~> 1.9.24'
-gem "rack", ">= 2.0.6", :group => [:development, :web]
+gem 'rack', '~> 2.0.6', :group => [:development, :web]
 
 group :development do
   gem 'pry'
   gem 'foreman'
-  gem 'ragios-client', '~> 0.2.4'
 end
 
 group :notifiers do
@@ -22,7 +22,7 @@ group :notifiers do
 end
 
 group :plugins do
-  gem 'excon'
+  gem 'excon', '~> 0.71.0'
 end
 
 group :test do
@@ -31,7 +31,7 @@ group :test do
 end
 
 group :web, :development do
-  gem 'puma', '~> 3.10.0'
+  gem 'puma', '~> 3.12.2'
   gem 'sinatra', '~> 2.0.2', :require => 'sinatra/base'
   gem 'rack-protection', '~> 2.0.0'
 end
