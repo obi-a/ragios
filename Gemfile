@@ -31,7 +31,7 @@ group :test do
 end
 
 group :web, :development do
-  gem 'puma', '~> 3.12.2'
+  gem 'puma', '~> 3.12.4'
   gem 'sinatra', '~> 2.0.2', :require => 'sinatra/base'
   gem 'rack-protection', '~> 2.0.0'
 end
