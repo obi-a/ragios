@@ -10,7 +10,7 @@ gem "nokogiri", '~> 1.10.4'
 gem 'daemons', :group => [:services]
 gem 'rake', :group => [:development, :test]
 gem 'ffi', '~> 1.9.24'
-gem 'rack', '~> 2.0.6', :group => [:development, :web]
+gem 'rack', '~> 2.1.4', :group => [:development, :web]
 
 group :development do
   gem 'pry'
