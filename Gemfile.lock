@@ -63,9 +63,9 @@ GEM
     multi_json (1.14.1)
     mustermann (1.0.3)
     netrc (0.11.0)
-    nokogiri (1.10.7)
+    nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
-    nokogiri (1.10.7-java)
+    nokogiri (1.10.10-java)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -132,7 +132,7 @@ DEPENDENCIES
   ffi (~> 1.9.24)
   foreman
   leanback (~> 0.5.14)
-  nokogiri (~> 1.10.4)
+  nokogiri (~> 1.10.10)
   pry
   puma (~> 3.12.2)
   rack (~> 2.0.6)

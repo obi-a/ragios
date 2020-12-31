@@ -5,7 +5,7 @@ gem 'state_machine', '~> 1.2.0'
 gem 'leanback', '~> 0.5.14'
 gem 'contracts', '0.4'
 gem 'celluloid-zmq', '~> 0.17.2'
-gem "nokogiri", '~> 1.10.4'
+gem "nokogiri", '~> 1.10.10'
 
 gem 'daemons', :group => [:services]
 gem 'rake', :group => [:development, :test]
